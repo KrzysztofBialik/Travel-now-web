@@ -1,0 +1,13 @@
+.hero {
+    top: 0px;
+    left: 0px;
+    height: 75vh;
+    width: 100%;
+    position: absolute;
+    min-width: 1200px;
+    z-index: 1;
+    background: url('https://fly.pl/cdn/photo/assets/uploads/full/2018/04/Malediwy-pla%C5%BCa-w-luksusowym-resorcie.jpg') no-repeat center center/cover;
+    /* background-image: url('https://lp-cms-production.imgix.net/2020-11/500pxRF_29805039.jpg?auto=format&q=40&ar=16%3A9&fit=crop');
+    background-repeat: no-repeat;
+    background-size: cover; */
+}

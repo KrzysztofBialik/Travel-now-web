@@ -1,0 +1,63 @@
+.starter-page-wrapper {
+    min-height: 100%;
+    position: relative;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    flex-direction: row;
+    min-width: 1200px;
+    margin-bottom: 50px;
+}
+
+.wrapper {
+    top: 0;
+    left: 0;
+    height: 50vh;
+    width: 100%;
+    min-width: 1200px;
+    margin-bottom: 20vh;
+}
+
+.hero {
+    background-color: var(--overlay);
+    color: #fff;
+    height: 70vh;
+    width: 100%;
+    position: relative;
+    min-width: 1200px;
+}
+
+.hero:before {
+    content: '';
+    background: url('https: //i.wakacje.pl/no-index/hotel/malediwy/adaaran-club-rannalhi-826629726-original.jpg') no-repeat center center/cover;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+.hero .content {
+    height: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 1100px;
+    margin: auto;
+    padding: 1rem;
+}
+
+.starter-page-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    align-self: center;
+    flex-direction: row;
+    min-width: 1200px;
+    position: absolute;
+}
