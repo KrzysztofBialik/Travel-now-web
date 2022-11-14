@@ -3,19 +3,16 @@ import { Button, DialogActions, DialogContent } from '@mui/material';
 import { Dialog } from '@mui/material';
 import { DialogTitle } from '@mui/material';
 // import { Calendar } from 'react-date-range';
-import { DateRangePicker } from 'react-date-range';
 import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
-import { addDays } from 'date-fns';
+import { addDays, daysInWeek } from 'date-fns';
+import subDays from 'date-fns/subDays';
 import { Box } from '@mui/system';
+import { useEffect } from 'react';
 
 
-export const DateRangePickerDialog = ({ open, onClose }) => {
-
-    const handleSelect = (date) => {
-        console.log(date); // native Date object
-    };
+export const DateRangePickerDialog = ({ open, onClose, initialRange, rangeChange }) => {
 
     const [range, setRange] = useState([
         {
@@ -25,15 +22,50 @@ export const DateRangePickerDialog = ({ open, onClose }) => {
         }
     ]);
 
-
-    const handleSelectRange = (ranges) => {
-        {
-            //   selection: {
-            //     startDate: [native Date Object],
-            //     endDate: [native Date Object],
-            //   }
+    useEffect(() => {
+        console.log("initialRange:");
+        console.log(initialRange);
+        console.log("range:");
+        console.log(range);
+        if (initialRange[0].startDate === null) {
+            range[0].startDate = new Date();
+            range[0].endDate = new Date();
         }
+    }, [open])
+
+    // const [state, setState] = useState({
+    //     selection1: {
+    //         startDate: addDays(new Date(), 1),
+    //         endDate: null,
+    //         key: 'selection1'
+    //     },
+    //     selection2: {
+    //         startDate: addDays(new Date(), 4),
+    //         endDate: addDays(new Date(), 8),
+    //         key: 'selection2'
+    //     },
+    //     selection3: {
+    //         startDate: addDays(new Date(), 8),
+    //         endDate: addDays(new Date(), 10),
+    //         key: 'selection3',
+    //         autoFocus: false
+    //     }
+    // });
+
+    const handleSelectRange = () => {
+        rangeChange(range);
+        // rangeChange(range[0].startDate, range[0].endDate);
+        onClose();
     };
+
+    const closeAction = () => {
+        // console.log(initialRange);
+        // if (initialRange[0].startDate === null) {
+        //     range[0].startDate = null;
+        //     range[0].endDate = null;
+        // }
+        onClose();
+    }
 
     return (
         <Dialog
@@ -44,13 +76,9 @@ export const DateRangePickerDialog = ({ open, onClose }) => {
                 alignItems: "center"
             }}
             open={open}
-            onClose={onClose}
+            onClose={closeAction}
         >
             <DialogTitle sx={{ backgroundColor: "primary.main" }}>Select dates</DialogTitle>
-            {/* <Calendar
-                date={new Date()}
-                onChange={handleSelect}
-            /> */}
             <DialogContent sx={{ p: 0 }}>
                 <Box sx={{
                     display: "flex",
@@ -61,18 +89,38 @@ export const DateRangePickerDialog = ({ open, onClose }) => {
                 }}>
                     <DateRange
                         ranges={range}
-                        onChange={handleSelectRange}
+                        // ranges={(initialRange.startDate === null) ? [{ startDate: new Date(), endDate: new Date() }] : range}
+                        onChange={(item) => setRange([item.selection])}
+                        months={1}
                         weekStartsOn={1}
+                        minDate={subDays(new Date(), 1)}
                         editableDateInputs={true}
-                        moveRangeOnFirstSelection={true}
+                        moveRangeOnFirstSelection={false}
                         direction="horizontal"
-                    // className='calendarElement'
+                        className='calendarElement'
+                        showSelectionPreview={true}
+                        showPreview={true}
+                        rangeColors={["#2ab7ca"]}
+                        color={"#2ab7ca"}
+                        fixedHeight={true}
+                        dateDisplayFormat={"dd.MM.yyyy"}
+                        startDatePlaceholder="Start date"
+                        endDatePlaceholder="End date"
+                    // shownDate={new Date()}
+                    // preview={(range[0].startDate !== null && range[0].endDate !== null) ?
+                    //     { startDate: range[0].startDate, endDate: range[0].endDate } :
+                    //     { startDate: new Date(), endDate: new Date() }
+                    // }
                     />
+                    {/* <DateRange
+                        onChange={item => setState({ ...state, ...item })}
+                        ranges={[state.selection1, state.selection2, state.selection3]}
+                    /> */}
                 </Box>
             </DialogContent>
             <DialogActions>
-                <Button>Cancel</Button>
-                <Button>Add</Button>
+                <Button onClick={closeAction}>Cancel</Button>
+                <Button variant="contained" sx={{ color: "#FFFFFF" }} onClick={handleSelectRange}>Add</Button>
             </DialogActions>
         </Dialog >
     )

@@ -10,13 +10,14 @@ import { DialogTitle } from '@mui/material';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 
-export const DeleteDatesDialog = ({ open, onClose }) => {
+export const DeleteDatesDialog = ({ open, onClose, deleteDates }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
     const handleSuccessClose = () => {
         setSuccessToastOpen(true);
+        deleteDates();
         onClose();
     };
 

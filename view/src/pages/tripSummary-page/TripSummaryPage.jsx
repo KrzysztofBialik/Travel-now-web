@@ -5,8 +5,15 @@ import { Typography } from '@mui/material';
 import { Card } from '@mui/material';
 import { Button } from '@mui/material';
 import { Grid } from '@mui/material';
+import { DialogActions, DialogContent } from '@mui/material';
+import { Dialog } from '@mui/material';
+import { DialogTitle } from '@mui/material';
+import { DateRange } from 'react-date-range';
+import 'react-date-range/dist/styles.css';
+import 'react-date-range/dist/theme/default.css';
 import { InputAdornment } from '@mui/material';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
+import format from 'date-fns/format';
 
 import { AccommodationCard } from '../../components/accommodations/accommodationCard/AccommodationCard';
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
@@ -44,31 +51,29 @@ export const TripSummaryPage = () => {
     const [deleteAccommodationDialogOpen, setDeleteAccommodationDialogOpen] = useState(false);
     const [dateRangePickerDialogOpen, setDateRangePickerDialogOpen] = useState(false);
 
-    const [tripDates, setTripDates] = useState("18.11.2022 - 20.11.2022");
+    // const [tripDates, setTripDates] = useState("2022.11.18 - 2022.11.20");
 
-    // const handleSelect = (date) => {
-    //     console.log(date); // native Date object
-    // };
+    const [range, setRange] = useState([
+        {
+            startDate: new Date(),
+            endDate: new Date(),
+            key: 'selection',
+        }
+    ]);
 
-    // const selectionRange = {
-    //     startDate: new Date(),
-    //     endDate: new Date(),
-    //     key: 'selection',
-    // };
-
-    // const handleSelectRange = (ranges) => {
-    //     console.log(ranges);
-    //     // {
-    //     //   selection: {
-    //     //     startDate: [native Date Object],
-    //     //     endDate: [native Date Object],
-    //     //   }
-    //     // }
-    // };
+    const handleRangesChange = (ranges) => {
+        setRange(ranges);
+    };
 
     const deleteDatesAction = () => {
         setDeleteDatesDialogOpen(true);
     };
+
+    const deleteDates = () => {
+        // range[0].startDate = null;
+        // range[0].endDate = null;
+        setRange([{ startDate: null, endDate: null }])
+    }
 
     const deleteAccommodationAction = () => {
         setDeleteAccommodationDialogOpen(true);
@@ -132,8 +137,11 @@ export const TripSummaryPage = () => {
                         {/*-----------------------------------sekcja tabel-----------------------------------*/}
                         <Grid container item xs={12} spacing={10}>
                             {/*------------------------------------trip dates------------------------------------*/}
-                            <DeleteDatesDialog open={deleteDatesDialogOpen} onClose={() => setDeleteDatesDialogOpen(false)} />
-                            <DateRangePickerDialog open={dateRangePickerDialogOpen} onClose={() => setDateRangePickerDialogOpen(false)} />
+                            <DeleteDatesDialog open={deleteDatesDialogOpen} onClose={() => setDeleteDatesDialogOpen(false)} deleteDates={deleteDates} />
+                            <DateRangePickerDialog open={dateRangePickerDialogOpen}
+                                onClose={() => setDateRangePickerDialogOpen(false)}
+                                initialRange={range}
+                                rangeChange={(ranges) => handleRangesChange(ranges)} />
                             <Grid item xs={6}>
                                 <Card
                                     sx={{
@@ -183,41 +191,15 @@ export const TripSummaryPage = () => {
                                         margin: 2,
                                         minHeight: "200px"
                                     }}>
-                                        {/* <Card
-                                            sx={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                justifyContent: "center",
-                                                alignItems: "center"
-                                                // pl: "10%",
-                                                // border: "2px solid black"
-                                            }}
-                                        // elevation={4}
-                                        >
-                                            <Calendar
-                                                date={new Date()}
-                                                onChange={handleSelect}
-                                            />
-                                            <DateRangePicker
-                                                ranges={[selectionRange]}
-                                                onChange={handleSelectRange}
-                                            />
-                                            <Typography variant="h4" sx={{ pt: "20px", pb: "10px" }}>
-                                                Start date: {0 === 0 ? "13.02.2023" : "No date yet"}
-                                            </Typography>
-                                            <Typography variant="h4" sx={{ pt: "10px", pb: "20px" }}>
-                                                End date: {0 === 0 ? "20.02.2023" : "No date yet"}
-                                            </Typography>
-                                        </Card> */}
                                         <TextField
-                                            sx={{ width: "50%" }}
+                                            sx={{ width: "50%", minWidth: "240px" }}
                                             type='string'
                                             margin="normal"
                                             step='any'
                                             name='dates'
                                             label='Dates'
                                             variant="outlined"
-                                            defaultValue={tripDates}
+                                            // defaultValue={tripDates}
                                             InputProps={{
                                                 startAdornment: (
                                                     <InputAdornment position="start">
@@ -227,7 +209,10 @@ export const TripSummaryPage = () => {
                                             }}
                                             helperText="Add dates here or choose one of the ranges from the optimized section."
                                             onClick={() => setDateRangePickerDialogOpen(true)}
-                                        // value={link.value}
+                                            value={(range[0].startDate !== null && range[0].endDate !== null) ?
+                                                `${format(range[0].startDate, "dd.MM.yyyy")} - ${format(range[0].endDate, "dd.MM.yyyy")}`
+                                                : "No dates selected"
+                                            }
                                         />
                                         <Box
                                             sx={{

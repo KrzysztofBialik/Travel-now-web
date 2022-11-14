@@ -6,7 +6,7 @@ export const URL = '/media';
 export const NAME = "Media";
 
 export const MediaPage = () => {
-    const { isLoaded } = useLoadScript({ googleMapsApiKey: "AIzaSyB_LnZb_xzPsA5pmGVVoPTs3RNbO-9bCKo" });
+    const { isLoaded } = useLoadScript({ googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY });
     return (
         <Box sx={{ height: "100vh", width: "100%" }}>
             <GoogleMap
