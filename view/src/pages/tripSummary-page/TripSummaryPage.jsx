@@ -5,10 +5,6 @@ import { Typography } from '@mui/material';
 import { Card } from '@mui/material';
 import { Button } from '@mui/material';
 import { Grid } from '@mui/material';
-import { DialogActions, DialogContent } from '@mui/material';
-import { Dialog } from '@mui/material';
-import { DialogTitle } from '@mui/material';
-import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { InputAdornment } from '@mui/material';
@@ -24,15 +20,9 @@ import { currentTripButtonsData } from '../../components/navbars/navigationNavba
 import { pastTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DateRangePickerDialog } from '../../components/availability/DateRangePickerDialog';
-
 import { accommodationsData } from '../accommodation-pages/AccommodationsPage';
-
 import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
 
-// import { Calendar } from 'react-date-range';
-// import { DateRangePicker } from 'react-date-range';
-// import 'react-date-range/dist/styles.css';
-// import 'react-date-range/dist/theme/default.css';
 
 import "./TripSummaryPage.css"
 import { Link } from 'react-router-dom';
@@ -50,9 +40,6 @@ export const TripSummaryPage = () => {
     const [deleteDatesDialogOpen, setDeleteDatesDialogOpen] = useState(false);
     const [deleteAccommodationDialogOpen, setDeleteAccommodationDialogOpen] = useState(false);
     const [dateRangePickerDialogOpen, setDateRangePickerDialogOpen] = useState(false);
-
-    // const [tripDates, setTripDates] = useState("2022.11.18 - 2022.11.20");
-
     const [range, setRange] = useState([
         {
             startDate: new Date(),
@@ -70,8 +57,6 @@ export const TripSummaryPage = () => {
     };
 
     const deleteDates = () => {
-        // range[0].startDate = null;
-        // range[0].endDate = null;
         setRange([{ startDate: null, endDate: null }])
     }
 
@@ -154,7 +139,7 @@ export const TripSummaryPage = () => {
                                         backgroundClip: "border-box",
                                         minHeight: "300px",
                                         minWidth: "500px",
-                                        // border: "3px solid rgb(85, 204, 217)"
+                                        borderRadius: "10px",
                                     }}
                                     elevation={16}
                                 >
@@ -228,6 +213,8 @@ export const TripSummaryPage = () => {
                                                 <Button variant="contained"
                                                     sx={{
                                                         backgroundColor: "primary.main",
+                                                        color: "#FFFFFF",
+                                                        borderRadius: "20px",
                                                         '&:hover': { backgroundColor: "primary.light" }
                                                     }}
                                                 >
@@ -251,6 +238,7 @@ export const TripSummaryPage = () => {
                                         position: "relative",
                                         overflowWrap: "break-word",
                                         backgroundClip: "border-box",
+                                        borderRadius: "10px",
                                         boxShadow: "rgb(0 0 0 / 10 %) 0rem 0.25rem 0.375rem - 0.0625rem, rgb(0 0 0 / 6 %) 0rem 0.125rem 0.25rem -0.0625rem"
                                     }}
                                     elevation={16}
@@ -262,7 +250,6 @@ export const TripSummaryPage = () => {
                                             py: 3,
                                             px: 2,
                                             // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
-
                                             backgroundColor: "primary.main",
                                             color: "#000000",
                                             borderRadius: "0.5rem",
@@ -317,6 +304,7 @@ export const TripSummaryPage = () => {
                                         backgroundClip: "border-box",
                                         minHeight: "300px",
                                         minWidth: "500px",
+                                        borderRadius: "10px"
                                     }}
                                     elevation={16}
                                 >
@@ -385,6 +373,8 @@ export const TripSummaryPage = () => {
                                                 <Button variant="contained"
                                                     sx={{
                                                         backgroundColor: "primary.main",
+                                                        color: "#FFFFFF",
+                                                        borderRadius: "20px",
                                                         '&:hover': { backgroundColor: "primary.light" }
                                                     }}>
                                                     View more
@@ -408,6 +398,7 @@ export const TripSummaryPage = () => {
                                     position: "relative",
                                     overflowWrap: "break-word",
                                     backgroundClip: "border-box",
+                                    borderRadius: "10px"
                                 }}
                                 elevation={16}
                             >
@@ -464,6 +455,8 @@ export const TripSummaryPage = () => {
                                             <Button variant="contained"
                                                 sx={{
                                                     backgroundColor: "primary.main",
+                                                    color: "#FFFFFF",
+                                                    borderRadius: "20px",
                                                     '&:hover': { backgroundColor: "primary.light" }
                                                 }}>
                                                 View more
@@ -483,7 +476,9 @@ export const TripSummaryPage = () => {
                                 <Button variant="contained"
                                     sx={{
                                         fontSize: "28px",
+                                        color: "#FFFFFF",
                                         backgroundColor: "primary.main",
+                                        borderRadius: "20px",
                                         '&:hover': { backgroundColor: "primary.light" }
                                     }}>
                                     Begin trip

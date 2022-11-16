@@ -6,29 +6,32 @@ import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
-
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 
-export const DeleteAccommodationDialog = ({ open, onClose }) => {
+export const DeleteAvailabilityDialog = ({ open, onClose, deleteAvailability }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
     const handleSuccessClose = () => {
         setSuccessToastOpen(true);
+        deleteAvailability();
         onClose();
     };
 
-    // const handleErrorClose = () => {
-    //     setErrorToastOpen(true);
-    //     onClose();
-    // };
-
     return (
         <div>
-            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully deleted." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <SuccessToast
+                open={successToastOpen}
+                onClose={() => setSuccessToastOpen(false)}
+                message="Availability deleted successfully."
+            />
+            <ErrorToast
+                open={errorToastOpen}
+                onClose={() => setErrorToastOpen(false)}
+                message="Ups! Something went wrong. Try again."
+            />
 
             <Dialog
                 open={open}
@@ -37,7 +40,7 @@ export const DeleteAccommodationDialog = ({ open, onClose }) => {
                 <DialogTitle>Delete</DialogTitle>
                 <DialogContent>
                     <DialogContentText sx={{ mb: "10px" }}>
-                        If you confirm, this accommodation will no longer be selected.
+                        If you confirm, dates will no longer be selected.
                     </DialogContentText>
                     <DialogActions>
                         <Button

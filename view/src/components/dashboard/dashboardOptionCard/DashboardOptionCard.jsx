@@ -12,6 +12,7 @@ export const DashboardOptionCard = ({ icon, title, description, route }) => {
             <Card
                 sx={{
                     boxShadow: 2,
+                    borderRadius: "10px",
                     transition: "transform 0.15s ease-in-out",
                     minHeight: "238px",
                     display: "flex",

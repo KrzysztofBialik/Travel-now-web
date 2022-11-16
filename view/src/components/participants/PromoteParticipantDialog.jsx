@@ -40,11 +40,17 @@ export const PromoteParticipantDialog = ({ open, onClose }) => {
                         If you confirm, this user will have coordinator status.
                     </DialogContentText>
                     <DialogActions>
-                        <Button variant="outlined" onClick={handleErrorClose}>Cancel</Button>
+                        <Button
+                            variant="outlined"
+                            onClick={handleErrorClose}
+                            sx={{ borderRadius: "20px" }}
+                        >
+                            Cancel
+                        </Button>
                         <Button
                             variant="contained"
                             onClick={handleSuccessClose}
-                            sx={{ color: "#FFFFFF" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                         >
                             Confirm
                         </Button>

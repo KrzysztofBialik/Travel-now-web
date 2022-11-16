@@ -27,24 +27,30 @@ export const RemoveParticipantDialog = ({ open, onClose }) => {
 
     return (
         <div>
-            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully deleted." />
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Participant successfully removed from group." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
 
             <Dialog
                 open={open}
                 onClose={onClose}
             >
-                <DialogTitle>Remove confirmation</DialogTitle>
+                <DialogTitle>Remove</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
                         If you confirm, this participant will be removed from the trip group.
                     </DialogContentText>
                     <DialogActions>
-                        <Button variant="outlined" onClick={handleErrorClose}>Cancel</Button>
+                        <Button
+                            variant="outlined"
+                            onClick={handleErrorClose}
+                            sx={{ borderRadius: "20px" }}
+                        >
+                            Cancel
+                        </Button>
                         <Button
                             variant="contained"
                             onClick={handleSuccessClose}
-                            sx={{ color: "#FFFFFF" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                         >
                             Confirm
                         </Button>

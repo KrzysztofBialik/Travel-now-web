@@ -10,6 +10,7 @@ export const DestinationCard = ({ size, content, text }) => {
         <Grid item xs={size}>
             <Card
                 sx={{
+                    borderRadius: "10px",
                     transition: "transform 0.15s ease-in-out",
                     "&:hover": { transform: "scale3d(1.05, 1.05, 1)" },
                     height: '300px',

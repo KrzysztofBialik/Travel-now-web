@@ -9,16 +9,13 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import StarIcon from '@mui/icons-material/Star';
-import {
-    GridToolbarContainer,
-    GridToolbarColumnsButton,
-    GridToolbarFilterButton,
-    // GridToolbarExport,
-    GridToolbarDensitySelector,
-} from '@mui/x-data-grid';
-
+import { GridToolbarContainer } from '@mui/x-data-grid';
+import { GridToolbarColumnsButton } from '@mui/x-data-grid';
+import { GridToolbarFilterButton } from '@mui/x-data-grid';
+import { GridToolbarDensitySelector, } from '@mui/x-data-grid';
 import { RemoveParticipantDialog } from './RemoveParticipantDialog';
 import { PromoteParticipantDialog } from './PromoteParticipantDialog';
+import { ParticipantsAvailabilityDialog } from '../availability/ParticipantsAvailabilityDialog';
 
 
 export const usersData = [
@@ -45,7 +42,7 @@ export const usersData = [
         name: "Krzysztof",
         surname: "Bialik",
         mail: "krzychu77@gmail.com",
-        username: "krzychu77",
+        username: "Krzychu77",
         phoneNumber: 333333333,
         role: "participant"
     },
@@ -72,7 +69,7 @@ export const usersData = [
         name: "Krzysztof",
         surname: "Bialik",
         mail: "krzychu77@gmail.com",
-        username: "krzychu77",
+        username: "Krzychu77",
         phoneNumber: 333333333,
         role: "participant"
     },
@@ -99,7 +96,7 @@ export const usersData = [
         name: "Krzysztof",
         surname: "Bialik",
         mail: "krzychu77@gmail.com",
-        username: "krzychu77",
+        username: "Krzychu77",
         phoneNumber: 333333333,
         role: "participant"
     },
@@ -135,7 +132,7 @@ export const usersData = [
         name: "Krzysztof",
         surname: "Bialik",
         mail: "krzychu77@gmail.com",
-        username: "krzychu77",
+        username: "Krzychu77",
         phoneNumber: 333333333,
         role: "participant"
     },
@@ -150,23 +147,83 @@ export const usersData = [
     },
 ];
 
+export const availabilities = [
+    {
+        id: 1,
+        startDate: new Date(2022, 10, 21),
+        endDate: new Date(2022, 10, 27),
+        user: "BoBa",
+        disabled: true
+    },
+    {
+        id: 2,
+        startDate: new Date(2022, 11, 5),
+        endDate: new Date(2022, 11, 9),
+        user: "BoBa",
+        disabled: true
+    },
+    {
+        id: 3,
+        startDate: new Date(2022, 11, 30),
+        endDate: new Date(2023, 0, 4),
+        user: "Piterm33",
+        disabled: true
+    },
+    {
+        id: 4,
+        startDate: new Date(2023, 0, 6),
+        endDate: new Date(2023, 0, 8),
+        user: "Piterm33",
+        disabled: true
+    },
+    {
+        id: 5,
+        startDate: new Date(2022, 11, 14),
+        endDate: new Date(2022, 11, 18),
+        user: "Piterm33",
+        disabled: true
+    },
+    {
+        id: 6,
+        startDate: new Date(2022, 11, 14),
+        endDate: new Date(2022, 11, 18),
+        user: "Krzychu77",
+        disabled: true
+    },
+    {
+        id: 7,
+        startDate: new Date(2023, 0, 5),
+        endDate: new Date(2023, 0, 12),
+        user: "Krzychu77",
+        disabled: true
+    },
+    {
+        id: 8,
+        startDate: new Date(2022, 11, 10),
+        endDate: new Date(2022, 11, 30),
+        user: "Olisadebe",
+        disabled: true
+    }
+];
+
 function CustomToolbar() {
     return (
         <GridToolbarContainer>
             <GridToolbarColumnsButton />
             <GridToolbarFilterButton />
             <GridToolbarDensitySelector />
-            {/* <GridToolbarExport /> */}
         </GridToolbarContainer>
     );
-}
+};
 
 
 export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
-
     const navigate = useNavigate();
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
     const [promoteDialogOpen, setPromoteDialogOpen] = useState(false);
+    const [participantsAvailabilityDialogOpen, setParticipantsAvailabilityDialogOpen] = useState(false);
+    const [usersAvailability, setUsersAvailability] = useState([]);
+    const [username, setUsername] = useState("");
 
     const removeAction = () => {
         setRemoveDialogOpen(true);
@@ -176,6 +233,11 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
         setPromoteDialogOpen(true);
     };
 
+    const checkParticipantsAvailability = ({ username, userAvailability }) => {
+        setUsersAvailability(userAvailability);
+        setUsername(username);
+        setParticipantsAvailabilityDialogOpen(true);
+    }
 
     const participantColumn = [
         {
@@ -220,6 +282,9 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
                 </strong>
             ), type: 'actions', flex: 1, hideable: true, headerAlign: 'center', minWidth: 100,
             getActions: (params) => {
+                const username = params.row.username;
+                const userAvailability = availabilities.filter(availability => (availability.user === params.row.username))
+
                 if (isCoordinator) {
                     if (groupStage === 1) {
                         return [
@@ -232,7 +297,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
                             <GridActionsCellItem
                                 icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
                                 label="Check availability"
-                                onClick={() => { navigate("/availability") }}
+                                onClick={() => checkParticipantsAvailability({ username, userAvailability })}
                                 showInMenu
                             />,
                             <GridActionsCellItem
@@ -266,7 +331,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
                             <GridActionsCellItem
                                 icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
                                 label="Check availability"
-                                onClick={() => { navigate("/availability") }}
+                                onClick={() => checkParticipantsAvailability({ username, userAvailability })}
                                 showInMenu
                             />
                         ];
@@ -284,51 +349,55 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
                 }
             },
         },
-    ]
+    ];
 
 
     return (
-        <Box
-            sx={{
-                width: "100%",
-                height: "100%",
-                // '& .super-app-theme--header': {
-                //     fontSize: "16px",
-                //     fontWeight: "900"
-                // },
-            }}
-        >
-            <RemoveParticipantDialog
-                open={removeDialogOpen}
-                onClose={() => { setRemoveDialogOpen(false) }}
-            />
-            <PromoteParticipantDialog
-                open={promoteDialogOpen}
-                onClose={() => { setPromoteDialogOpen(false) }}
-            />
-            <DataGrid
+        <>
+            <Box
                 sx={{
-                    mb: "100px",
-                    boxShadow: 5,
-                    // border: 2,
-                    // borderColor: 'primary.main',
-                    px: 2,
-                    '& .MuiDataGrid-cell:hover': {
-                        color: 'primary.main',
-                    },
-                    [`& .${gridClasses.cell}`]: {
-                        py: 1,
-                    },
+                    width: "100%",
+                    height: "100%",
                 }}
-                getRowHeight={() => 'auto'}
-                autoHeight
-                columns={participantColumn}
-                rows={usersData}
-                hideFooter
-                components={{
-                    Toolbar: CustomToolbar,
-                }}
-            />
-        </Box>
+            >
+                <RemoveParticipantDialog
+                    open={removeDialogOpen}
+                    onClose={() => { setRemoveDialogOpen(false) }}
+                />
+                <PromoteParticipantDialog
+                    open={promoteDialogOpen}
+                    onClose={() => { setPromoteDialogOpen(false) }}
+                />
+                <ParticipantsAvailabilityDialog
+                    open={participantsAvailabilityDialogOpen}
+                    onClose={() => { setParticipantsAvailabilityDialogOpen(false) }}
+                    usersAvailability={usersAvailability}
+                    user={username}
+                />
+                <DataGrid
+                    sx={{
+                        mb: "100px",
+                        boxShadow: 5,
+                        // border: 2,
+                        // borderColor: 'primary.main',
+                        px: 2,
+                        '& .MuiDataGrid-cell:hover': {
+                            color: 'primary.main',
+                        },
+                        [`& .${gridClasses.cell}`]: {
+                            py: 1,
+                        },
+                    }}
+                    getRowHeight={() => 'auto'}
+                    autoHeight
+                    columns={participantColumn}
+                    rows={usersData}
+                    hideFooter
+                    components={{
+                        Toolbar: CustomToolbar,
+                    }}
+                />
+            </Box>
+        </>
     );
 };

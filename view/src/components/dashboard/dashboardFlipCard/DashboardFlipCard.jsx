@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, Card } from '@mui/material';
 import { Typography } from '@mui/material';
 import { Button } from '@mui/material';
 
@@ -9,7 +9,7 @@ import './DashboardFlipCard.css';
 export const DashboardFlipCard = ({ frontBg, backBg, title, description, action }) => {
 
     return (
-        <Box className="flip-card">
+        <Card className="flip-card" sx={{ borderRadius: "10px" }} elevation={0}>
             <Box className="flip-card-inner">
                 <Box className="flip-card-front"
                     sx={{
@@ -54,7 +54,8 @@ export const DashboardFlipCard = ({ frontBg, backBg, title, description, action 
                                     sx={{
                                         color: "#000000",
                                         backgroundColor: "secondary.main",
-                                        "&:hover": { backgroundColor: "secondary.dark", boxShadow: 5 }
+                                        borderRadius: "20px",
+                                        "&:hover": { backgroundColor: "secondary.dark", boxShadow: 5, color: "#000000" }
                                     }}
                                 >
                                     {action.label}
@@ -64,6 +65,6 @@ export const DashboardFlipCard = ({ frontBg, backBg, title, description, action 
                     </Box>
                 </Box>
             </Box>
-        </Box>
+        </Card>
     );
 };

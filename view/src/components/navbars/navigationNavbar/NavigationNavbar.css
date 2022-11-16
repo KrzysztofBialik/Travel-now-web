@@ -58,6 +58,7 @@ header {
     background-color: transparent;
     cursor: pointer;
     width: 100%;
+    border-radius: 20px;
 }
 
 .menu-items .nav-link {

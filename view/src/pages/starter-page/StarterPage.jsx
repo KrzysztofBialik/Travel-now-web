@@ -25,7 +25,7 @@ export const StarterPage = () => {
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    borderRadius: '20px',
+                    borderRadius: '10px',
                     minWidth: '1200px'
                 }}
                 elevation={8}

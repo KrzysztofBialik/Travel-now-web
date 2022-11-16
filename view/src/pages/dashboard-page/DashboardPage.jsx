@@ -7,7 +7,6 @@ import { Divider } from '@mui/material';
 import { Button } from '@mui/material';
 
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar.jsx';
-import { SimpleNavbar } from '../../components/navbars/SimpleNavbar.jsx';
 import { CreateTripDialog } from '../../components/dashboard/CreateTripDialog.jsx';
 import { FutureTrips } from '../../components/dashboard/tripsList/futureTrips/FutureTrips.jsx';
 import { CurrentTrips } from '../../components/dashboard/tripsList/currentTrips/CurrentTrips.jsx';
@@ -113,6 +112,7 @@ export const DashboardPage = () => {
                             <Button
                                 variant="contained"
                                 onClick={() => setCreateTripDialogOpen(true)}
+                                sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                             >
                                 Start planning
                             </Button>

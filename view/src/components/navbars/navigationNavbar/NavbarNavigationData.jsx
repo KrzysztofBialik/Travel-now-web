@@ -3,6 +3,18 @@ export const futureTripButtonsData = [
         id: 1,
         name: "Availability",
         link: "/availability",
+        submenu: [
+            {
+                id: 11,
+                name: "My Availability",
+                link: "/availability"
+            },
+            {
+                id: 12,
+                name: "Optimized dates",
+                link: "/availability/optimizedDates"
+            }
+        ]
     },
     {
         id: 2,

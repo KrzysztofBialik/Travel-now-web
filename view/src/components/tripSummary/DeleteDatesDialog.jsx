@@ -21,11 +21,6 @@ export const DeleteDatesDialog = ({ open, onClose, deleteDates }) => {
         onClose();
     };
 
-    // const handleErrorClose = () => {
-    //     setErrorToastOpen(true);
-    //     onClose();
-    // };
-
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Dates successfully deleted." />
@@ -41,11 +36,17 @@ export const DeleteDatesDialog = ({ open, onClose, deleteDates }) => {
                         If you confirm, dates will no longer be selected.
                     </DialogContentText>
                     <DialogActions>
-                        <Button variant="outlined" onClick={onClose}>Cancel</Button>
+                        <Button
+                            variant="outlined"
+                            onClick={onClose}
+                            sx={{ borderRadius: "20px" }}
+                        >
+                            Cancel
+                        </Button>
                         <Button
                             variant="contained"
                             onClick={handleSuccessClose}
-                            sx={{ color: "#FFFFFF" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                         >
                             Confirm
                         </Button>

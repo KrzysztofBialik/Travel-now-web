@@ -212,6 +212,7 @@ export const MyAccommodationsPage = () => {
                             }}>
                                 <Button
                                     variant="contained"
+                                    sx={{ borderRadius: "20px", color: "#FFFFFF" }}
                                     onClick={() => setAddAccommodationDialogOpen(true)}
                                 >
                                     Add accommodation

@@ -369,12 +369,21 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                         </FormHelperText>
 
                         <DialogActions>
-                            <Button onClick={() => close()}>Cancel</Button>
+                            <Button
+                                variant="outlined"
+                                sx={{ borderRadius: "20px" }}
+                                onClick={() => close()}
+                            >
+                                Cancel
+                            </Button>
                             <Button
                                 type="submit"
                                 variant="contained"
                                 color="primary"
-                            >Create trip</Button>
+                                sx={{ borderRadius: "20px" }}
+                            >
+                                Create trip
+                            </Button>
                             {/* <Button
                                 type="button"
                                 onClick={() => {

@@ -4,8 +4,6 @@ import { Card, CardActions } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Box } from "@mui/material";
 import { Button } from "@mui/material";
-import { Grid } from "@mui/material";
-import Stack from '@mui/material/Stack';
 import { Menu } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import CardHeader from '@mui/material/CardHeader';
@@ -51,10 +49,6 @@ const ExpandMore = styled((props) => {
 }));
 
 export const AccommodationCard = ({ accommodationData, canModify, selected }) => {
-
-    function slideTransition(props) {
-        return <Slide {...props} direction="left" />;
-    }
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [numOfVotes, setNumOfVotes] = useState(accommodationData.givenVotes);
@@ -286,7 +280,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
                 }}
             />
             <Card
-                sx={{ height: "100%" }}
+                sx={{ height: "100%", borderRadius: "10px" }}
                 elevation={10}
             >
                 <CardHeader

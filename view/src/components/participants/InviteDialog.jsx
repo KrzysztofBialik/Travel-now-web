@@ -5,7 +5,6 @@ import { TextField } from '@mui/material';
 import { Dialog } from '@mui/material';
 import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
-import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
 import { InfoToast } from '../toasts/InfoToast';
 
@@ -47,7 +46,7 @@ export const InviteDialog = ({ open, onClose }) => {
                     <DialogActions>
                         <Button
                             variant="contained"
-                            sx={{ color: "#FFFFFF" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                             onClick={copy}
                         >
                             Copy
