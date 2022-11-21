@@ -5,6 +5,7 @@ import { CardActions } from "@mui/material";
 import { Icon } from "@mui/material";
 import { Box } from "@mui/material";
 import { Button } from "@mui/material";
+import { Typography } from "@mui/material";
 import { CardHeader } from '@mui/material';
 import { CardContent } from '@mui/material';
 import { Collapse } from '@mui/material';
@@ -13,6 +14,8 @@ import AddIcon from '@mui/icons-material/Add';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DateRange } from 'react-date-range';
 import { eachDayOfInterval } from "date-fns";
+import { isWeekend } from "date-fns";
+import { format } from "date-fns";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { AvailabilityTable } from "../../components/availability/AvailabilityTable";
@@ -73,6 +76,21 @@ export const AvailabilityPage = () => {
 
     const restrictedDays = availabilities.flatMap(availability =>
         eachDayOfInterval({ start: availability.startDate, end: availability.endDate }));
+
+    function customDayContent(day) {
+        var fontWeight = 100;
+        var color = "#000000";
+        if (isWeekend(day)) {
+            fontWeight = 700;
+            color = "#ffc928"
+        }
+        return (
+            <div>
+                {/* <span>{format(day, "d")}</span> */}
+                <Typography sx={{ color: { color }, fontWeight: { fontWeight }, fontSize: "12px" }}>{format(day, "d")}</Typography>
+            </div>
+        )
+    }
 
     return (
         <Box sx={{
@@ -175,6 +193,7 @@ export const AvailabilityPage = () => {
                                 showDateDisplay={false}
                                 showMonthAndYearPickers={false}
                                 showPreview={false}
+                                dayContentRenderer={customDayContent}
                             />
                         </Box>
                     </CardContent>

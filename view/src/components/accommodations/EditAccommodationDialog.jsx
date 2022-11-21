@@ -12,22 +12,22 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import InputAdornment from '@mui/material/InputAdornment';
-
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 
 
-export const EditAccommodationDialog = ({ open, onClose, editAccommodation }) => {
+export const EditAccommodationDialog = ({ open, onClose, accommodationData }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
-    const [price, setPrice] = useState("0");
+    const [price, setPrice] = useState(accommodationData.price);
     const [priceError, setPriceError] = useState("Price of accommodation must be a positive number.");
 
     const DESCRIPTION_LIMIT = 250;
-    const [description, setDescription] = useState({ value: "", length: 0 });
-    const [descriptionError, setDescriptionError] = useState(null);
+    const descriptionLength = accommodationData.description.length;
+    const [description, setDescription] = useState({ value: accommodationData.description, length: descriptionLength });
+    const [descriptionError, setDescriptionError] = useState(descriptionLength > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null);
 
     const defaultInputValues = {
         price,
@@ -81,14 +81,17 @@ export const EditAccommodationDialog = ({ open, onClose, editAccommodation }) =>
     const close = () => {
         reset();
         setValues(defaultInputValues);
-        setPrice("0");
+        setPrice(accommodationData.price);
         setPriceError("Price of accommodation must be a positive number.");
-        setDescription({ value: "", length: 0 });
+        setDescription({ value: accommodationData.description, length: descriptionLength });
         setSuccessToastOpen(true);
         onClose();
     }
 
     const handleErrorClose = () => {
+        setPrice(accommodationData.price);
+        setPriceError("Price of accommodation must be a positive number.");
+        setDescription({ value: accommodationData.description, length: descriptionLength });
         setErrorToastOpen(true);
         onClose();
     };
@@ -102,7 +105,7 @@ export const EditAccommodationDialog = ({ open, onClose, editAccommodation }) =>
                 onClose={onClose}
                 aria-labelledby="responsive-dialog-title"
             >
-                <DialogTitle variant="h4">Edit accommodation</DialogTitle>
+                <DialogTitle variant="h4" sx={{ backgroundColor: "primary.main", color: "#FFFFFF", mb: "10px" }}>Edit accommodation</DialogTitle>
                 <DialogContent>
                     <DialogContentText variant="body1" mb="30px">
                         Edit price and description of your accommodation option.
@@ -174,10 +177,16 @@ export const EditAccommodationDialog = ({ open, onClose, editAccommodation }) =>
                         </FormHelperText>
 
                         <DialogActions>
-                            <Button onClick={handleErrorClose}>Cancel</Button>
+                            <Button
+                                varaint="outlined"
+                                onClick={handleErrorClose}
+                            >
+                                Cancel
+                            </Button>
                             <Button
                                 type="submit"
                                 variant="contained"
+                                sx={{ color: "#FFFFFF" }}
                             >
                                 Edit
                             </Button>

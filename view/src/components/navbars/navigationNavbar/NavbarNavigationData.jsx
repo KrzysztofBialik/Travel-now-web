@@ -68,3 +68,22 @@ export const currentTripButtonsData = [
         link: "/media",
     }
 ];
+
+
+export const pastTripButtonsData = [
+    {
+        id: 1,
+        name: "Expenses",
+        link: "/expenses",
+    },
+    {
+        id: 1,
+        name: "Participants",
+        link: "/participants",
+    },
+    {
+        id: 3,
+        name: "Media",
+        link: "/media",
+    }
+];

@@ -247,11 +247,13 @@ export const NavigationNavbar = ({ buttonsData }) => {
                         justifyContent: "space-between",
                         mx: "5%",
                     }}>
-                    <Typography variant="h6" component="div">
-                        <Link to="/dashboard" className="logo">
-                            Travel-now
-                        </Link>
-                    </Typography>
+                    <Box sx={{ display: "flex", flexWrap: "nowrap" }}>
+                        <Typography variant="h6">
+                            <Link to="/dashboard" className="logo">
+                                Travel-now
+                            </Link>
+                        </Typography>
+                    </Box>
                     <Box
                         sx={{
                             display: "flex",

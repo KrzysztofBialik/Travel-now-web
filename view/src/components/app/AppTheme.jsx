@@ -3,11 +3,10 @@ import { createTheme } from "@mui/material";
 
 const MyTheme = createTheme({
     // components: {
-    //     MuiIcon: {
-    //         defaultProps: {
-    //             // Replace the `material-icons` default value.
-    //             baseClassName: 'material-icons-round',
-    //         },
+    // MuiIcon: {
+    //     defaultProps: {
+    //         // Replace the `material-icons` default value.
+    //         baseClassName: 'material-icons-round',
     //     },
     // },
     palette: {

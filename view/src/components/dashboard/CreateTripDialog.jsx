@@ -26,22 +26,22 @@ const currencies = [
     {
         id: 1,
         value: 'USD',
-        label: '$',
+        label: 'USD',
     },
     {
         id: 2,
         value: 'EUR',
-        label: '€',
+        label: 'EUR',
     },
     {
         id: 3,
         value: 'PLN',
-        label: 'zł',
+        label: 'PLN',
     },
     {
         id: 4,
         value: 'JPY',
-        label: '¥',
+        label: 'JPY',
     },
 ];
 
@@ -60,10 +60,10 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
 
     //ewentualnie podmienić, że domyślna to 1
     const [minDays, setMinDays] = useState("0");
-    const [minDaysError, setMinDaysError] = useState("Number of days must be equal or higher than 1.");
+    const [minDaysError, setMinDaysError] = useState("Number of days must be a positive number.");
 
     const [minParticipants, setMinParticipants] = useState("0");
-    const [minParticipantsError, setMinParticipantsError] = useState("Number of participants must be equal or higher than 1.");
+    const [minParticipantsError, setMinParticipantsError] = useState("Number of participants must be a positive number.");
 
     const DESCRIPTION_LIMIT = 250;
     const [description, setDescription] = useState({ value: "", length: 0 });
@@ -267,7 +267,7 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                         />
                         <Box sx={{ display: "flex", justifyContent: "space-between", alignContent: "center" }} >
                             <TextField
-                                sx={{ minWidth: "100px", width: "100px" }}
+                                sx={{ minWidth: "150px", width: "150px" }}
                                 select
                                 margin="normal"
                                 name='currency'
@@ -316,7 +316,7 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                                 onChange={(event) => onMinDaysChange(event.target.value)}
                             />
                             <TextField
-                                sx={{ minWidth: "200px", width: "200px" }}
+                                sx={{ minWidth: "150px", width: "150px" }}
                                 type="number"
                                 autoFocus
                                 margin="normal"

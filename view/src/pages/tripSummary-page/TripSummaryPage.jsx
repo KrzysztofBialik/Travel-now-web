@@ -160,7 +160,7 @@ export const TripSummaryPage = () => {
                                             alignItems: "center"
                                         }}
                                     >
-                                        <Typography variant="h6" color="white" >
+                                        <Typography variant="h6" sx={{ color: "#FFFFFF" }} >
                                             Dates of the trip
                                         </Typography>
                                         <IconButton sx={{ p: 0 }} onClick={deleteDatesAction}>
@@ -256,7 +256,7 @@ export const TripSummaryPage = () => {
                                             boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
                                         }}
                                     >
-                                        <Typography variant="h6" color="white">
+                                        <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
                                             Starting location
                                         </Typography>
                                     </Box>
@@ -325,7 +325,7 @@ export const TripSummaryPage = () => {
                                             alignItems: "center"
                                         }}
                                     >
-                                        <Typography variant="h6" color="white" >
+                                        <Typography variant="h6" sx={{ color: "#FFFFFF" }} >
                                             Accommodation
                                         </Typography>
                                         <IconButton sx={{ p: 0 }} onClick={deleteAccommodationAction}>
@@ -415,7 +415,7 @@ export const TripSummaryPage = () => {
                                         boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
                                     }}
                                 >
-                                    <Typography variant="h6" color="white">
+                                    <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
                                         Participants
                                     </Typography>
                                 </Box>

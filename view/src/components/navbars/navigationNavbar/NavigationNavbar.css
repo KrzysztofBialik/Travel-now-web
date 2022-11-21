@@ -25,7 +25,8 @@ header {
     text-decoration: none;
     font-size: 25px;
     color: inherit;
-    margin-right: 20px;
+    /* margin-right: 20px; */
+    flex-wrap: nowrap;
 }
 
 .menus {

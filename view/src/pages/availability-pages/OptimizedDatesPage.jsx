@@ -7,10 +7,13 @@ import { Button } from "@mui/material";
 import { CardHeader } from '@mui/material';
 import { CardContent } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { Typography } from "@mui/material";
 import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
 import Collapse from '@mui/material/Collapse';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DateRange } from 'react-date-range';
+import isWeekend from "date-fns/isWeekend";
+import format from "date-fns/format";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { OptimizedDatesTable } from "../../components/availability/OptimizedDatesTable";
@@ -69,8 +72,22 @@ export const OptimizedDatesPage = () => {
 
     const optimizeDates = () => {
         // get data
-    }
+    };
 
+    function customDayContent(day) {
+        var fontWeight = 100;
+        var color = "#000000";
+        if (isWeekend(day)) {
+            fontWeight = 700;
+            color = "#2ab7ca"
+        }
+        return (
+            <div>
+                {/* <span>{format(day, "d")}</span> */}
+                <Typography sx={{ color: { color }, fontWeight: { fontWeight }, fontSize: "12px" }}>{format(day, "d")}</Typography>
+            </div>
+        )
+    }
 
     return (
         <Box sx={{
@@ -154,6 +171,7 @@ export const OptimizedDatesPage = () => {
                                 showDateDisplay={false}
                                 showMonthAndYearPickers={false}
                                 showPreview={false}
+                                dayContentRenderer={customDayContent}
                             />
                         </Box>
                     </CardContent>

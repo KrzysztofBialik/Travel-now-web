@@ -13,3 +13,5 @@ export const PARTICLES_MAP = 'https://upload.wikimedia.org/wikipedia/commons/3/3
 
 export const BACKGROUND_ROAD = 'https://lp-cms-production.imgix.net/2020-11/500pxRF_29805039.jpg?auto=format&q=40&ar=16%3A9&fit=crop';
 export const BACKGROUND_DASHBOARD = '"https://photographylife.com/wp-content/uploads/2016/06/Mass.jpg"';
+
+export const LUFTHANSA_LOGO = 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Lufthansa_Logo_%28Crane%29.svg/1200px-Lufthansa_Logo_%28Crane%29.svg.png';

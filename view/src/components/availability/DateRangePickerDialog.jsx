@@ -56,7 +56,7 @@ export const DateRangePickerDialog = ({ open, onClose, initialRange, rangeChange
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    alignItems: "center"
+                    alignItems: "center",
                 }}
                 open={open}
                 onClose={closeAction}
@@ -95,13 +95,13 @@ export const DateRangePickerDialog = ({ open, onClose, initialRange, rangeChange
                 <DialogActions>
                     <Button
                         variant="outlined"
-                        sx={{ borderRadius: "20px" }}
+                        sx={{ borderRadius: "10px", mx: "10px", mb: "10px" }}
                         onClick={closeAction}
                     >
                         Cancel
                     </Button>
                     <Button variant="contained"
-                        sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                        sx={{ color: "#FFFFFF", borderRadius: "10px", ml: "10px", mr: "20px", mb: "10px" }}
                         onClick={handleSelectRange}
                     >
                         Add

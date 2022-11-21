@@ -16,8 +16,8 @@ export const NAME = "Participants";
 
 export const ParticipantsPage = () => {
 
-    const groupStage = 1;
-    const isCoordinator = true;
+    const groupStage = 2;
+    const isCoordinator = false;
 
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
@@ -64,19 +64,19 @@ export const ParticipantsPage = () => {
                         width: "100%",
                         mb: "50px",
                     }}>
-                        {(groupStage === 1 && isCoordinator) ?
-                            <>
-                                <Typography
-                                    variant="h3"
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: 'center',
-                                        width: "90%"
-                                    }}
-                                >
-                                    Participants
-                                </Typography>
+                        <>
+                            <Typography
+                                variant="h3"
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: 'center',
+                                    width: "90%"
+                                }}
+                            >
+                                Participants
+                            </Typography>
+                            {(groupStage === 1 && isCoordinator) &&
                                 <Button
                                     variant="contained"
                                     sx={{ borderRadius: 10, color: "#FFFFFF", width: "120px" }}
@@ -84,20 +84,8 @@ export const ParticipantsPage = () => {
                                 >
                                     Invite
                                     <PersonAddIcon sx={{ ml: 2 }} />
-                                </Button></>
-                            :
-                            <Typography
-                                variant="h3"
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: 'center',
-                                    width: "100%"
-                                }}
-                            >
-                                Participants
-                            </Typography>
-                        }
+                                </Button>}
+                        </>
                     </Box>
                     <ParticipantsTable groupStage={groupStage} isCoordinator={isCoordinator} />
                 </Box>

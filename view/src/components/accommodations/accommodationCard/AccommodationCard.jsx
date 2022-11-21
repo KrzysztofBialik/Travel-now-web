@@ -20,20 +20,10 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-
-import { Slide } from "@mui/material";
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Snackbar from '@mui/material/Snackbar';
-
-
-// import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
-
 import { SelectAccommodationDialog } from "../SelectAccommodationDialog";
 import { EditAccommodationDialog } from "../EditAccommodationDialog";
 import { DeleteAccommodationDialog } from "../DeleteAccommodationDialog";
-
-
+import { TransportDialog } from "../../transport/TransportDialog";
 import "./AccommodationCard.css";
 
 
@@ -58,6 +48,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
     const [selectDialogOpen, setSelectDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [transportDialogOpen, setTransportDialogOpen] = useState(false);
     const open = Boolean(anchorEl);
 
     const voteAction = () => {
@@ -263,21 +254,20 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
             {/* <Grid item xs={12} md={6}> */}
             <SelectAccommodationDialog
                 open={selectDialogOpen}
-                onClose={() => {
-                    setSelectDialogOpen(false);
-                }}
+                onClose={() => { setSelectDialogOpen(false) }}
             />
             <EditAccommodationDialog
                 open={editDialogOpen}
-                onClose={() => {
-                    setEditDialogOpen(false);
-                }}
+                onClose={() => { setEditDialogOpen(false) }}
+                accommodationData={accommodationData}
             />
             <DeleteAccommodationDialog
                 open={deleteDialogOpen}
-                onClose={() => {
-                    setDeleteDialogOpen(false);
-                }}
+                onClose={() => { setDeleteDialogOpen(false) }}
+            />
+            <TransportDialog
+                open={transportDialogOpen}
+                onClose={() => { setTransportDialogOpen(false) }}
             />
             <Card
                 sx={{ height: "100%", borderRadius: "10px" }}
@@ -422,23 +412,19 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
                             gap: "10px",
                         }}
                     >
-                        <a
-                            target="_blank"
+                        <Button variant="outlined" target="_blank"
                             rel="noreferrer"
                             href={accommodationData.sourceLink}
+                            sx={{
+                                borderRadius: "20px",
+                                '&:hover': { color: "#FFFFFF", backgroundColor: "primary.main" }
+                            }}
                         >
-                            <Button variant="outlined"
-                                sx={{
-                                    borderRadius: "20px",
-                                    '&:hover': { color: "#FFFFFF", backgroundColor: "primary.main" }
-                                }}
-                            >
-                                <LinkIcon />
-                                <Typography mx={"5px"}>
-                                    Link
-                                </Typography>
-                            </Button>
-                        </a>
+                            <LinkIcon />
+                            <Typography mx={"5px"}>
+                                Link
+                            </Typography>
+                        </Button>
                         <Button variant="outlined"
                             sx={{
                                 borderRadius: "20px",
@@ -446,7 +432,10 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
                             }}
                         >
                             <EmojiTransportationIcon />
-                            <Typography mx={"5px"}>
+                            <Typography
+                                mx={"5px"}
+                                onClick={() => setTransportDialogOpen(true)}
+                            >
                                 Transport
                             </Typography>
                         </Button>
