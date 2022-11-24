@@ -462,5 +462,5 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
             </Card >
             {/* </Grid> */}
         </>
-    )
-}
+    );
+};

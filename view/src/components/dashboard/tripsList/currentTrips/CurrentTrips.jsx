@@ -37,9 +37,9 @@ export const CurrentTrips = () => {
                     <Grid item xs={12} md={6}>
                         <DashboardOptionCard
                             icon="currency_exchange"
-                            title="Expenses"
-                            description="Control expenses during the trip."
-                            route="/expenses"
+                            title="Finances"
+                            description="Control finances during the trip."
+                            route="/finances"
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>

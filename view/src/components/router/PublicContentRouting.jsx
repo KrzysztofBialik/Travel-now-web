@@ -10,7 +10,7 @@ import { MyAccommodationVotesPage, URL as MyAccommodationVotesURL } from '../../
 import { AvailabilityPage, URL as AvailabilityURL } from '../../pages/availability-pages/AvailabilityPage';
 import { OptimizedDatesPage, URL as OptimizedDatesPageURL } from '../../pages/availability-pages/OptimizedDatesPage';
 import { DayPlanPage, URL as DayPlanURL } from '../../pages/dayPlan-page/DayPlanPage';
-import { ExpensesPage, URL as ExpensesURL } from '../../pages/expenses-page/ExpensesPage';
+import { FinancesPage, URL as FinancesURL } from '../../pages/finances-page/FinancesPage';
 import { MediaPage, URL as MediaURL } from '../../pages/media-page/MediaPage';
 import { ParticipantsPage, URL as ParticipantsURL } from '../../pages/participants-page/ParticipantsPage';
 import { TripSummaryPage, URL as TripSummaryURL } from '../../pages/tripSummary-page/TripSummaryPage';
@@ -34,7 +34,7 @@ export const PublicContentRouting = () => {
                 <Route exact path={AvailabilityURL} element={<AvailabilityPage />} />
                 <Route exact path={OptimizedDatesPageURL} element={<OptimizedDatesPage />} />
                 <Route exact path={DayPlanURL} element={<DayPlanPage />} />
-                <Route exact path={ExpensesURL} element={<ExpensesPage />} />
+                <Route exact path={FinancesURL} element={<FinancesPage />} />
                 <Route exact path={MediaURL} element={<MediaPage />} />
                 <Route exact path={ParticipantsURL} element={<ParticipantsPage />} />
                 <Route exact path={TripSummaryURL} element={<TripSummaryPage />} />

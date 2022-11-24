@@ -1,16 +1,5 @@
 export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : '';
 
-const checkForError = async (response) => {
-    if (!response.ok) {
-        if (response.headers.get('content-type') === 'application/json') {
-            const json = await response.json()
-            throw new Error(json.message)
-        }
-        throw new Error("Something went wrong")
-    }
-    return response
-}
-
 export const doGet = (endpoint) => {
     const headers = addAuthorizationHeader({
         'Accept': 'application/json',
@@ -80,4 +69,15 @@ const addAuthorizationHeader = (headers) => {
     }
 
     return headers
+}
+
+const checkForError = async (response) => {
+    if (!response.ok) {
+        if (response.headers.get('content-type') === 'application/json') {
+            const json = await response.json()
+            throw new Error(json.message)
+        }
+        throw new Error("Something went wrong")
+    }
+    return response
 }

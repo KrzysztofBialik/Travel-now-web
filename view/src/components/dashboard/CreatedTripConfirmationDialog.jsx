@@ -21,12 +21,21 @@ export const CreatedTripConfirmationDialog = ({ open, onClose }) => {
                         You have created your next trip. Proceed to see the details or close dialog to return to dashboard.
                     </DialogContentText>
                     <DialogActions>
-                        <Button onClick={onClose}>Return</Button>
+                        <Button
+                            variant="outlined"
+                            sx={{ borderRadius: "10px", mx: "10px", mb: "10px" }}
+                            onClick={onClose}
+                        >
+                            Return
+                        </Button>
                         <Button
                             variant="contained"
+                            sx={{ color: "#FFFFFF", borderRadius: "10px", ml: "10px", mr: "20px", mb: "10px" }}
                             color="primary"
-                            href="/tripOverview"
-                        >Details</Button>
+                            href="/tripSummary"
+                        >
+                            Details
+                        </Button>
                     </DialogActions>
                 </DialogContent>
             </Dialog>

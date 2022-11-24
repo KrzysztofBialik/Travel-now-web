@@ -1,24 +1,24 @@
 import * as React from 'react';
 import { useState } from "react";
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import TextField from '@mui/material/TextField';
+import { Box } from '@mui/material';
+import { MenuItem } from '@mui/material';
+import { Button } from '@mui/material';
+import { Dialog } from '@mui/material';
+import { DialogActions } from '@mui/material';
+import { DialogContent } from '@mui/material';
+import { DialogContentText } from '@mui/material';
+import { DialogTitle } from '@mui/material';
+import { TextField } from '@mui/material';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { Box } from '@mui/material';
-import { FormHelperText } from '@mui/material';
-import { MenuItem } from '@mui/material';
+import isValid from 'date-fns/isValid';
+import isBefore from 'date-fns/isBefore';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import InputAdornment from '@mui/material/InputAdornment';
 import EditIcon from '@mui/icons-material/Edit';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ChurchIcon from '@mui/icons-material/Church';
 import CastleIcon from '@mui/icons-material/Castle';
 import SailingIcon from '@mui/icons-material/Sailing';
@@ -28,11 +28,12 @@ import WaterIcon from '@mui/icons-material/Water';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import DownhillSkiingIcon from '@mui/icons-material/DownhillSkiing';
-import { ErrorToast } from '../toasts/ErrorToast';
+import format from 'date-fns/format';
+import toDate from 'date-fns/toDate';
+import parseISO from 'date-fns/parseISO';
+
 import { SuccessToast } from '../toasts/SuccessToast';
-import { isToday } from 'date-fns/esm';
-import isValid from 'date-fns/isValid';
-import isBefore from 'date-fns/isBefore';
+import { ErrorToast } from '../toasts/ErrorToast';
 
 
 const icons = [
@@ -83,23 +84,26 @@ const icons = [
     },
 ];
 
-export const CreateDayPlanDialog = ({ open, onClose, createTrip }) => {
+export const EditDayPlanDialog = ({ open, onClose, dayPlanData }) => {
 
     const today = new Date();
+
+    const initialDate = format(new Date(dayPlanData.year, dayPlanData.month, dayPlanData.day), "MM/dd/yyyy");
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
-    const [dayPlanName, setDayPlanName] = useState({ value: "", length: 0 });
+    const dayPlanNameLength = dayPlanData.name.length;
+    const [dayPlanName, setDayPlanName] = useState({ value: dayPlanData.name, length: dayPlanNameLength });
     const [dayPlanNameError, setDayPlanNameError] = useState("You have to provide day plan name.");
 
-    const [date, setDate] = useState(null);
+    const [date, setDate] = useState(initialDate);
     const [dateError, setDateError] = useState("You have to provide date.")
 
     const defaultInputValues = {
         dayPlanName: dayPlanName,
-        date: today,
-        icon: 1,
+        date: initialDate,
+        icon: dayPlanData.iconId,
     };
 
     const [values, setValues] = useState(defaultInputValues);
@@ -121,7 +125,7 @@ export const CreateDayPlanDialog = ({ open, onClose, createTrip }) => {
         console.log(value)
         if (!isValid(value)) {
             setDateError("You have to provide valid date.");
-            setDate(null);
+            setDate(initialDate);
             return;
         }
 
@@ -167,9 +171,9 @@ export const CreateDayPlanDialog = ({ open, onClose, createTrip }) => {
 
     const close = () => {
         reset();
-        setDayPlanName({ value: "", length: 0 });
+        setDayPlanName({ value: dayPlanData.name, length: dayPlanNameLength });
         setDayPlanNameError("You have to provide day plan name.");
-        setDate(today);
+        setDate(initialDate);
         setDateError("You have to provide a date.");
         setValues(defaultInputValues);
         onClose();
@@ -177,7 +181,7 @@ export const CreateDayPlanDialog = ({ open, onClose, createTrip }) => {
 
     return (
         <div>
-            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Day plan created." />
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Day plan successfully edited." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
 
             <Dialog
@@ -302,10 +306,9 @@ export const CreateDayPlanDialog = ({ open, onClose, createTrip }) => {
                             <Button
                                 type="submit"
                                 variant="contained"
-                                color="primary"
-                                sx={{ borderRadius: "20px" }}
+                                sx={{ borderRadius: "20px", color: "#FFFFFF" }}
                             >
-                                Create
+                                Edit
                             </Button>
                         </DialogActions>
                     </form>

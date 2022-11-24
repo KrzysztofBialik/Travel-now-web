@@ -29,9 +29,9 @@ export const PastTrips = () => {
                     <Grid item xs={12} md={6}>
                         <DashboardOptionCard
                             icon="currency_exchange"
-                            title="Expenses"
+                            title="Finances"
                             description="Manage unregulated transactions."
-                            route="/expenses"
+                            route="/finances"
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
