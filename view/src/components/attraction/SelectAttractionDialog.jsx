@@ -53,7 +53,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
     });
 
 
-    const handleEditAttraction = (name, description) => {
+    const handleAddAttraction = (name, description) => {
         // editAccommodation(price, description);
         // setSuccessToastOpen(true);
         // // setTripName('');
@@ -97,7 +97,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                         Add description to your selected attraction.
                     </DialogContentText>
                     <form
-                        onSubmit={handleSubmit(() => handleEditAttraction(attractionName, description.value))}
+                        onSubmit={handleSubmit(() => handleAddAttraction(attractionName, description.value))}
                     >
                         <TextField
                             type="string"

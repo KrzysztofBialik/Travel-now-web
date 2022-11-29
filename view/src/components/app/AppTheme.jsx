@@ -9,6 +9,36 @@ const MyTheme = createTheme({
     //         baseClassName: 'material-icons-round',
     //     },
     // },
+    // components: {
+    //     MuiCssBaseline: {
+    //         styleOverrides: {
+    //             body: {
+    // "&::-webkit-scrollbar, & *::-webkit-scrollbar": {
+    //     backgroundColor: "#FFFFFF",
+    // },
+    // "&::-webkit-scrollbar-thumb, & *::-webkit-scrollbar-thumb": {
+    //     // borderRadius: 8,
+    //     backgroundColor: "#2ab7ca",
+    //     minHeight: 24,
+    //     width: "0.2em",
+    //     // border: "5px solid #FFFFFF",
+    // },
+    // "&::-webkit-scrollbar-thumb:focus, & *::-webkit-scrollbar-thumb:focus": {
+    //     backgroundColor: "#2ab7ca",
+    // },
+    // "&::-webkit-scrollbar-thumb:active, & *::-webkit-scrollbar-thumb:active": {
+    //     backgroundColor: "#2ab7ca",
+    // },
+    // "&::-webkit-scrollbar-thumb:hover, & *::-webkit-scrollbar-thumb:hover": {
+    //     backgroundColor: "primary.main",
+    // },
+    // "&::-webkit-scrollbar-corner, & *::-webkit-scrollbar-corner": {
+    //     backgroundColor: "primary.main",
+    // },
+    //             },
+    //         },
+    //     },
+    // },
     palette: {
         background: {
             default: "#F0F2F5"

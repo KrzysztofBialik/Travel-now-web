@@ -216,6 +216,17 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                             <TextField id="input-with-sx" label="With sx" variant="standard" />
                         </Box> */}
                         <TextField
+                            {...register('test', {
+                                required: true,
+                                minLength: {
+                                    value: 10,
+                                    message: 'error message' // JS only: <p>error message</p> TS only support string
+                                }
+                            })}
+                            label="Test"
+                            error={!!errors.test}
+                        />
+                        <TextField
                             type='string'
                             autoFocus
                             margin="normal"
