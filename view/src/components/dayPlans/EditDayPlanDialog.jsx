@@ -34,6 +34,7 @@ import parseISO from 'date-fns/parseISO';
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doPatch } from "../../components/utils/fetch-utils";
 
 
 const icons = [
@@ -84,11 +85,12 @@ const icons = [
     },
 ];
 
-export const EditDayPlanDialog = ({ open, onClose, dayPlanData }) => {
+export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => {
 
     const today = new Date();
 
-    const initialDate = format(new Date(dayPlanData.year, dayPlanData.month, dayPlanData.day), "MM/dd/yyyy");
+    // const initialDate = format(new Date(dayPlanData.year, dayPlanData.month, dayPlanData.day), "MM/dd/yyyy");
+    const initialDate = format(parseISO(dayPlanData.date), "MM/dd/yyyy");
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
@@ -96,6 +98,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData }) => {
     const dayPlanNameLength = dayPlanData.name.length;
     const [dayPlanName, setDayPlanName] = useState({ value: dayPlanData.name, length: dayPlanNameLength });
     const [dayPlanNameError, setDayPlanNameError] = useState("You have to provide day plan name.");
+    const [editionError, setEditionError] = useState("Ups! Something went wrong. Try again.");
 
     const [date, setDate] = useState(initialDate);
     const [dateError, setDateError] = useState("You have to provide date.")
@@ -156,17 +159,17 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData }) => {
         console.log(values);
     };
 
-    const handleCreateDayPlan = (dayPlanName, date, icon) => {
-        // createTrip(dayPlanName);
-        console.log(dayPlanName);
-        console.log(date);
-        console.log(icon);
-        // setTripName('');
-        // setStartingLocation('');
-        // setCurrency("PLN");
-        // setDescription('');
-        setSuccessToastOpen(true);
-        close();
+    const handleEditDayPlan = async (dayPlanName, date, icon) => {
+        var postBody = {'groupId':localStorage.getItem('groupId'), 'name':dayPlanName, 'date':format(new Date(Date.parse(date)), "yyyy-MM-dd"), 'iconType':icon};
+        await doPatch('/api/v1/day-plan?dayPlanId=' + dayPlanData.dayPlanId, postBody)
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                close();
+                onSuccess();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setEditionError(err.message)
+            });
     };
 
     const close = () => {
@@ -182,7 +185,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData }) => {
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Day plan successfully edited." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={editionError} />
 
             <Dialog
                 open={open}
@@ -192,7 +195,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData }) => {
                 <DialogTitle variant="h4">Create new day plan</DialogTitle>
                 <DialogContent>
                     <form
-                        onSubmit={handleSubmit(() => handleCreateDayPlan(dayPlanName.value, values.date, values.icon))}
+                        onSubmit={handleSubmit(() => handleEditDayPlan(dayPlanName.value, values.date, values.icon))}
                     >
                         <TextField
                             type='string'

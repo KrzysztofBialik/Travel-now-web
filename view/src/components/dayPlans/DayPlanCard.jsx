@@ -21,8 +21,8 @@ import LandscapeIcon from '@mui/icons-material/Landscape';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import DownhillSkiingIcon from '@mui/icons-material/DownhillSkiing';
 
-import { EditDayPlanDialog } from "./EditDayPlanDialog";
 import { DeleteDayPlanDialog } from "./DeleteDayPlanDialog";
+import { EditDayPlanDialog } from "./EditDayPlanDialog";
 
 
 const icons = [
@@ -73,7 +73,7 @@ const icons = [
     },
 ];
 
-export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan }) => {
+export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan, onSuccess }) => {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [expanded, setExpanded] = useState(false);
@@ -103,7 +103,7 @@ export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan }) => {
         setAnchorEl(null);
     };
 
-    const dayPlanIcon = icons.filter(icon => icon.id === dayPlanData.iconId).map(icon =>
+    const dayPlanIcon = icons.filter(icon => icon.id === dayPlanData.iconType).map(icon =>
         <Box key={icon.id}>
             {icon.icon}
         </Box>);
@@ -114,10 +114,13 @@ export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan }) => {
                 open={editDialogOpen}
                 onClose={() => setEditDialogOpen(false)}
                 dayPlanData={dayPlanData}
+                onSuccess={() => onSuccess()}
             />
             <DeleteDayPlanDialog
                 open={deleteDialogOpen}
                 onClose={() => setDeleteDialogOpen(false)}
+                dayPlanId={dayPlanData.dayPlanId}
+                onSuccess={() => onSuccess()}
             />
 
             <Card
@@ -140,7 +143,7 @@ export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan }) => {
                         justifyContent: "space-between",
                         alignItems: "center",
                     }}
-                    onClick={() => showDetailedPlan(dayPlanData.name, dayPlanData.date)}
+                    onClick={() => showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId)}
                 >
                     <Box sx={{ display: "flex", flexDirection: "row" }}>
                         {dayPlanIcon}

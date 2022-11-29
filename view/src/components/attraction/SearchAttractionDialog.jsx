@@ -26,7 +26,7 @@ import { ErrorToast } from '../toasts/ErrorToast';
 import { AttractionCard } from './AttractionCard';
 import { AttractionCandidateCard } from './AttractionCandidateCard';
 import { SelectAttractionDialog } from './SelectAttractionDialog';
-
+import { doGet } from "../../components/utils/fetch-utils";
 
 const sampleData = [
     {
@@ -68,7 +68,7 @@ const sampleData = [
     }
 ];
 
-export const SearchAttractionDialog = ({ open, onClose }) => {
+export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) => {
 
     const [selectAttractionDialogOpen, setSelectAttractionDialogOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
@@ -96,9 +96,16 @@ export const SearchAttractionDialog = ({ open, onClose }) => {
             return;
         }
         ///wyszukiwanie na podstawie value
-        setCandidates(sampleData);
+        handleSearch(value);
         setSearchResult(value);
         setShowClearIcon("none");
+    };
+
+    const handleSearch = async (attractionName) => {
+        doGet('/api/v1/attraction/find?' + new URLSearchParams({ name: attractionName }).toString())
+        .then(response => response.json())  // convert to json
+        .then(json => setCandidates(json))
+        .catch(err => console.log('Request Failed', err));
     };
 
     const handleClose = () => {
@@ -148,6 +155,8 @@ export const SearchAttractionDialog = ({ open, onClose }) => {
                 onClose={() => setSelectAttractionDialogOpen(false)}
                 attractionData={selectedAttractionData}
                 closeWithSelect={closeWithSelect}
+                dayPlanId={dayPlanId}
+                onSuccess={(id) => onSuccess(id)}
             />
             <Dialog
                 open={open}
@@ -250,7 +259,7 @@ export const SearchAttractionDialog = ({ open, onClose }) => {
                             <Typography variant="h5" sx={{ my: 3 }}>Search results for {`"${searchResult}"`}</Typography>
                             <List sx={{ px: 0, minWidth: "80%", overflow: "auto" }}>
                                 {candidates.map(candidate =>
-                                    <ListItem sx={{ p: 0, px: "2px", mb: 3, width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }} key={candidate.id}>
+                                    <ListItem sx={{ p: 0, px: "2px", mb: 3, width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }} key={candidate.placeId}>
                                         <AttractionCandidateCard attractionData={candidate} openSelectAttractionDialog={() => handleSelectAction(candidate)} />
                                     </ListItem>
                                 )}
