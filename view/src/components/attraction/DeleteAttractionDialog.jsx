@@ -9,11 +9,13 @@ import { DialogTitle } from '@mui/material';
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doDelete } from "../../components/utils/fetch-utils";
 
-export const DeleteAttractionDialog = ({ open, onClose }) => {
+export const DeleteAttractionDialog = ({ open, onClose, dayPlanId, attractionId, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [deletionError, setDeletionError] = useState("Ups! Something went wrong. Try again.");
 
     const handleSuccessClose = () => {
         setSuccessToastOpen(true);
@@ -25,10 +27,23 @@ export const DeleteAttractionDialog = ({ open, onClose }) => {
         onClose();
     };
 
+    const handleDeleteAttraction = async () => {
+        await doDelete('/api/v1/attraction?' + new URLSearchParams({ dayPlanId:dayPlanId, attractionId:attractionId  }).toString())
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                setErrorToastOpen(!response.ok);
+                onSuccess(dayPlanId);
+                onClose();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setDeletionError(err.message);
+            });
+    }
+
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Attraction successfully deleted." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={deletionError} />
 
             <Dialog
                 open={open}
@@ -49,7 +64,7 @@ export const DeleteAttractionDialog = ({ open, onClose }) => {
                         </Button>
                         <Button
                             variant="contained"
-                            onClick={handleSuccessClose}
+                            onClick={handleDeleteAttraction}
                             sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                         >
                             Confirm

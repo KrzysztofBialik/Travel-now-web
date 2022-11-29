@@ -14,6 +14,7 @@ import * as Yup from 'yup';
 import InputAdornment from '@mui/material/InputAdornment';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doPatch } from "../../components/utils/fetch-utils";
 
 
 export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
@@ -24,10 +25,11 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
     const [attractionName, setAttractionName] = useState(attractionData.name);
 
     const DESCRIPTION_LIMIT = 250;
-    const descriptionLength = attractionData.description.length;
+    const descriptionLength = attractionData.description === null ? 0 : attractionData.description.length;
     const [description, setDescription] = useState({ value: attractionData.description, length: descriptionLength });
     const [descriptionError, setDescriptionError] = useState(descriptionLength > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null);
-
+    const [editionError, setEditionError] = useState("Ups! Something went wrong. Try again.");
+    
     const defaultInputValues = {
         attractionName,
         description
@@ -53,14 +55,18 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
     });
 
 
-    const handleEditAttraction = (name, description) => {
-        // editAccommodation(price, description);
-        // setSuccessToastOpen(true);
-        // // setTripName('');
-        // // setStartingLocation('');
-        // // setCurrency("PLN");
-        // // setDescription('');
-        close();
+    const handleEditAttraction = async (name, description) => {
+        attractionData.description = description;
+        await doPatch('/api/v1/attraction', attractionData)
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                setErrorToastOpen(!response.ok);
+                close();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setEditionError(err.message)
+            });
+        
     }
 
     const close = () => {
@@ -73,14 +79,17 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
 
     const handleErrorClose = () => {
         setDescription({ value: attractionData.description, length: descriptionLength });
-        setErrorToastOpen(true);
         onClose();
+    };
+
+    const handleEdit = async (description) => {
+        
     };
 
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Attraction successfully edited." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={editionError} />
             <Dialog
                 open={open}
                 onClose={onClose}

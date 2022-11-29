@@ -81,7 +81,7 @@ export const DayPlanPage = () => {
         setDayPlanDate(date);
         setAllAttractions(attractions.map(attraction => (
             <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attractionId}>
-                <AttractionCard attractionData={attraction} canModify={isCoordinator} />
+                <AttractionCard attractionData={attraction} canModify={isCoordinator} id={dayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
             </ListItem>
         )));
     }
@@ -89,17 +89,18 @@ export const DayPlanPage = () => {
     const updateDayplanAttractions = async (id) => {
         var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: localStorage.getItem("groupId"), dayPlanId: id }).toString())
         .then(response => response.json());
-        setdayPlansRaw((prev) => prev.map((obj) => { if(obj.dayPlanId === id) 
-            return {...obj, dayAttractions: newAttractions};
-         else 
-            return obj; 
-        }));
 
+        var dayPlanData = dayPlansRaw.find(dayPlan => dayPlan.dayPlanId === id);
+        dayPlanData.dayAttractions = newAttractions;
+        setdayPlansRaw(dayPlansRaw.map(dp => dp.dayPlanId === id ? dayPlanData: dp));
+        
+        showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId)
         setAllDayPlans(dayPlansRaw.map(dayPlan => (
             <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
                 <DayPlanCard dayPlanData={dayPlan} canModify={isCoordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()}/>
             </ListItem>
             )));   
+            
     }
 
     
@@ -191,7 +192,7 @@ export const DayPlanPage = () => {
                                                 borderRadius: "20px",
                                                 "&:hover": { backgroundColor: "secondary.dark" }
                                             }}
-                                            onClick={() => updateDayplanAttractions(461)}
+                                            onClick={() => setCreateDayPlanDialogOpen(true)}
                                         >
                                             <AddIcon />
                                             Add

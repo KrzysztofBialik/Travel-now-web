@@ -38,7 +38,7 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const AttractionCard = ({ attractionData, canModify }) => {
+export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [expanded, setExpanded] = useState(false);
     const [selectStartingPointDialogOpen, setSelectStartingPointDialogOpen] = useState(false);
@@ -46,6 +46,7 @@ export const AttractionCard = ({ attractionData, canModify }) => {
     const [deleteAttractionDialogOpen, setDeleteAttractionDialogOpen] = useState(false);
     const [mapsLink, setMapsLink] = useState(attractionData.attractionLink)
     const open = Boolean(anchorEl);
+
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -80,9 +81,11 @@ export const AttractionCard = ({ attractionData, canModify }) => {
 
     return (
         <>
-            {/* <SelectStartingPointDialog
+            <SelectStartingPointDialog
                 open={selectStartingPointDialogOpen}
                 onClose={() => setSelectStartingPointDialogOpen(false)}
+                dayPlanId={id}
+                attractionId={attractionData.attractionId}
             />
             <EditAttractionDialog
                 open={editAttractionDialogOpen}
@@ -92,7 +95,10 @@ export const AttractionCard = ({ attractionData, canModify }) => {
             <DeleteAttractionDialog
                 open={deleteAttractionDialogOpen}
                 onClose={() => setDeleteAttractionDialogOpen(false)}
-            /> */}
+                dayPlanId={id}
+                attractionId={attractionData.attractionId}
+                onSuccess={(id) => onDeletion(id)}
+            />
             <Card
                 sx={{ height: "100%", width: "100%", maxWidth: "100%", borderRadius: "10px" }}
                 elevation={5}
