@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useEffect } from 'react';
 import { Avatar } from "@mui/material";
 import { Box } from "@mui/material";
 import { Menu } from "@mui/material";
@@ -33,82 +34,12 @@ import { CreateDayPlanDialog } from "../../components/dayPlans/CreateDayPlanDial
 import { DayPlanCard } from "../../components/dayPlans/DayPlanCard";
 import { AttractionCard } from "../../components/attraction/AttractionCard";
 import { SearchAttractionDialog } from "../../components/attraction/SearchAttractionDialog";
+import { doGet } from "../../components/utils/fetch-utils";
+import { CircularProgress } from "@mui/material";
+import { secondsToMilliseconds } from "date-fns/esm";
 
 export const URL = '/dayPlan';
 export const NAME = "DayPlan";
-
-const dayPlansData = [
-    {
-        id: 1,
-        name: "Sightseeing",
-        date: "21.12.2022",
-        year: 2022,
-        month: 11,
-        day: 21,
-        iconId: 1,
-        numberOfAttractions: 6
-    },
-    {
-        id: 2,
-        name: "Local cousine",
-        date: "22.12.2022",
-        year: 2022,
-        month: 11,
-        day: 22,
-        iconId: 8,
-        numberOfAttractions: 5
-    },
-    {
-        id: 3,
-        name: "Walking around town",
-        date: "23.12.2022",
-        year: 2022,
-        month: 11,
-        day: 23,
-        iconId: 5,
-        numberOfAttractions: 7
-    },
-];
-
-const attractionsData = [
-    {
-        id: 1,
-        name: "Sagrada familia",
-        address: "C/ de Mallorca, 401, 08013 Barcelona, Hiszpania",
-        latitude: 2.1743569898717463,
-        longitude: 41.4036502739253,
-        description: "Słynny, budowany od lat 80. XIX w. i nadal nieukończony kościół A. Gaudiego, z muzeum i widokiem na miasto.",
-        imageLink: "https://lh5.googleusercontent.com/p/AF1QipOicANzm_sbK0jBX4WnRf-U6UUb_MCfcRzdQbY-=w408-h724-k-no"
-    },
-    {
-        id: 2,
-        name: "Casa Milà",
-        address: "Passeig de Gràcia, 92, 08008 Barcelona, Hiszpania",
-        latitude: 2.1619131267050693,
-        longitude: 41.39534022951416,
-        description: "Kataloński budynek secesyjny Gaudiego z kamienną fasadą, słynący z centrum wystawowego i koncertów.",
-        imageLink: "https://lh5.googleusercontent.com/p/AF1QipMxnxc4S1Y5uk2ZEwZOG7vNWPbSGwFZsrIGEhyU=w408-h255-k-no"
-    },
-    {
-        id: 3,
-        name: "Plaça de Catalunya",
-        address: "Plaça de Catalunya, 08002 Barcelona, Hiszpania",
-        latitude: 2.1706005332686638,
-        longitude: 41.38722026060981,
-        description: "Otoczony drzewami plac w centrum, z rzeźbami, kawiarniami i sklepami – popularne miejsce specjalnych wydarzeń",
-        imageLink: "https://lh5.googleusercontent.com/p/AF1QipORoCY9eDF_1Tgy6dDsXh6mrlYtg_Dk3HzoLwuy=w408-h544-k-no"
-    },
-
-    {
-        id: 4,
-        name: "Park Güell",
-        address: "08024 Barcelona, Prowincja Barcelona, Hiszpania",
-        latitude: 2.1528983457448176,
-        longitude: 41.414683860535185,
-        description: "Pokryte mozaiką budynki, schody i rzeźby w zielonym parku z muzeum Gaudiego i rozległym widokiem.",
-        imageLink: "https://lh5.googleusercontent.com/p/AF1QipNgwQHFyIjmdNz9RYHLND4_2hXzrBmqObHjBIfR=w408-h305-k-no"
-    }
-];
 
 export const DayPlanPage = () => {
 
@@ -117,27 +48,64 @@ export const DayPlanPage = () => {
     const [dayPlanName, setDayPlanName] = useState("");
     const [dayPlanDate, setDayPlanDate] = useState("");
     const [allAttractions, setAllAttractions] = useState([]);
+    const [allDayPlans, setAllDayPlans] = useState([]);
+    const [loading, setLodaing] = useState(true);
+    const [selectedDayPlanId, setSelectedDayPlanId] = useState(0);
+    const [dayPlansRaw, setdayPlansRaw] = useState([]);
     const [isOptimizedDayPlan, setIsOptimizedDayPlan] = useState(false);
 
     const isCoordinator = true;
 
-    const showDetailedPlan = (name, date) => {
-        setAllAttractions([]);
+    const getData = async () => {
+        localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjUyLCJ1c2VybmFtZSI6InRlc3QifQ.F2kEvy-TDzhberOIHVxCdkUAp3RDsKYaJYSMBPkj9Fk")
+        localStorage.setItem("groupId", 63)
+        doGet('/api/v1/day-plan?' + new URLSearchParams({ groupId: localStorage.getItem("groupId") }).toString())
+        .then(response => response.json())
+        .then(json => {setdayPlansRaw(json); return json})
+        .then(dayPlans => {setAllDayPlans(dayPlans.map(dayPlan => (
+                        <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
+                            <DayPlanCard dayPlanData={dayPlan} canModify={isCoordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()}/>
+                        </ListItem>
+                        )));
+                        setLodaing(false)
+                    })
+        .catch(err => console.log('Request Failed', err));
+    };
+
+    useEffect(() => {
+        getData();
+      }, [])
+
+    const showDetailedPlan = (name, date, attractions, dayPlanId) => {
+        setAllAttractions([]);     
+        setSelectedDayPlanId(dayPlanId)
         setDayPlanName(name);
         setDayPlanDate(date);
-        setAllAttractions(attractionsData.map(attraction => (
-            <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.id}>
-                <AttractionCard attractionData={attraction} canModify={isCoordinator} />
+        setAllAttractions(attractions.map(attraction => (
+            <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attractionId}>
+                <AttractionCard attractionData={attraction} canModify={isCoordinator} id={dayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
             </ListItem>
         )));
     }
 
-    var allDayPlans = dayPlansData.map(dayPlan => (
-        <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.id}>
-            <DayPlanCard dayPlanData={dayPlan} canModify={isCoordinator} showDetailedPlan={showDetailedPlan} />
-        </ListItem>
-    ));
+    const updateDayplanAttractions = async (id) => {
+        var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: localStorage.getItem("groupId"), dayPlanId: id }).toString())
+        .then(response => response.json());
 
+        var dayPlanData = dayPlansRaw.find(dayPlan => dayPlan.dayPlanId === id);
+        dayPlanData.dayAttractions = newAttractions;
+        setdayPlansRaw(dayPlansRaw.map(dp => dp.dayPlanId === id ? dayPlanData: dp));
+        
+        showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId)
+        setAllDayPlans(dayPlansRaw.map(dayPlan => (
+            <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
+                <DayPlanCard dayPlanData={dayPlan} canModify={isCoordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()}/>
+            </ListItem>
+            )));   
+            
+    }
+
+    
     const optimizeDayPlan = () => {
         if (isOptimizedDayPlan) {
             console.log("Domyślny plan dnia");
@@ -159,10 +127,13 @@ export const DayPlanPage = () => {
             <CreateDayPlanDialog
                 open={createDayPlanDialogOpen}
                 onClose={() => setCreateDayPlanDialogOpen(false)}
+                onSuccess={ () => getData() }
             />
             <SearchAttractionDialog
                 open={searchAttractionDialogOpen}
                 onClose={() => setSearchAttractionDialogOpen(false)}
+                dayPlanId={selectedDayPlanId}
+                onSuccess={(id) => updateDayplanAttractions(id)}
             />
             <Box
                 sx={{
@@ -253,20 +224,37 @@ export const DayPlanPage = () => {
                                         margin: 2,
                                         minHeight: "200px"
                                     }}>
-                                        <Box
-                                            sx={{
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                justifyContent: "flex-start",
-                                                minHeight: "400px"
-                                                // border: "2px solid black"
-                                            }}
-                                        >
-                                            {/* No day plans created */}
-                                            <List sx={{ p: 0 }}>
-                                                {allDayPlans}
-                                            </List>
-                                        </Box>
+                                        {
+                                            loading ?
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    minHeight: "400px"
+                                                    // border: "2px solid black"
+                                                }}
+                                            >  
+                                                <CircularProgress />
+                                            </Box>
+                                            :
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    justifyContent: "flex-start",
+                                                    minHeight: "400px"
+                                                    // border: "2px solid black"
+                                                }}
+                                            >  
+                                                {/* No day plans created */}
+                                                <List sx={{ p: 0 }}>
+                                                    {allDayPlans}
+                                                </List>
+                                            </Box>
+                                        }
+                                        
                                     </Box>
                                 </Card>
                             </Grid>

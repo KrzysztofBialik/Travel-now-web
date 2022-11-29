@@ -33,6 +33,7 @@ import { SuccessToast } from '../toasts/SuccessToast';
 import { isToday } from 'date-fns/esm';
 import isValid from 'date-fns/isValid';
 import isBefore from 'date-fns/isBefore';
+import { doPost } from "../../components/utils/fetch-utils";
 
 
 const icons = [
@@ -83,7 +84,7 @@ const icons = [
     },
 ];
 
-export const CreateDayPlanDialog = ({ open, onClose, createTrip }) => {
+export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
 
     const today = new Date();
 
@@ -92,6 +93,7 @@ export const CreateDayPlanDialog = ({ open, onClose, createTrip }) => {
 
     const [dayPlanName, setDayPlanName] = useState({ value: "", length: 0 });
     const [dayPlanNameError, setDayPlanNameError] = useState("You have to provide day plan name.");
+    const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
 
     const [date, setDate] = useState(null);
     const [dateError, setDateError] = useState("You have to provide date.")
@@ -152,17 +154,17 @@ export const CreateDayPlanDialog = ({ open, onClose, createTrip }) => {
         console.log(values);
     };
 
-    const handleCreateDayPlan = (dayPlanName, date, icon) => {
-        // createTrip(dayPlanName);
-        console.log(dayPlanName);
-        console.log(date);
-        console.log(icon);
-        // setTripName('');
-        // setStartingLocation('');
-        // setCurrency("PLN");
-        // setDescription('');
-        setSuccessToastOpen(true);
-        close();
+    const handleCreateDayPlan = async (dayPlanName, date, icon) => {
+        var postBody = {'groupId':localStorage.getItem('groupId'), 'name':dayPlanName, 'date':date, 'iconType':icon};
+        await doPost('/api/v1/day-plan', postBody)
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                close();
+                onSuccess();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setCreationError(err.message)
+            });
     };
 
     const close = () => {
@@ -178,7 +180,7 @@ export const CreateDayPlanDialog = ({ open, onClose, createTrip }) => {
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Day plan created." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} />
 
             <Dialog
                 open={open}

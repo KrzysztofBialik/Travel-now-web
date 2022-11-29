@@ -9,11 +9,13 @@ import { DialogTitle } from '@mui/material';
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doDelete } from "../../components/utils/fetch-utils";
 
-export const DeleteDayPlanDialog = ({ open, onClose }) => {
+export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess}) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [deletionError, setDeletionError] = useState("Ups! Something went wrong. Try again.");
 
     const handleSuccessClose = () => {
         setSuccessToastOpen(true);
@@ -25,10 +27,22 @@ export const DeleteDayPlanDialog = ({ open, onClose }) => {
         onClose();
     };
 
+    const handleDeleteDayPlan = async (dayPlanId) => {
+        await doDelete('/api/v1/day-plan?dayPlanId=' + dayPlanId)
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                handleSuccessClose();
+                onSuccess();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setDeletionError(err.message)
+            });
+    };
+
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Day plan successfully deleted." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={ deletionError } />
 
             <Dialog
                 open={open}
@@ -43,13 +57,13 @@ export const DeleteDayPlanDialog = ({ open, onClose }) => {
                         <Button
                             sx={{ borderRadius: "20px" }}
                             variant="outlined"
-                            onClick={handleErrorClose}
+                            onClick={onClose}
                         >
                             Cancel
                         </Button>
                         <Button
                             variant="contained"
-                            onClick={handleSuccessClose}
+                            onClick={() => handleDeleteDayPlan(dayPlanId)}
                             sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                         >
                             Confirm

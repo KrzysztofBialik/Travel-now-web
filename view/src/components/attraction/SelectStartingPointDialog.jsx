@@ -9,11 +9,13 @@ import { DialogTitle } from '@mui/material';
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doPatch } from "../../components/utils/fetch-utils";
 
-export const SelectStartingPointDialog = ({ open, onClose }) => {
+export const SelectStartingPointDialog = ({ open, onClose, dayPlanId, attractionId }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
 
     const handleSuccessClose = () => {
         setSuccessToastOpen(true);
@@ -21,14 +23,25 @@ export const SelectStartingPointDialog = ({ open, onClose }) => {
     };
 
     const handleErrorClose = () => {
-        setErrorToastOpen(true);
         onClose();
+    };
+
+    const handleSelection = async () => {
+        await doPatch('/api/v1/day-plan/start?' + new URLSearchParams({ dayPlanId:dayPlanId, attractionId:attractionId  }).toString())
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                setErrorToastOpen(!response.ok);
+                onClose();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setCreationError(err.message)
+            });
     };
 
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Attraction selected as astarting point." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} />
 
             <Dialog
                 open={open}
@@ -49,7 +62,7 @@ export const SelectStartingPointDialog = ({ open, onClose }) => {
                         </Button>
                         <Button
                             variant="contained"
-                            onClick={handleSuccessClose}
+                            onClick={handleSelection}
                             sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                         >
                             Confirm

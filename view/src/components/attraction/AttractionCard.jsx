@@ -38,14 +38,15 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const AttractionCard = ({ attractionData, canModify }) => {
+export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [expanded, setExpanded] = useState(false);
     const [selectStartingPointDialogOpen, setSelectStartingPointDialogOpen] = useState(false);
     const [editAttractionDialogOpen, setEditAttractionDialogOpen] = useState(false);
     const [deleteAttractionDialogOpen, setDeleteAttractionDialogOpen] = useState(false);
-    const [mapsLink, setMapsLink] = useState(`https://www.google.com/maps/search/?api=1&query=${attractionData.longitude}%2C${attractionData.latitude}`)
+    const [mapsLink, setMapsLink] = useState(attractionData.attractionLink)
     const open = Boolean(anchorEl);
+
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -74,12 +75,17 @@ export const AttractionCard = ({ attractionData, canModify }) => {
         setAnchorEl(null);
     };
 
+    var getPhotoUrl = (photoReference) => {
+        return 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=' + photoReference + '&key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    }
 
     return (
         <>
             <SelectStartingPointDialog
                 open={selectStartingPointDialogOpen}
                 onClose={() => setSelectStartingPointDialogOpen(false)}
+                dayPlanId={id}
+                attractionId={attractionData.attractionId}
             />
             <EditAttractionDialog
                 open={editAttractionDialogOpen}
@@ -89,6 +95,9 @@ export const AttractionCard = ({ attractionData, canModify }) => {
             <DeleteAttractionDialog
                 open={deleteAttractionDialogOpen}
                 onClose={() => setDeleteAttractionDialogOpen(false)}
+                dayPlanId={id}
+                attractionId={attractionData.attractionId}
+                onSuccess={(id) => onDeletion(id)}
             />
             <Card
                 sx={{ height: "100%", width: "100%", maxWidth: "100%", borderRadius: "10px" }}
@@ -119,7 +128,7 @@ export const AttractionCard = ({ attractionData, canModify }) => {
                                 <CardMedia
                                     sx={{ borderRadius: "10px" }}
                                     component="img"
-                                    image={attractionData.imageLink}
+                                    image={getPhotoUrl(attractionData.photoLink)}
                                 />
                             </Box>
                         </Box>

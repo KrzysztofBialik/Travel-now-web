@@ -14,19 +14,21 @@ import * as Yup from 'yup';
 import InputAdornment from '@mui/material/InputAdornment';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doPost } from "../../components/utils/fetch-utils";
 
 
-export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWithSelect }) => {
+export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWithSelect, dayPlanId, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
-    const [attractionName, setAttractionName] = useState(attractionData.name);
+    const [attractionName, setAttractionName] = useState(attractionData.attractionName);
     console.log(attractionData)
 
     const DESCRIPTION_LIMIT = 250;
     const [description, setDescription] = useState({ value: "", length: 0 });
     const [descriptionError, setDescriptionError] = useState(description.length > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null);
+    const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
 
     const defaultInputValues = {
         attractionName,
@@ -53,19 +55,21 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
     });
 
 
-    const handleAddAttraction = (name, description) => {
-        // editAccommodation(price, description);
-        // setSuccessToastOpen(true);
-        // // setTripName('');
-        // // setStartingLocation('');
-        // // setCurrency("PLN");
-        // // setDescription('');
-        reset();
-        setValues(defaultInputValues);
-        setDescription({ value: "", length: 0 });
-        setSuccessToastOpen(true);
-        onClose();
-        closeWithSelect();
+    const handleAttractionAddition = async (name, description) => {
+        attractionData.description = description;
+        await doPost('/api/v1/attraction?dayPlanId=' + dayPlanId, attractionData)
+            .then(response => {
+                setValues(defaultInputValues);
+                setDescription({ value: "", length: 0 });
+                setSuccessToastOpen(response.ok);
+                onClose();
+                onSuccess(dayPlanId);
+                closeWithSelect();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setCreationError(err.message)
+            });
+        
     }
 
     const close = () => {
@@ -85,7 +89,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Attraction successfully added." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} />
             <Dialog
                 open={open}
                 onClose={onClose}
@@ -97,7 +101,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                         Add description to your selected attraction.
                     </DialogContentText>
                     <form
-                        onSubmit={handleSubmit(() => handleAddAttraction(attractionName, description.value))}
+                        onSubmit={handleSubmit(() => handleAttractionAddition(attractionName, description.value))}
                     >
                         <TextField
                             type="string"

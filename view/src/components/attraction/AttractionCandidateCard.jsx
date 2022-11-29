@@ -25,7 +25,11 @@ import MapIcon from '@mui/icons-material/Map';
 
 export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDialog }) => {
 
-    const [mapsLink, setMapsLink] = useState(`https://www.google.com/maps/search/?api=1&query=${attractionData.longitude}%2C${attractionData.latitude}`)
+    const [mapsLink, setMapsLink] = useState(attractionData.url)
+
+    var getPhotoUrl = (photoReference) => {
+        return 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=' + photoReference + '&key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    }
 
     return (
         <>
@@ -56,7 +60,7 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                                     <CardMedia
                                         sx={{ borderRadius: "10px" }}
                                         component="img"
-                                        image={attractionData.imageLink}
+                                        image={getPhotoUrl(attractionData.photoLink)}
                                     />
                                 </Box>
                             </Box>
@@ -74,7 +78,7 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                                                     color: "black",
                                                     fontSize: "32px",
                                                 }}>
-                                                {attractionData.name}
+                                                {attractionData.attractionName}
                                             </Typography>
                                             <Typography variant="body2" color="text.secondary">
                                                 {attractionData.address}
