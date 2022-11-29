@@ -50,14 +50,6 @@ export const CurrentTrips = () => {
                             route="/participants"
                         />
                     </Grid>
-                    <Grid item xs={12} md={6}>
-                        <DashboardOptionCard
-                            icon="photo_album"
-                            title="Media"
-                            description="Share and download memories from past trip."
-                            route="/media"
-                        />
-                    </Grid>
                 </Grid>
             </Grid>
         </Grid>

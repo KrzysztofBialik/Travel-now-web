@@ -54,8 +54,8 @@ export const currentTripButtonsData = [
     },
     {
         id: 2,
-        name: "Expenses",
-        link: "/expenses",
+        name: "Finances",
+        link: "/finances",
     },
     {
         id: 3,
@@ -73,8 +73,8 @@ export const currentTripButtonsData = [
 export const pastTripButtonsData = [
     {
         id: 1,
-        name: "Expenses",
-        link: "/expenses",
+        name: "Finances",
+        link: "/finances",
     },
     {
         id: 1,

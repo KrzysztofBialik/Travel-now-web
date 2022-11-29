@@ -131,8 +131,11 @@ export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan, onSucces
                     flexDirection: "row",
                     justifyContent: "space-between",
                     alignItems: "center",
+                    borderStyle: "solid",
+                    borderWidth: "2px",
+                    borderColor: "#dee2e6",
                     "&:hover": {
-                        backgroundColor: "primary.light"
+                        borderColor: "primary.main",
                     }
                 }}>
                 <ButtonBase
