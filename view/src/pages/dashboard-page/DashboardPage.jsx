@@ -12,25 +12,16 @@ import { FutureTrips } from '../../components/dashboard/tripsList/futureTrips/Fu
 import { CurrentTrips } from '../../components/dashboard/tripsList/currentTrips/CurrentTrips.jsx';
 import { PastTrips } from '../../components/dashboard/tripsList/pastTrips/PastTrips.jsx';
 import { BACKGROUND_DASHBOARD } from '../../components/images/Images.jsx';
+import { doGet } from "../../components/utils/fetch-utils";
 
 
-export const trips = [
-    {
-        id: 1,
-        name: "Barcelona",
-        groupStage: "current"
-    },
-    {
-        id: 2,
-        name: "London",
-        groupStage: "future"
-    },
-    {
-        id: 3,
-        name: "Rome",
-        groupStage: "completed"
-    },
-]
+export const trips = async () => {
+    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjUyLCJ1c2VybmFtZSI6InRlc3QifQ.F2kEvy-TDzhberOIHVxCdkUAp3RDsKYaJYSMBPkj9Fk")
+    await doGet('/api/v1/trip-group/groups/1')
+    .then(response => response.json())  // convert to json
+    .catch(err => console.log('Request Failed', err));
+}
+
 
 export const URL = '/dashboard';
 export const NAME = "Dashboard";
