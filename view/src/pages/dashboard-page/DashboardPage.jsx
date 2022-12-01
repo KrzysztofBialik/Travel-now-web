@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useEffect } from 'react';
 import { Box } from '@mui/material';
 import { Grid } from '@mui/material';
 import { Typography } from '@mui/material';
@@ -12,25 +13,10 @@ import { FutureTrips } from '../../components/dashboard/tripsList/futureTrips/Fu
 import { CurrentTrips } from '../../components/dashboard/tripsList/currentTrips/CurrentTrips.jsx';
 import { PastTrips } from '../../components/dashboard/tripsList/pastTrips/PastTrips.jsx';
 import { BACKGROUND_DASHBOARD } from '../../components/images/Images.jsx';
+import { doGet } from "../../components/utils/fetch-utils";
 
 
-export const trips = [
-    {
-        id: 1,
-        name: "Barcelona",
-        groupStage: "current"
-    },
-    {
-        id: 2,
-        name: "London",
-        groupStage: "future"
-    },
-    {
-        id: 3,
-        name: "Rome",
-        groupStage: "completed"
-    },
-]
+
 
 export const URL = '/dashboard';
 export const NAME = "Dashboard";
@@ -38,8 +24,16 @@ export const NAME = "Dashboard";
 export const DashboardPage = () => {
 
     const [createTripDialogOpen, setCreateTripDialogOpen] = useState(false);
-    const [tripsList, setTripsList] = useState(trips);
+    const [tripsList, setTripsList] = useState([]);
 
+    const getTrips = async () => {
+        localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
+        localStorage.setItem("userId", 31)
+        await doGet('/api/v1/trip-group/groups/' + localStorage.getItem("userId"))
+        .then(response => response.json())
+        .then(response => setTripsList(response))
+        .catch(err => console.log('Request Failed', err));
+    }
     //utworzenie nowej wycieczki
     const createTrip = (tripName, startingLocation, currency, minDays, minParticipants, description) => {
         console.log("create Trip");
@@ -53,6 +47,10 @@ export const DashboardPage = () => {
         // setTripsList(tripsList => [...tripsList, { id: 10, name: tripName, groupStage: "future" }])
         // console.log(tripsList)
     };
+
+    useEffect(() => {
+        getTrips();
+      }, [])
 
     return (
         // <div style={{ backgroundColor: 'black' }}>
@@ -130,13 +128,13 @@ export const DashboardPage = () => {
                 backdropFilter: "saturate(200%) blur(30px)",
             }}
             >
-                <CurrentTrips />
+                <CurrentTrips trips={tripsList}/>
 
                 <Divider variant="middle" />
-                <FutureTrips />
+                <FutureTrips trips={tripsList}/>
 
                 <Divider variant="middle" />
-                <PastTrips />
+                <PastTrips trips={tripsList}/>
             </Card>
         </>
     );
