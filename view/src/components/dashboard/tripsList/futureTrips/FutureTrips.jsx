@@ -7,17 +7,19 @@ import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
 import { LONDONURL } from '../../../images/Images';
 
-import { trips } from '../../../../pages/dashboard-page/DashboardPage';
+// import { trips } from '../../../../pages/dashboard-page/DashboardPage';
 
-export const FutureTrips = () => {
+export const FutureTrips = ({trips}) => {
 
-    const futureTrips = trips.filter(trip => trip.groupStage.includes('future')).map(({ id, name }) => (
-        <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={id}>
+    console.log(trips)
+    const tripsPlanningStage = trips.filter(trip => trip.groupStage === 'PLANNING_STAGE')
+    const futureTrips = tripsPlanningStage.map(({ groupId, name, description }) => (
+        <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
             <Grid item xs={12} lg={4} sx={{ mx: "auto" }}>
                 <DashboardFlipCard
                     frontBg={LONDONURL}
                     title={name}
-                    description=""
+                    description={description}
                     action={{
                         route: "/tripSummary",
                         label: "Trip summary",
