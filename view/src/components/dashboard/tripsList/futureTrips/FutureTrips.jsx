@@ -7,8 +7,6 @@ import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
 import { LONDONURL } from '../../../images/Images';
 
-// import { trips } from '../../../../pages/dashboard-page/DashboardPage';
-
 export const FutureTrips = ({trips}) => {
 
     console.log(trips)

@@ -6,7 +6,6 @@ import { Typography } from '@mui/material';
 import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
 import { BARCELONAURL } from '../../../images/Images';
-// import { trips } from '../../../../pages/dashboard-page/DashboardPage';
 
 
 export const CurrentTrips = ({trips}) => {

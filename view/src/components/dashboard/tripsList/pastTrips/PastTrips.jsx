@@ -7,9 +7,6 @@ import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
 import { ROMEURL } from '../../../images/Images';
 
-// import { trips } from '../../../../pages/dashboard-page/DashboardPage';
-
-
 export const PastTrips = ({trips}) => {
     const tripAfterTripStage =  trips.filter(trip => trip.groupStage === 'AFTER_TRIP_STAGE')
     const completedTrips = tripAfterTripStage.map(({ groupId, name, description }) => (
