@@ -43,9 +43,9 @@ export const NAME = "DayPlan";
 
 export const DayPlanPage = () => {
 
-    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjUyLCJ1c2VybmFtZSI6InRlc3QifQ.F2kEvy-TDzhberOIHVxCdkUAp3RDsKYaJYSMBPkj9Fk")
-    localStorage.setItem("groupId", 63)
-    localStorage.setItem("userId", 52)
+    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoidGVzdCJ9.U9va0O9bOKzvf4CrfUYh-MvPF_cB5ioCGICnGnb1ioM")
+    localStorage.setItem("groupId", 1)
+    localStorage.setItem("userId", 1)
 
     const [createDayPlanDialogOpen, setCreateDayPlanDialogOpen] = useState(false);
     const [searchAttractionDialogOpen, setSearchAttractionDialogOpen] = useState(false);
@@ -55,20 +55,18 @@ export const DayPlanPage = () => {
     const [optimizedAttractions, setOptimizedAttractions] = useState([]);
     const [allDayPlans, setAllDayPlans] = useState([]);
     const [loading, setLodaing] = useState(true);
-    const [loadingCordinator, setLoadingCordinator] = useState(true);
     const [loadingOptimized, setLoadingOptimized] = useState(false);
     const [selectedDayPlanId, setSelectedDayPlanId] = useState(0);
     const [dayPlansRaw, setdayPlansRaw] = useState([]);
     const [isOptimizedDayPlan, setIsOptimizedDayPlan] = useState(false);
-    const [isCordinator, setIsCordinator] = useState(false);
 
-    // console.log({isCordinator});
+    var isCordinator = false;
 
     const isCorinator = async () => {
         var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: localStorage.getItem("groupId"), userId: localStorage.getItem("userId") }).toString())
-            .catch(err => { setIsCordinator(false); return });
-        var body = await resp.json()
-        setIsCordinator(body)
+            .catch(err => console.log(err.message));
+        var body = await resp.json();
+        isCordinator = body;
     };
 
     const getData = async () => {
@@ -95,6 +93,7 @@ export const DayPlanPage = () => {
         setSelectedDayPlanId(dayPlanId)
         setDayPlanName(name);
         setDayPlanDate(date);
+        setIsOptimizedDayPlan(false);
         setAllAttractions(attractions.map(attraction => (
             <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attractionId}>
                 <AttractionCard attractionData={attraction} canModify={isCordinator} id={dayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
@@ -120,6 +119,7 @@ export const DayPlanPage = () => {
     }
 
     const getOptimized = async () => {
+        setLoadingOptimized(true)
         await doGet('/api/v1/attraction/optimize/' + selectedDayPlanId)
         .then(response => response.json())
         .then(attractions => setOptimizedAttractions(attractions.map(attraction => (
@@ -128,6 +128,7 @@ export const DayPlanPage = () => {
             </ListItem>
         ))))
         .catch(err => console.log('Request Failed', err));
+        setLoadingOptimized(false);
     };
 
     
@@ -251,7 +252,7 @@ export const DayPlanPage = () => {
                                         minHeight: "200px"
                                     }}>
                                         {
-                                            loading || loadingCordinator ?
+                                            loading ?
                                             <Box
                                                 sx={{
                                                     display: "flex",
@@ -325,7 +326,7 @@ export const DayPlanPage = () => {
                                         <Box>
                                             <FormControlLabel
                                                 value="Optimize day plan"
-                                                control={<Switch color="secondary" onChange={optimizeDayPlan} />}
+                                                control={<Switch color="secondary" onChange={optimizeDayPlan} checked={isOptimizedDayPlan}/>}
                                                 label="Optimize day plan"
                                                 labelPlacement="start"
                                                 sx={{ mr: 4, color: "#FFFFFF" }}
@@ -397,13 +398,18 @@ export const DayPlanPage = () => {
                                             {/* Add attractions to see the detailed plan */}
                                             {allAttractions.length > 0 ?
                                                 loadingOptimized ?
-                                                    <Box sx={{ height: "100%", width: "100%", display: "flex", justifyContent: "center" }}>
-                                                        <List sx={{
-                                                            // height: "100%", 
-                                                            px: 0, minWidth: "90%", maxWidth: "90%"
-                                                        }}>
-                                                            {isOptimizedDayPlan ? optimizedAttractions : allAttractions }
-                                                        </List>
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            justifyContent: "center",
+                                                            alignItems: "center",
+                                                            minHeight: "400px",
+                                                            width: '100%'
+                                                            // border: "2px solid black"
+                                                        }}
+                                                    >  
+                                                        <CircularProgress />
                                                     </Box>
                                                     :
                                                     <Box sx={{ height: "100%", width: "100%", display: "flex", justifyContent: "center" }}>
