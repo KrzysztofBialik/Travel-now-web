@@ -27,46 +27,7 @@ import { AttractionCard } from './AttractionCard';
 import { AttractionCandidateCard } from './AttractionCandidateCard';
 import { SelectAttractionDialog } from './SelectAttractionDialog';
 import { doGet } from "../../components/utils/fetch-utils";
-
-const sampleData = [
-    {
-        id: 1,
-        name: "Sagrada familia",
-        address: "C/ de Mallorca, 401, 08013 Barcelona, Hiszpania",
-        latitude: 2.1743569898717463,
-        longitude: 41.4036502739253,
-        description: "Słynny, budowany od lat 80. XIX w. i nadal nieukończony kościół A. Gaudiego, z muzeum i widokiem na miasto.",
-        imageLink: "https://lh5.googleusercontent.com/p/AF1QipOicANzm_sbK0jBX4WnRf-U6UUb_MCfcRzdQbY-=w408-h724-k-no"
-    },
-    {
-        id: 2,
-        name: "Casa Milà",
-        address: "Passeig de Gràcia, 92, 08008 Barcelona, Hiszpania",
-        latitude: 2.1619131267050693,
-        longitude: 41.39534022951416,
-        description: "Kataloński budynek secesyjny Gaudiego z kamienną fasadą, słynący z centrum wystawowego i koncertów.",
-        imageLink: "https://lh5.googleusercontent.com/p/AF1QipMxnxc4S1Y5uk2ZEwZOG7vNWPbSGwFZsrIGEhyU=w408-h255-k-no"
-    },
-    {
-        id: 3,
-        name: "Plaça de Catalunya",
-        address: "Plaça de Catalunya, 08002 Barcelona, Hiszpania",
-        latitude: 2.1706005332686638,
-        longitude: 41.38722026060981,
-        description: "Otoczony drzewami plac w centrum, z rzeźbami, kawiarniami i sklepami – popularne miejsce specjalnych wydarzeń",
-        imageLink: "https://lh5.googleusercontent.com/p/AF1QipORoCY9eDF_1Tgy6dDsXh6mrlYtg_Dk3HzoLwuy=w408-h544-k-no"
-    },
-
-    {
-        id: 4,
-        name: "Park Güell",
-        address: "08024 Barcelona, Prowincja Barcelona, Hiszpania",
-        latitude: 2.1528983457448176,
-        longitude: 41.414683860535185,
-        description: "Pokryte mozaiką budynki, schody i rzeźby w zielonym parku z muzeum Gaudiego i rozległym widokiem.",
-        imageLink: "https://lh5.googleusercontent.com/p/AF1QipNgwQHFyIjmdNz9RYHLND4_2hXzrBmqObHjBIfR=w408-h305-k-no"
-    }
-];
+import { CircularProgress } from "@mui/material";
 
 export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) => {
 
@@ -78,6 +39,7 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
     const [searchResult, setSearchResult] = useState("");
     const [candidates, setCandidates] = useState([]);
     const [selectedAttractionData, setSelectedAttractionData] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (event) => {
         setSearchValue(event.target.value)
@@ -102,9 +64,10 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
     };
 
     const handleSearch = async (attractionName) => {
+        setLoading(true)
         doGet('/api/v1/attraction/find?' + new URLSearchParams({ name: attractionName }).toString())
         .then(response => response.json())  // convert to json
-        .then(json => setCandidates(json))
+        .then(json => {setCandidates(json); setLoading(false)})
         .catch(err => console.log('Request Failed', err));
     };
 
@@ -250,21 +213,35 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
                             Search
                         </Button>
                     </Box>
-                    {candidates.length === 0 ?
-                        <Box sx={{ width: "100%", height: "90%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                            <Typography variant="h5">Search attractions and add them to day plan</Typography>
+                    {loading ?
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                height: "90%"
+                                // border: "2px solid black"
+                            }}
+                        >  
+                            <CircularProgress />
                         </Box>
                         :
-                        <Box>
-                            <Typography variant="h5" sx={{ my: 3 }}>Search results for {`"${searchResult}"`}</Typography>
-                            <List sx={{ px: 0, minWidth: "80%", overflow: "auto" }}>
-                                {candidates.map(candidate =>
-                                    <ListItem sx={{ p: 0, px: "2px", mb: 3, width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }} key={candidate.placeId}>
-                                        <AttractionCandidateCard attractionData={candidate} openSelectAttractionDialog={() => handleSelectAction(candidate)} />
-                                    </ListItem>
-                                )}
-                            </List>
-                        </Box>
+                        candidates.length === 0 ? 
+                            <Box sx={{ width: "100%", height: "90%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                <Typography variant="h5">Search attractions and add them to day plan</Typography>
+                            </Box>
+                            :
+                            <Box>
+                                <Typography variant="h5" sx={{ my: 3 }}>Search results for {`"${searchResult}"`}</Typography>
+                                <List sx={{ px: 0, minWidth: "80%", overflow: "auto" }}>
+                                    {candidates.map(candidate =>
+                                        <ListItem sx={{ p: 0, px: "2px", mb: 3, width: "100%", display: "flex", justifyContent: "center", flexDirection: "column", alignItems: "center" }} key={candidate.placeId}>
+                                            <AttractionCandidateCard attractionData={candidate} openSelectAttractionDialog={() => handleSelectAction(candidate)} />
+                                        </ListItem>
+                                    )}
+                                </List>
+                            </Box>
                     }
                     {/* <Search>
                         <SearchIconWrapper>
