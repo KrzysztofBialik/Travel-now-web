@@ -37,15 +37,14 @@ import { SearchAttractionDialog } from "../../components/attraction/SearchAttrac
 import { doGet, doGetAwait } from "../../components/utils/fetch-utils";
 import { CircularProgress } from "@mui/material";
 import { secondsToMilliseconds, set } from "date-fns/esm";
+import { useParams } from "react-router-dom";
 
-export const URL = '/dayPlan';
+export const URL = '/dayPlan/:groupId';
 export const NAME = "DayPlan";
 
-export const DayPlanPage = () => {
+export const DayPlanPage = (props) => {
 
-    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoidGVzdCJ9.U9va0O9bOKzvf4CrfUYh-MvPF_cB5ioCGICnGnb1ioM")
-    localStorage.setItem("groupId", 1)
-    localStorage.setItem("userId", 1)
+    const {groupId} = useParams();
 
     const [createDayPlanDialogOpen, setCreateDayPlanDialogOpen] = useState(false);
     const [searchAttractionDialogOpen, setSearchAttractionDialogOpen] = useState(false);
@@ -63,14 +62,14 @@ export const DayPlanPage = () => {
     var isCordinator = false;
 
     const isCorinator = async () => {
-        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: localStorage.getItem("groupId"), userId: localStorage.getItem("userId") }).toString())
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
             .catch(err => console.log(err.message));
         var body = await resp.json();
         isCordinator = body;
     };
 
     const getData = async () => {
-        doGet('/api/v1/day-plan?' + new URLSearchParams({ groupId: localStorage.getItem("groupId") }).toString())
+        doGet('/api/v1/day-plan?' + new URLSearchParams({ groupId: groupId }).toString())
         .then(response => response.json())
         .then(json => {setdayPlansRaw(json); return json})
         .then(dayPlans => {setAllDayPlans(dayPlans.map(dayPlan => (
@@ -102,7 +101,7 @@ export const DayPlanPage = () => {
     }
 
     const updateDayplanAttractions = async (id) => {
-        var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: localStorage.getItem("groupId"), userId: localStorage.getItem("userId") }).toString())
+        var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
         .then(response => response.json());
 
         var dayPlanData = dayPlansRaw.find(dayPlan => dayPlan.dayPlanId === id);

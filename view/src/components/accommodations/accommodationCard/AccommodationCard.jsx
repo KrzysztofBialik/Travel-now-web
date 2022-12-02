@@ -385,7 +385,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
                             Address:
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            {accommodationData.address}
+                            {accommodationData.streetAddress}
                         </Typography>
                     </Box>
                     <Box sx={{ minWidth: "100px", ml: 5 }}>

@@ -39,7 +39,8 @@ export const FutureTrips = ({trips}) => {
                             icon="home"
                             title="Accommodations"
                             description="Check details of possible accomodations for this trip."
-                            route="/accommodations"
+                            route={`/accommodations/${groupId}`}
+                            
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>

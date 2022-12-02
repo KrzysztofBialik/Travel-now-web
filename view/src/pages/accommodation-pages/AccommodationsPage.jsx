@@ -27,8 +27,11 @@ import EmojiTransportationIcon from '@mui/icons-material/EmojiTransportation';
 
 
 import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
+import { useParams } from "react-router-dom";
+import { doGet, doGetAwait } from "../../components/utils/fetch-utils";
+import { useEffect } from "react";
 
-export const URL = '/accommodations';
+export const URL = '/accommodations/:groupId';
 export const NAME = "Accommodations";
 
 const navbarButtonsData = futureTripButtonsData
@@ -138,9 +141,18 @@ const ExpandMore = styled((props) => {
 
 export const AccommodationsPage = () => {
 
+    const {groupId} = useParams();
+
     const [numOfVotes, setNumOfVotes] = useState(accommodationsData.givenVotes)
     const [userVote, setUserVote] = useState(false);
     const [expanded, setExpanded] = useState(false);
+    const [allAccommodations, setAllAccommodations] = useState([]);
+    const [accommodationsRaw, setAccommodationsRaw] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [loadingSelected, setLoadingSelected] = useState(true);
+    const [seletcedAccommodation, setSeletcedAccommodation] = useState();
+
+    var isCordinator = false;
 
     const voteAction = () => {
         setUserVote(!userVote)
@@ -160,11 +172,50 @@ export const AccommodationsPage = () => {
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     });
 
-    const allAccommodations = accommodationsDataFull.map((accommodation) => (
-        <Grid item xs={12} md={4} key={accommodation.id}>
-            <AccommodationCard accommodationData={accommodation} canModify={false} selected={false} />
-        </Grid>
-    ))
+    const isCorinator = async () => {
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+            .catch(err => console.log(err.message));
+        var body = await resp.json();
+        isCordinator = body;
+    };
+
+    const getData = async () => {
+        lsetLoading(true);
+        doGet('/api/v1/accommodation/list?' + new URLSearchParams({ groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(json => {setAccommodationsRaw(json); return json})
+        .then(accommodations => {setAllAccommodations(accommodations.map((accommodation) => (
+                <Grid item xs={12} md={4} key={accommodation.accommodationId}>
+                    <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={false} />
+                </Grid>)));
+                setLoading(false);
+            })
+        .catch(err => console.log('Request Failed', err));
+    };
+
+    const getChosenAccommodation = async () => {
+        setLoadingSelected(true)
+        doGet('/api/v1/trip-group/accommodation?' + new URLSearchParams({ groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(accommodation => accommodation.groupId === null ? setSeletcedAccommodation(null) : setSeletcedAccommodation(
+                <Grid item xs={12} md={4} key={accommodation.accommodationId}>
+                    <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} />
+                </Grid>))
+        .then(next => setLoadingSelected(false))
+        .catch(err => console.log('Request Failed', err));
+    };
+
+    useEffect(() => {
+        isCorinator();
+        getData();
+        getChosenAccommodation();
+      }, [])
+
+    // const allAccommodations = accommodationsDataFull.map((accommodation) => (
+    //     <Grid item xs={12} md={4} key={accommodation.id}>
+    //         <AccommodationCard accommodationData={accommodation} canModify={false} selected={false} />
+    //     </Grid>
+    // ))
 
     return (
         <Box
@@ -224,9 +275,7 @@ export const AccommodationsPage = () => {
                                 alignItems: 'flex-start'
                             }}
                         >
-                            <Grid item xs={12} md={6}>
-                                <AccommodationCard accommodationData={accommodationsData} canModify={true} selected={true} />
-                            </Grid>
+                            {seletcedAccommodation}
                             <Grid item xs={12} md={6} >
                                 {isLoaded ?
                                     <GoogleMap
