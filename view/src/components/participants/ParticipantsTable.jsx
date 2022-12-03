@@ -21,128 +21,114 @@ import { ParticipantsAvailabilityDialog } from '../availability/ParticipantsAvai
 export const usersData = [
     {
         id: 1,
-        name: "Kajtek",
+        firstName: "Kajtek",
         surname: "Barański",
-        mail: "kajtek.boba@gmail.com",
-        username: "BoBa",
-        phoneNumber: 111111111,
+        email: "kajtek.boba@gmail.com",
+        phoneNumber: "+48 254789631",
         role: "coordinator"
     },
     {
         id: 2,
-        name: "Dorian",
+        firstName: "Dorian",
         surname: "Bestrzyński",
-        mail: "dorek.best@gmail.com",
-        username: "Olisadebe",
-        phoneNumber: 222222222,
+        email: "dorek.best@gmail.com",
+        phoneNumber: "+48 124798645",
         role: "participant"
     },
     {
         id: 3,
-        name: "Krzysztof",
+        firstName: "Krzysztof",
         surname: "Bialik",
-        mail: "krzychu77@gmail.com",
-        username: "Krzychu77",
-        phoneNumber: 333333333,
+        email: "krzychu77@gmail.com",
+        phoneNumber: "+48 325647892",
         role: "participant"
     },
     {
         id: 4,
-        name: "Piotr",
+        firstName: "Piotr",
         surname: "Martin",
-        mail: "piter.martin@gmail.com",
-        username: "Piterm33",
-        phoneNumber: 444444444,
+        email: "piter.martin@gmail.com",
+        phoneNumber: "+48 214576842",
         role: "participant"
     },
     {
         id: 5,
-        name: "Kajtek",
+        firstName: "Kajtek",
         surname: "Barański",
-        mail: "kajtek.boba@gmail.com",
-        username: "BoBa",
-        phoneNumber: 111111111,
+        email: "kajtek.boba@gmail.com",
+        phoneNumber: "+48 214794623",
         role: "coordinator"
     },
     {
         id: 6,
-        name: "Krzysztof",
+        firstName: "Krzysztof",
         surname: "Bialik",
-        mail: "krzychu77@gmail.com",
-        username: "Krzychu77",
-        phoneNumber: 333333333,
+        email: "krzychu77@gmail.com",
+        phoneNumber: "+48 214578964",
         role: "participant"
     },
     {
         id: 7,
-        name: "Piotr",
+        firstName: "Piotr",
         surname: "Martin",
-        mail: "piter.martin@gmail.com",
-        username: "Piterm33",
-        phoneNumber: 444444444,
+        email: "piter.martin@gmail.com",
+        phoneNumber: "+48 210354786",
         role: "participant"
     },
     {
         id: 8,
-        name: "Kajtek",
+        firstName: "Kajtek",
         surname: "Barański",
-        mail: "kajtek.boba@gmail.com",
-        username: "BoBa",
-        phoneNumber: 111111111,
+        email: "kajtek.boba@gmail.com",
+        phoneNumber: "+48 331024785",
         role: "coordinator"
     },
     {
         id: 9,
-        name: "Krzysztof",
+        firstName: "Krzysztof",
         surname: "Bialik",
-        mail: "krzychu77@gmail.com",
-        username: "Krzychu77",
-        phoneNumber: 333333333,
+        email: "krzychu77@gmail.com",
+        phoneNumber: "+48 001247856",
         role: "participant"
     },
     {
         id: 10,
-        name: "Piotr",
+        firstName: "Piotr",
         surname: "Martin",
-        mail: "piter.martin@gmail.com",
-        username: "Piterm33",
-        phoneNumber: 444444444,
+        email: "piter.martin@gmail.com",
+        phoneNumber: "+48 214780312",
         role: "participant"
     },
     {
         id: 11,
-        name: "Kajtek",
+        firstName: "Kajtek",
         surname: "Barański",
-        mail: "kajtek.boba@gmail.com",
-        username: "BoBa",
-        phoneNumber: 111111111,
+        email: "kajtek.boba@gmail.com",
+        phoneNumber: "+48 111999542",
         role: "coordinator"
     },
     {
         id: 12,
-        name: "Dorian",
+        firstName: "Dorian",
         surname: "Bestrzyński",
-        mail: "dorek.best@gmail.com",
-        username: "Olisadebe",
-        phoneNumber: 222222222,
+        email: "dorek.best@gmail.com",
+        phoneNumber: "+48 334778564",
         role: "participant"
     },
     {
         id: 13,
-        name: "Krzysztof",
+        firstName: "Krzysztof",
         surname: "Bialik",
-        mail: "krzychu77@gmail.com",
-        username: "Krzychu77",
-        phoneNumber: 333333333,
+        email: "krzychu77@gmail.com",
+        phoneNumber: "+48 201475558",
         role: "participant"
     },
     {
         id: 14,
-        name: "Piotr",
+        firstName: "Piotr",
         surname: "Martin",
-        mail: "piter.martin@gmail.com",
-        username: "Piterm33",
-        phoneNumber: 444444444,
+        email: "piter.martin@gmail.com",
+        phoneNumber: "+48 201236457",
         role: "participant"
     },
 ];
@@ -241,9 +227,9 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
 
     const participantColumn = [
         {
-            field: 'name', headerName: 'Name', renderHeader: () => (
+            field: 'firstName', headerName: 'FIrstName', renderHeader: () => (
                 <strong>
-                    Name
+                    First Name
                 </strong>
             ), type: 'string', flex: 2, hideable: true, headerAlign: 'center', align: 'left', minWidth: 200
         },
@@ -255,16 +241,16 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
             ), type: 'string', flex: 2, hideable: true, headerAlign: 'center', align: 'left', minWidth: 200,
         },
         {
-            field: 'mail', headerName: 'Mail', renderHeader: () => (
+            field: 'email', headerName: 'Email', renderHeader: () => (
                 <strong>
-                    Mail
+                    Email
                 </strong>
             ), type: 'string', flex: 4, hideable: true, headerAlign: 'center', align: 'left', minWidth: 300,
         },
         {
-            field: 'username', headerName: 'Username', renderHeader: () => (
+            field: 'phoneNumber', headerName: 'PhoneNumber', renderHeader: () => (
                 <strong>
-                    Username
+                    Phone Number
                 </strong>
             ), type: 'string', flex: 2, hideable: true, headerAlign: 'center', align: 'left', minWidth: 200,
         },

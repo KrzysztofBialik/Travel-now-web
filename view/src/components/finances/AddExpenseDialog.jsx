@@ -261,17 +261,13 @@ export const AddExpenseDialog = ({ open, onClose }) => {
                         onSubmit={handleSubmit(handleAddExpense)}
                     >
                         <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                            <TextField
-                                sx={{
-                                    mx: 2
-                                }}
+                            <TextField sx={{ mx: 2 }}
                                 type='string'
                                 autoFocus
                                 margin="normal"
                                 placeholder='Name'
                                 name='name'
                                 label='Name'
-                                // fullWidth
                                 variant="outlined"
                                 InputProps={{
                                     startAdornment: (

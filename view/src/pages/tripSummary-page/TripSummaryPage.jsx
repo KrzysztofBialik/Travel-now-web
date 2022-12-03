@@ -13,7 +13,7 @@ import format from 'date-fns/format';
 
 import { AccommodationCard } from '../../components/accommodations/accommodationCard/AccommodationCard';
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
-import { ParticipantsTable } from '../../components/tripSummary/participantsTable';
+import { ParticipantsTable } from '../../components/tripSummary/ParticipantsTable';
 import { futureTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { futureTripButtonsData2 } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { currentTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
@@ -36,6 +36,8 @@ const center = { lat: accommodationsData.latitude, lng: accommodationsData.longi
 
 
 export const TripSummaryPage = () => {
+
+    const isPlanningStage = false;
 
     const [deleteDatesDialogOpen, setDeleteDatesDialogOpen] = useState(false);
     const [deleteAccommodationDialogOpen, setDeleteAccommodationDialogOpen] = useState(false);
@@ -115,7 +117,7 @@ export const TripSummaryPage = () => {
                                     mb: "30px"
                                 }}
                             >
-                                Barcelona trip summary
+                                "Trip name" summary
                             </Typography>
                         </Grid>
 
@@ -178,6 +180,7 @@ export const TripSummaryPage = () => {
                                     }}>
                                         <TextField
                                             sx={{ width: "50%", minWidth: "240px" }}
+                                            disabled={!isPlanningStage}
                                             type='string'
                                             margin="normal"
                                             step='any'

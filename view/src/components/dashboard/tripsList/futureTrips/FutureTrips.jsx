@@ -50,6 +50,14 @@ export const FutureTrips = () => {
                             route="/participants"
                         />
                     </Grid>
+                    <Grid item xs={12} md={6}>
+                        <DashboardOptionCard
+                            icon="fact_checked"
+                            title="Trip summary"
+                            description="Check general info about the trip."
+                            route="/tripSummary"
+                        />
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>

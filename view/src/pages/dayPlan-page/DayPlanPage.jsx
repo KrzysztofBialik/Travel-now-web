@@ -57,27 +57,29 @@ export const DayPlanPage = () => {
     const isCoordinator = true;
 
     const getData = async () => {
-        localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjUyLCJ1c2VybmFtZSI6InRlc3QifQ.F2kEvy-TDzhberOIHVxCdkUAp3RDsKYaJYSMBPkj9Fk")
-        localStorage.setItem("groupId", 63)
+        localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjEsInVzZXJuYW1lIjoidGVzdCJ9.U9va0O9bOKzvf4CrfUYh-MvPF_cB5ioCGICnGnb1ioM")
+        localStorage.setItem("groupId", 1)
+        localStorage.setItem("userId", 1)
         doGet('/api/v1/day-plan?' + new URLSearchParams({ groupId: localStorage.getItem("groupId") }).toString())
-        .then(response => response.json())
-        .then(json => {setdayPlansRaw(json); return json})
-        .then(dayPlans => {setAllDayPlans(dayPlans.map(dayPlan => (
-                        <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
-                            <DayPlanCard dayPlanData={dayPlan} canModify={isCoordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()}/>
-                        </ListItem>
-                        )));
-                        setLodaing(false)
-                    })
-        .catch(err => console.log('Request Failed', err));
+            .then(response => response.json())
+            .then(json => { setdayPlansRaw(json); return json })
+            .then(dayPlans => {
+                setAllDayPlans(dayPlans.map(dayPlan => (
+                    <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
+                        <DayPlanCard dayPlanData={dayPlan} canModify={isCoordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
+                    </ListItem>
+                )));
+                setLodaing(false)
+            })
+            .catch(err => console.log('Request Failed', err));
     };
 
     useEffect(() => {
         getData();
-      }, [])
+    }, [])
 
     const showDetailedPlan = (name, date, attractions, dayPlanId) => {
-        setAllAttractions([]);     
+        setAllAttractions([]);
         setSelectedDayPlanId(dayPlanId)
         setDayPlanName(name);
         setDayPlanDate(date);
@@ -90,22 +92,22 @@ export const DayPlanPage = () => {
 
     const updateDayplanAttractions = async (id) => {
         var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: localStorage.getItem("groupId"), dayPlanId: id }).toString())
-        .then(response => response.json());
+            .then(response => response.json());
 
         var dayPlanData = dayPlansRaw.find(dayPlan => dayPlan.dayPlanId === id);
         dayPlanData.dayAttractions = newAttractions;
-        setdayPlansRaw(dayPlansRaw.map(dp => dp.dayPlanId === id ? dayPlanData: dp));
-        
+        setdayPlansRaw(dayPlansRaw.map(dp => dp.dayPlanId === id ? dayPlanData : dp));
+
         showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId)
         setAllDayPlans(dayPlansRaw.map(dayPlan => (
             <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
-                <DayPlanCard dayPlanData={dayPlan} canModify={isCoordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()}/>
+                <DayPlanCard dayPlanData={dayPlan} canModify={isCoordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
             </ListItem>
-            )));   
-            
+        )));
+
     }
 
-    
+
     const optimizeDayPlan = () => {
         if (isOptimizedDayPlan) {
             console.log("Domyślny plan dnia");
@@ -127,7 +129,7 @@ export const DayPlanPage = () => {
             <CreateDayPlanDialog
                 open={createDayPlanDialogOpen}
                 onClose={() => setCreateDayPlanDialogOpen(false)}
-                onSuccess={ () => getData() }
+                onSuccess={() => getData()}
             />
             <SearchAttractionDialog
                 open={searchAttractionDialogOpen}
@@ -164,9 +166,11 @@ export const DayPlanPage = () => {
                             minHeight: "100%"
                         }}
                     >
-                        <Grid container spacing={10} sx={{
-                            display: "flex", justifyContent: "center"
-                        }}>
+                        <Grid container spacing={10}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center"
+                            }}>
                             <Grid item xs={10} md={4}>
                                 <Card
                                     sx={{
@@ -226,35 +230,34 @@ export const DayPlanPage = () => {
                                     }}>
                                         {
                                             loading ?
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    flexDirection: "column",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    minHeight: "400px"
-                                                    // border: "2px solid black"
-                                                }}
-                                            >  
-                                                <CircularProgress />
-                                            </Box>
-                                            :
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    flexDirection: "column",
-                                                    justifyContent: "flex-start",
-                                                    minHeight: "400px"
-                                                    // border: "2px solid black"
-                                                }}
-                                            >  
-                                                {/* No day plans created */}
-                                                <List sx={{ p: 0 }}>
-                                                    {allDayPlans}
-                                                </List>
-                                            </Box>
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                        minHeight: "400px"
+                                                        // border: "2px solid black"
+                                                    }}
+                                                >
+                                                    <CircularProgress />
+                                                </Box>
+                                                :
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        justifyContent: "flex-start",
+                                                        minHeight: "400px"
+                                                        // border: "2px solid black"
+                                                    }}
+                                                >
+                                                    {/* No day plans created */}
+                                                    <List sx={{ p: 0 }}>
+                                                        {allDayPlans}
+                                                    </List>
+                                                </Box>
                                         }
-                                        
                                     </Box>
                                 </Card>
                             </Grid>

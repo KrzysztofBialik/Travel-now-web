@@ -1,151 +1,432 @@
 import * as React from 'react';
+import { useState } from 'react';
+import { useNavigate } from "react-router-dom";
+import * as Yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { InputAdornment } from '@mui/material';
 import { Avatar } from '@mui/material';
 import { Button } from '@mui/material';
-import { CssBaseline } from '@mui/material';
 import { TextField } from '@mui/material';
-import { FormControlLabel } from '@mui/material';
-import { Checkbox } from '@mui/material';
+import { FormHelperText } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { Link } from '@mui/material';
 import { Grid } from '@mui/material';
 import { Box } from '@mui/material';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Typography } from '@mui/material';
-import { Container } from '@mui/material';
 import { Card } from '@mui/material';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
+import PersonIcon from '@mui/icons-material/Person';
+import PhoneIcon from '@mui/icons-material/Phone';
+import CakeIcon from '@mui/icons-material/Cake';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
+import LockIcon from '@mui/icons-material/Lock';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
+
 import { SimpleNavbar } from '../../components/navbars/SimpleNavbar';
+import { CalendarPicker } from '@mui/x-date-pickers/CalendarPicker';
 
 
 export const URL = '/register';
 export const NAME = "Register";
 
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
-
 
 export const RegisterPage = () => {
-    const handleSubmit = (event) => {
+
+    const navigate = useNavigate();
+    const today = new Date();
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const defaultInputValues = {
+        email: "",
+        firstName: "",
+        surname: "",
+        code: "48",
+        phone: "",
+        birthDate: new Date(),
+        password: "",
+        confirmPassword: ""
+    };
+
+    const validationSchema = Yup.object().shape({
+        email: Yup
+            .string()
+            .email("Email is not valid")
+            .required("You have to provide email"),
+        firstName: Yup
+            .string()
+            .required("You have to provide first name"),
+        surname: Yup
+            .string()
+            .required("You have to provide surname"),
+        code: Yup
+            .string()
+            .required("You have to provide country code")
+            .min(1, "Country code too short")
+            .max(4, "Country code too long")
+            .matches(/^[0-9]{1,4}$/, "Country code is not valid"),
+        phone: Yup
+            .string()
+            .required("You have to provide phone number")
+            .min(5, "Phone number too short")
+            .max(13, "Phone number too long")
+            .matches(/^[0-9]{5,13}$/, "Phone number is not valid"),
+        birthDate: Yup
+            .date()
+            .max(today)
+            .required("You have to provide your birth date"),
+        password: Yup
+            .string()
+            .required("Password is required")
+            .matches("^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z-0-9]{6,}$",
+                "Password must have min 6 characters, at least one letter and one number"),
+        confirmPassword: Yup
+            .string()
+            .oneOf([Yup.ref('password')], 'Passwords don\'t match')
+            .required("Confirm your password")
+    });
+
+    const { register, handleSubmit, reset, formState: { errors }, control, setValue, getValues } = useForm({
+        resolver: yupResolver(validationSchema),
+        defaultValues: defaultInputValues
+    });
+
+    const handleRegister = (values) => {
+        console.log(values);
+        console.log(getValues());
+        reset();
+        navigate("/dashboard");
+    };
+
+    const onKeyDown = (e) => {
+        e.preventDefault();
+    };
+
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleClickShowConfirmPassword = () => {
+        setShowConfirmPassword(!showConfirmPassword);
+    };
+
+    const handleMouseDownPassword = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
     };
 
     return (
-        <>
-            {/* <Box sx={{ flexGrow: 1 }}>
-                <AppBar position="static">
-                    <Toolbar>
-                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                            Travel-now
-                        </Typography>
-                    </Toolbar>
-                </AppBar>
-            </Box> */}
+        <Box sx={{
+            height: "100%",
+            position: "relative"
+        }}>
             <SimpleNavbar />
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <Box
+            <Box
+                sx={{
+                    width: "100%",
+                    minWidth: '450px',
+                    height: "100%",
+                    my: 10,
+                    display: 'flex',
+                    overflow: "visible",
+                    flexDirection: 'row',
+                    justifyContent: "center"
+                }}
+            >
+                <Card
                     sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
+                        // marginTop: 10,
+                        overflow: "visible",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        position: "relative",
+                        overflowWrap: "break-word",
+                        backgroundClip: "border-box",
+                        width: "100%",
+                        minWidth: '400px',
+                        maxWidth: '500px',
+                        height: "100%",
+                        borderRadius: "10px",
                     }}
+                    elevation={2}
                 >
-                    <Card
+                    <Box
                         sx={{
-                            minWidth: '500px',
-                            padding: '50px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            borderRadius: '20px',
+                            mx: 2,
+                            mt: -3,
+                            py: 1,
+                            px: 2,
+                            // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
+                            backgroundColor: "primary.main",
+                            color: "#000000",
+                            borderRadius: "0.5rem",
+                            boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center"
                         }}
-                        elevation={8}
                     >
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
-                        <Typography component="h1" variant="h5">
+                        <Typography component="h1" variant="h5" color="#FFFFFF">
                             Sign up
                         </Typography>
-                        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} sm={6}>
+                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                            <PersonIcon sx={{ color: "primary.main" }} />
+                        </Avatar>
+                    </Box>
+                    <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        margin: 2,
+                        px: '40px',
+                        pb: "0px",
+                        minHeight: "200px"
+                    }}>
+                        <Box sx={{ height: "100%", width: "100%" }}>
+                            <form onSubmit={handleSubmit(handleRegister)} >
+                                <TextField
+                                    type='string'
+                                    autoFocus
+                                    margin="normal"
+                                    placeholder='Email'
+                                    name='email'
+                                    label='Email'
+                                    fullWidth
+                                    variant="outlined"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <EmailOutlinedIcon sx={{ color: "primary.main" }} />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    {...register('email')}
+                                    error={!!errors.email}
+                                    helperText={errors.email?.message}
+                                />
+                                <TextField
+                                    type="string"
+                                    margin="normal"
+                                    placeholder='First name'
+                                    name='first name'
+                                    label='First name'
+                                    fullWidth
+                                    variant="outlined"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <PersonOutlineOutlinedIcon sx={{ color: "primary.main" }} />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    {...register('firstName')}
+                                    error={!!errors.firstName}
+                                    helperText={errors.firstName?.message}
+                                />
+                                <TextField
+                                    type='string'
+                                    margin="normal"
+                                    placeholder='Surname'
+                                    name='surname'
+                                    label='Surname'
+                                    fullWidth
+                                    variant="outlined"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <PersonIcon sx={{ color: "primary.main" }} />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    {...register('surname')}
+                                    error={!!errors.surname}
+                                    helperText={errors.surname?.message}
+                                />
+                                <Typography variant="body1" color="text.secondary" mt="10px">
+                                    Phone number:
+                                </Typography>
+                                <Box sx={{ display: "flex", mt: "-10px", mb: "10px" }} >
+                                    <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                        <TextField
+                                            sx={{ minWidth: "100px", maxWidth: "100px", mr: "50px" }}
+                                            type='string'
+                                            margin="normal"
+                                            placeholder='Code'
+                                            name='code'
+                                            label='Code'
+                                            variant="outlined"
+                                            InputProps={{
+                                                startAdornment: (
+                                                    <InputAdornment position="start">
+                                                        <Typography sx={{ color: "primary.main" }}>
+                                                            +
+                                                        </Typography>
+                                                    </InputAdornment>
+                                                ),
+                                            }}
+                                            {...register('code')}
+                                            error={!!errors.code}
+                                        // helperText={errors.code?.message}
+                                        />
+                                        <FormHelperText
+                                            error={!!errors.code}
+                                            sx={{
+                                                ml: 1,
+                                                mt: "-5px",
+                                                maxWidth: "120px"
+                                            }}
+                                        >
+                                            <span>{!!errors.code && errors.code?.message}</span>
+                                        </FormHelperText>
+                                    </Box>
                                     <TextField
-                                        autoComplete="given-name"
-                                        name="firstName"
-                                        required
-                                        fullWidth
-                                        id="firstName"
-                                        label="First Name"
-                                        autoFocus
+                                        sx={{ minWidth: "150px", maxWidth: "300px" }}
+                                        type='string'
+                                        margin="normal"
+                                        placeholder='Phone'
+                                        name='phone'
+                                        label='Phone'
+                                        variant="outlined"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <PhoneIcon sx={{ color: "primary.main" }} />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        {...register('phone')}
+                                        error={!!errors.phone}
+                                        helperText={errors.phone?.message}
                                     />
-                                </Grid>
-                                <Grid item xs={12} sm={6}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="lastName"
-                                        label="Last Name"
-                                        name="lastName"
-                                        autoComplete="family-name"
+                                </Box>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <Controller
+                                        name={"birthDate"}
+                                        control={control}
+                                        sx={{ mb: 1 }}
+                                        render={({ field: { onChange, value } }) =>
+                                            <DatePicker
+                                                disableFuture
+                                                label="Birth date"
+                                                // components={{
+                                                //     OpenPickerIcon: CakeIcon
+                                                // }}
+                                                renderInput={(params) =>
+                                                    <TextField
+                                                        {...params}
+                                                        sx={{
+                                                            svg: { color: "#2ab7ca" },
+                                                            mt: 1,
+                                                            mb: 1,
+                                                            width: "50%",
+                                                            minWidth: "200px"
+                                                        }}
+                                                        onKeyDown={onKeyDown}
+                                                        // margin="normal"
+                                                        // InputProps={{
+                                                        //     startAdornment: (
+                                                        //         <InputAdornment position="start">
+                                                        //             <CakeIcon sx={{ color: "primary.main" }} />
+                                                        //         </InputAdornment>
+                                                        //     )
+                                                        // }}
+                                                        error={!!errors.birthDate}
+                                                        helperText={errors.birthDate?.message}
+                                                    />
+                                                }
+                                                value={value}
+                                                onChange={onChange}
+                                                inputFormat="yyyy-MM-dd"
+                                            />
+                                        }
                                     />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        id="email"
-                                        label="Email Address"
-                                        name="email"
-                                        autoComplete="email"
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <TextField
-                                        required
-                                        fullWidth
-                                        name="password"
-                                        label="Password"
-                                        type="password"
-                                        id="password"
-                                        autoComplete="new-password"
-                                    />
-                                </Grid>
-                                <Grid item xs={12}>
-                                    <FormControlLabel
-                                        control={<Checkbox value="allowExtraEmails" color="primary" />}
-                                        label="I want to receive inspiration, marketing promotions and updates via email."
-                                    />
-                                </Grid>
-                            </Grid>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{
-                                    mt: 3, mb: 2
-                                }}
-                            >
-                                Sign Up
-                            </Button>
-                            <Grid container justifyContent="flex-end">
+                                </LocalizationProvider>
+                                <TextField
+                                    type={showPassword ? 'string' : 'password'}
+                                    margin="normal"
+                                    placeholder='Password'
+                                    name='password'
+                                    label='Password'
+                                    fullWidth
+                                    variant="outlined"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <LockOutlinedIcon sx={{ color: "primary.main" }} />
+                                            </InputAdornment>
+                                        ),
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff color="primary" /> : <Visibility color="primary" />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                    {...register('password')}
+                                    error={!!errors.password}
+                                    helperText={errors.password?.message}
+                                />
+                                <TextField
+                                    type={showConfirmPassword ? 'string' : 'password'}
+                                    margin="normal"
+                                    placeholder='Confirm password'
+                                    name='confirmPassword'
+                                    label='Confirm Password'
+                                    fullWidth
+                                    variant="outlined"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <LockIcon sx={{ color: "primary.main" }} />
+                                            </InputAdornment>
+                                        ),
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowConfirmPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showConfirmPassword ? <VisibilityOff color="primary" /> : <Visibility color="primary" />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                    {...register('confirmPassword')}
+                                    error={!!errors.confirmPassword}
+                                    helperText={errors.confirmPassword?.message}
+                                />
+                                <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{
+                                            mt: 3, mb: 2, borderRadius: "10px", width: "150px", color: "#FFFFFF"
+                                        }}
+                                    >
+                                        Sign Up
+                                    </Button>
+                                </Box>
+                            </form>
+                            <Grid container justifyContent="center">
                                 <Grid item>
                                     <Link href="/login" variant="body2">
                                         Already have an account? Sign in
@@ -153,10 +434,286 @@ export const RegisterPage = () => {
                                 </Grid>
                             </Grid>
                         </Box>
-                    </Card>
-                </Box>
-                <Copyright sx={{ mt: 5 }} />
-            </Container>
-        </>
+                    </Box>
+                </Card>
+            </Box>
+
+
+            {/* -----------------------------------------------BEZ NIEBIESKIEGO PASKA NA GÓRZE----------------------------------------------- */}
+            {/* <Box
+                sx={{
+                    width: "100%",
+                    minWidth: '450px',
+                    height: "100%",
+                    marginTop: 10,
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: "center"
+                }}
+            >
+                <Card
+                    sx={{
+                        width: "90%",
+                        minWidth: '400px',
+                        maxWidth: '500px',
+                        padding: '50px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: "center",
+                        borderRadius: '20px',
+                    }}
+                    elevation={2}
+                >
+                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                        <PersonIcon sx={{ color: "primary.main" }} />
+                    </Avatar>
+                    <Typography component="h1" variant="h5" color="primary.main">
+                        Sign up
+                    </Typography>
+                    <Box sx={{ height: "100%", width: "100%", mt: 2 }}>
+                        <form onSubmit={handleSubmit(handleRegister)} >
+                            <TextField
+                                type='string'
+                                autoFocus
+                                margin="normal"
+                                placeholder='Email'
+                                name='email'
+                                label='Email'
+                                fullWidth
+                                variant="outlined"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <EmailOutlinedIcon sx={{ color: "primary.main" }} />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                {...register('email')}
+                                error={!!errors.email}
+                                helperText={errors.email?.message}
+                            />
+                            <TextField
+                                type="string"
+                                margin="normal"
+                                placeholder='First name'
+                                name='first name'
+                                label='First name'
+                                fullWidth
+                                variant="outlined"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <PersonOutlineOutlinedIcon sx={{ color: "primary.main" }} />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                {...register('firstName')}
+                                error={!!errors.firstName}
+                                helperText={errors.firstName?.message}
+                            />
+                            <TextField
+                                type='string'
+                                margin="normal"
+                                placeholder='Surname'
+                                name='surname'
+                                label='Surname'
+                                fullWidth
+                                variant="outlined"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <PersonIcon sx={{ color: "primary.main" }} />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                {...register('surname')}
+                                error={!!errors.surname}
+                                helperText={errors.surname?.message}
+                            />
+                            <Typography variant="body1" color="text.secondary" mt="10px">
+                                Phone number:
+                            </Typography>
+                            <Box sx={{ display: "flex", mt: "-10px", mb: "10px" }} >
+                                <Box sx={{ display: "flex", flexDirection: "column" }}>
+                                    <TextField
+                                        sx={{ minWidth: "100px", maxWidth: "100px", mr: "50px" }}
+                                        type='string'
+                                        margin="normal"
+                                        placeholder='Code'
+                                        name='code'
+                                        label='Code'
+                                        variant="outlined"
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <Typography sx={{ color: "primary.main" }}>
+                                                        +
+                                                    </Typography>
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        {...register('code')}
+                                        error={!!errors.code}
+                                    // helperText={errors.code?.message}
+                                    />
+                                    <FormHelperText
+                                        error={!!errors.code}
+                                        sx={{
+                                            ml: 1,
+                                            mt: "-5px",
+                                            maxWidth: "120px"
+                                        }}
+                                    >
+                                        <span>{!!errors.code && errors.code?.message}</span>
+                                    </FormHelperText>
+                                </Box>
+                                <TextField
+                                    sx={{ minWidth: "150px", maxWidth: "300px" }}
+                                    type='string'
+                                    margin="normal"
+                                    placeholder='Phone'
+                                    name='phone'
+                                    label='Phone'
+                                    variant="outlined"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <PhoneIcon sx={{ color: "primary.main" }} />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    {...register('phone')}
+                                    error={!!errors.phone}
+                                    helperText={errors.phone?.message}
+                                />
+                            </Box>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <Controller
+                                    name={"birthDate"}
+                                    control={control}
+                                    sx={{ mb: 1 }}
+                                    render={({ field: { onChange, value } }) =>
+                                        <DatePicker
+                                            disableFuture
+                                            label="Birth date"
+                                            // components={{
+                                            //     OpenPickerIcon: CakeIcon
+                                            // }}
+                                            renderInput={(params) =>
+                                                <TextField
+                                                    {...params}
+                                                    sx={{
+                                                        svg: { color: "#2ab7ca" },
+                                                        mt: 1,
+                                                        mb: 1,
+                                                        width: "50%",
+                                                        minWidth: "200px"
+                                                    }}
+                                                    onKeyDown={onKeyDown}
+                                                    // margin="normal"
+                                                    // InputProps={{
+                                                    //     startAdornment: (
+                                                    //         <InputAdornment position="start">
+                                                    //             <CakeIcon sx={{ color: "primary.main" }} />
+                                                    //         </InputAdornment>
+                                                    //     )
+                                                    // }}
+                                                    error={!!errors.birthDate}
+                                                    helperText={errors.birthDate?.message}
+                                                />
+                                            }
+                                            value={value}
+                                            onChange={onChange}
+                                            inputFormat="yyyy-MM-dd"
+                                        />
+                                    }
+                                />
+                            </LocalizationProvider>
+                            <TextField
+                                type={showPassword ? 'string' : 'password'}
+                                margin="normal"
+                                placeholder='Password'
+                                name='password'
+                                label='Password'
+                                fullWidth
+                                variant="outlined"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <LockOutlinedIcon sx={{ color: "primary.main" }} />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff color="primary" /> : <Visibility color="primary" />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }}
+                                {...register('password')}
+                                error={!!errors.password}
+                                helperText={errors.password?.message}
+                            />
+                            <TextField
+                                type={showConfirmPassword ? 'string' : 'password'}
+                                margin="normal"
+                                placeholder='Confirm password'
+                                name='confirmPassword'
+                                label='Confirm Password'
+                                fullWidth
+                                variant="outlined"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <LockIcon sx={{ color: "primary.main" }} />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowConfirmPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {showConfirmPassword ? <VisibilityOff color="primary" /> : <Visibility color="primary" />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }}
+                                {...register('confirmPassword')}
+                                error={!!errors.confirmPassword}
+                                helperText={errors.confirmPassword?.message}
+                            />
+                            <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{
+                                        mt: 3, mb: 2, borderRadius: "10px", width: "150px", color: "#FFFFFF"
+                                    }}
+                                >
+                                    Sign Up
+                                </Button>
+                            </Box>
+                        </form>
+                        <Grid container justifyContent="center">
+                            <Grid item>
+                                <Link href="/login" variant="body2">
+                                    Already have an account? Sign in
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Card>
+            </Box > */}
+        </Box >
     );
 }

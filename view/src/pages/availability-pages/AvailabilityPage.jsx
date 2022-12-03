@@ -124,7 +124,7 @@ export const AvailabilityPage = () => {
                             justifyContent: "space-between",
                             alignItems: "center",
                             backgroundColor: "primary.main",
-                            color: "#000000",
+                            color: "#FFFFFF",
                             boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
                         }}
                         title="My Availability"

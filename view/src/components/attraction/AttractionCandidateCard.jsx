@@ -35,8 +35,16 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
         <>
             <Card
                 sx={{
-                    height: "100%", width: "100%", borderRadius: "10px", boxShadow: 3,
-                    "&:hover": { backgroundColor: "primary.light" }
+                    height: "100%",
+                    width: "100%",
+                    borderRadius: "10px",
+                    boxShadow: 3,
+                    borderStyle: "solid",
+                    borderWidth: "2px",
+                    borderColor: "#dee2e6",
+                    "&:hover": {
+                        borderColor: "primary.main",
+                    }
                 }}
                 elevation={2}
             >
@@ -64,29 +72,74 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                                     />
                                 </Box>
                             </Box>
-                            <Box sx={{ width: "55%", minHeight: "200px" }}>
-                                <Box sx={{ height: "100%", width: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
-                                    <Box
-                                        sx={{
-                                            display: "flex",
-                                            flexDirection: "column",
-                                        }}
-                                    >
-                                        <Box sx={{ mb: 1, display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "flex-start" }}>
-                                            <Typography
-                                                sx={{
-                                                    color: "black",
-                                                    fontSize: "32px",
-                                                }}>
-                                                {attractionData.attractionName}
-                                            </Typography>
-                                            <Typography variant="body2" color="text.secondary">
-                                                {attractionData.address}
-                                            </Typography>
-                                        </Box>
-                                    </Box>
-                                </Box>
+                            {/* <Box
+                                sx={{
+                                    width: "55%",
+                                    minHeight: "150px",
+                                    maxHeight: "150px"
+                                }}
+                            > */}
+                            {/* <Box
+                                    sx={{
+                                        height: "100%",
+                                        width: "100%",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "space-between"
+                                    }}
+                                > */}
+                            {/* <Box
+                                    sx={{
+                                        height: "100%",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "flex-start",
+                                        alignItems: "flex-start"
+                                    }}
+                                > */}
+                            <Box
+                                sx={{
+                                    width: "55%",
+                                    minHeight: "150px",
+                                    maxHeight: "150px",
+                                    mb: 1,
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "flex-start",
+                                    alignItems: "flex-start"
+                                }}
+                            >
+                                <Typography
+                                    sx={{
+                                        height: "50%",
+                                        color: "black",
+                                        fontSize: "28px",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis"
+                                    }}
+                                    align="left"
+                                >
+                                    {/* {attractionData.attractionName} */}
+                                    aaaaaaa
+                                    aaaaaaaaaaaaaaaa
+                                    aaaaaaaaaaaaaaaa
+                                    aaaaaaa
+                                    aaaa
+                                </Typography>
+                                <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    sx={{
+                                        height: "50%"
+                                    }}
+                                    align="left"
+                                >
+                                    {attractionData.address}
+                                </Typography>
                             </Box>
+                            {/* </Box> */}
+                            {/* </Box> */}
+                            {/* </Box> */}
                         </Box>
                     </ButtonBase>
                     <Box sx={{ display: "flex", justifyContent: "flex-end", mt: -5 }}>
