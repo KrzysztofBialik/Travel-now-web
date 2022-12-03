@@ -100,8 +100,8 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                             <Box
                                 sx={{
                                     width: "55%",
-                                    minHeight: "150px",
-                                    maxHeight: "150px",
+                                    minHeight: "180px",
+                                    maxHeight: "180px",
                                     mb: 1,
                                     display: "flex",
                                     flexDirection: "column",
@@ -111,11 +111,14 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                             >
                                 <Typography
                                     sx={{
-                                        height: "50%",
+                                        height: "100%",
                                         color: "black",
                                         fontSize: "28px",
                                         overflow: "hidden",
-                                        textOverflow: "ellipsis"
+                                        textOverflow: "ellipsis",
+                                        display: "-webkit-box",
+                                        WebkitLineClamp: "3",
+                                        WebkitBoxOrient: "vertical"
                                     }}
                                     align="left"
                                 >
