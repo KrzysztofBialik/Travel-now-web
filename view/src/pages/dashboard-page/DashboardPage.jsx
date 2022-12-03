@@ -23,6 +23,7 @@ export const NAME = "Dashboard";
 
 export const DashboardPage = () => {
 
+
     const [createTripDialogOpen, setCreateTripDialogOpen] = useState(false);
     const [tripsList, setTripsList] = useState([]);
 
@@ -30,9 +31,9 @@ export const DashboardPage = () => {
         localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
         localStorage.setItem("userId", 31)
         await doGet('/api/v1/trip-group/groups/' + localStorage.getItem("userId"))
-        .then(response => response.json())
-        .then(response => setTripsList(response))
-        .catch(err => console.log('Request Failed', err));
+            .then(response => response.json())
+            .then(response => setTripsList(response))
+            .catch(err => console.log('Request Failed', err));
     }
     //utworzenie nowej wycieczki
     const createTrip = (tripName, startingLocation, currency, minDays, minParticipants, description) => {
@@ -43,21 +44,13 @@ export const DashboardPage = () => {
         console.log(minDays);
         console.log(minParticipants);
         console.log(description);
-        // // trips.push(trip10, data.tripName, "future");
-        // setTripsList(tripsList => [...tripsList, { id: 10, name: tripName, groupStage: "future" }])
-        // console.log(tripsList)
     };
 
     useEffect(() => {
         getTrips();
-      }, [])
+    }, [])
 
     return (
-        // <div style={{ backgroundColor: 'black' }}>
-        //     <h1>Welcome to dashboard</h1>
-        //     <ParticlesComponent />
-        // </div>
-        // <ParticlesComponent />
         <>
             <CreateTripDialog
                 open={createTripDialogOpen}
@@ -72,8 +65,10 @@ export const DashboardPage = () => {
                     backgroundSize: "cover",
                     backgroundPosition: "top",
                     display: "grid",
+                    mt: -5,
                     placeItems: "center",
                     minHeight: "75vh",
+                    minWidth: "1000px",
                     width: "100%"
                 }}
             >
@@ -88,10 +83,9 @@ export const DashboardPage = () => {
                     <Grid item xs={12} justifyContent="center" mx="auto">
                         <Typography
                             variant="h1"
-                            mt={-6}
-                            mb={1}
+                            mt={-8}
                             textAlign="center"
-                            color="common.white"
+                            color="#FFFFFF"
                             sx={{
                                 fontSize: "40px",
                             }}
@@ -110,7 +104,7 @@ export const DashboardPage = () => {
                             <Button
                                 variant="contained"
                                 onClick={() => setCreateTripDialogOpen(true)}
-                                sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                                sx={{ color: "#FFFFFF", borderRadius: "20px", mt: 2 }}
                             >
                                 Start planning
                             </Button>
@@ -124,17 +118,19 @@ export const DashboardPage = () => {
                 mx: { xs: 2, lg: 3 },
                 mt: -8,
                 mb: 4,
-                backgroundColor: "#BDD7EB",
+                backgroundColor: "#F0F2F5",
                 backdropFilter: "saturate(200%) blur(30px)",
+                minWidth: "950px",
+                borderRadius: "20px"
             }}
             >
-                <CurrentTrips trips={tripsList}/>
+                <CurrentTrips trips={tripsList} />
 
                 <Divider variant="middle" />
-                <FutureTrips trips={tripsList}/>
+                <FutureTrips trips={tripsList} />
 
                 <Divider variant="middle" />
-                <PastTrips trips={tripsList}/>
+                <PastTrips trips={tripsList} />
             </Card>
         </>
     );

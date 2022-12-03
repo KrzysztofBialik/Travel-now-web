@@ -42,6 +42,11 @@ export const futureTripButtonsData = [
         id: 3,
         name: "Participants",
         link: "/participants",
+    },
+    {
+        id: 4,
+        name: "Summary",
+        link: "/tripSummary",
     }
 ];
 
@@ -64,8 +69,8 @@ export const currentTripButtonsData = [
     },
     {
         id: 4,
-        name: "Media",
-        link: "/media",
+        name: "Summary",
+        link: "/tripSummary",
     }
 ];
 
@@ -78,9 +83,10 @@ export const pastTripButtonsData = [
     },
     {
         id: 1,
-        name: "Participants",
-        link: "/participants",
+        name: "Summary",
+        link: "/tripSummary",
     },
+
     {
         id: 3,
         name: "Media",
@@ -134,3 +140,4 @@ export const futureTripButtonsDataWithGroupId = (groupId) => {
         link: "/participants",
     }];
 }
+];

@@ -25,7 +25,7 @@ export const DashboardOptionCard = ({ icon, title, description, route, groupId }
                     <Typography
                         display="block"
                     >
-                        <Icon fontSize="40px">{icon}</Icon>
+                        <Icon sx={{ fontSize: "40px", color: "primary.dark" }}>{icon}</Icon>
                     </Typography>
                     <Typography
                         display="block"

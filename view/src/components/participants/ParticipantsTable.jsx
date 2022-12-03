@@ -16,136 +16,9 @@ import { GridToolbarDensitySelector, } from '@mui/x-data-grid';
 import { RemoveParticipantDialog } from './RemoveParticipantDialog';
 import { PromoteParticipantDialog } from './PromoteParticipantDialog';
 import { ParticipantsAvailabilityDialog } from '../availability/ParticipantsAvailabilityDialog';
-
-
-export const usersData = [
-    {
-        id: 1,
-        name: "Kajtek",
-        surname: "Barański",
-        mail: "kajtek.boba@gmail.com",
-        username: "BoBa",
-        phoneNumber: 111111111,
-        role: "coordinator"
-    },
-    {
-        id: 2,
-        name: "Dorian",
-        surname: "Bestrzyński",
-        mail: "dorek.best@gmail.com",
-        username: "Olisadebe",
-        phoneNumber: 222222222,
-        role: "participant"
-    },
-    {
-        id: 3,
-        name: "Krzysztof",
-        surname: "Bialik",
-        mail: "krzychu77@gmail.com",
-        username: "Krzychu77",
-        phoneNumber: 333333333,
-        role: "participant"
-    },
-    {
-        id: 4,
-        name: "Piotr",
-        surname: "Martin",
-        mail: "piter.martin@gmail.com",
-        username: "Piterm33",
-        phoneNumber: 444444444,
-        role: "participant"
-    },
-    {
-        id: 5,
-        name: "Kajtek",
-        surname: "Barański",
-        mail: "kajtek.boba@gmail.com",
-        username: "BoBa",
-        phoneNumber: 111111111,
-        role: "coordinator"
-    },
-    {
-        id: 6,
-        name: "Krzysztof",
-        surname: "Bialik",
-        mail: "krzychu77@gmail.com",
-        username: "Krzychu77",
-        phoneNumber: 333333333,
-        role: "participant"
-    },
-    {
-        id: 7,
-        name: "Piotr",
-        surname: "Martin",
-        mail: "piter.martin@gmail.com",
-        username: "Piterm33",
-        phoneNumber: 444444444,
-        role: "participant"
-    },
-    {
-        id: 8,
-        name: "Kajtek",
-        surname: "Barański",
-        mail: "kajtek.boba@gmail.com",
-        username: "BoBa",
-        phoneNumber: 111111111,
-        role: "coordinator"
-    },
-    {
-        id: 9,
-        name: "Krzysztof",
-        surname: "Bialik",
-        mail: "krzychu77@gmail.com",
-        username: "Krzychu77",
-        phoneNumber: 333333333,
-        role: "participant"
-    },
-    {
-        id: 10,
-        name: "Piotr",
-        surname: "Martin",
-        mail: "piter.martin@gmail.com",
-        username: "Piterm33",
-        phoneNumber: 444444444,
-        role: "participant"
-    },
-    {
-        id: 11,
-        name: "Kajtek",
-        surname: "Barański",
-        mail: "kajtek.boba@gmail.com",
-        username: "BoBa",
-        phoneNumber: 111111111,
-        role: "coordinator"
-    },
-    {
-        id: 12,
-        name: "Dorian",
-        surname: "Bestrzyński",
-        mail: "dorek.best@gmail.com",
-        username: "Olisadebe",
-        phoneNumber: 222222222,
-        role: "participant"
-    },
-    {
-        id: 13,
-        name: "Krzysztof",
-        surname: "Bialik",
-        mail: "krzychu77@gmail.com",
-        username: "Krzychu77",
-        phoneNumber: 333333333,
-        role: "participant"
-    },
-    {
-        id: 14,
-        name: "Piotr",
-        surname: "Martin",
-        mail: "piter.martin@gmail.com",
-        username: "Piterm33",
-        phoneNumber: 444444444,
-        role: "participant"
-    },
-];
+import { doGet } from "../../components/utils/fetch-utils";
+import { get } from 'react-hook-form';
+import { useEffect } from 'react';
 
 export const availabilities = [
     {
@@ -217,13 +90,37 @@ function CustomToolbar() {
 };
 
 
-export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
+export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
     const navigate = useNavigate();
+    const [usersData, setUsersData] = useState([]);
+    const [groupCoordinators, setGroupCoordinators] = useState([]);
+
+    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
+    localStorage.setItem("userId", 31)
+
+    const getUsersData = async () => {
+        await doGet('/api/v1/user-group/participants?' + new URLSearchParams({ groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(response => setUsersData(response))
+        .catch(err => console.log('Request Failed', err));
+
+        await doGet('/api/v1/user-group/coordinators?' + new URLSearchParams({ groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(response => setGroupCoordinators(response))
+        .catch(err => console.log('Request Failed', err));
+    }
+
+  
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
     const [promoteDialogOpen, setPromoteDialogOpen] = useState(false);
     const [participantsAvailabilityDialogOpen, setParticipantsAvailabilityDialogOpen] = useState(false);
     const [usersAvailability, setUsersAvailability] = useState([]);
     const [username, setUsername] = useState("");
+
+    useEffect(() => {
+        getUsersData();
+      }, [])
+
 
     const removeAction = () => {
         setRemoveDialogOpen(true);
@@ -241,9 +138,10 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
 
     const participantColumn = [
         {
-            field: 'name', headerName: 'Name', renderHeader: () => (
+
+            field: 'firstName', headerName: 'FirstName', renderHeader: () => (
                 <strong>
-                    Name
+                    First Name
                 </strong>
             ), type: 'string', flex: 2, hideable: true, headerAlign: 'center', align: 'left', minWidth: 200
         },
@@ -255,18 +153,19 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
             ), type: 'string', flex: 2, hideable: true, headerAlign: 'center', align: 'left', minWidth: 200,
         },
         {
-            field: 'mail', headerName: 'Mail', renderHeader: () => (
+            field: 'phoneNumber', headerName: 'Phone Number', renderHeader: () => (
+                <strong>
+                    Phone Number
+                </strong>
+            ), type: 'string', flex: 1, hideable: true, headerAlign: 'center', align: 'left', minWidth: 200,
+        },
+        {
+
+            field: 'email', headerName: 'Mail', renderHeader: () => (
                 <strong>
                     Mail
                 </strong>
-            ), type: 'string', flex: 4, hideable: true, headerAlign: 'center', align: 'left', minWidth: 300,
-        },
-        {
-            field: 'username', headerName: 'Username', renderHeader: () => (
-                <strong>
-                    Username
-                </strong>
-            ), type: 'string', flex: 2, hideable: true, headerAlign: 'center', align: 'left', minWidth: 200,
+            ), type: 'string', flex: 2, hideable: true, headerAlign: 'center', align: 'left', minWidth: 250,
         },
         {
             field: 'role', headerName: 'Role', renderHeader: () => (
@@ -284,9 +183,11 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
             getActions: (params) => {
                 const username = params.row.username;
                 const userAvailability = availabilities.filter(availability => (availability.user === params.row.username))
-
+            
                 if (isCoordinator) {
-                    if (groupStage === 1) {
+                    console.log("shouldnt be here")
+                    console.log(isCoordinator)
+                    if (groupStage === "PLANNING_STAGE") {
                         return [
                             <GridActionsCellItem
                                 icon={<DeleteIcon sx={{ color: "primary.main" }} />}
@@ -326,7 +227,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
                     };
                 }
                 else {
-                    if (groupStage === 1) {
+                    if (groupStage === "PLANNING_STAGE") {
                         return [
                             <GridActionsCellItem
                                 icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
@@ -351,6 +252,34 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
         },
     ];
 
+    var userFullData = []
+    const userWithRoles = () => {
+        for(var i = 0 ; i < usersData.length; i++) {
+            var user = {}
+            let userId = usersData[i].userId;
+            let firstName = usersData[i].firstName;
+            let surname = usersData[i].surname;
+            let phoneNumber = usersData[i].phoneNumber;
+            let email = usersData[i].email;
+            let role;
+            
+            if(groupCoordinators.some(coordinator => coordinator.userId === usersData[i].userId)){
+                role = "COORDINATOR"
+            }
+            else {
+                role = "PARTICIPANT";
+            }
+            user['userId'] = userId;
+            user['firstName'] = firstName;
+            user['surname'] = surname;
+            user['phoneNumber'] = phoneNumber;
+            user['email'] = email;
+            user['role'] = role;
+            userFullData.push(user);
+        }
+    }
+
+    userWithRoles();
 
     return (
         <>
@@ -391,7 +320,8 @@ export const ParticipantsTable = ({ groupStage, isCoordinator }) => {
                     getRowHeight={() => 'auto'}
                     autoHeight
                     columns={participantColumn}
-                    rows={usersData}
+                    rows={userFullData}
+                    getRowId={row => row.userId}
                     hideFooter
                     components={{
                         Toolbar: CustomToolbar,

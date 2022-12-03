@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Box } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Button } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
-import { GridActionsCellItem } from '@mui/x-data-grid';
 import { gridClasses } from '@mui/x-data-grid';
+import { GridActionsCellItem } from "@mui/x-data-grid";
+import DeleteIcon from '@mui/icons-material/Delete';
 import { DeleteAvailabilityDialog } from "./DeleteAvailabilityDialog";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
@@ -43,11 +44,27 @@ export const AvailabilityTable = ({ availabilities }) => {
             ), type: 'actions', flex: 1, hideable: true, headerAlign: 'center', minWidth: 100,
             getActions: () => [
                 <GridActionsCellItem
-                    icon={<DeleteIcon sx={{ color: "primary.main" }} />}
+                    icon={<DeleteIcon sx={{ color: "error.main" }} />}
                     label="Remove from group"
                     onClick={deleteAvailabilityAction}
                 />
             ]
+            // getActions: () => [
+            //     <Button
+            //         variant="contained"
+            //         sx={{
+            //             backgroundColor: "primary.main",
+            //             borderRadius: "20px",
+            //             "&:hover": {
+            //                 backgroundColor: "primary.dark"
+            //             }
+            //         }}
+            //         onClick={deleteAvailabilityAction}
+            //     >
+            //         <DeleteIcon sx={{ color: "error.main" }} />
+            //         Delete
+            //     </Button>
+            // ]
         },
     ];
 

@@ -6,12 +6,13 @@ import { Box } from '@mui/material';
 import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
 import { LONDONURL } from '../../../images/Images';
+import { Link } from "react-router-dom";
 
 export const FutureTrips = ({trips}) => {
 
     console.log(trips)
     const tripsPlanningStage = trips.filter(trip => trip.groupStage === 'PLANNING_STAGE')
-    const futureTrips = tripsPlanningStage.map(({ groupId, name, description }) => (
+    const futureTrips = tripsPlanningStage.map(({ groupId, name, description, groupStage}) => (
         <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
             <Grid item xs={12} lg={4} sx={{ mx: "auto" }}>
                 <DashboardFlipCard
@@ -48,7 +49,16 @@ export const FutureTrips = ({trips}) => {
                             icon="groups_2"
                             title="Participants"
                             description="See other participants of this trip."
-                            route="/participants"
+                            route={`/participants/${groupId}`}
+                            groupId={groupId}
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={6}>
+                        <DashboardOptionCard
+                            icon="fact_checked"
+                            title="Trip summary"
+                            description="Check general info about the trip."
+                            route="/tripSummary"
                         />
                     </Grid>
                 </Grid>

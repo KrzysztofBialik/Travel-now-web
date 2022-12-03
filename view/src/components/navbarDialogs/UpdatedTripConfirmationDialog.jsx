@@ -7,7 +7,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 
-export const CreatedTripConfirmationDialog = ({ open, onClose }) => {
+export const UpdatedTripConfirmationDialog = ({ open, onClose }) => {
 
     return (
         <div>
@@ -18,15 +18,14 @@ export const CreatedTripConfirmationDialog = ({ open, onClose }) => {
                 <DialogTitle>Congratulations!</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        You have created your next trip. Next step - planning.
+                        You have updated trip details.
                     </DialogContentText>
                     <DialogActions>
                         <Button
                             variant="outlined"
                             sx={{
                                 borderRadius: "10px",
-                                mx: "10px",
-                                mb: "10px",
+                                mt: "20px",
                                 backgroundColor: "primary.main",
                                 color: "#FFFFFF",
                                 "&:hover": {
@@ -36,7 +35,7 @@ export const CreatedTripConfirmationDialog = ({ open, onClose }) => {
                             }}
                             onClick={onClose}
                         >
-                            Return
+                            Close
                         </Button>
                     </DialogActions>
                 </DialogContent>

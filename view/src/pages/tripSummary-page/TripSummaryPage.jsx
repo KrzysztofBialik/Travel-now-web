@@ -5,6 +5,7 @@ import { Typography } from '@mui/material';
 import { Card } from '@mui/material';
 import { Button } from '@mui/material';
 import { Grid } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { InputAdornment } from '@mui/material';
@@ -13,7 +14,7 @@ import format from 'date-fns/format';
 
 import { AccommodationCard } from '../../components/accommodations/accommodationCard/AccommodationCard';
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
-import { ParticipantsTable } from '../../components/tripSummary/participantsTable';
+import { ParticipantsTable } from '../../components/tripSummary/ParticipantsTable';
 import { futureTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { futureTripButtonsData2 } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { currentTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
@@ -36,6 +37,10 @@ const center = { lat: accommodationsData.latitude, lng: accommodationsData.longi
 
 
 export const TripSummaryPage = () => {
+
+    const isCoordinator = true;
+    const isPlanningStage = true;
+    const accommodationSelected = true;
 
     const [deleteDatesDialogOpen, setDeleteDatesDialogOpen] = useState(false);
     const [deleteAccommodationDialogOpen, setDeleteAccommodationDialogOpen] = useState(false);
@@ -115,7 +120,7 @@ export const TripSummaryPage = () => {
                                     mb: "30px"
                                 }}
                             >
-                                Barcelona trip summary
+                                "Trip name" summary
                             </Typography>
                         </Grid>
 
@@ -163,10 +168,14 @@ export const TripSummaryPage = () => {
                                         <Typography variant="h6" sx={{ color: "#FFFFFF" }} >
                                             Dates of the trip
                                         </Typography>
-                                        <IconButton sx={{ p: 0 }} onClick={deleteDatesAction}>
-                                            <DeleteIcon
-                                                sx={{ color: "error.main", fontSize: "32px" }}></DeleteIcon>
-                                        </IconButton>
+                                        {(isPlanningStage && isCoordinator) ?
+                                            <IconButton sx={{ p: 0 }} onClick={deleteDatesAction}>
+                                                <DeleteIcon
+                                                    sx={{ color: "error.main", fontSize: "32px" }}></DeleteIcon>
+                                            </IconButton>
+                                            :
+                                            <></>
+                                        }
                                     </Box>
                                     <Box sx={{
                                         display: "flex",
@@ -176,8 +185,17 @@ export const TripSummaryPage = () => {
                                         margin: 2,
                                         minHeight: "200px"
                                     }}>
+                                        {!isPlanningStage ?
+                                            <Typography sx={{ color: "primary.main", fontSize: "32px" }}>
+                                                Final dates of the trip
+                                            </Typography>
+                                            :
+                                            <></>
+                                        }
+                                        <></>
                                         <TextField
                                             sx={{ width: "50%", minWidth: "240px" }}
+                                            disabled={!isPlanningStage || !isCoordinator}
                                             type='string'
                                             margin="normal"
                                             step='any'
@@ -192,8 +210,9 @@ export const TripSummaryPage = () => {
                                                     </InputAdornment>
                                                 ),
                                             }}
-                                            helperText="Add dates here or choose one of the ranges from the optimized section."
-                                            onClick={() => setDateRangePickerDialogOpen(true)}
+                                            helperText={isPlanningStage ? "Only coordinator can change dates here or choose one of the ranges from the optimized section"
+                                                : ""}
+                                            onClick={(isPlanningStage && isCoordinator) ? () => setDateRangePickerDialogOpen(true) : undefined}
                                             value={(range[0].startDate !== null && range[0].endDate !== null) ?
                                                 `${format(range[0].startDate, "dd.MM.yyyy")} - ${format(range[0].endDate, "dd.MM.yyyy")}`
                                                 : "No dates selected"
@@ -209,18 +228,22 @@ export const TripSummaryPage = () => {
                                                 bottom: 0
                                             }}
                                         >
-                                            <Link to="/availability">
-                                                <Button variant="contained"
-                                                    sx={{
-                                                        backgroundColor: "primary.main",
-                                                        color: "#FFFFFF",
-                                                        borderRadius: "20px",
-                                                        '&:hover': { backgroundColor: "primary.light" }
-                                                    }}
-                                                >
-                                                    View more
-                                                </Button>
-                                            </Link>
+                                            {isPlanningStage ?
+                                                <Link to="/availability">
+                                                    <Button variant="contained"
+                                                        sx={{
+                                                            backgroundColor: "primary.main",
+                                                            color: "#FFFFFF",
+                                                            borderRadius: "20px",
+                                                            '&:hover': { backgroundColor: "primary.light" }
+                                                        }}
+                                                    >
+                                                        View more
+                                                    </Button>
+                                                </Link>
+                                                :
+                                                <></>
+                                            }
                                         </Box>
                                     </Box>
 
@@ -275,12 +298,10 @@ export const TripSummaryPage = () => {
                                                 flexDirection: "column",
                                                 justifyItems: "center",
                                                 alignItems: "center",
-                                                justifyContent: "space-around",
+                                                justifyContent: "center",
                                                 pl: 1,
                                                 minHeight: "200px"
-                                                // border: "2px solid black"
                                             }}
-                                        // elevation={4}
                                         >
                                             <Typography variant="h4">
                                                 Wrocław, centrum handlowe Borek
@@ -328,9 +349,13 @@ export const TripSummaryPage = () => {
                                         <Typography variant="h6" sx={{ color: "#FFFFFF" }} >
                                             Accommodation
                                         </Typography>
-                                        <IconButton sx={{ p: 0 }} onClick={deleteAccommodationAction}>
-                                            <DeleteIcon sx={{ color: "error.main", fontSize: "32px" }}></DeleteIcon>
-                                        </IconButton>
+                                        {(isPlanningStage && isCoordinator) ?
+                                            <IconButton sx={{ p: 0 }} onClick={deleteAccommodationAction}>
+                                                <DeleteIcon sx={{ color: "error.main", fontSize: "32px" }}></DeleteIcon>
+                                            </IconButton>
+                                            :
+                                            <></>
+                                        }
                                     </Box>
                                     <Box sx={{
                                         display: "flex",
@@ -342,21 +367,47 @@ export const TripSummaryPage = () => {
                                         minHeight: "200px"
                                     }}>
                                         <Grid container spacing={10} sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}>
-                                            <Grid item xs={5}>
-                                                <AccommodationCard accommodationData={accommodationsData} canModify={false} selected={true} />
-                                            </Grid>
-                                            <Grid item xs={5} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                                {isLoaded ?
-                                                    <GoogleMap
-                                                        zoom={14}
-                                                        center={center}
-                                                        mapContainerClassName="map-container"
+                                            {accommodationSelected ?
+                                                <>
+                                                    <Grid item xs={5}>
+                                                        <AccommodationCard accommodationData={accommodationsData} canModify={false} selected={true} />
+                                                    </Grid>
+                                                    <Grid item xs={5} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                                        {isLoaded ?
+                                                            <GoogleMap
+                                                                zoom={14}
+                                                                center={center}
+                                                                mapContainerClassName="map-container"
+                                                            >
+                                                                <MarkerF position={center} />
+                                                            </GoogleMap>
+                                                            :
+                                                            <Box sx={{ width: "100%", height: "500px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                                                <CircularProgress />
+                                                            </Box>
+                                                        }
+                                                    </Grid>
+                                                </>
+                                                :
+                                                <Grid item xs={12}>
+                                                    <Box
+                                                        sx={{
+                                                            width: "100%",
+                                                            minWidth: "400px",
+                                                            minHeight: "300px",
+                                                            maxHeight: "300px",
+                                                            display: "flex",
+                                                            justifyContent: "center",
+                                                            alignItems: "center"
+                                                        }}
                                                     >
-                                                        <MarkerF position={center} />
-                                                    </GoogleMap>
-                                                    :
-                                                    <Typography variant="h1">Loading...</Typography>}
-                                            </Grid>
+                                                        <Typography sx={{ color: "primary.main", fontSize: "40px" }}>
+                                                            No accommodation has been selected
+                                                        </Typography>
+                                                    </Box>
+                                                </Grid>
+                                            }
+
                                         </Grid>
 
                                         <Box
@@ -369,17 +420,21 @@ export const TripSummaryPage = () => {
                                                 bottom: 0
                                             }}
                                         >
-                                            <Link to="/accommodations">
-                                                <Button variant="contained"
-                                                    sx={{
-                                                        backgroundColor: "primary.main",
-                                                        color: "#FFFFFF",
-                                                        borderRadius: "20px",
-                                                        '&:hover': { backgroundColor: "primary.light" }
-                                                    }}>
-                                                    View more
-                                                </Button>
-                                            </Link>
+                                            {isPlanningStage ?
+                                                <Link to="/accommodations">
+                                                    <Button variant="contained"
+                                                        sx={{
+                                                            backgroundColor: "primary.main",
+                                                            color: "#FFFFFF",
+                                                            borderRadius: "20px",
+                                                            '&:hover': { backgroundColor: "primary.light" }
+                                                        }}>
+                                                        View more
+                                                    </Button>
+                                                </Link>
+                                                :
+                                                <></>
+                                            }
                                         </Box>
                                     </Box>
                                 </Card>
@@ -473,16 +528,20 @@ export const TripSummaryPage = () => {
                                 alignItems: "center",
                                 justifyContent: "space-around"
                             }}>
-                                <Button variant="contained"
-                                    sx={{
-                                        fontSize: "28px",
-                                        color: "#FFFFFF",
-                                        backgroundColor: "primary.main",
-                                        borderRadius: "20px",
-                                        '&:hover': { backgroundColor: "primary.light" }
-                                    }}>
-                                    Begin trip
-                                </Button>
+                                {(isPlanningStage && isCoordinator) ?
+                                    <Button variant="contained"
+                                        sx={{
+                                            fontSize: "28px",
+                                            color: "#FFFFFF",
+                                            backgroundColor: "primary.main",
+                                            borderRadius: "20px",
+                                            '&:hover': { backgroundColor: "primary.light" }
+                                        }}>
+                                        Begin trip
+                                    </Button>
+                                    :
+                                    <></>
+                                }
                             </Box>
                         </Grid>
                     </Grid>

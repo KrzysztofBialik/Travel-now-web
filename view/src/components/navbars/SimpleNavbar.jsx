@@ -7,9 +7,9 @@ import Typography from '@mui/material/Typography';
 export const SimpleNavbar = () => {
     return (
         <Box sx={{ flexGrow: 1, minWidth: "1200px" }}>
-            <AppBar position="static">
+            <AppBar sx={{ borderBottomLeftRadius: "20px", borderBottomRightRadius: "20px", position: "static" }}>
                 <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" component="div" sx={{ ml: "50px", color: "#FFFFFF" }}>
                         Travel-now
                     </Typography>
                 </Toolbar>

@@ -65,47 +65,77 @@
 // }
 
 import * as React from 'react';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { InputAdornment } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import Container from '@mui/material/Container';
+import { IconButton } from '@mui/material';
 import { Card } from '@mui/material';
+import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import LockIcon from '@mui/icons-material/Lock';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { SimpleNavbar } from '../../components/navbars/SimpleNavbar';
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
-
-function Copyright(props) {
-    return (
-        <Typography variant="body2" color="text.secondary" align="center" {...props}>
-            {'Copyright © '}
-            <Link color="inherit" href="https://mui.com/">
-                Your Website
-            </Link>{' '}
-            {new Date().getFullYear()}
-            {'.'}
-        </Typography>
-    );
-}
 
 export const URL = '/login';
 export const NAME = "Login";
 
 export const LoginPage = () => {
-    const handleSubmit = (event) => {
+
+    const navigate = useNavigate();
+    const [showPassword, setShowPassword] = useState(false);
+
+    const defaultInputValues = {
+        email: "",
+        password: "",
+    };
+
+    const validationSchema = Yup.object().shape({
+        email: Yup
+            .string()
+            .email("Email is not valid")
+            .required("You have to provide email"),
+        password: Yup
+            .string()
+            .required("Password is required")
+            .matches("^(?=.*[A-Za-z])(?=.*[0-9])[A-Za-z-0-9]{6,}$",
+                "Incorrect password or email address")
+    });
+
+    const { register, handleSubmit, reset, formState: { errors }, control, setValue, getValues } = useForm({
+        resolver: yupResolver(validationSchema),
+        defaultValues: defaultInputValues
+    });
+
+    const handleLogin = (values) => {
+        console.log(values);
+        console.log(getValues());
+        reset();
+        navigate("/dashboard");
+    };
+
+    const onKeyDown = (e) => {
+        e.preventDefault();
+    };
+
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+
+    const handleMouseDownPassword = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
     };
 
     return (
@@ -115,89 +145,255 @@ export const LoginPage = () => {
             minWidth: "600px"
         }}
         >
-            {/* <SimpleNavbar /> */}
-            <NavigationNavbar buttonsData={[]} />
-            <Container component="main" maxWidth="xs">
-                <CssBaseline />
-                <Box
+            <SimpleNavbar />
+            <Box
+                sx={{
+                    width: "100%",
+                    minWidth: '450px',
+                    height: "100%",
+                    marginTop: 10,
+                    display: 'flex',
+                    overflow: "visible",
+                    flexDirection: 'row',
+                    justifyContent: "center"
+                }}
+            >
+                <Card
                     sx={{
-                        marginTop: 4,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
+                        marginTop: 10,
+                        overflow: "visible",
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        position: "relative",
+                        overflowWrap: "break-word",
+                        backgroundClip: "border-box",
+                        width: "100%",
+                        minWidth: '400px',
+                        maxWidth: '500px',
+                        height: "100%",
+                        borderRadius: "10px",
                     }}
+                    elevation={2}
                 >
-                    <Card
+                    <Box
                         sx={{
-                            margin: '50px',
-                            minWidth: '500px',
-                            padding: '50px',
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            borderRadius: '20px',
+                            mx: 2,
+                            mt: -3,
+                            py: 1,
+                            px: 2,
+                            // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
+                            backgroundColor: "primary.main",
+                            color: "#000000",
+                            borderRadius: "0.5rem",
+                            boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center"
                         }}
-                        elevation={8}
                     >
-                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                            <LockOutlinedIcon />
-                        </Avatar>
-                        <Typography component="h1" variant="h5">
+                        <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                             Sign in
                         </Typography>
-                        <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="emailLogin"
-                                label="Email Address or Login"
-                                name="emailLogin"
-                                autoComplete="email"
-                                autoFocus
-                            />
-                            <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                name="password"
-                                label="Password"
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
-                            />
-                            <FormControlLabel
-                                control={<Checkbox value="remember" color="primary" />}
-                                label="Remember me"
-                            />
-                            <Button
-                                href="/dashboard"
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                sx={{
-                                    mt: 3, mb: 2
-                                }}
-                            >
-                                Sign In
-                            </Button>
-                            <Grid container>
-                                <Grid item xs>
-                                    <Link href="#" variant="body2">
-                                        Forgot password?
-                                    </Link>
-                                </Grid>
+                        <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                            <LockIcon sx={{ color: "primary.main" }} />
+                        </Avatar>
+                    </Box>
+                    <Box sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        margin: 2,
+                        pt: "20px",
+                        px: '50px',
+                        pb: "50px",
+                        minHeight: "200px"
+                    }}>
+                        <Box sx={{ height: "100%", width: "100%", mt: 2 }}>
+                            <form onSubmit={handleSubmit(handleLogin)} >
+                                <TextField
+                                    type='string'
+                                    autoFocus
+                                    margin="normal"
+                                    placeholder='Email'
+                                    name='email'
+                                    label='Email'
+                                    fullWidth
+                                    variant="outlined"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <EmailOutlinedIcon sx={{ color: "primary.main" }} />
+                                            </InputAdornment>
+                                        ),
+                                    }}
+                                    {...register('email')}
+                                    error={!!errors.email}
+                                    helperText={errors.email?.message}
+                                />
+                                <TextField
+                                    type={showPassword ? 'string' : 'password'}
+                                    margin="normal"
+                                    placeholder='Password'
+                                    name='password'
+                                    label='Password'
+                                    fullWidth
+                                    variant="outlined"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <InputAdornment position="start">
+                                                <LockOutlinedIcon sx={{ color: "primary.main" }} />
+                                            </InputAdornment>
+                                        ),
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword ? <VisibilityOff color="primary" /> : <Visibility color="primary" />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
+                                    {...register('password')}
+                                    error={!!errors.password}
+                                    helperText={errors.password?.message}
+                                />
+                                <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{
+                                            mt: 3, mb: 2, borderRadius: "10px", width: "150px", color: "#FFFFFF"
+                                        }}
+                                    >
+                                        Sign In
+                                    </Button>
+                                </Box>
+                            </form>
+                            <Grid container justifyContent="center">
                                 <Grid item>
                                     <Link href="/register" variant="body2">
-                                        {"Don't have an account? Sign Up"}
+                                        Don't have an account? Sign Up
                                     </Link>
                                 </Grid>
                             </Grid>
                         </Box>
-                    </Card>
-                </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
-            </Container>
+                    </Box>
+                </Card>
+            </Box>
+            {/* <Box
+                sx={{
+                    width: "100%",
+                    minWidth: '450px',
+                    height: "100%",
+                    marginTop: 10,
+                    display: 'flex',
+                    overflow: "visible",
+                    flexDirection: 'row',
+                    justifyContent: "center"
+                }}
+            >
+                <Card
+                    sx={{
+                        width: "90%",
+                        minWidth: '400px',
+                        maxWidth: '500px',
+                        padding: '50px',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: "center",
+                        borderRadius: '20px',
+                    }}
+                    elevation={2}
+                >
+                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                        <LockIcon sx={{ color: "primary.main" }} />
+                    </Avatar>
+                    <Typography component="h1" variant="h5" color="primary.main">
+                        Sign up
+                    </Typography>
+                    <Box sx={{ height: "100%", width: "100%", mt: 2 }}>
+                        <form onSubmit={handleSubmit(handleLogin)} >
+                            <TextField
+                                type='string'
+                                autoFocus
+                                margin="normal"
+                                placeholder='Email'
+                                name='email'
+                                label='Email'
+                                fullWidth
+                                variant="outlined"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <EmailOutlinedIcon sx={{ color: "primary.main" }} />
+                                        </InputAdornment>
+                                    ),
+                                }}
+                                {...register('email')}
+                                error={!!errors.email}
+                                helperText={errors.email?.message}
+                            />
+                            <TextField
+                                type={showPassword ? 'string' : 'password'}
+                                margin="normal"
+                                placeholder='Password'
+                                name='password'
+                                label='Password'
+                                fullWidth
+                                variant="outlined"
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <LockOutlinedIcon sx={{ color: "primary.main" }} />
+                                        </InputAdornment>
+                                    ),
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff color="primary" /> : <Visibility color="primary" />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }}
+                                {...register('password')}
+                                error={!!errors.password}
+                                helperText={errors.password?.message}
+                            />
+                            <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{
+                                        mt: 3, mb: 2, borderRadius: "10px", width: "150px", color: "#FFFFFF"
+                                    }}
+                                >
+                                    Sign In
+                                </Button>
+                            </Box>
+                        </form>
+                        <Grid container justifyContent="center">
+                            <Grid item>
+                                <Link href="/register" variant="body2">
+                                    Don't have an account? Sign Up
+                                </Link>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Card>
+            </Box > */}
         </Box>
     );
 }

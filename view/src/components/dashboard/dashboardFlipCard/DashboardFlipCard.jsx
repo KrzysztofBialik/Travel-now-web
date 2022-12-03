@@ -9,13 +9,23 @@ import './DashboardFlipCard.css';
 export const DashboardFlipCard = ({ frontBg, backBg, title, description, action }) => {
 
     return (
-        <Card className="flip-card" sx={{ borderRadius: "10px" }} elevation={0}>
+        <Card className="flip-card"
+            sx={{
+                borderRadius: "10px",
+                height: "500px",
+                perspective: "1000px",
+                backgroundColor: "transparent"
+            }}
+            elevation={0}>
             <Box className="flip-card-inner">
                 <Box className="flip-card-front"
                     sx={{
-                        backgroundImage: `url(${frontBg})`,
-                        backgroundSize: "cover",
-                        backgroundPosition: "center",
+                        // backgroundColor: "primary.main"
+                        // backgroundImage: `url(${frontBg})`,
+                        // backgroundSize: "cover",
+                        // backgroundPosition: "center",
+                        // backgroundImage: "linear-gradient(to bottom right, #24939e, #55ccd9)",
+                        backgroundImage: "linear-gradient(to bottom right, #55ccd9, #24939e)"
                     }}
                 >
                     <Box py={12} px={3} textAlign="center" lineHeight={1}>
@@ -39,13 +49,15 @@ export const DashboardFlipCard = ({ frontBg, backBg, title, description, action 
                 </Box>
                 <Box className="flip-card-back"
                     sx={{
-                        backgroundColor: "primary.main"
+                        // backgroundColor: "primary.main"
+                        // backgroundImage: "linear-gradient(to bottom right, #24939e, #55ccd9)",
+                        backgroundImage: "linear-gradient(to bottom right, #55ccd9, #24939e)"
                     }}>
                     <Box pt={12} pb={2} px={2} textAlign="center" lineHeight={1}>
-                        <Typography variant="h3" color="#000000" gutterBottom>
+                        <Typography variant="h3" color="#FFFFFF" gutterBottom>
                             {title}
                         </Typography>
-                        <Typography variant="h6" color="#000000" opacity={0.8}>
+                        <Typography variant="h6" color="#FFFFFF" opacity={0.8}>
                             {action.description}
                         </Typography>
                         {action && (

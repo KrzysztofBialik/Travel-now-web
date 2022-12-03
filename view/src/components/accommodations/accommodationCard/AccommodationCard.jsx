@@ -26,6 +26,7 @@ import { DeleteAccommodationDialog } from "../DeleteAccommodationDialog";
 import { TransportDialog } from "../../transport/TransportDialog";
 import "./AccommodationCard.css";
 import { doDelete, doPatch, doPost } from "../../utils/fetch-utils";
+import { PLACEHOLDER_IMAGE } from "../../images/Images";
 
 
 const ExpandMore = styled((props) => {
@@ -103,6 +104,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
             });
     }
 
+
     const handleDeleteVoteAccommodation = async (success) => {
         await doPatch('/api/v1/accommodation/vote', {"userId":parseInt(localStorage.getItem("userId")),"accommodationId":accommodationData.accommodationId})
             .then(response => {
@@ -115,8 +117,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 // setEditionError(err.message)
             });
     }
-
-
+    
     return (
         <>
             <SelectAccommodationDialog
@@ -147,10 +148,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                         display: "flex",
                         justifyContent: "space-between",
                         alignItems: "center",
-                        // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                         backgroundColor: selected ? "secondary.main" : "primary.main",
-                        // background: "linear-gradient(195deg, rgb(255, 224, 130), rgb(255, 201, 40))",
-                        // backgroundColor: "secondary.main",
                         color: "#000000",
                         boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
                     }}
@@ -239,7 +237,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 </CardHeader>
                 <CardMedia
                     component="img"
-                    image={accommodationData.imageLink}
+                    image={accommodationData.imageLink !== null ? accommodationData.imageLink : PLACEHOLDER_IMAGE}
                     alt="Paella dish"
                     sx={{
                         height: "250px",

@@ -8,6 +8,7 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import { useForm } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Box } from '@mui/material';
@@ -19,8 +20,8 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
-
 import { CreatedTripConfirmationDialog } from './CreatedTripConfirmationDialog';
+
 
 const currencies = [
     {
@@ -48,130 +49,55 @@ const currencies = [
 export const CreateTripDialog = ({ open, onClose, createTrip }) => {
 
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
-    // const [tripName, setTripName] = useState('');
-    // const [startingLocation, setStartingLocation] = useState('');
-    // const [currency, setCurrency] = useState('PLN');
-    // const [description, setDescription] = useState('');
-    const [tripName, setTripName] = useState({ value: "", length: 0 });
-    const [tripNameError, setTripNameError] = useState("You have to provide trip name");
-
-    const [startingLocation, setStartingLocation] = useState({ value: "", length: 0 });
-    const [startingLocationError, setStartingLocationError] = useState("You have to provide starting location.");
-
-    //ewentualnie podmienić, że domyślna to 1
-    const [minDays, setMinDays] = useState("0");
-    const [minDaysError, setMinDaysError] = useState("Number of days must be a positive number.");
-
-    const [minParticipants, setMinParticipants] = useState("0");
-    const [minParticipantsError, setMinParticipantsError] = useState("Number of participants must be a positive number.");
-
     const DESCRIPTION_LIMIT = 250;
-    const [description, setDescription] = useState({ value: "", length: 0 });
-    const [descriptionError, setDescriptionError] = useState(null);
 
     const defaultInputValues = {
-        tripName,
-        startingLocation,
-        currency: 'PLN',
-        minDays,
-        minParticipants,
-        description
-    };
-
-    const [values, setValues] = useState(defaultInputValues);
-
-    const onTripNameChange = (value) => {
-        setTripNameError(
-            value.length === 0 ? "You have to provide trip name." : null
-        )
-        setTripName({ value: value, length: value.length });
-    };
-
-    const onStartingLocationChange = (value) => {
-        setStartingLocationError(
-            value.length === 0 ? "You have to provide starting location." : null
-        )
-        setStartingLocation({ value: value, length: value.length });
-    };
-
-    const onMinDaysChange = (value) => {
-        setMinDaysError(
-            value <= 0 ? "Number of days must be equal or higher than 1." : null
-        );
-        setMinDays(value);
-    };
-
-    const onMinParticipantsChange = (value) => {
-        setMinParticipantsError(
-            value <= 0 ? "Number of participants must be equal or higher than 1." : null
-        );
-        setMinParticipants(value);
-    };
-
-    const onDescriptionChange = (value) => {
-        setDescriptionError(
-            value.length > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null
-        );
-        setDescription({ value: value, length: value.length });
+        tripName: "",
+        startingLocation: "",
+        currency: "",
+        minDays: 0,
+        minParticipants: 0,
+        description: ""
     };
 
     const validationSchema = Yup.object().shape({
         tripName: Yup
             .string()
-            .required(),
+            .required("You have to provide trip name"),
         startingLocation: Yup
             .string()
-            .required(),
+            .required("You have to provide starting location"),
+        currency: Yup
+            .string()
+            .required("You have to provide currency for trip group"),
         minDays: Yup
             .number()
-            .min(1),
-        // .required("You have to provide min number of days."),
+            .min(1, "Number of days must be equal or higher than 1"),
         minParticipants: Yup
             .number()
-            .min(1),
-        // .required("You have to provie min number of participants."),
+            .min(1, "Number of participants must be equal or higher than 1"),
         description: Yup
             .string()
-            .max(250)
+            .max(DESCRIPTION_LIMIT, "You have exceeded characters limit for description")
     });
 
-    // useEffect(() => {
-    //     setValues(defaultInputValues);
-    // }, [])
-
-    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    const { register, handleSubmit, reset, formState: { errors }, control, watch, setValue, getValues } = useForm({
         resolver: yupResolver(validationSchema),
+        defaultValues: defaultInputValues
     });
 
-    const handleChange = (value) => {
-        setValues(value);
-        console.log(values);
-    };
+    const descriptionWatch = watch("description");
 
-    const handleCreateTrip = (tripName, startingLocation, currency, minDays, minParticipants, description) => {
-        createTrip(tripName, startingLocation, currency, minDays, minParticipants, description);
-        // setTripName('');
-        // setStartingLocation('');
-        // setCurrency("PLN");
-        // setDescription('');
+    const handleCreateTrip = () => {
+        console.log(getValues());
         close();
         setConfirmDialogOpen(true);
-    }
+    };
 
     const close = () => {
         reset();
-        setTripName({ value: "", length: 0 });
-        setTripNameError("You have to provide trip name.");
-        setStartingLocation({ value: "", length: 0 });
-        setStartingLocationError("You have to provide starting location.");
-        setMinDays("0");
-        setMinDaysError("Number of days must be equal or higher than 1.");
-        setMinParticipants("0");
-        setMinParticipantsError("Number of participants must be equal or higher than 1.");
-        setDescription({ value: "", length: 0 });
-        setValues(defaultInputValues);
         onClose();
-    }
+    };
 
     return (
         <div>
@@ -190,42 +116,8 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                         Provide informations about your trip. You can always change them later.
                     </DialogContentText>
                     <form
-                        onSubmit={handleSubmit(() => handleCreateTrip(tripName.value, startingLocation.value, values.currency, minDays, minParticipants, description.value))}
+                        onSubmit={handleSubmit(handleCreateTrip)}
                     >
-                        {/* <TextField
-                            type='string'
-                            autoFocus
-                            margin="normal"
-                            placeholder='Trip name'
-                            name='tripName'
-                            label='Trip name'
-                            fullWidth
-                            variant="outlined"
-                            {...register('tripName')}
-                            error={errors.tripName ? true : false}
-                            helperText={errors.tripName?.message}
-                            onChange={(event) => {
-                                handleChange({ ...values, tripName: event.target.value });
-                            }}
-                            value={values.tripName || ""}
-                        // value={tripName || ""}
-                        // onChange={(event) => setTripName(event.target.value)}
-                        /> */}
-                        {/* <Box sx={{ display: 'flex', alignItems: 'flex-end' }}>
-                            <AbcIcon sx={{ color: 'action.active', mr: 1, my: 0.5 }} />
-                            <TextField id="input-with-sx" label="With sx" variant="standard" />
-                        </Box> */}
-                        <TextField
-                            {...register('test', {
-                                required: true,
-                                minLength: {
-                                    value: 10,
-                                    message: 'error message' // JS only: <p>error message</p> TS only support string
-                                }
-                            })}
-                            label="Test"
-                            error={!!errors.test}
-                        />
                         <TextField
                             type='string'
                             autoFocus
@@ -243,17 +135,9 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                                 ),
                             }}
                             {...register('tripName')}
-                            error={Boolean(errors.tripName) ? (Boolean(tripNameError)) : false}
-                            helperText={Boolean(errors.tripName) && tripNameError}
-                            value={tripName.value}
-                            onChange={(event) => onTripNameChange(event.target.value)}
+                            error={!!errors.tripName}
+                            helperText={errors.tripName?.message}
                         />
-                        {/* <FormHelperText
-                            error={Boolean(errors.tripName) ? (Boolean(tripNameError)) : false}
-                        >
-                            <span>{Boolean(errors.tripName) && tripNameError}</span>
-                        </FormHelperText> */}
-
                         <TextField
                             type='string'
                             autoFocus
@@ -271,39 +155,41 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                                 ),
                             }}
                             {...register('startingLocation')}
-                            error={Boolean(errors.startingLocation) ? (Boolean(startingLocationError)) : false}
-                            helperText={Boolean(errors.startingLocation) && startingLocationError}
-                            value={startingLocation.value}
-                            onChange={(event) => onStartingLocationChange(event.target.value)}
+                            error={!!errors.startingLocation}
+                            helperText={errors.startingLocation?.message}
                         />
                         <Box sx={{ display: "flex", justifyContent: "space-between", alignContent: "center" }} >
-                            <TextField
-                                sx={{ minWidth: "150px", width: "150px" }}
-                                select
-                                margin="normal"
-                                name='currency'
-                                label='Currency'
-                                variant="outlined"
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <CurrencyExchangeIcon sx={{ color: "primary.main", mr: "10px" }} />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                {...register('currency')}
-                                error={errors.currency ? true : false}
-                                helperText={errors.currency?.message}
-                                value={values.currency || ""}
-                                onChange={(event) => handleChange({ ...values, currency: event.target.value })}
-                            >
-                                {currencies.map((currency) => (
-                                    <MenuItem key={currency.label} value={currency.value}>
-                                        {currency.label}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
 
+                            <Controller
+                                name='currency'
+                                control={control}
+                                render={({ field: { onChange, value } }) => (
+                                    <TextField
+                                        sx={{ minWidth: "150px", width: "150px" }}
+                                        fullWidth
+                                        select
+                                        margin='normal'
+                                        variant='outlined'
+                                        label='currency'
+                                        InputProps={{
+                                            startAdornment: (
+                                                <InputAdornment position="start">
+                                                    <CurrencyExchangeIcon sx={{ color: "primary.main", mr: "10px" }} />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        value={value}
+                                        onChange={onChange}
+                                        error={!!errors.currency}
+                                        helperText={errors.currency?.message}
+                                    >
+                                        {currencies.map((currency) => (
+                                            <MenuItem key={currency.label} value={currency.value}>
+                                                {currency.label}
+                                            </MenuItem>
+                                        ))}
+                                    </TextField>)}
+                            />
                             <TextField
                                 sx={{ minWidth: "150px", width: "150px" }}
                                 type="number"
@@ -321,10 +207,8 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                                     ),
                                 }}
                                 {...register('minDays')}
-                                error={Boolean(errors.minDays) ? (Boolean(minDaysError)) : false}
-                                helperText={Boolean(errors.minDays) && minDaysError}
-                                value={minDays}
-                                onChange={(event) => onMinDaysChange(event.target.value)}
+                                error={!!errors.minDays}
+                                helperText={errors.minDays?.message}
                             />
                             <TextField
                                 sx={{ minWidth: "150px", width: "150px" }}
@@ -343,13 +227,10 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                                     ),
                                 }}
                                 {...register('minParticipants')}
-                                error={Boolean(errors.minParticipants) ? (Boolean(minParticipantsError)) : false}
-                                helperText={Boolean(errors.minParticipants) && minParticipantsError}
-                                value={minParticipants}
-                                onChange={(event) => onMinParticipantsChange(event.target.value)}
+                                error={!!errors.minParticipants}
+                                helperText={errors.minParticipants?.message}
                             />
                         </Box>
-
                         <TextField
                             type='string'
                             autoFocus
@@ -362,12 +243,10 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                             fullWidth
                             variant="outlined"
                             {...register('description')}
-                            error={Boolean(descriptionError)}
-                            value={description.value}
-                            onChange={(event) => onDescriptionChange(event.target.value)}
+                            error={!!errors.description}
                         />
                         <FormHelperText
-                            error={Boolean(descriptionError)}
+                            error={!!errors.description}
                             sx={{
                                 display: "flex",
                                 justifyContent: "space-between",
@@ -375,14 +254,14 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                                 pb: "30px"
                             }}
                         >
-                            <span>{descriptionError}</span>
-                            <span>{`${description.length}/${DESCRIPTION_LIMIT}`}</span>
+                            <span>{errors.description?.message}</span>
+                            <span>{`${descriptionWatch.length}/${DESCRIPTION_LIMIT}`}</span>
                         </FormHelperText>
 
                         <DialogActions>
                             <Button
                                 variant="outlined"
-                                sx={{ borderRadius: "20px" }}
+                                sx={{ borderRadius: "10px" }}
                                 onClick={() => close()}
                             >
                                 Cancel
@@ -390,19 +269,10 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
                             <Button
                                 type="submit"
                                 variant="contained"
-                                color="primary"
-                                sx={{ borderRadius: "20px" }}
+                                sx={{ borderRadius: "10px", color: "#FFFFFF" }}
                             >
                                 Create trip
                             </Button>
-                            {/* <Button
-                                type="button"
-                                onClick={() => {
-                                    trigger();
-                                }}
-                            >
-                                Trigger All
-                            </Button> */}
                         </DialogActions>
                     </form>
                 </DialogContent>

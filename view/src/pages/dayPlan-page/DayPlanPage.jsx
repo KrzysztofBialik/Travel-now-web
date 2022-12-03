@@ -85,10 +85,10 @@ export const DayPlanPage = (props) => {
     useEffect(() => {
         isCorinator();
         getData();
-      }, [])
+    }, [])
 
     const showDetailedPlan = (name, date, attractions, dayPlanId) => {
-        setAllAttractions([]);     
+        setAllAttractions([]);
         setSelectedDayPlanId(dayPlanId)
         setDayPlanName(name);
         setDayPlanDate(date);
@@ -101,36 +101,36 @@ export const DayPlanPage = (props) => {
     }
 
     const updateDayplanAttractions = async (id) => {
-        var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
-        .then(response => response.json());
+        var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: localStorage.getItem("groupId"), userId: localStorage.getItem("userId") }).toString())
+            .then(response => response.json());
 
         var dayPlanData = dayPlansRaw.find(dayPlan => dayPlan.dayPlanId === id);
         dayPlanData.dayAttractions = newAttractions;
-        setdayPlansRaw(dayPlansRaw.map(dp => dp.dayPlanId === id ? dayPlanData: dp));
-        
+        setdayPlansRaw(dayPlansRaw.map(dp => dp.dayPlanId === id ? dayPlanData : dp));
+
         showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId)
         setAllDayPlans(dayPlansRaw.map(dayPlan => (
             <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
-                <DayPlanCard dayPlanData={dayPlan} canModify={isCordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()}/>
+                <DayPlanCard dayPlanData={dayPlan} canModify={isCordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
             </ListItem>
-            )));   
-            
+        )));
+
     }
 
     const getOptimized = async () => {
         setLoadingOptimized(true)
         await doGet('/api/v1/attraction/optimize/' + selectedDayPlanId)
-        .then(response => response.json())
-        .then(attractions => setOptimizedAttractions(attractions.map(attraction => (
-            <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attraction.attractionId}>
-                <AttractionCard attractionData={attraction.attraction} canModify={isCordinator} id={selectedDayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
-            </ListItem>
-        ))))
-        .catch(err => console.log('Request Failed', err));
+            .then(response => response.json())
+            .then(attractions => setOptimizedAttractions(attractions.map(attraction => (
+                <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attraction.attractionId}>
+                    <AttractionCard attractionData={attraction.attraction} canModify={isCordinator} id={selectedDayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                </ListItem>
+            ))))
+            .catch(err => console.log('Request Failed', err));
         setLoadingOptimized(false);
     };
 
-    
+
     const optimizeDayPlan = () => {
         if (isOptimizedDayPlan) {
             console.log("Domyślny plan dnia");
@@ -153,7 +153,7 @@ export const DayPlanPage = (props) => {
             <CreateDayPlanDialog
                 open={createDayPlanDialogOpen}
                 onClose={() => setCreateDayPlanDialogOpen(false)}
-                onSuccess={ () => getData() }
+                onSuccess={() => getData()}
             />
             <SearchAttractionDialog
                 open={searchAttractionDialogOpen}
@@ -190,9 +190,11 @@ export const DayPlanPage = (props) => {
                             minHeight: "100%"
                         }}
                     >
-                        <Grid container spacing={10} sx={{
-                            display: "flex", justifyContent: "center"
-                        }}>
+                        <Grid container spacing={10}
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center"
+                            }}>
                             <Grid item xs={10} md={4}>
                                 <Card
                                     sx={{
@@ -252,35 +254,34 @@ export const DayPlanPage = (props) => {
                                     }}>
                                         {
                                             loading ?
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    flexDirection: "column",
-                                                    justifyContent: "center",
-                                                    alignItems: "center",
-                                                    minHeight: "400px"
-                                                    // border: "2px solid black"
-                                                }}
-                                            >  
-                                                <CircularProgress />
-                                            </Box>
-                                            :
-                                            <Box
-                                                sx={{
-                                                    display: "flex",
-                                                    flexDirection: "column",
-                                                    justifyContent: "flex-start",
-                                                    minHeight: "400px"
-                                                    // border: "2px solid black"
-                                                }}
-                                            >  
-                                                {/* No day plans created */}
-                                                <List sx={{ p: 0 }}>
-                                                    {allDayPlans}
-                                                </List>
-                                            </Box>
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        justifyContent: "center",
+                                                        alignItems: "center",
+                                                        minHeight: "400px"
+                                                        // border: "2px solid black"
+                                                    }}
+                                                >
+                                                    <CircularProgress />
+                                                </Box>
+                                                :
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        flexDirection: "column",
+                                                        justifyContent: "flex-start",
+                                                        minHeight: "400px"
+                                                        // border: "2px solid black"
+                                                    }}
+                                                >
+                                                    {/* No day plans created */}
+                                                    <List sx={{ p: 0 }}>
+                                                        {allDayPlans}
+                                                    </List>
+                                                </Box>
                                         }
-                                        
                                     </Box>
                                 </Card>
                             </Grid>
@@ -325,7 +326,7 @@ export const DayPlanPage = (props) => {
                                         <Box>
                                             <FormControlLabel
                                                 value="Optimize day plan"
-                                                control={<Switch color="secondary" onChange={optimizeDayPlan} checked={isOptimizedDayPlan}/>}
+                                                control={<Switch color="secondary" onChange={optimizeDayPlan} checked={isOptimizedDayPlan} />}
                                                 label="Optimize day plan"
                                                 labelPlacement="start"
                                                 sx={{ mr: 4, color: "#FFFFFF" }}
@@ -407,17 +408,17 @@ export const DayPlanPage = (props) => {
                                                             width: '100%'
                                                             // border: "2px solid black"
                                                         }}
-                                                    >  
+                                                    >
                                                         <CircularProgress />
                                                     </Box>
                                                     :
                                                     <Box sx={{ height: "100%", width: "100%", display: "flex", justifyContent: "center" }}>
-                                                    <List sx={{
-                                                        // height: "100%", 
-                                                        px: 0, minWidth: "90%", maxWidth: "90%"
-                                                    }}>
-                                                        {isOptimizedDayPlan ? optimizedAttractions : allAttractions }
-                                                    </List>
+                                                        <List sx={{
+                                                            // height: "100%", 
+                                                            px: 0, minWidth: "90%", maxWidth: "90%"
+                                                        }}>
+                                                            {isOptimizedDayPlan ? optimizedAttractions : allAttractions}
+                                                        </List>
                                                     </Box>
                                                 :
                                                 dayPlanName === "" ?

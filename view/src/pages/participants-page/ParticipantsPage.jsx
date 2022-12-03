@@ -3,6 +3,8 @@ import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { useParams } from "react-router-dom";
+import { useEffect } from 'react';
 
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { futureTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
@@ -10,14 +12,42 @@ import { currentTripButtonsData } from "../../components/navbars/navigationNavba
 
 import { ParticipantsTable } from "../../components/participants/ParticipantsTable";
 import { InviteDialog } from "../../components/participants/InviteDialog";
+import { doGet } from "../../components/utils/fetch-utils";
 
-export const URL = '/participants';
+export const URL = '/participants/:groupId';
 export const NAME = "Participants";
 
 export const ParticipantsPage = () => {
+    
+    const {groupId} = useParams();
 
-    const groupStage = 2;
-    const isCoordinator = false;
+    const [groupStage, setGroupStage] = useState([]);
+
+    const [isCoordinator, setIsCoordinator] = useState([]);
+
+    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
+    localStorage.setItem("userId", 31)
+
+    const getGroupData = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(response => setGroupStage(response.groupStage))
+        .catch(err => console.log('Request Failed', err));
+    }
+
+    const getUserCoordinator = async () => {
+        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId")}).toString())
+        .then(response => response.json())
+        .then(response => setIsCoordinator(response))
+        .catch(err => console.log('Request Failed', err));
+    }
+
+
+    useEffect(() => {
+        getGroupData();
+        getUserCoordinator();
+      }, [])
+
 
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
@@ -32,7 +62,7 @@ export const ParticipantsPage = () => {
                 height: '100%'
             }}>
             <NavigationNavbar
-                buttonsData={groupStage === 1 ? futureTripButtonsData : currentTripButtonsData}
+                buttonsData={groupStage === "PLANNING_STAGE" ? futureTripButtonsData : currentTripButtonsData}
             />
             <InviteDialog open={inviteDialogOpen} onClose={() => setInviteDialogOpen(false)} />
             <Box sx={{
@@ -76,7 +106,7 @@ export const ParticipantsPage = () => {
                             >
                                 Participants
                             </Typography>
-                            {(groupStage === 1 && isCoordinator) &&
+                            {(groupStage === "PLANNING_STAGE" && isCoordinator) &&
                                 <Button
                                     variant="contained"
                                     sx={{ borderRadius: 10, color: "#FFFFFF", width: "120px" }}
@@ -87,7 +117,7 @@ export const ParticipantsPage = () => {
                                 </Button>}
                         </>
                     </Box>
-                    <ParticipantsTable groupStage={groupStage} isCoordinator={isCoordinator} />
+                    <ParticipantsTable groupStage={groupStage} isCoordinator={isCoordinator} groupId={groupId} />
                 </Box>
             </Box >
         </Box >
