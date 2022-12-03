@@ -25,6 +25,7 @@ import { EditAccommodationDialog } from "../EditAccommodationDialog";
 import { DeleteAccommodationDialog } from "../DeleteAccommodationDialog";
 import { TransportDialog } from "../../transport/TransportDialog";
 import "./AccommodationCard.css";
+import { doDelete, doPatch, doPost } from "../../utils/fetch-utils";
 
 
 const ExpandMore = styled((props) => {
@@ -38,26 +39,27 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const AccommodationCard = ({ accommodationData, canModify, selected }) => {
+export const AccommodationCard = ({ accommodationData, canModify, selected, votes, onSuccess }) => {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [numOfVotes, setNumOfVotes] = useState(accommodationData.givenVotes);
     //dodanie tego czy zagłosował dany użytkownik, bo teraz jest zawsze false
-    const [userVote, setUserVote] = useState(false);
+    const [userVote, setUserVote] = useState(votes.some(vote => vote['userId'] === parseInt(localStorage.getItem('userId'))));
     const [expanded, setExpanded] = useState(false);
     const [selectDialogOpen, setSelectDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [transportDialogOpen, setTransportDialogOpen] = useState(false);
+    const [userName, setUserName] = useState("");
     const open = Boolean(anchorEl);
 
     const voteAction = () => {
         setUserVote(!userVote)
         if (userVote) {
-            setNumOfVotes(numOfVotes - 1);
+            handleDeleteVoteAccommodation(() => setNumOfVotes(numOfVotes - 1));
         }
         else {
-            setNumOfVotes(numOfVotes + 1);
+            handleVoteAccommodation(() => setNumOfVotes(numOfVotes + 1));
         }
     };
 
@@ -88,170 +90,35 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
         setAnchorEl(null);
     };
 
+    const handleVoteAccommodation = async (success) => {
+        await doPost('/api/v1/accommodation/vote', accommodationData)
+            .then(response => {
+                if(response.ok){
+                    success();
+                }    
+            })
+            .catch(err => {
+                // setErrorToastOpen(true); 
+                // setEditionError(err.message)
+            });
+    }
+
+    const handleDeleteVoteAccommodation = async (success) => {
+        await doPatch('/api/v1/accommodation/vote', {"userId":parseInt(localStorage.getItem("userId")),"accommodationId":accommodationData.accommodationId})
+            .then(response => {
+                if(response.ok){
+                    success();
+                }    
+            })
+            .catch(err => {
+                // setErrorToastOpen(true); 
+                // setEditionError(err.message)
+            });
+    }
+
 
     return (
         <>
-            {/*---------------------------------------Opcja pierwsza--------------------------------------*/}
-            {/* <Card
-                sx={{
-                    overflow: "visible",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                    position: "relative",
-                    overflowWrap: "break-word",
-                    backgroundClip: "border-box",
-                    minHeight: "300px",
-                    minWidth: "500px",
-                }}
-                elevation={16}
-            >
-                <Box
-                    sx={{
-                        mx: 2,
-                        mt: -3,
-                        py: 3,
-                        px: 2,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
-                        color: "#000000",
-                        borderRadius: "0.5rem",
-                        boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
-                    }}
-                >
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                        }}
-                    >
-                        <Typography
-                            sx={{
-                                color: "black",
-                                fontSize: "32px"
-                            }}>
-                            {accommodationData.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            Added by: Coordinator
-                        </Typography>
-                    </Box>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center"
-                        }}
-                    >
-                        <Button
-                            sx={{ color: "secondary.main" }}
-                            onClick={voteAction}>
-                            {userVote ? <ThumbUpIcon sx={{ fontSize: "30px" }} />
-                                :
-                                <ThumbUpOffIcon sx={{ fontSize: "30px" }} />
-
-                            }
-                        </Button>
-                        <Typography
-                            sx={{
-                                color: "secondary.main",
-                                fontSize: "20px"
-                            }}
-                        >
-                            {numOfVotes}
-                        </Typography>
-                    </Box>
-                </Box>
-                <CardContent>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12} md={6}>
-                            <Card
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    justifyItems: "center",
-                                    height: "300px",
-                                    width: "100%"
-                                    // border: "2px solid black"
-                                }}
-                            // elevation={4}
-                            >
-                                <CardMedia
-                                    component="img"
-                                    image={accommodationData.imageLink}
-                                />
-                            </Card>
-                        </Grid>
-                        <Grid item xs={12} md={6}>
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyItems: "center",
-                                    height: "200px"
-                                    // minHeight: "300px"
-                                    // border: "2px solid black"
-                                }}
-                            >
-                                <Typography variant="h5">
-                                    Address:
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {accommodationData.address}
-                                </Typography>
-                                <Box>
-                                    <GoogleMap
-                                        zoom={14}
-                                        center={{ lat: accommodationData.latitude, lng: accommodationData.longitude }}
-                                        mapContainerClassName="map-container"
-                                        mapContainerStyle={{ height: "230px" }}
-                                    >
-                                        <MarkerF position={{ lat: accommodationData.latitude, lng: accommodationData.longitude }} />
-                                    </GoogleMap>
-                                </Box>
-                            </Box>
-                        </Grid>
-                    </Grid>
-                </CardContent>
-                <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
-                    <Box sx={{ display: "flex", gap: "100px", mx: "50px" }}>
-                        <Button variant="outlined" sx={{ borderRadius: "20px" }}>
-                            <LinkIcon />
-                            <Typography mx={"5px"}>
-                                Link
-                            </Typography>
-                        </Button>
-                        <Button variant="outlined" sx={{ borderRadius: "20px" }}>
-                            <EmojiTransportationIcon />
-                            <Typography mx={"5px"}>
-                                Transport
-                            </Typography>
-                        </Button>
-                    </Box>
-                    <Box mx="10px">
-                        <ExpandMore
-                            expand={expanded}
-                            onClick={handleExpandClick}
-                            aria-expanded={expanded}
-                            aria-label="show more"
-                        >
-                            <ExpandMoreIcon sx={{ color: "primary.main" }} />
-                        </ExpandMore>
-                    </Box>
-                </CardActions>
-                <Collapse in={expanded} timeout="auto" unmountOnExit>
-                    <CardContent>
-                        <Typography paragraph>
-                            {accommodationData.description}
-                        </Typography>
-                    </CardContent>
-                </Collapse>
-            </Card> */}
-
-            {/*---------------------------------------Opcja druga--------------------------------------*/}
-            {/* <Grid item xs={12} md={6}> */}
             <SelectAccommodationDialog
                 open={selectDialogOpen}
                 onClose={() => { setSelectDialogOpen(false) }}
@@ -264,6 +131,8 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
             <DeleteAccommodationDialog
                 open={deleteDialogOpen}
                 onClose={() => { setDeleteDialogOpen(false) }}
+                accommodationId={accommodationData.accommodationId}
+                onSuccess={() => onSuccess()}
             />
             <TransportDialog
                 open={transportDialogOpen}
@@ -287,7 +156,6 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
                     }}
                     title={accommodationData.name}
                     titleTypographyProps={{ variant: 'h5' }}
-                    subheader="Added by: Coordinator"
                     subheaderTypographyProps={{ variant: 'body2' }}
                     action={
                         <Box sx={{

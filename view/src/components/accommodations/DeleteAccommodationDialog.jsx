@@ -9,11 +9,14 @@ import { DialogTitle } from '@mui/material';
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doDelete } from "../../components/utils/fetch-utils";
 
-export const DeleteAccommodationDialog = ({ open, onClose }) => {
+export const DeleteAccommodationDialog = ({ open, onClose, accommodationId, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [deletionError, setDeletionError] = useState('Ups! Something went wrong. Try again.');
+
 
     const handleSuccessClose = () => {
         setSuccessToastOpen(true);
@@ -25,10 +28,27 @@ export const DeleteAccommodationDialog = ({ open, onClose }) => {
         onClose();
     };
 
+    const handleClose = () => {
+        onClose();
+    };
+
+    const handleDeleteAttraction = async () => {
+        await doDelete('/api/v1/accommodation?' + new URLSearchParams({ accommodationId:accommodationId }).toString())
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                setErrorToastOpen(!response.ok);
+                onSuccess();
+                onClose();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setDeletionError(err.message);
+            });
+    }
+
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully deleted." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={deletionError} />
 
             <Dialog
                 open={open}
@@ -40,10 +60,15 @@ export const DeleteAccommodationDialog = ({ open, onClose }) => {
                         If you confirm, your accommodation will be removed from list.
                     </DialogContentText>
                     <DialogActions>
-                        <Button variant="outlined" onClick={handleErrorClose}>Cancel</Button>
+                        <Button 
+                            variant="outlined" 
+                            onClick={handleClose}
+                        >
+                            Cancel
+                        </Button>
                         <Button
                             variant="contained"
-                            onClick={handleSuccessClose}
+                            onClick={handleDeleteAttraction}
                             sx={{ color: "#FFFFFF" }}
                         >
                             Confirm

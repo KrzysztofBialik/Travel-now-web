@@ -18,12 +18,14 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doPost } from '../utils/fetch-utils';
 
 
-export const AddAccommodationDialog = ({ open, onClose, addAccommodation }) => {
+export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
 
     const [link, setLink] = useState({ value: "", length: 0 });
     const [linkError, setLinkError] = useState("You have to provide a valid url.");
@@ -81,27 +83,25 @@ export const AddAccommodationDialog = ({ open, onClose, addAccommodation }) => {
             .max(250)
     });
 
-    // useEffect(() => {
-    //     setValues(defaultInputValues);
-    // }, [])
+    const handleAddAccommodation = async (link, price, description) => {
+        var postBody = {'groupId':groupId, 'creatorId': parseInt(localStorage.getItem('userId')), 'accommodationLink':link, 'description':description, 'price':parseFloat(price)};
+        await doPost('/api/v1/accommodation', postBody)
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                close();
+                onSuccess();
+            })
+            .catch(err => {
+                setErrorToastOpen(true); 
+                setCreationError(err.message)
+            });
+    };
+
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema),
     });
 
-    // const handleChange = (value) => {
-    //     setValues(value);
-    //     console.log(values);
-    // };
-
-    const handleAddAccommodation = (link, price, description) => {
-        addAccommodation(link, price, description);
-        // setTripName('');
-        // setStartingLocation('');
-        // setCurrency("PLN");
-        // setDescription('');
-        close();
-    };
 
     const close = () => {
         reset();
@@ -123,7 +123,7 @@ export const AddAccommodationDialog = ({ open, onClose, addAccommodation }) => {
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully added." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} />
 
             <Dialog
                 open={open}
@@ -231,7 +231,7 @@ export const AddAccommodationDialog = ({ open, onClose, addAccommodation }) => {
                         </FormHelperText>
 
                         <DialogActions>
-                            <Button onClick={handleErrorClose}>Cancel</Button>
+                            <Button onClick={onClose}>Cancel</Button>
                             <Button
                                 type="submit"
                                 variant="contained"

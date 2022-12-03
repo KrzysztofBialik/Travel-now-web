@@ -14,19 +14,21 @@ import * as Yup from 'yup';
 import InputAdornment from '@mui/material/InputAdornment';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doPatch } from "../../components/utils/fetch-utils";
 
 
 export const EditAccommodationDialog = ({ open, onClose, accommodationData }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [editionError, setEditionError] = useState('Ups! Something went wrong. Try again.');
 
     const [price, setPrice] = useState(accommodationData.price);
     const [priceError, setPriceError] = useState("Price of accommodation must be a positive number.");
 
     const DESCRIPTION_LIMIT = 250;
-    const descriptionLength = accommodationData.description.length;
-    const [description, setDescription] = useState({ value: accommodationData.description, length: descriptionLength });
+    const descriptionLength = accommodationData.description === null || accommodationData.description === undefined  ? 0 : accommodationData.description.length;
+    const [description, setDescription] = useState({ value: accommodationData.description === undefined ? "" : accommodationData.description, length: descriptionLength });
     const [descriptionError, setDescriptionError] = useState(descriptionLength > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null);
 
     const defaultInputValues = {
@@ -63,19 +65,18 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData }) =>
         resolver: yupResolver(validationSchema),
     });
 
-    // const handleChange = (value) => {
-    //     setValues(value);
-    //     console.log(values);
-    // };
-
-    const handleEditAccommodation = (price, description) => {
-        // editAccommodation(price, description);
-        // setSuccessToastOpen(true);
-        // // setTripName('');
-        // // setStartingLocation('');
-        // // setCurrency("PLN");
-        // // setDescription('');
-        close();
+    const handleEditAccommodation = async (price, description) => {
+        var updated = accommodationData;
+        updated.description = description;
+        updated.price = price;
+        await doPatch('/api/v1/accommodation?' + new URLSearchParams({ accommodationId:accommodationData.accommodationId, userId:localStorage.getItem("userId") }).toString(), updated)
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                close();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setEditionError(err.message)
+            });
     }
 
     const close = () => {
@@ -99,7 +100,7 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData }) =>
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully edited." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={editionError} />
             <Dialog
                 open={open}
                 onClose={onClose}
@@ -179,7 +180,7 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData }) =>
                         <DialogActions>
                             <Button
                                 varaint="outlined"
-                                onClick={handleErrorClose}
+                                onClick={onClose}
                             >
                                 Cancel
                             </Button>

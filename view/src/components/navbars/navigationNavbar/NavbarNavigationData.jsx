@@ -87,3 +87,50 @@ export const pastTripButtonsData = [
         link: "/media",
     }
 ];
+
+export const futureTripButtonsDataWithGroupId = (groupId) => {
+    return [{
+        id: 1,
+        name: "Availability",
+        link: "/availability",
+        submenu: [
+            {
+                id: 11,
+                name: "My Availability",
+                link: "/availability"
+            },
+            {
+                id: 12,
+                name: "Optimized dates",
+                link: "/availability/optimizedDates"
+            }
+        ]
+    },
+    {
+        id: 2,
+        name: "Accommodations",
+        link: "/accommodations/" + groupId,
+        submenu: [
+            {
+                id: 21,
+                name: "Accommodations",
+                link: "/accommodations/" + groupId
+            },
+            {
+                id: 22,
+                name: "My Accommodations",
+                link: "/accommodations/myAccommodations/" + groupId
+            },
+            {
+                id: 23,
+                name: "My Votes",
+                link: "/accommodations/myAccommodationVotes/" + groupId
+            }
+        ]
+    },
+    {
+        id: 3,
+        name: "Participants",
+        link: "/participants",
+    }];
+}
