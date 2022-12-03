@@ -48,9 +48,8 @@ export const FutureTrips = ({trips}) => {
                             icon="groups_2"
                             title="Participants"
                             description="See other participants of this trip."
-                            route={`/participants/${groupId}/${groupStage}`}
+                            route={`/participants/${groupId}`}
                             groupId={groupId}
-                            groupStage={groupStage}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
