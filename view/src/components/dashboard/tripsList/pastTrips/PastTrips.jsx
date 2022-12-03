@@ -9,7 +9,7 @@ import { ROMEURL } from '../../../images/Images';
 
 export const PastTrips = ({trips}) => {
     const tripAfterTripStage =  trips.filter(trip => trip.groupStage === 'AFTER_TRIP_STAGE')
-    const completedTrips = tripAfterTripStage.map(({ groupId, name, description }) => (
+    const completedTrips = tripAfterTripStage.map(({ groupId, name, description, groupStage }) => (
         <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
             <Grid item xs={12} lg={4} sx={{ mx: "auto" }}>
                 <DashboardFlipCard

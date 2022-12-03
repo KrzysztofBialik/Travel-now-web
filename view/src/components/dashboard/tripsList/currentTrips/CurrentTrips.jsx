@@ -6,11 +6,12 @@ import { Typography } from '@mui/material';
 import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
 import { BARCELONAURL } from '../../../images/Images';
+import { Link } from "react-router-dom";
 
 
 export const CurrentTrips = ({trips}) => {
     const tripStageTrips = trips.filter(trip => trip.groupStage === 'TRIP_STAGE');
-    const currentTrips = tripStageTrips.map(({ groupId, name, description }) => (
+    const currentTrips = tripStageTrips.map(({ groupId, name, description, groupStage }) => (
         <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
             <Grid item xs={12} lg={4} sx={{ mx: "auto" }}>
                 <DashboardFlipCard
@@ -47,7 +48,10 @@ export const CurrentTrips = ({trips}) => {
                             icon="groups_2"
                             title="Participants"
                             description="See other participants of this trip."
-                            route="/participants"
+                            route={`/participants/${groupId}/${groupStage}`}
+                            groupStage= {groupStage}
+                            groupId={groupId}
+                            
                         />
                     </Grid>
                 </Grid>

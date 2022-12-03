@@ -5,7 +5,7 @@ import { Link } from "@mui/material";
 import { Icon } from "@mui/material";
 
 
-export const DashboardOptionCard = ({ icon, title, description, route }) => {
+export const DashboardOptionCard = ({ icon, title, description, route, groupId }) => {
 
     return (
         <Link underline="none" href={route}>
