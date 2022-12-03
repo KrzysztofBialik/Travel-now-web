@@ -21,7 +21,6 @@ import { currentTripButtonsData } from '../../components/navbars/navigationNavba
 import { pastTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { DateRangePickerDialog } from '../../components/availability/DateRangePickerDialog';
-import { accommodationsData } from '../accommodation-pages/AccommodationsPage';
 import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
 
 
@@ -33,7 +32,7 @@ import { DeleteDatesDialog } from '../../components/tripSummary/DeleteDatesDialo
 export const URL = '/tripSummary';
 export const NAME = "TripSummary";
 
-const center = { lat: accommodationsData.latitude, lng: accommodationsData.longitude }
+const center = { lat: 0, lng: 0 }
 
 
 export const TripSummaryPage = () => {
@@ -370,7 +369,7 @@ export const TripSummaryPage = () => {
                                             {accommodationSelected ?
                                                 <>
                                                     <Grid item xs={5}>
-                                                        <AccommodationCard accommodationData={accommodationsData} canModify={false} selected={true} />
+                                                        <AccommodationCard accommodationData={[]} canModify={false} selected={true} />
                                                     </Grid>
                                                     <Grid item xs={5} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                                                         {isLoaded ?
