@@ -7,17 +7,15 @@ import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
 import { ROMEURL } from '../../../images/Images';
 
-import { trips } from '../../../../pages/dashboard-page/DashboardPage';
-
-
-export const PastTrips = () => {
-    const completedTrips = trips.filter(trip => trip.groupStage.includes('completed')).map(({ id, name }) => (
-        <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={id}>
+export const PastTrips = ({trips}) => {
+    const tripAfterTripStage =  trips.filter(trip => trip.groupStage === 'AFTER_TRIP_STAGE')
+    const completedTrips = tripAfterTripStage.map(({ groupId, name, description }) => (
+        <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
             <Grid item xs={12} lg={4} sx={{ mx: "auto" }}>
                 <DashboardFlipCard
                     frontBg={ROMEURL}
                     title={name}
-                    description=""
+                    description={description}
                     action={{
                         route: "/tripSummary",
                         label: "Trip summary",

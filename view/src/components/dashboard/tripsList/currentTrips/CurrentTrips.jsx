@@ -6,18 +6,17 @@ import { Typography } from '@mui/material';
 import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
 import { BARCELONAURL } from '../../../images/Images';
-import { trips } from '../../../../pages/dashboard-page/DashboardPage';
 
 
-export const CurrentTrips = () => {
-
-    const currentTrips = trips.filter(trip => trip.groupStage.includes('current')).map(({ id, name }) => (
-        <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={id}>
+export const CurrentTrips = ({trips}) => {
+    const tripStageTrips = trips.filter(trip => trip.groupStage === 'TRIP_STAGE');
+    const currentTrips = tripStageTrips.map(({ groupId, name, description }) => (
+        <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
             <Grid item xs={12} lg={4} sx={{ mx: "auto" }}>
                 <DashboardFlipCard
                     frontBg={BARCELONAURL}
                     title={name}
-                    description=""
+                    description= {description}
                     action={{
                         route: "/tripSummary",
                         label: "Trip summary",
@@ -32,6 +31,7 @@ export const CurrentTrips = () => {
                             title="Day plan"
                             description="Check what is the plan for a certain day of the trip."
                             route="/dayPlan"
+                            
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
