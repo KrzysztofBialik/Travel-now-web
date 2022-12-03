@@ -32,6 +32,14 @@ export const PastTrips = ({trips}) => {
                             route="/finances"
                         />
                     </Grid>
+                    <Grid item xs={12} md={6}>
+                        <DashboardOptionCard
+                            icon="groups_2"
+                            title="Participants"
+                            description="See other participants of this trip."
+                            route="/participants"
+                        />
+                    </Grid>
                 </Grid>
             </Grid>
         </Grid>

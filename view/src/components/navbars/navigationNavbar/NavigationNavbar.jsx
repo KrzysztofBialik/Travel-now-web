@@ -1,173 +1,3 @@
-// import * as React from 'react';
-// import AppBar from '@mui/material/AppBar';
-// import Box from '@mui/material/Box';
-// import Toolbar from '@mui/material/Toolbar';
-// import IconButton from '@mui/material/IconButton';
-// import Typography from '@mui/material/Typography';
-// import Menu from '@mui/material/Menu';
-// import MenuIcon from '@mui/icons-material/Menu';
-// import Container from '@mui/material/Container';
-// import Avatar from '@mui/material/Avatar';
-// import Button from '@mui/material/Button';
-// import Tooltip from '@mui/material/Tooltip';
-// import MenuItem from '@mui/material/MenuItem';
-// import AdbIcon from '@mui/icons-material/Adb';
-// import SettingsIcon from '@mui/icons-material/Settings';
-
-// const pages = ['Availability', 'Accomodation', 'Participants'];
-// const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
-
-// export const NavigationNavbar = () => {
-//     const [anchorElNav, setAnchorElNav] = React.useState(null);
-//     const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-//     const handleOpenNavMenu = (event) => {
-//         setAnchorElNav(event.currentTarget);
-//     };
-//     const handleOpenUserMenu = (event) => {
-//         setAnchorElUser(event.currentTarget);
-//     };
-
-//     const handleCloseNavMenu = () => {
-//         setAnchorElNav(null);
-//     };
-
-//     const handleCloseUserMenu = () => {
-//         setAnchorElUser(null);
-//     };
-
-//     return (
-//         <AppBar position="static">
-//             <Container maxWidth="xl">
-//                 <Toolbar disableGutters>
-//                     <Typography
-//                         variant="h5"
-//                         noWrap
-//                         component="a"
-//                         href="/"
-//                         sx={{
-//                             mr: 2,
-//                             display: { xs: 'none', md: 'flex' },
-//                             color: 'inherit',
-//                             textDecoration: 'none',
-//                         }}
-//                     >
-//                         Travel-now
-//                     </Typography>
-
-//                     <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-//                         <IconButton
-//                             size="large"
-//                             aria-label="account of current user"
-//                             aria-controls="menu-appbar"
-//                             aria-haspopup="true"
-//                             onClick={handleOpenNavMenu}
-//                             color="inherit"
-//                         >
-//                             <MenuIcon />
-//                         </IconButton>
-//                         <Menu
-//                             id="menu-appbar"
-//                             anchorEl={anchorElNav}
-//                             anchorOrigin={{
-//                                 vertical: 'bottom',
-//                                 horizontal: 'left',
-//                             }}
-//                             keepMounted
-//                             transformOrigin={{
-//                                 vertical: 'top',
-//                                 horizontal: 'left',
-//                             }}
-//                             open={Boolean(anchorElNav)}
-//                             onClose={handleCloseNavMenu}
-//                             sx={{
-//                                 display: { xs: 'block', md: 'none' },
-//                             }}
-//                         >
-//                             {pages.map((page) => (
-//                                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-//                                     <Typography textAlign="center">{page}</Typography>
-//                                 </MenuItem>
-//                             ))}
-//                         </Menu>
-//                     </Box>
-//                     <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
-//                     <Typography
-//                         variant="h5"
-//                         noWrap
-//                         component="a"
-//                         href=""
-//                         sx={{
-//                             mr: 2,
-//                             display: { xs: 'flex', md: 'none' },
-//                             flexGrow: 1,
-//                             fontFamily: 'monospace',
-//                             fontWeight: 700,
-//                             letterSpacing: '.3rem',
-//                             color: 'inherit',
-//                             textDecoration: 'none',
-//                         }}
-//                     >
-//                         LOGO
-//                     </Typography>
-//                     <Box
-//                         sx={{
-//                             flexGrow: 1,
-//                             display: { xs: 'none', md: 'flex' },
-//                             justifyContent: "space-evenly",
-//                             alignItems: "center",
-//                             mx: "10%"
-//                         }}
-//                     >
-//                         {pages.map((page) => (
-//                             <Button
-//                                 key={page}
-//                                 onClick={handleCloseNavMenu}
-//                                 color='inherit'
-//                                 sx={{ my: 2, backgroundColor: 'black' }}
-//                                 variant="outlined"
-//                             >
-//                                 {page}
-//                             </Button>
-//                         ))}
-//                     </Box>
-
-//                     <Box sx={{ flexGrow: 0 }}>
-//                         <Tooltip title="Open settings">
-//                             <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-//                                 <Avatar alt="Remy Sharp" />
-//                             </IconButton>
-//                         </Tooltip>
-//                         <Menu
-//                             sx={{ mt: '45px' }}
-//                             id="menu-appbar"
-//                             anchorEl={anchorElUser}
-//                             anchorOrigin={{
-//                                 vertical: 'top',
-//                                 horizontal: 'right',
-//                             }}
-//                             keepMounted
-//                             transformOrigin={{
-//                                 vertical: 'top',
-//                                 horizontal: 'right',
-//                             }}
-//                             open={Boolean(anchorElUser)}
-//                             onClose={handleCloseUserMenu}
-//                         >
-//                             {settings.map((setting) => (
-//                                 <MenuItem key={setting} onClick={handleCloseUserMenu}>
-//                                     <Typography textAlign="center">{setting}</Typography>
-//                                 </MenuItem>
-//                             ))}
-//                         </Menu>
-//                     </Box>
-//                 </Toolbar>
-//             </Container>
-//         </AppBar>
-//     );
-// };
-
-
 import * as React from 'react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -178,30 +8,87 @@ import Typography from '@mui/material/Typography';
 import { Button } from '@mui/material';
 import { Tooltip } from '@mui/material';
 import { IconButton } from '@mui/material';
-import { Avatar } from '@mui/material';
 import { Menu } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
+import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 import './NavigationNavbar.css';
 import { MenuItems } from './MenuItems'
-
+import { UserOptionsDialog } from '../../navbarDialogs/UserOptionsDialog';
+import { TripGroupOptionsDialog } from '../../navbarDialogs/TripGroupOptionsDialog';
 
 export const NavigationNavbar = ({ buttonsData }) => {
-    // const [optionsMenuOpen, setOptionsMenuOpen] = useState(false);
 
-    // const handleOptionsMenu = () => {
-    //     setOptionsMenuOpen(!optionsMenuOpen);
-    // }
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const [anchorElGroup, setAnchorElGroup] = React.useState(null);
+    const [leaveGroupDialogOpen, setLeaveGroupDialogOpen] = useState(false);
+    const [deleteGroupDialogOpen, setDeleteGroupDialogOpen] = useState(false);
+    const [tripGroupOptionsDialogOpen, setTripGroupOptionsDialogOpen] = useState(false);
+    const [userOptionsDialogOpen, setUserOptionsDialogOpen] = useState(false);
+    const [userLogoutDialogOpen, setUserLogoutDialogOpen] = useState(false);
+
     const open = Boolean(anchorEl);
+    const isCoordinator = false;
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
     const handleClose = () => {
         setAnchorEl(null);
     };
+
+    const handleOpenUserMenu = (event) => {
+        setAnchorElUser(event.currentTarget);
+    };
+
+    const handleOpenGroupMenu = (event) => {
+        setAnchorElGroup(event.currentTarget);
+    };
+
+    const handleCloseUserMenu = () => {
+        setAnchorElUser(null);
+    };
+
+    const handleCloseGroupMenu = () => {
+        setAnchorElGroup(null);
+    };
+
+    const handleTripGroupOptionsAction = () => {
+        setAnchorElGroup(null);
+        setTripGroupOptionsDialogOpen(true);
+    };
+
+    const handleLeaveGroup = () => {
+        setAnchorElGroup(null);
+        setLeaveGroupDialogOpen(true);
+    };
+
+    const handleDeleteGroup = () => {
+        setAnchorElGroup(null);
+        setDeleteGroupDialogOpen(true);
+    };
+
+    const handleUserOptionsAction = () => {
+        setAnchorElUser(null);
+        setUserOptionsDialogOpen(true);
+    };
+
+    const handleLogout = () => {
+        setAnchorElUser(null);
+        setUserLogoutDialogOpen(true);
+    };
+
+    const removeMenus = () => {
+        setAnchorElGroup(null);
+        setAnchorElUser(null);
+    };
+
+    window.addEventListener('scroll', removeMenus);
 
     function dropdownMenus(buttonsData) {
         const buttons = [];
@@ -212,8 +99,7 @@ export const NavigationNavbar = ({ buttonsData }) => {
                     <Button
                         key={buttonsData[i].id}
                         variant="contained"
-                        // href={button.link}
-                        sx={{ mx: "20px", width: "150px" }}
+                        sx={{ width: "150px" }}
                         onClick={handleClick}
                     >
                         {buttonsData[i].name}
@@ -229,7 +115,6 @@ export const NavigationNavbar = ({ buttonsData }) => {
                     >
                     </Menu>
                 </>
-                // for(var j = 0; j<buttonsData[i].subPages.length; j++) {}
             )
         }
         return buttons;
@@ -237,134 +122,177 @@ export const NavigationNavbar = ({ buttonsData }) => {
 
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static"
-                sx={{ minWidth: "1200px" }}>
-                <Toolbar
+        <>
+            <TripGroupOptionsDialog
+                open={tripGroupOptionsDialogOpen}
+                onClose={() => setTripGroupOptionsDialogOpen(false)}
+            />
+            <UserOptionsDialog
+                open={userOptionsDialogOpen}
+                onClose={() => setUserOptionsDialogOpen(false)}
+            />
+            <Box sx={{ flexGrow: 1 }}>
+                <AppBar
                     sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        mx: "5%",
-                    }}>
-                    <Box sx={{ display: "flex", flexWrap: "nowrap" }}>
-                        <Typography variant="h6">
+                        width: "100%",
+                        minWidth: "1000px",
+                        borderBottomLeftRadius: "20px",
+                        borderBottomRightRadius: "20px",
+                        position: "relative",
+                    }}
+                >
+                    <Toolbar
+                        sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            mx: 2
+                        }}>
+                        <Typography variant="h6" color="#FFFFFF" >
                             <Link to="/dashboard" className="logo">
                                 Travel-now
                             </Link>
                         </Typography>
-                    </Box>
-                    <Box
-                        sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "space-around",
-                            gap: "50px"
-                        }}>
-                        {/* {dropdownMenus(buttonsData)} */}
-                        {/* <ul className="menus"> */}
-                        {buttonsData.map((button, index) => {
-                            return (
-                                <MenuItems items={button} key={index} />
-                            )
-                        })}
-                        {/* </ul> */}
-                        {/* {buttonsData.map(({ id, name, link, subPages }) => (
-                            <>
-                                <Button
-                                    key={id}
-                                    variant="contained"
-                                    // href={button.link}
-                                    sx={{ mx: "20px", width: "150px" }}
-                                    onClick={handleClick}
-                                >
-                                    {name}
-                                </Button>
-                                <Menu
-                                    id="basic-menu"
-                                    anchorEl={anchorEl}
-                                    open={open}
-                                    onClose={handleClose}
-                                    MenuListProps={{
-                                        'aria-labelledby': 'basic-button',
-                                    }}
-                                > */}
-
-                        {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                    <MenuItem onClick={handleClose}>My account</MenuItem>
-                                    <MenuItem onClick={handleClose}>Logout</MenuItem> */}
-                        {/* {buttonsData[1].subPages.map(({ id, name, link }) => (
-                                        <MenuItem
-                                            key={id}
-                                            onClick={handleClose}
-                                            href={link}
-                                        >
-                                            <Button>{name}</Button>
-                                        </MenuItem>
-                                    ))} */}
-                        {/* {buttonsData.flatMap((button) => (button.subPages)).map((subPage) => (
-                                        <MenuItem
-                                        // key={subPage.name}
-                                        >
-                                            <Button
-                                                onClick={handleClose}
-                                                href={subPage.link}
-                                                sx={{ height: "100%" }}
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "space-around",
+                                gap: "50px"
+                            }}>
+                            {buttonsData.map((button, index) => {
+                                return (
+                                    <MenuItems items={button} key={index} />
+                                )
+                            })}
+                        </Box>
+                        <Box sx={{ display: "flex", flexDirection: "row" }}>
+                            {buttonsData.length !== 0 &&
+                                <Box sx={{ flexGrow: 0, mr: 2 }}>
+                                    <Tooltip title="Open trip group settings">
+                                        <IconButton
+                                            onClick={handleOpenGroupMenu}
+                                            sx={{
+                                                p: 0,
+                                            }}>
+                                            <SettingsIcon
+                                                sx={{
+                                                    color: "#FFFFFF",
+                                                    fontSize: "36px",
+                                                    "&:hover": {
+                                                        color: "primary.dark"
+                                                    }
+                                                }}
+                                            />
+                                        </IconButton>
+                                    </Tooltip>
+                                    <Menu
+                                        sx={{ mt: '45px' }}
+                                        id="menu-appbar"
+                                        anchorEl={anchorElGroup}
+                                        anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                        keepMounted
+                                        disableScrollLock={true}
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                        open={Boolean(anchorElGroup)}
+                                        onClose={handleCloseGroupMenu}
+                                    >
+                                        {isCoordinator ?
+                                            <>
+                                                <MenuItem
+                                                    onClick={handleTripGroupOptionsAction}
+                                                >
+                                                    <SettingsIcon sx={{ color: "primary.dark", mr: 1 }} />
+                                                    <Typography sx={{ textAlign: "center", color: "primary.dark" }}>
+                                                        Trip group settings
+                                                    </Typography>
+                                                </MenuItem>
+                                                <MenuItem
+                                                    onClick={handleDeleteGroup}
+                                                >
+                                                    <DeleteIcon sx={{ color: "error.main", mr: 1 }} />
+                                                    <Typography sx={{ textAlign: "center", color: "primary.dark" }}>
+                                                        Delete group
+                                                    </Typography>
+                                                </MenuItem>
+                                            </>
+                                            :
+                                            <MenuItem
+                                                onClick={handleLeaveGroup}
                                             >
-                                                {subPage.name}
-                                            </Button>
-                                        </MenuItem>
-                                    ))} */}
-                        {/* </Menu>
-                            </>
-                        ))} */}
-
-                        {/* <Button variant="contained"
-                            sx={{}}
-                        >Availability</Button>
-                        <Button variant="contained">Accomodation</Button>
-                        <Button variant="contained">Participants</Button> */}
-                    </Box>
-                    <Box sx={{ flexGrow: 0 }}>
-                        <IconButton>
-                            <LogoutIcon />
-                        </IconButton>
-                        {/* -------------------tutaj można dodać logikę do rozwijanego menu z akcjami użytkownika-------------------
-                        -------------------zamiast ikony logout, byłby wtedy awatar użytkownika------------------- */}
-                        {/* <Tooltip title="Open settings">
-                            <IconButton
-                                onClick={handleOptionsMenu}
-                                sx={{ p: 0 }}>
-                                <Avatar alt="Remy Sharp" />
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{ mt: '45px' }}
-                            id="menu-appbar"
-                            // anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={optionsMenuOpen}
-                        // open={Boolean(anchorElUser)}
-                        // onClose={handleCloseUserMenu}
-                        >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography textAlign="center">{setting}</Typography>
-                                </MenuItem>
-                            ))}
-                        </Menu> */}
-                    </Box>
-                </Toolbar>
-            </AppBar>
-        </Box>
+                                                <ExitToAppIcon sx={{ color: "primary.dark", mr: 1 }} />
+                                                <Typography sx={{ textAlign: "center", color: "primary.dark" }}>
+                                                    Leave group
+                                                </Typography>
+                                            </MenuItem>
+                                        }
+                                    </Menu>
+                                </Box>
+                            }
+                            <Box sx={{ flexGrow: 0 }}>
+                                <Tooltip title="Open user settings">
+                                    <IconButton
+                                        onClick={handleOpenUserMenu}
+                                        sx={{
+                                            p: 0
+                                        }}
+                                    >
+                                        <AccountCircleIcon
+                                            sx={{
+                                                color: "#FFFFFF",
+                                                fontSize: "36px",
+                                                "&:hover": {
+                                                    color: "primary.dark"
+                                                }
+                                            }} />
+                                    </IconButton>
+                                </Tooltip>
+                                <Menu
+                                    sx={{ mt: '45px' }}
+                                    id="menu-appbar"
+                                    anchorEl={anchorElUser}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    disableScrollLock={true}
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={Boolean(anchorElUser)}
+                                    onClose={handleCloseUserMenu}
+                                >
+                                    <MenuItem
+                                        onClick={handleUserOptionsAction}
+                                    >
+                                        <SettingsIcon sx={{ color: "primary.dark", mr: 1 }} />
+                                        <Typography sx={{ textAlign: "center", color: "primary.dark" }}>
+                                            Account settings
+                                        </Typography>
+                                    </MenuItem>
+                                    <MenuItem
+                                        onClick={() => handleLogout()}
+                                    >
+                                        <LogoutIcon sx={{ color: "primary.dark", mr: 1 }} />
+                                        <Typography sx={{ textAlign: "center", color: "primary.dark" }}>
+                                            Logout
+                                        </Typography>
+                                    </MenuItem>
+                                </Menu>
+                            </Box>
+                        </Box>
+                    </Toolbar>
+                </AppBar>
+            </Box>
+        </>
     );
 };

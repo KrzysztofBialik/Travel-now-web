@@ -7,16 +7,15 @@ import './StarterNavbar.css';
 
 export const StarterNavbar = () => {
     const [color, setColor] = useState(false);
-    console.log(color);
+
     const changeColor = () => {
-        console.log(window.scrollY)
-        if (window.scrollY >= 90) {
+        if (window.scrollY >= 64) {
             setColor(true)
         }
         else {
             setColor(false)
         }
-    }
+    };
 
     window.addEventListener('scroll', changeColor);
 
@@ -43,7 +42,6 @@ export const StarterNavbar = () => {
                     </Box>
                 </Box>
             </Box>
-            <div className='wrapper'></div>
         </StyledEngineProvider>
     );
 };

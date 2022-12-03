@@ -31,7 +31,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
     const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
 
     const defaultInputValues = {
-        attractionName,
+        attractionName: attractionName,
         description
     };
 
@@ -66,10 +66,11 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                 onSuccess(dayPlanId);
                 closeWithSelect();
             })
-            .catch(err => {setErrorToastOpen(true); 
+            .catch(err => {
+                setErrorToastOpen(true);
                 setCreationError(err.message)
             });
-        
+
     }
 
     const close = () => {
@@ -112,8 +113,8 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                             name='attractionName'
                             fullWidth
                             variant="outlined"
-                            {...register('price')}
-                            value={attractionData.name}
+                            {...register('attractionName')}
+                            value={attractionData.attractionName}
                         />
                         <TextField
                             type='string'

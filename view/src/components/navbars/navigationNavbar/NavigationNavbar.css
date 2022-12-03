@@ -10,7 +10,7 @@ body {
 
 header {
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    color: #212529;
+    color: white;
 }
 
 .nav-area {
@@ -39,7 +39,7 @@ header {
 .menu-items {
     position: relative;
     font-size: 14px;
-    width: 200px;
+    /* width: 150px; */
 }
 
 .menu-items a {
@@ -60,6 +60,7 @@ header {
     cursor: pointer;
     width: 100%;
     border-radius: 20px;
+    color: white;
 }
 
 .menu-items .nav-link {
@@ -75,7 +76,12 @@ button span {
     margin-left: 3px;
 }
 
-.menu-items>a,
+.menu-items>a {
+    color: #24939e;
+    text-align: left;
+    padding: 0.7rem 1rem;
+}
+
 .menu-items button {
     text-align: left;
     padding: 0.7rem 1rem;
@@ -87,6 +93,7 @@ button span {
 }
 
 .menu-items a:hover {
+    color: #55ccd9;
     background-color: #f2f2f2;
 }
 

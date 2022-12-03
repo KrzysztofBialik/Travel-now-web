@@ -20,7 +20,6 @@ import { doGet } from "../../components/utils/fetch-utils";
 import { get } from 'react-hook-form';
 import { useEffect } from 'react';
 
-
 export const availabilities = [
     {
         id: 1,
@@ -139,9 +138,10 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
 
     const participantColumn = [
         {
-            field: 'firstName', headerName: 'Name', renderHeader: () => (
+
+            field: 'firstName', headerName: 'FirstName', renderHeader: () => (
                 <strong>
-                    Name
+                    First Name
                 </strong>
             ), type: 'string', flex: 2, hideable: true, headerAlign: 'center', align: 'left', minWidth: 200
         },
@@ -160,6 +160,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
             ), type: 'string', flex: 1, hideable: true, headerAlign: 'center', align: 'left', minWidth: 200,
         },
         {
+
             field: 'email', headerName: 'Mail', renderHeader: () => (
                 <strong>
                     Mail

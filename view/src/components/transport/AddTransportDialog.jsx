@@ -20,7 +20,6 @@ import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import CommuteIcon from '@mui/icons-material/Commute';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';

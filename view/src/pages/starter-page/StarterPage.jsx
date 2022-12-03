@@ -7,7 +7,7 @@ import "./StarterPage.css";
 import { DestinationCard } from "../../components/destinationCard/DestinationCard";
 import { StarterBackground } from './starter-background/StarterBackground';
 import { StarterNavbar } from '../../components/navbars/StarterNavbar';
-import { BARCELONAURL, ROMEURL, LONDONURL, GLOBEURL, AMSTERDAMURL, MILANURL, LISBONURL } from "../../components/images/Images";
+import { BARCELONAURL, ROMEURL, LONDONURL, GLOBEURL, AMSTERDAMURL, MILANURL, LISBONURL, BACKGROUND_STARTER } from "../../components/images/Images";
 
 
 export const URL = '/starter';
@@ -15,20 +15,36 @@ export const NAME = "Starter";
 
 export const StarterPage = () => {
     return (
-        <div className='starter-page-wrapper'>
+        <>
             <StarterNavbar />
-            <StarterBackground />
+            {/* <StarterBackground /> */}
+            <Box
+                sx={{
+                    backgroundImage: `url(${BACKGROUND_STARTER})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                    display: "grid",
+                    placeItems: "center",
+                    minHeight: "80vh",
+                    minWidth: "1000px",
+                    width: "100%",
+                    mt: "-200px"
+                }}
+            />
             <Card
                 sx={{
+                    position: "relative",
                     padding: '50px',
-                    margin: '50px',
+                    mx: '50px',
+                    mb: "50px",
+                    mt: -7,
                     display: 'flex',
                     flexDirection: 'column',
                     alignItems: 'center',
-                    borderRadius: '10px',
-                    minWidth: '1200px'
+                    borderRadius: '20px',
+                    minWidth: '900px'
                 }}
-                elevation={8}
+                elevation={2}
             >
                 <Box className={"title"}>
                     <Typography variant="h2">Top destinations</Typography>
@@ -45,6 +61,6 @@ export const StarterPage = () => {
                     </Grid>
                 </Container >
             </Card>
-        </div>
+        </>
     );
 };

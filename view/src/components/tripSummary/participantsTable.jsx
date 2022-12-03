@@ -13,35 +13,35 @@ const userData = [
         id: 1,
         firstName: "Robert",
         lastName: "Lewandowski",
-        username: "robciu",
+        phoneNumber: "+48 111222333",
         role: "Coordinator"
     },
     {
         id: 2,
         firstName: "Marcin",
         lastName: "Cebula",
-        username: "sędzia",
+        phoneNumber: "+48 444555666",
         role: "Participant"
     },
     {
         id: 3,
         firstName: "Kamila",
         lastName: "Marchlewicz",
-        username: "kamilka",
+        phoneNumber: "+48 777888999",
         role: "Participant"
     },
     {
         id: 4,
         firstName: "Jakub",
         lastName: "Zastępczy",
-        username: "nauczyciel",
+        phoneNumber: "+48 123456789",
         role: "Participant"
     },
     {
         id: 5,
         firstName: "Zuzia",
         lastName: "Siemaszko",
-        username: "stocznik",
+        phoneNumber: "+48 987456123",
         role: "Participant"
     }
 ]
@@ -54,7 +54,7 @@ export const ParticipantsTable = () => {
                     <TableRow>
                         <TableCell sx={{ fontSize: 20 }} align="center">First Name</TableCell>
                         <TableCell sx={{ fontSize: 20 }} align="center">Last Name</TableCell>
-                        <TableCell sx={{ fontSize: 20 }} align="center">Username</TableCell>
+                        <TableCell sx={{ fontSize: 20 }} align="center">Phone number</TableCell>
                         <TableCell sx={{ fontSize: 20 }} align="center">Role</TableCell>
                     </TableRow>
                 </TableHead>
@@ -66,7 +66,7 @@ export const ParticipantsTable = () => {
                         >
                             <TableCell align="left">{user.firstName}</TableCell>
                             <TableCell align="left">{user.lastName}</TableCell>
-                            <TableCell align="center">{user.username}</TableCell>
+                            <TableCell align="center">{user.phoneNumber}</TableCell>
                             <TableCell align="center">{user.role}</TableCell>
                         </TableRow>
                     ))}

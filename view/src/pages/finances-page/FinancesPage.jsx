@@ -240,7 +240,7 @@ const balancesData = [
     {
         id: 7,
         user: "Olisadebe",
-        balance: 250
+        balance: 240
     },
     {
         id: 8,
