@@ -4,6 +4,7 @@ import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useParams } from "react-router-dom";
+import { useEffect } from 'react';
 
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { futureTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
@@ -11,17 +12,42 @@ import { currentTripButtonsData } from "../../components/navbars/navigationNavba
 
 import { ParticipantsTable } from "../../components/participants/ParticipantsTable";
 import { InviteDialog } from "../../components/participants/InviteDialog";
+import { doGet } from "../../components/utils/fetch-utils";
 
-export const URL = '/participants/:groupId/:groupStage';
+export const URL = '/participants/:groupId';
 export const NAME = "Participants";
 
 export const ParticipantsPage = () => {
     
     const {groupId} = useParams();
 
-    const {groupStage} = useParams();
+    const [groupStage, setGroupStage] = useState([]);
 
-    const isCoordinator = false;
+    const [isCoordinator, setIsCoordinator] = useState([]);
+
+    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
+    localStorage.setItem("userId", 31)
+
+    const getGroupData = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(response => setGroupStage(response.groupStage))
+        .catch(err => console.log('Request Failed', err));
+    }
+
+    const getUserCoordinator = async () => {
+        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId")}).toString())
+        .then(response => response.json())
+        .then(response => setIsCoordinator(response))
+        .catch(err => console.log('Request Failed', err));
+    }
+
+
+    useEffect(() => {
+        getGroupData();
+        getUserCoordinator();
+      }, [])
+
 
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 

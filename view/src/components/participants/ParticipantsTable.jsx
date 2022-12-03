@@ -183,8 +183,10 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
             getActions: (params) => {
                 const username = params.row.username;
                 const userAvailability = availabilities.filter(availability => (availability.user === params.row.username))
-
+            
                 if (isCoordinator) {
+                    console.log("shouldnt be here")
+                    console.log(isCoordinator)
                     if (groupStage === "PLANNING_STAGE") {
                         return [
                             <GridActionsCellItem

@@ -37,7 +37,8 @@ export const PastTrips = ({trips}) => {
                             icon="groups_2"
                             title="Participants"
                             description="See other participants of this trip."
-                            route="/participants"
+                            route={`/participants/${groupId}`}
+                            groupId={groupId}
                         />
                     </Grid>
                 </Grid>

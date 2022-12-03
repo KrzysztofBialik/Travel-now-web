@@ -48,8 +48,7 @@ export const CurrentTrips = ({trips}) => {
                             icon="groups_2"
                             title="Participants"
                             description="See other participants of this trip."
-                            route={`/participants/${groupId}/${groupStage}`}
-                            groupStage= {groupStage}
+                            route={`/participants/${groupId}`}
                             groupId={groupId}
                             
                         />
