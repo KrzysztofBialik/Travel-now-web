@@ -31,8 +31,8 @@ export const CurrentTrips = ({trips}) => {
                             icon="map"
                             title="Day plan"
                             description="Check what is the plan for a certain day of the trip."
-                            route="/dayPlan"
-                            
+                            route={`/dayPlan/${groupId}`}
+                            groupId={groupId}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>

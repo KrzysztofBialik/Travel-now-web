@@ -25,6 +25,7 @@ import { EditAccommodationDialog } from "../EditAccommodationDialog";
 import { DeleteAccommodationDialog } from "../DeleteAccommodationDialog";
 import { TransportDialog } from "../../transport/TransportDialog";
 import "./AccommodationCard.css";
+import { doDelete, doPatch, doPost } from "../../utils/fetch-utils";
 import { PLACEHOLDER_IMAGE } from "../../images/Images";
 
 
@@ -39,26 +40,27 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const AccommodationCard = ({ accommodationData, canModify, selected }) => {
+export const AccommodationCard = ({ accommodationData, canModify, selected, votes, onSuccess }) => {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [numOfVotes, setNumOfVotes] = useState(accommodationData.givenVotes);
     //dodanie tego czy zagłosował dany użytkownik, bo teraz jest zawsze false
-    const [userVote, setUserVote] = useState(false);
+    const [userVote, setUserVote] = useState(votes.some(vote => vote['userId'] === parseInt(localStorage.getItem('userId'))));
     const [expanded, setExpanded] = useState(false);
     const [selectDialogOpen, setSelectDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [transportDialogOpen, setTransportDialogOpen] = useState(false);
+    const [userName, setUserName] = useState("");
     const open = Boolean(anchorEl);
 
     const voteAction = () => {
         setUserVote(!userVote)
         if (userVote) {
-            setNumOfVotes(numOfVotes - 1);
+            handleDeleteVoteAccommodation(() => setNumOfVotes(numOfVotes - 1));
         }
         else {
-            setNumOfVotes(numOfVotes + 1);
+            handleVoteAccommodation(() => setNumOfVotes(numOfVotes + 1));
         }
     };
 
@@ -89,7 +91,33 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
         setAnchorEl(null);
     };
 
+    const handleVoteAccommodation = async (success) => {
+        await doPost('/api/v1/accommodation/vote', accommodationData)
+            .then(response => {
+                if(response.ok){
+                    success();
+                }    
+            })
+            .catch(err => {
+                // setErrorToastOpen(true); 
+                // setEditionError(err.message)
+            });
+    }
 
+
+    const handleDeleteVoteAccommodation = async (success) => {
+        await doPatch('/api/v1/accommodation/vote', {"userId":parseInt(localStorage.getItem("userId")),"accommodationId":accommodationData.accommodationId})
+            .then(response => {
+                if(response.ok){
+                    success();
+                }    
+            })
+            .catch(err => {
+                // setErrorToastOpen(true); 
+                // setEditionError(err.message)
+            });
+    }
+    
     return (
         <>
             <SelectAccommodationDialog
@@ -104,6 +132,8 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
             <DeleteAccommodationDialog
                 open={deleteDialogOpen}
                 onClose={() => { setDeleteDialogOpen(false) }}
+                accommodationId={accommodationData.accommodationId}
+                onSuccess={() => onSuccess()}
             />
             <TransportDialog
                 open={transportDialogOpen}
@@ -124,7 +154,6 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
                     }}
                     title={accommodationData.name}
                     titleTypographyProps={{ variant: 'h5' }}
-                    subheader="Added by: Coordinator"
                     subheaderTypographyProps={{ variant: 'body2' }}
                     action={
                         <Box sx={{
@@ -222,7 +251,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected }) =>
                             Address:
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                            {accommodationData.address}
+                            {accommodationData.streetAddress}
                         </Typography>
                     </Box>
                     <Box sx={{ minWidth: "100px", ml: 5 }}>

@@ -53,7 +53,7 @@ export const doDelete = (endpoint) => {
 
     return fetch(URL_PREFIX + endpoint, {
         method: 'DELETE',
-        headers: headers,
+        headers: headers
     })
         .then(response => checkForError(response))
 }
