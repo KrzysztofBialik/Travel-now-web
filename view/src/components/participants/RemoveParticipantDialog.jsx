@@ -43,7 +43,6 @@ export const RemoveParticipantDialog = ({ open, onClose, groupId, userId, isDele
     localStorage.setItem("userId", 31)
 
     const deleteUserFromGroup = async () => {
-        console.log("Is deleting himself" + isDeletingHimself)
         if (isDeletingHimself) {
             await doDelete('/api/v1/trip-group/user?' + new URLSearchParams({ groupId: groupId}).toString())
             .then(response => leaveGroup())
