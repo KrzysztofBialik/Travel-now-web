@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useState } from "react";
 import { Button } from '@mui/material';
 import { Dialog } from '@mui/material';
+import { Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
@@ -12,6 +14,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import InputAdornment from '@mui/material/InputAdornment';
+import CloseIcon from '@mui/icons-material/Close';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doPatch } from "../../components/utils/fetch-utils";
@@ -29,7 +32,7 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
     const [description, setDescription] = useState({ value: attractionData.description, length: descriptionLength });
     const [descriptionError, setDescriptionError] = useState(descriptionLength > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null);
     const [editionError, setEditionError] = useState("Ups! Something went wrong. Try again.");
-    
+
     const defaultInputValues = {
         attractionName,
         description
@@ -63,10 +66,11 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
                 setErrorToastOpen(!response.ok);
                 close();
             })
-            .catch(err => {setErrorToastOpen(true); 
+            .catch(err => {
+                setErrorToastOpen(true);
                 setEditionError(err.message)
             });
-        
+
     }
 
     const close = () => {
@@ -83,7 +87,7 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
     };
 
     const handleEdit = async (description) => {
-        
+
     };
 
     return (
@@ -94,12 +98,37 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
                 open={open}
                 onClose={onClose}
                 aria-labelledby="responsive-dialog-title"
+                PaperProps={{
+                    style: {
+                        minWidth: "500px",
+                        maxWidth: "500px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle variant="h4" sx={{ backgroundColor: "primary.main", color: "#FFFFFF", mb: "10px" }}>
-                    Edit attraction
+                <DialogTitle
+                    sx={{
+                        backgroundColor: "primary.main",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        color: "#FFFFFF",
+                        mb: 2
+                    }}
+                >
+                    <Typography sx={{ color: "#FFFFFF", fontSize: "24px" }}>
+                        Edit day plan
+                    </Typography>
+                    <IconButton
+                        sx={{ p: 0 }}
+                        onClick={onClose}
+                    >
+                        <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
+                    </IconButton>
                 </DialogTitle>
-                <DialogContent>
-                    <DialogContentText variant="body1" mb="30px">
+                <DialogContent sx={{ pb: 1 }}>
+                    <DialogContentText variant="body1" mb="20px">
                         Edit description of attraction.
                     </DialogContentText>
                     <form
@@ -148,7 +177,7 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
                         </FormHelperText>
                         <DialogActions>
                             <Button
-                                varaint="outlined"
+                                variant="outlined"
                                 sx={{ borderColor: "primary.main", borderRadius: "20px" }}
                                 onClick={handleErrorClose}
                             >

@@ -135,7 +135,7 @@ export const NavigationNavbar = ({ buttonsData }) => {
                 <AppBar
                     sx={{
                         width: "100%",
-                        minWidth: "1000px",
+                        minWidth: "1200px",
                         borderBottomLeftRadius: "20px",
                         borderBottomRightRadius: "20px",
                         position: "relative",

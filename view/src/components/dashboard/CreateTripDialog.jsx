@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { useState } from "react";
+import { Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -15,6 +17,7 @@ import { Box } from '@mui/material';
 import { FormHelperText } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
+import CloseIcon from '@mui/icons-material/Close';
 import EditIcon from '@mui/icons-material/Edit';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
@@ -132,10 +135,35 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                 open={open}
                 onClose={onClose}
                 aria-labelledby="responsive-dialog-title"
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle variant="h4">Create new trip</DialogTitle>
-                <DialogContent>
-                    <DialogContentText variant="body1" mb="30px">
+                <DialogTitle
+                    sx={{
+                        backgroundColor: "primary.main",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        color: "#FFFFFF",
+                        mb: 2
+                    }}
+                >
+                    <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                        Create new trip
+                    </Typography>
+                    <IconButton
+                        sx={{ p: 0 }}
+                        onClick={close}
+                    >
+                        <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
+                    <DialogContentText variant="body1" mb="20px">
                         Provide informations about your trip. You can always change them later.
                     </DialogContentText>
                     <form
@@ -193,7 +221,7 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                                         select
                                         margin='normal'
                                         variant='outlined'
-                                        label='currency'
+                                        label='Currency'
                                         InputProps={{
                                             startAdornment: (
                                                 <InputAdornment position="start">
@@ -284,7 +312,7 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                         <DialogActions>
                             <Button
                                 variant="outlined"
-                                sx={{ borderRadius: "10px" }}
+                                sx={{ borderRadius: "20px" }}
                                 onClick={() => close()}
                             >
                                 Cancel
@@ -292,7 +320,7 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                             <Button
                                 type="submit"
                                 variant="contained"
-                                sx={{ borderRadius: "10px", color: "#FFFFFF" }}
+                                sx={{ borderRadius: "20px", color: "#FFFFFF" }}
                             >
                                 Create trip
                             </Button>

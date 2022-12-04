@@ -9,7 +9,7 @@ import { BARCELONAURL } from '../../../images/Images';
 import { Link } from "react-router-dom";
 
 
-export const CurrentTrips = ({trips}) => {
+export const CurrentTrips = ({ trips }) => {
     const tripStageTrips = trips.filter(trip => trip.groupStage === 'TRIP_STAGE');
     const currentTrips = tripStageTrips.map(({ groupId, name, description, groupStage }) => (
         <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
@@ -17,7 +17,7 @@ export const CurrentTrips = ({trips}) => {
                 <DashboardFlipCard
                     frontBg={BARCELONAURL}
                     title={name}
-                    description= {description}
+                    description={description}
                     action={{
                         route: "/tripSummary",
                         label: "Trip summary",
@@ -30,7 +30,7 @@ export const CurrentTrips = ({trips}) => {
                         <DashboardOptionCard
                             icon="map"
                             title="Day plan"
-                            description="Check what is the plan for a certain day of the trip."
+                            description="Check what is the plan for a certain day of the trip"
                             route={`/dayPlan/${groupId}`}
                             groupId={groupId}
                         />
@@ -39,7 +39,7 @@ export const CurrentTrips = ({trips}) => {
                         <DashboardOptionCard
                             icon="currency_exchange"
                             title="Finances"
-                            description="Control finances during the trip."
+                            description="Control finances during the trip"
                             route="/finances"
                         />
                     </Grid>
@@ -47,17 +47,17 @@ export const CurrentTrips = ({trips}) => {
                         <DashboardOptionCard
                             icon="groups_2"
                             title="Participants"
-                            description="See other participants of this trip."
+                            description="See other participants of this trip"
                             route={`/participants/${groupId}`}
                             groupId={groupId}
-                            
+
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <DashboardOptionCard
                             icon="fact_checked"
                             title="Trip summary"
-                            description="Check general info about the trip."
+                            description="Check general info about the trip"
                             route="/tripSummary"
                         />
                     </Grid>

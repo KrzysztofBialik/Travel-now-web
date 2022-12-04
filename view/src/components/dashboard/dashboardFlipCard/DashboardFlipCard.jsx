@@ -31,20 +31,18 @@ export const DashboardFlipCard = ({ frontBg, backBg, title, description, action 
                     <Box py={12} px={3} textAlign="center" lineHeight={1}>
                         <Typography variant="h3" gutterBottom
                             sx={{
-                                textShadow: "0 0 3px #000000",
                                 color: "white"
                             }}
                         >
                             {title}
                         </Typography>
-                        <Typography variant="h6"
+                        {/* <Typography variant="h6"
                             sx={{
-                                textShadow: "-1px 1px 0 #000",
                                 color: "white",
                             }}
                         >
                             {description}
-                        </Typography>
+                        </Typography> */}
                     </Box>
                 </Box>
                 <Box className="flip-card-back"
@@ -62,12 +60,16 @@ export const DashboardFlipCard = ({ frontBg, backBg, title, description, action 
                         </Typography>
                         {action && (
                             <Box width="50%" mt={4} mb={2} mx="auto">
-                                <Button href={action.route} size="large" fullWidth
+                                <Button
+                                    href={action.route}
+                                    fullWidth
+                                    variant="contained"
+                                    color="secondary"
                                     sx={{
-                                        color: "#000000",
-                                        backgroundColor: "secondary.main",
                                         borderRadius: "20px",
-                                        "&:hover": { backgroundColor: "secondary.dark", boxShadow: 5, color: "#000000" }
+                                        "&:hover": {
+                                            color: "#000000"
+                                        }
                                     }}
                                 >
                                     {action.label}
