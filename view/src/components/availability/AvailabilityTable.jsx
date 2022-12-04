@@ -22,14 +22,14 @@ export const AvailabilityTable = ({ availabilities, groupId, onSuccess }) => {
 
     const availabilityColumns = [
         {
-            field: 'dateFrom', headerName: 'StartDate', renderHeader: () => (
+            field: 'startDate', headerName: 'StartDate', renderHeader: () => (
                 <strong>
                     Start Date
                 </strong>
             ), type: 'date', flex: 2, hideable: true, headerAlign: 'center', align: 'center', minWidth: 200,
         },
         {
-            field: 'dateTo', headerName: 'EndDate', renderHeader: () => (
+            field: 'endDate', headerName: 'EndDate', renderHeader: () => (
                 <strong>
                     End Date
                 </strong>

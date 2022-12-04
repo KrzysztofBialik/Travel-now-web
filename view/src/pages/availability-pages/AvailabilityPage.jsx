@@ -21,7 +21,7 @@ import 'react-date-range/dist/theme/default.css';
 import { AvailabilityTable } from "../../components/availability/AvailabilityTable";
 import { DateRangePickerDialog } from "../../components/availability/DateRangePickerDialog";
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
-import { futureTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
+import { currentTripButtonsDataWithGroupId, futureTripButtonsDataWithGroupId} from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { useParams } from "react-router-dom";
 import { doGet } from "../../components/utils/fetch-utils";
 import { useEffect } from 'react';
@@ -87,7 +87,8 @@ export const AvailabilityPage = () => {
         await doGet('/api/v1/availability/user?' + new URLSearchParams({ userId: localStorage.getItem("userId") ,groupId: groupId }).toString())
         .then(response => response.json())
         .then(response => {
-            setAvailabilites(response);
+            setAvailabilites(response.map(availability => ({availabilityId: availability.availabilityId, userId: availability.userId, groupId: availability.groupId,
+                 startDate: parseISO(availability.dateFrom), endDate: parseISO(availability.dateTo), disabled: true})));
         })
         .catch(err => console.log('Request Failed', err));
     }
@@ -110,24 +111,29 @@ export const AvailabilityPage = () => {
             </div>
         )
     }
-    const restrictedDays = availabilities.flatMap(availability => {
-        const startDate = parseISO(availability.dateFrom);
-        const endDate = parseISO(availability.dateTo)
-        return eachDayOfInterval({ start: new Date(2022, 10, 21), end: new Date(2022, 10, 28)})}
+
+    console.log(availabilities)
+    const restrictedDays = availabilities.flatMap(availability => 
+        eachDayOfInterval({ start: availability.startDate, end: availability.endDate})
         );
 
+    
 
+    console.log(restrictedDays)
     return (
         <Box sx={{
             position: 'relative',
             minHeight: '100%'
         }}>
-            <NavigationNavbar buttonsData={futureTripButtonsData} />
+            <NavigationNavbar buttonsData={futureTripButtonsDataWithGroupId(groupId)} />
             <DateRangePickerDialog open={dateRangePickerDialogOpen}
                 onClose={() => setDateRangePickerDialogOpen(false)}
                 initialRange={[{ startDate: null, endDate: null, key: "selection" }]}
                 restrictedDays={restrictedDays}
-                rangeChange={() => { }} />
+                groupId={groupId}
+                rangeChange={() => { }} 
+                onSuccess={() => getAvailabilities()}
+                />
             <Box sx={{
                 py: 10,
                 display: "flex",
