@@ -88,6 +88,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { SimpleNavbar } from '../../components/navbars/SimpleNavbar';
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
+import { doPost } from '../../components/utils/fetch-utils';
 
 export const URL = '/login';
 export const NAME = "Login";
@@ -96,6 +97,7 @@ export const LoginPage = () => {
 
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
+    const [invalidData, setInvalidData] = useState(false);
 
     const defaultInputValues = {
         email: "",
@@ -115,16 +117,42 @@ export const LoginPage = () => {
     });
 
     const { register, handleSubmit, reset, formState: { errors }, control, setValue, getValues } = useForm({
-        resolver: yupResolver(validationSchema),
+        // resolver: yupResolver(validationSchema),
         defaultValues: defaultInputValues
     });
 
-    const handleLogin = (values) => {
-        console.log(values);
-        console.log(getValues());
-        reset();
-        navigate("/dashboard");
+    const handleLogin = async (values) => {
+        var postBody = {'email': values.email,             
+                        'password': values.password,                    
+                    };
+        await doPost('/api/v1/auth/login', postBody, false)
+            .then(response => {
+                if(response.ok) {
+                    localStorage.setItem("ACCESS_TOKEN", response.headers.get('Authorization'))
+                }
+                setInvalidData(false);
+                return response.json();
+            })
+            .then(json => {
+                localStorage.setItem("userId", json.userId)
+                reset();
+                navigate("/dashboard");
+            })
+            .catch(err => {
+                if(err.message === '401') {
+                    setInvalidData(true);
+                }
+                console.log(err)
+            });
+            // reset();
     };
+
+    // const handleLogin = (values) => {
+    //     console.log(values);
+    //     console.log(getValues());
+    //     reset();
+    //     navigate("/dashboard");
+    // };
 
     const onKeyDown = (e) => {
         e.preventDefault();
@@ -212,6 +240,7 @@ export const LoginPage = () => {
                         minHeight: "200px"
                     }}>
                         <Box sx={{ height: "100%", width: "100%", mt: 2 }}>
+
                             <form onSubmit={handleSubmit(handleLogin)} >
                                 <TextField
                                     type='string'
@@ -230,8 +259,7 @@ export const LoginPage = () => {
                                         ),
                                     }}
                                     {...register('email')}
-                                    error={!!errors.email}
-                                    helperText={errors.email?.message}
+                                    error={invalidData}
                                 />
                                 <TextField
                                     type={showPassword ? 'string' : 'password'}
@@ -261,8 +289,8 @@ export const LoginPage = () => {
                                         )
                                     }}
                                     {...register('password')}
-                                    error={!!errors.password}
-                                    helperText={errors.password?.message}
+                                    error={invalidData}
+                                    helperText={"Incorrect email or password"}
                                 />
                                 <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center" }}>
                                     <Button
