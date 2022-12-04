@@ -118,7 +118,9 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
     const [participantsAvailabilityDialogOpen, setParticipantsAvailabilityDialogOpen] = useState(false);
     const [usersAvailability, setUsersAvailability] = useState([]);
     const [username, setUsername] = useState("");
-    const [userId, setUserId] = useState([]);
+    const [userId, setUserId] = useState("");
+    const [isDeletingHimself, setIsDeletingHimself] = useState(false);
+    const [messagelabel, setMessageLabel] = useState("")
 
     useEffect(() => {
         getUsersData();
@@ -126,6 +128,10 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
 
 
     const removeAction = (userId) => {
+
+        if(userId === parseInt(localStorage.getItem("userId"))) {
+            setIsDeletingHimself(true);
+        }
         setUserId(userId);
         setRemoveDialogOpen(true);
     };
@@ -133,6 +139,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
     const promoteAction = () => {
         setPromoteDialogOpen(true);
     };
+
 
     const checkParticipantsAvailability = ({ username, userAvailability }) => {
         setUsersAvailability(userAvailability);
@@ -188,13 +195,12 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                 const username = params.row.username;
                 const userId = params.row.userId;
                 const userAvailability = availabilities.filter(availability => (availability.user === params.row.username))
-            
                 if (isCoordinator) {
                     if (groupStage === "PLANNING_STAGE") {
                         return [
                             <GridActionsCellItem 
                                 icon={<DeleteIcon sx={{ color: "primary.main" }} />}
-                                label="Remove from group"
+                                label= "Remove from group"
                                 onClick={() => removeAction(userId)}
                                 showInMenu
                             />,
@@ -296,6 +302,8 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                     onClose={() => { setRemoveDialogOpen(false) }}
                     groupId={groupId}
                     userId={userId}
+                    isDeletingHimself={isDeletingHimself}
+                    onSuccess={() => getUsersData()}
                 />
                 <PromoteParticipantDialog
                     open={promoteDialogOpen}

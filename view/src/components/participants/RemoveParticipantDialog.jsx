@@ -11,35 +11,31 @@ import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { DeletingPermissionApiErrorToast } from '../toasts/DeletingPermissionApiErrorToast';
 import { doDelete } from "../../components/utils/fetch-utils";
+import {Routes, Route, useNavigate} from 'react-router-dom';
 
-export const RemoveParticipantDialog = ({ open, onClose, groupId, userId }) => {
+export const RemoveParticipantDialog = ({ open, onClose, groupId, userId, isDeletingHimself, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [apiErrorToastOpen, setApiErrorToastOpen] = useState(false);
-    const [apiErrorMessage, setApiErrorMessage] = useState("deafukt")
-    const [hasFailed, setHasFailed] = useState(false)
+    const [apiErrorMessage, setApiErrorMessage] = useState("")
+    const navigate = useNavigate();
 
     const handleSuccessClose = async () => {
-    
         await deleteUserFromGroup()
-        console.log("Has failed" + hasFailed)
-        console.log("Interesting " + apiErrorMessage)
-        if(hasFailed){
-         console.log("Interesting " + apiErrorMessage)
-         setApiErrorToastOpen(true)
-         onClose()
-        }
-        else {
-        // window.location.reload(false);
-        setSuccessToastOpen(true);
         onClose();
         }
+
+    const handleSuccessDeletion = async () => {
+        setSuccessToastOpen(true);
+        onSuccess();
+    }
         
-    };
+    const leaveGroup = () => {
+        navigate('/dashboard');
+      };
 
     const handleErrorClose = () => {
-        console.log("here");
         setErrorToastOpen(true);
         onClose();
     };
@@ -47,13 +43,23 @@ export const RemoveParticipantDialog = ({ open, onClose, groupId, userId }) => {
     localStorage.setItem("userId", 31)
 
     const deleteUserFromGroup = async () => {
-        await doDelete('/api/v1/trip-group/coordinator-user?' + new URLSearchParams({ groupId: groupId ,userId: userId}).toString())
-        .then(response => response.json())
-        .catch(err => {
-            setHasFailed(true)
-            setApiErrorMessage(err);
-            console.log("doring good job" + hasFailed + apiErrorMessage)
-        });
+        console.log("Is deleting himself" + isDeletingHimself)
+        if (isDeletingHimself) {
+            await doDelete('/api/v1/trip-group/user?' + new URLSearchParams({ groupId: groupId}).toString())
+            .then(response => leaveGroup())
+            .catch(err => {
+                setApiErrorToastOpen(true)
+                setApiErrorMessage(err.message);
+            });
+        }
+        else{
+            await doDelete('/api/v1/trip-group/coordinator-user?' + new URLSearchParams({ groupId: groupId ,userId: userId}).toString())
+            .then(response => handleSuccessDeletion())
+            .catch(err => {
+                setApiErrorToastOpen(true)
+                setApiErrorMessage(err.message);
+            });
+    }
 
     }
 
@@ -61,7 +67,8 @@ export const RemoveParticipantDialog = ({ open, onClose, groupId, userId }) => {
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Participant successfully removed from group." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
-            <DeletingPermissionApiErrorToast open={apiErrorToastOpen} onClose={() => setApiErrorToastOpen(false)} message={apiErrorMessage} />
+            <DeletingPermissionApiErrorToast open={apiErrorToastOpen} onClose={() => {setApiErrorToastOpen(false)
+                                                                                     }} message={apiErrorMessage} />
             <Dialog
                 open={open}
                 onClose={onClose}

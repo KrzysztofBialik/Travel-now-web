@@ -7,8 +7,7 @@ import { useParams } from "react-router-dom";
 import { useEffect } from 'react';
 
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
-import { futureTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
-import { currentTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
+import { currentTripButtonsDataWithGroupId, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 
 import { ParticipantsTable } from "../../components/participants/ParticipantsTable";
 import { InviteDialog } from "../../components/participants/InviteDialog";
@@ -62,7 +61,7 @@ export const ParticipantsPage = () => {
                 height: '100%'
             }}>
             <NavigationNavbar
-                buttonsData={groupStage === "PLANNING_STAGE" ? futureTripButtonsData : currentTripButtonsData}
+                buttonsData={groupStage === "PLANNING_STAGE" ? futureTripButtonsDataWithGroupId(groupId) : currentTripButtonsDataWithGroupId(groupId)}
             />
             <InviteDialog open={inviteDialogOpen} onClose={() => setInviteDialogOpen(false)} />
             <Box sx={{
