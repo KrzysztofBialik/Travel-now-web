@@ -32,7 +32,7 @@ export const FutureTrips = ({trips}) => {
                             icon="calendar_month"
                             title="Availability"
                             description="Set your availability and check when other participants are available."
-                            route="/availability"
+                            route={`/availability/${groupId}`}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>

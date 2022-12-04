@@ -21,10 +21,14 @@ import 'react-date-range/dist/theme/default.css';
 import { AvailabilityTable } from "../../components/availability/AvailabilityTable";
 import { DateRangePickerDialog } from "../../components/availability/DateRangePickerDialog";
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
-import { futureTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
+import { currentTripButtonsDataWithGroupId, futureTripButtonsDataWithGroupId} from "../../components/navbars/navigationNavbar/NavbarNavigationData";
+import { useParams } from "react-router-dom";
+import { doGet } from "../../components/utils/fetch-utils";
+import { useEffect } from 'react';
+import { parseISO } from "date-fns/esm";
 
 
-export const URL = '/availability';
+export const URL = '/availability/:groupId';
 export const NAME = "Availability";
 
 const ExpandMore = styled((props) => {
@@ -37,32 +41,35 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const availabilities = [
-    {
-        id: 1,
-        startDate: new Date(2022, 10, 21),
-        endDate: new Date(2022, 11, 11),
-        user: "BoBa",
-        disabled: true
-    },
-    {
-        id: 2,
-        startDate: new Date(2022, 11, 14),
-        endDate: new Date(2022, 11, 18),
-        user: "BoBa",
-        disabled: true
-    },
-    {
-        id: 3,
-        startDate: new Date(2022, 11, 30),
-        endDate: new Date(2023, 0, 8),
-        user: "BoBa",
-        disabled: true
-    }
-];
+// export const availabilities = [
+//     {
+//         id: 1,
+//         startDate: new Date(2022, 10, 21),
+//         endDate: new Date(2022, 11, 11),
+//         user: "BoBa",
+//         disabled: true
+//     },
+//     {
+//         id: 2,
+//         startDate: new Date(2022, 11, 14),
+//         endDate: new Date(2022, 11, 18),
+//         user: "BoBa",
+//         disabled: true
+//     },
+//     {
+//         id: 3,
+//         startDate: new Date(2022, 11, 30),
+//         endDate: new Date(2023, 0, 8),
+//         user: "BoBa",
+//         disabled: true
+//     }
+// ];
 
 
 export const AvailabilityPage = () => {
+
+    const {groupId} = useParams();
+    const [availabilities, setAvailabilites] = useState([])
     const [expanded, setExpanded] = useState(false);
     const [dateRangePickerDialogOpen, setDateRangePickerDialogOpen] = useState(false);
 
@@ -73,10 +80,23 @@ export const AvailabilityPage = () => {
     const addAvailabilityAction = () => {
         setDateRangePickerDialogOpen(true);
     };
+    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
+    localStorage.setItem("userId", 31)
 
-    const restrictedDays = availabilities.flatMap(availability =>
-        eachDayOfInterval({ start: availability.startDate, end: availability.endDate }));
+    const getAvailabilities = async () => {
+        await doGet('/api/v1/availability/user?' + new URLSearchParams({ userId: localStorage.getItem("userId") ,groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(response => {
+            setAvailabilites(response.map(availability => ({availabilityId: availability.availabilityId, userId: availability.userId, groupId: availability.groupId,
+                 startDate: parseISO(availability.dateFrom), endDate: parseISO(availability.dateTo), disabled: true})));
+        })
+        .catch(err => console.log('Request Failed', err));
+    }
+    useEffect(() => {
+        getAvailabilities();
+      }, [])
 
+    
     function customDayContent(day) {
         var fontWeight = 100;
         var color = "#000000";
@@ -92,17 +112,28 @@ export const AvailabilityPage = () => {
         )
     }
 
+    console.log(availabilities)
+    const restrictedDays = availabilities.flatMap(availability => 
+        eachDayOfInterval({ start: availability.startDate, end: availability.endDate})
+        );
+
+    
+
+    console.log(restrictedDays)
     return (
         <Box sx={{
             position: 'relative',
             minHeight: '100%'
         }}>
-            <NavigationNavbar buttonsData={futureTripButtonsData} />
+            <NavigationNavbar buttonsData={futureTripButtonsDataWithGroupId(groupId)} />
             <DateRangePickerDialog open={dateRangePickerDialogOpen}
                 onClose={() => setDateRangePickerDialogOpen(false)}
                 initialRange={[{ startDate: null, endDate: null, key: "selection" }]}
                 restrictedDays={restrictedDays}
-                rangeChange={() => { }} />
+                groupId={groupId}
+                rangeChange={() => { }} 
+                onSuccess={() => getAvailabilities()}
+                />
             <Box sx={{
                 py: 10,
                 display: "flex",
@@ -226,7 +257,11 @@ export const AvailabilityPage = () => {
                     </CardActions>
                     <Collapse in={expanded} timeout="auto" unmountOnExit>
                         <CardContent>
-                            <AvailabilityTable availabilities={availabilities} />
+                            <AvailabilityTable 
+                            availabilities={availabilities} 
+                            groupId={groupId}
+                            onSuccess={() => getAvailabilities()}
+                            />
                         </CardContent>
                     </Collapse>
                 </Card >

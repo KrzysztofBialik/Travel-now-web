@@ -10,16 +10,15 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 
 
-export const AvailabilityTable = ({ availabilities }) => {
+export const AvailabilityTable = ({ availabilities, groupId, onSuccess }) => {
     const [deleteAvailabilityDialogOpen, setDeleteAvailabilityDialogOpen] = useState(false);
+    const [availabilityId, setAvailabilityId] = useState([]);
 
-    const deleteAvailabilityAction = () => {
+    const deleteAvailabilityAction = (availabilityId) => {
+        setAvailabilityId(availabilityId);
         setDeleteAvailabilityDialogOpen(true);
     };
 
-    const handleDelete = () => {
-        console.log("Availability deleted.")
-    }
 
     const availabilityColumns = [
         {
@@ -30,7 +29,7 @@ export const AvailabilityTable = ({ availabilities }) => {
             ), type: 'date', flex: 2, hideable: true, headerAlign: 'center', align: 'center', minWidth: 200,
         },
         {
-            field: 'endDate', headerName: 'EtartDate', renderHeader: () => (
+            field: 'endDate', headerName: 'EndDate', renderHeader: () => (
                 <strong>
                     End Date
                 </strong>
@@ -42,13 +41,18 @@ export const AvailabilityTable = ({ availabilities }) => {
                     Actions
                 </strong>
             ), type: 'actions', flex: 1, hideable: true, headerAlign: 'center', minWidth: 100,
-            getActions: () => [
+            getActions: (params) => {
+                const availabilityId = params.row.availabilityId;
+                return [
                 <GridActionsCellItem
                     icon={<DeleteIcon sx={{ color: "error.main" }} />}
                     label="Remove from group"
-                    onClick={deleteAvailabilityAction}
+                    onClick={() => deleteAvailabilityAction(availabilityId)}
                 />
-            ]
+            ];
+        }
+        
+        
             // getActions: () => [
             //     <Button
             //         variant="contained"
@@ -68,6 +72,7 @@ export const AvailabilityTable = ({ availabilities }) => {
         },
     ];
 
+
     return (
         <Box
             sx={{
@@ -78,7 +83,9 @@ export const AvailabilityTable = ({ availabilities }) => {
             <DeleteAvailabilityDialog
                 open={deleteAvailabilityDialogOpen}
                 onClose={() => setDeleteAvailabilityDialogOpen(false)}
-                deleteAvailability={handleDelete}
+                groupId={groupId}
+                availabilityId={availabilityId}
+                onSuccess={() => onSuccess()}
             />
             <DataGrid
                 sx={{
@@ -95,6 +102,7 @@ export const AvailabilityTable = ({ availabilities }) => {
                 autoHeight
                 columns={availabilityColumns}
                 rows={availabilities}
+                getRowId={row => row.availabilityId}
                 hideFooter
             />
         </Box>

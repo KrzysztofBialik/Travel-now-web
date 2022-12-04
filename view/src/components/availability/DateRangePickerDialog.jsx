@@ -11,12 +11,14 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doPost } from "../../components/utils/fetch-utils";
 
 
-export const DateRangePickerDialog = ({ open, onClose, initialRange, rangeChange, restrictedDays }) => {
+export const DateRangePickerDialog = ({ open, onClose, initialRange, restrictedDays, groupId, rangeChange, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("Ups! Something went wrong. Try again.")
     const [range, setRange] = useState([
         {
             startDate: new Date(),
@@ -32,9 +34,25 @@ export const DateRangePickerDialog = ({ open, onClose, initialRange, rangeChange
         }
     }, [open]);
 
-    const handleSelectRange = () => {
+    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
+    localStorage.setItem("userId", 31)
+
+    const handleCreateAvailability = async (groupId, range) => {
+        var postBody = {'userId':localStorage.getItem('userId'), 'groupId': groupId, 'dateFrom':range[0].startDate, 'dateTo':range[0].endDate};
+        await doPost('/api/v1/availability/user', postBody)
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                onSuccess();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setErrorToastOpen(err.message)
+                setErrorMessage(err.message);
+            });
+    };
+
+    const handleSelectRange = async () => {
         rangeChange(range);
-        setSuccessToastOpen(true);
+        await handleCreateAvailability(groupId, range)
         onClose();
     };
 
@@ -50,7 +68,7 @@ export const DateRangePickerDialog = ({ open, onClose, initialRange, rangeChange
     return (
         <>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Availability added successfully." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={errorMessage}/>
             <Dialog
                 sx={{
                     display: "flex",

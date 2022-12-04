@@ -124,12 +124,12 @@ export const futureTripButtonsDataWithGroupId = (groupId) => {
     return [{
         id: 1,
         name: "Availability",
-        link: "/availability",
+        link: "/availability/" + groupId,
         submenu: [
             {
                 id: 11,
                 name: "My Availability",
-                link: "/availability"
+                link: "/availability/" + groupId
             },
             {
                 id: 12,
@@ -164,5 +164,12 @@ export const futureTripButtonsDataWithGroupId = (groupId) => {
         id: 3,
         name: "Participants",
         link: "/participants/" + groupId
-    }];
+    },
+    {
+        id: 4,
+        name: "Summary",
+        link: "/tripSummary",
+    }
+
+];
 }
