@@ -33,9 +33,6 @@ export const DeleteAvailabilityDialog = ({ open, onClose, groupId, availabilityI
         onClose();
     };
 
-    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
-    localStorage.setItem("userId", 31)
-
     const deleteAvailability = async () => {
             await doDelete('/api/v1/availability/user?' + new URLSearchParams({availabilityId: availabilityId, groupId: groupId}).toString())
             .then(response => handleSuccessDeletion())

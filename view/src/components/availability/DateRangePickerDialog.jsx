@@ -34,9 +34,6 @@ export const DateRangePickerDialog = ({ open, onClose, initialRange, restrictedD
         }
     }, [open]);
 
-    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
-    localStorage.setItem("userId", 31)
-
     const handleCreateAvailability = async (groupId, range) => {
         var postBody = {'userId':localStorage.getItem('userId'), 'groupId': groupId, 'dateFrom':range[0].startDate, 'dateTo':range[0].endDate};
         await doPost('/api/v1/availability/user', postBody)

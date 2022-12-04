@@ -9,12 +9,15 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 
 
-export const OptimizedDatesTable = ({ optimizedDates }) => {
+export const OptimizedDatesTable = ({ optimizedDates, onSuccess, selectedSharedAvailability }) => {
 
     const [selectOptimizedDatesDialogOpen, setSelectOptimizedDatesDialogOpen] = useState(false);
+    const [sharedGroupAvailability, setSharedGroupAvailability] = useState([])
 
-    const selectDatesAction = () => {
+    const selectDatesAction = (sharedGroupAvailability) => {
         setSelectOptimizedDatesDialogOpen(true);
+        setSharedGroupAvailability(sharedGroupAvailability);
+
     };
 
     const availabilityColumns = [
@@ -53,7 +56,30 @@ export const OptimizedDatesTable = ({ optimizedDates }) => {
                     Action
                 </strong>
             ), type: 'actions', flex: 3, hideable: true, headerAlign: 'center', minWidth: 100,
-            getActions: () => [
+            getActions: (params) =>{ 
+                const sharedGroupAvailability = params.row.sharedGroupAvailability;
+
+                if(sharedGroupAvailability === selectedSharedAvailability) {
+                return [
+                <Button
+                    variant="contained"
+                    disabled={true}
+                    sx={{
+                        backgroundColor: "secondary.main",
+                        borderRadius: "20px",
+                        "&:hover": {
+                            backgroundColor: "secondary.dark"
+                        }
+                    }}
+                    onClick={() => selectDatesAction(sharedGroupAvailability)}
+                >
+                    <CheckOutlinedIcon />
+                    Accepted
+                </Button>
+            ]
+        }
+        else {
+            return [
                 <Button
                     variant="contained"
                     sx={{
@@ -63,12 +89,15 @@ export const OptimizedDatesTable = ({ optimizedDates }) => {
                             backgroundColor: "secondary.dark"
                         }
                     }}
-                    onClick={selectDatesAction}
+                    onClick={() => selectDatesAction(sharedGroupAvailability)}
                 >
                     <CheckOutlinedIcon />
                     Accept
                 </Button>
             ]
+        }
+
+        }
         },
     ];
 
@@ -82,6 +111,8 @@ export const OptimizedDatesTable = ({ optimizedDates }) => {
             <SelectOptimizedDatesDialog
                 open={selectOptimizedDatesDialogOpen}
                 onClose={() => setSelectOptimizedDatesDialogOpen(false)}
+                sharedGroupAvailability={sharedGroupAvailability}
+                onSuccess={() => onSuccess()}   
             />
 
             <DataGrid
@@ -99,6 +130,7 @@ export const OptimizedDatesTable = ({ optimizedDates }) => {
                 autoHeight
                 columns={availabilityColumns}
                 rows={optimizedDates}
+                getRowId={row => row.sharedGroupAvailability}
                 hideFooter
             />
         </Box>
