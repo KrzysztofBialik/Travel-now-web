@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, useGridApiRef } from '@mui/x-data-grid';
 import { GridActionsCellItem } from '@mui/x-data-grid';
 import { gridClasses } from '@mui/x-data-grid';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -17,6 +17,7 @@ import { RemoveParticipantDialog } from './RemoveParticipantDialog';
 import { PromoteParticipantDialog } from './PromoteParticipantDialog';
 import { ParticipantsAvailabilityDialog } from '../availability/ParticipantsAvailabilityDialog';
 import { doGet } from "../../components/utils/fetch-utils";
+
 import { get } from 'react-hook-form';
 import { useEffect } from 'react';
 
@@ -79,6 +80,8 @@ export const availabilities = [
     }
 ];
 
+
+
 function CustomToolbar() {
     return (
         <GridToolbarContainer>
@@ -109,26 +112,34 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
         .then(response => setGroupCoordinators(response))
         .catch(err => console.log('Request Failed', err));
     }
-
   
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
     const [promoteDialogOpen, setPromoteDialogOpen] = useState(false);
     const [participantsAvailabilityDialogOpen, setParticipantsAvailabilityDialogOpen] = useState(false);
     const [usersAvailability, setUsersAvailability] = useState([]);
     const [username, setUsername] = useState("");
+    const [userId, setUserId] = useState("");
+    const [isDeletingHimself, setIsDeletingHimself] = useState(false);
+    const [messagelabel, setMessageLabel] = useState("")
 
     useEffect(() => {
         getUsersData();
       }, [])
 
 
-    const removeAction = () => {
+    const removeAction = (userId) => {
+
+        if(userId === parseInt(localStorage.getItem("userId"))) {
+            setIsDeletingHimself(true);
+        }
+        setUserId(userId);
         setRemoveDialogOpen(true);
     };
 
     const promoteAction = () => {
         setPromoteDialogOpen(true);
     };
+
 
     const checkParticipantsAvailability = ({ username, userAvailability }) => {
         setUsersAvailability(userAvailability);
@@ -182,17 +193,15 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
             ), type: 'actions', flex: 1, hideable: true, headerAlign: 'center', minWidth: 100,
             getActions: (params) => {
                 const username = params.row.username;
+                const userId = params.row.userId;
                 const userAvailability = availabilities.filter(availability => (availability.user === params.row.username))
-            
                 if (isCoordinator) {
-                    console.log("shouldnt be here")
-                    console.log(isCoordinator)
                     if (groupStage === "PLANNING_STAGE") {
                         return [
-                            <GridActionsCellItem
+                            <GridActionsCellItem 
                                 icon={<DeleteIcon sx={{ color: "primary.main" }} />}
-                                label="Remove from group"
-                                onClick={removeAction}
+                                label= "Remove from group"
+                                onClick={() => removeAction(userId)}
                                 showInMenu
                             />,
                             <GridActionsCellItem
@@ -280,7 +289,6 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
     }
 
     userWithRoles();
-
     return (
         <>
             <Box
@@ -292,6 +300,10 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                 <RemoveParticipantDialog
                     open={removeDialogOpen}
                     onClose={() => { setRemoveDialogOpen(false) }}
+                    groupId={groupId}
+                    userId={userId}
+                    isDeletingHimself={isDeletingHimself}
+                    onSuccess={() => getUsersData()}
                 />
                 <PromoteParticipantDialog
                     open={promoteDialogOpen}
