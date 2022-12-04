@@ -88,6 +88,10 @@ const checkForError = async (response) => {
             const json = await response.json()
             throw new Error(json.message)
         }
+
+        if(response.status === 401) {
+            throw new Error("401")
+        }
         throw new Error("Something went wrong")
     }
     return response

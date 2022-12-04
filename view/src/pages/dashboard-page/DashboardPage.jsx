@@ -28,8 +28,6 @@ export const DashboardPage = () => {
     const [tripsList, setTripsList] = useState([]);
 
     const getTrips = async () => {
-        localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
-        localStorage.setItem("userId", 31)
         await doGet('/api/v1/trip-group/groups/' + localStorage.getItem("userId"))
             .then(response => response.json())
             .then(response => setTripsList(response))
