@@ -22,9 +22,13 @@ import { AvailabilityTable } from "../../components/availability/AvailabilityTab
 import { DateRangePickerDialog } from "../../components/availability/DateRangePickerDialog";
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
 import { futureTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
+import { useParams } from "react-router-dom";
+import { doGet } from "../../components/utils/fetch-utils";
+import { useEffect } from 'react';
+import { parseISO } from "date-fns/esm";
 
 
-export const URL = '/availability';
+export const URL = '/availability/:groupId';
 export const NAME = "Availability";
 
 const ExpandMore = styled((props) => {
@@ -37,32 +41,35 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const availabilities = [
-    {
-        id: 1,
-        startDate: new Date(2022, 10, 21),
-        endDate: new Date(2022, 11, 11),
-        user: "BoBa",
-        disabled: true
-    },
-    {
-        id: 2,
-        startDate: new Date(2022, 11, 14),
-        endDate: new Date(2022, 11, 18),
-        user: "BoBa",
-        disabled: true
-    },
-    {
-        id: 3,
-        startDate: new Date(2022, 11, 30),
-        endDate: new Date(2023, 0, 8),
-        user: "BoBa",
-        disabled: true
-    }
-];
+// export const availabilities = [
+//     {
+//         id: 1,
+//         startDate: new Date(2022, 10, 21),
+//         endDate: new Date(2022, 11, 11),
+//         user: "BoBa",
+//         disabled: true
+//     },
+//     {
+//         id: 2,
+//         startDate: new Date(2022, 11, 14),
+//         endDate: new Date(2022, 11, 18),
+//         user: "BoBa",
+//         disabled: true
+//     },
+//     {
+//         id: 3,
+//         startDate: new Date(2022, 11, 30),
+//         endDate: new Date(2023, 0, 8),
+//         user: "BoBa",
+//         disabled: true
+//     }
+// ];
 
 
 export const AvailabilityPage = () => {
+
+    const {groupId} = useParams();
+    const [availabilities, setAvailabilites] = useState([])
     const [expanded, setExpanded] = useState(false);
     const [dateRangePickerDialogOpen, setDateRangePickerDialogOpen] = useState(false);
 
@@ -73,10 +80,22 @@ export const AvailabilityPage = () => {
     const addAvailabilityAction = () => {
         setDateRangePickerDialogOpen(true);
     };
+    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
+    localStorage.setItem("userId", 31)
 
-    const restrictedDays = availabilities.flatMap(availability =>
-        eachDayOfInterval({ start: availability.startDate, end: availability.endDate }));
+    const getAvailabilities = async () => {
+        await doGet('/api/v1/availability/user?' + new URLSearchParams({ userId: localStorage.getItem("userId") ,groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(response => {
+            setAvailabilites(response);
+        })
+        .catch(err => console.log('Request Failed', err));
+    }
+    useEffect(() => {
+        getAvailabilities();
+      }, [])
 
+    
     function customDayContent(day) {
         var fontWeight = 100;
         var color = "#000000";
@@ -91,6 +110,12 @@ export const AvailabilityPage = () => {
             </div>
         )
     }
+    const restrictedDays = availabilities.flatMap(availability => {
+        const startDate = parseISO(availability.dateFrom);
+        const endDate = parseISO(availability.dateTo)
+        return eachDayOfInterval({ start: new Date(2022, 10, 21), end: new Date(2022, 10, 28)})}
+        );
+
 
     return (
         <Box sx={{
@@ -226,7 +251,11 @@ export const AvailabilityPage = () => {
                     </CardActions>
                     <Collapse in={expanded} timeout="auto" unmountOnExit>
                         <CardContent>
-                            <AvailabilityTable availabilities={availabilities} />
+                            <AvailabilityTable 
+                            availabilities={availabilities} 
+                            groupId={groupId}
+                            onSuccess={() => getAvailabilities()}
+                            />
                         </CardContent>
                     </Collapse>
                 </Card >
