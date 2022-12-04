@@ -41,34 +41,10 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-// export const availabilities = [
-//     {
-//         id: 1,
-//         startDate: new Date(2022, 10, 21),
-//         endDate: new Date(2022, 11, 11),
-//         user: "BoBa",
-//         disabled: true
-//     },
-//     {
-//         id: 2,
-//         startDate: new Date(2022, 11, 14),
-//         endDate: new Date(2022, 11, 18),
-//         user: "BoBa",
-//         disabled: true
-//     },
-//     {
-//         id: 3,
-//         startDate: new Date(2022, 11, 30),
-//         endDate: new Date(2023, 0, 8),
-//         user: "BoBa",
-//         disabled: true
-//     }
-// ];
-
-
 export const AvailabilityPage = () => {
 
     const {groupId} = useParams();
+    const sharedAvailabilitiesPageLink = "/availability/optimizedDates/" + groupId;
     const [availabilities, setAvailabilites] = useState([])
     const [expanded, setExpanded] = useState(false);
     const [dateRangePickerDialogOpen, setDateRangePickerDialogOpen] = useState(false);
@@ -80,8 +56,6 @@ export const AvailabilityPage = () => {
     const addAvailabilityAction = () => {
         setDateRangePickerDialogOpen(true);
     };
-    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
-    localStorage.setItem("userId", 31)
 
     const getAvailabilities = async () => {
         await doGet('/api/v1/availability/user?' + new URLSearchParams({ userId: localStorage.getItem("userId") ,groupId: groupId }).toString())
@@ -167,7 +141,7 @@ export const AvailabilityPage = () => {
                                 alignItems: "center"
                             }}>
                                 <Box>
-                                    <Link to="/availability/optimizedDates">
+                                    <Link to={sharedAvailabilitiesPageLink}>
                                         <Button variant="contained"
                                             sx={{
                                                 backgroundColor: "secondary.main",

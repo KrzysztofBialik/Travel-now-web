@@ -39,8 +39,6 @@ export const RemoveParticipantDialog = ({ open, onClose, groupId, userId, isDele
         setErrorToastOpen(true);
         onClose();
     };
-    localStorage.setItem("ACCESS_TOKEN", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VySWQiOjMxLCJ1c2VybmFtZSI6IkRvcmlhbiJ9.spFruljGVOCA2_CVdl4nP36AcWeKy2YvEIQ5aYoqrxw")
-    localStorage.setItem("userId", 31)
 
     const deleteUserFromGroup = async () => {
         if (isDeletingHimself) {

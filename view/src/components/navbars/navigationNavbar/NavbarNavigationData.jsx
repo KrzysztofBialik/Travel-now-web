@@ -134,7 +134,7 @@ export const futureTripButtonsDataWithGroupId = (groupId) => {
             {
                 id: 12,
                 name: "Optimized dates",
-                link: "/availability/optimizedDates"
+                link: "/availability/optimizedDates/" + groupId
             }
         ]
     },
