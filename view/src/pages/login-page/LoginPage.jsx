@@ -89,6 +89,7 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { SimpleNavbar } from '../../components/navbars/SimpleNavbar';
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
 import { doPost } from '../../components/utils/fetch-utils';
+import { ErrorToast } from '../../components/toasts/ErrorToast';
 
 export const URL = '/login';
 export const NAME = "Login";
@@ -98,6 +99,8 @@ export const LoginPage = () => {
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [invalidData, setInvalidData] = useState(false);
+    const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [creationError, setCreationError] = useState("Something gone wrong. Try again");
 
     const defaultInputValues = {
         email: "",
@@ -142,7 +145,7 @@ export const LoginPage = () => {
                 if(err.message === '401') {
                     setInvalidData(true);
                 }
-                console.log(err)
+                setErrorToastOpen(true);
             });
             // reset();
     };
@@ -167,7 +170,9 @@ export const LoginPage = () => {
     };
 
     return (
-        <Box sx={{
+        <div>
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} />
+            <Box sx={{
             position: "relative",
             height: "100%",
             minWidth: "600px"
@@ -315,113 +320,7 @@ export const LoginPage = () => {
                     </Box>
                 </Card>
             </Box>
-            {/* <Box
-                sx={{
-                    width: "100%",
-                    minWidth: '450px',
-                    height: "100%",
-                    marginTop: 10,
-                    display: 'flex',
-                    overflow: "visible",
-                    flexDirection: 'row',
-                    justifyContent: "center"
-                }}
-            >
-                <Card
-                    sx={{
-                        width: "90%",
-                        minWidth: '400px',
-                        maxWidth: '500px',
-                        padding: '50px',
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                        justifyContent: "center",
-                        borderRadius: '20px',
-                    }}
-                    elevation={2}
-                >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockIcon sx={{ color: "primary.main" }} />
-                    </Avatar>
-                    <Typography component="h1" variant="h5" color="primary.main">
-                        Sign up
-                    </Typography>
-                    <Box sx={{ height: "100%", width: "100%", mt: 2 }}>
-                        <form onSubmit={handleSubmit(handleLogin)} >
-                            <TextField
-                                type='string'
-                                autoFocus
-                                margin="normal"
-                                placeholder='Email'
-                                name='email'
-                                label='Email'
-                                fullWidth
-                                variant="outlined"
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <EmailOutlinedIcon sx={{ color: "primary.main" }} />
-                                        </InputAdornment>
-                                    ),
-                                }}
-                                {...register('email')}
-                                error={!!errors.email}
-                                helperText={errors.email?.message}
-                            />
-                            <TextField
-                                type={showPassword ? 'string' : 'password'}
-                                margin="normal"
-                                placeholder='Password'
-                                name='password'
-                                label='Password'
-                                fullWidth
-                                variant="outlined"
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position="start">
-                                            <LockOutlinedIcon sx={{ color: "primary.main" }} />
-                                        </InputAdornment>
-                                    ),
-                                    endAdornment: (
-                                        <InputAdornment position="end">
-                                            <IconButton
-                                                aria-label="toggle password visibility"
-                                                onClick={handleClickShowPassword}
-                                                onMouseDown={handleMouseDownPassword}
-                                                edge="end"
-                                            >
-                                                {showPassword ? <VisibilityOff color="primary" /> : <Visibility color="primary" />}
-                                            </IconButton>
-                                        </InputAdornment>
-                                    )
-                                }}
-                                {...register('password')}
-                                error={!!errors.password}
-                                helperText={errors.password?.message}
-                            />
-                            <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center" }}>
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    sx={{
-                                        mt: 3, mb: 2, borderRadius: "10px", width: "150px", color: "#FFFFFF"
-                                    }}
-                                >
-                                    Sign In
-                                </Button>
-                            </Box>
-                        </form>
-                        <Grid container justifyContent="center">
-                            <Grid item>
-                                <Link href="/register" variant="body2">
-                                    Don't have an account? Sign Up
-                                </Link>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                </Card>
-            </Box > */}
-        </Box>
+            </Box>
+        </div>
     );
 }
