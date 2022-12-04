@@ -58,6 +58,17 @@ export const doDelete = (endpoint) => {
         .then(response => checkForError(response))
 }
 
+export const doPut = (endpoint) => {
+    const headers = addAuthorizationHeader({
+        'Accept': 'application/json',
+    })
+
+    return fetch(URL_PREFIX + endpoint, {
+        method: 'PUT',
+        headers: headers
+    })
+        .then(response => checkForError(response))
+}
 const addAuthorizationHeader = (headers) => {
     const jwt = localStorage.getItem("ACCESS_TOKEN")
 

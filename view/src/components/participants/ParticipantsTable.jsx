@@ -120,14 +120,13 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
     const [username, setUsername] = useState("");
     const [userId, setUserId] = useState("");
     const [isDeletingHimself, setIsDeletingHimself] = useState(false);
-    const [messagelabel, setMessageLabel] = useState("")
 
     useEffect(() => {
         getUsersData();
       }, [])
 
 
-    const removeAction = (userId) => {
+      const removeAction = (userId) => {
 
         if(userId === parseInt(localStorage.getItem("userId"))) {
             setIsDeletingHimself(true);
@@ -136,7 +135,8 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
         setRemoveDialogOpen(true);
     };
 
-    const promoteAction = () => {
+    const promoteAction = (userId) => {
+        setUserId(userId);
         setPromoteDialogOpen(true);
     };
 
@@ -194,9 +194,12 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
             getActions: (params) => {
                 const username = params.row.username;
                 const userId = params.row.userId;
+                const role = params.row.role;
+                const isSameUser = userId === parseInt(localStorage.getItem("userId"))
                 const userAvailability = availabilities.filter(availability => (availability.user === params.row.username))
                 if (isCoordinator) {
-                    if (groupStage === "PLANNING_STAGE") {
+                if(groupStage === "PLANNING_STAGE") {
+                    if (role === "PARTICIPANT") {
                         return [
                             <GridActionsCellItem 
                                 icon={<DeleteIcon sx={{ color: "primary.main" }} />}
@@ -213,11 +216,58 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                             <GridActionsCellItem
                                 icon={<StarIcon sx={{ color: "secondary.main" }} />}
                                 label="Make coordinator"
-                                onClick={promoteAction}
+                                onClick={() => promoteAction(userId)}
                                 showInMenu
                             />
                         ];
                     }
+                    else if(role === "COORDINATOR" && !isSameUser) {
+                        return [
+                            <GridActionsCellItem 
+                                icon={<DeleteIcon sx={{ color: "primary.main" }} />}
+                                label= "Remove from group"
+                                onClick={() => removeAction(userId)}
+                                showInMenu
+                            />,
+                            <GridActionsCellItem
+                                icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
+                                label="Check availability"
+                                onClick={() => checkParticipantsAvailability({ username, userAvailability })}
+                                showInMenu
+                            />
+                        ];
+
+                    }
+                    else if(role === "COORDINATOR" && isSameUser) {
+                        return [
+                            <GridActionsCellItem 
+                                icon={<DeleteIcon sx={{ color: "primary.main" }} />}
+                                label= "Leave a group"
+                                onClick={() => removeAction(userId)}
+                                showInMenu
+                            />,
+                            <GridActionsCellItem
+                                icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
+                                label="Check availability"
+                                onClick={() => checkParticipantsAvailability({ username, userAvailability })}
+                                showInMenu
+                            />
+                        ];
+
+                    }
+                }
+                    else {
+                        if(role === "COORDINATOR"){
+                        return [
+                            <GridActionsCellItem
+                                icon={<CurrencyExchangeIcon sx={{ color: "primary.main" }} />}
+                                label="Check expenses"
+                                onClick={() => { navigate("/expenses") }}
+                                showInMenu
+                            />
+                        ];
+                    }
+
                     else {
                         return [
                             <GridActionsCellItem
@@ -229,12 +279,13 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                             <GridActionsCellItem
                                 icon={<StarIcon sx={{ color: "secondary.main" }} />}
                                 label="Make coordinator"
-                                onClick={promoteAction}
+                                onClick={() => promoteAction(userId)}
                                 showInMenu
                             />
-                        ]
-                    };
+                        ];
+                    }
                 }
+            }
                 else {
                     if (groupStage === "PLANNING_STAGE") {
                         return [
@@ -308,6 +359,9 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                 <PromoteParticipantDialog
                     open={promoteDialogOpen}
                     onClose={() => { setPromoteDialogOpen(false) }}
+                    groupId={groupId}
+                    userId={userId}
+                    onSuccess={() => getUsersData()}
                 />
                 <ParticipantsAvailabilityDialog
                     open={participantsAvailabilityDialogOpen}
