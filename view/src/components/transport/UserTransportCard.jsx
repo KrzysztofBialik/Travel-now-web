@@ -15,9 +15,10 @@ import AttachMoneyOutlinedIcon from '@mui/icons-material/AttachMoneyOutlined';
 import SubdirectoryArrowRightOutlinedIcon from '@mui/icons-material/SubdirectoryArrowRightOutlined';
 import { EditTransportDialog } from "./EditTransportDialog";
 import { DeleteTransportDialog } from "./DeleteTransportDialog";
-import { format } from "date-fns";
+import { format, parseISO } from "date-fns";
+import * as durationn from 'duration-fns'
 
-export const UserTransportCard = ({ transportData }) => {
+export const UserTransportCard = ({ transportData, onSuccess, accommodationId }) => {
 
     const [editTransportDialogOpen, setEditTransportDialogOpen] = useState(false);
     const [deleteTransportDialogOpen, setDeleteTransportDialogOpen] = useState(false);
@@ -30,16 +31,41 @@ export const UserTransportCard = ({ transportData }) => {
         setDeleteTransportDialogOpen(true);
     };
 
+    const parseTime = (duration) => {
+        var time = durationn.parse(duration);
+        return constructString(time)
+    }
+
+    const constructString = (time) => {
+        var result = "";
+        if(time.days !== 0) {
+            result = result + time.days + "d "
+        }
+
+        if(time.hours !== 0) {
+            result = result + time.hours + "h "
+        }
+
+        if(time.minutes !== 0) {
+            result = result + time.minutes + "m "
+        }
+        return result;
+    }
+
     return (
         <>
             <EditTransportDialog
                 open={editTransportDialogOpen}
                 onClose={() => setEditTransportDialogOpen(false)}
                 transportData={transportData}
+                onSuccess={() => onSuccess()}
             />
             <DeleteTransportDialog
                 open={deleteTransportDialogOpen}
                 onClose={() => setDeleteTransportDialogOpen(false)}
+                transportId={transportData.transportId}
+                accommodationId={accommodationId}
+                onSuccess={() => onSuccess()}
             />
             <Card
                 sx={{
@@ -52,14 +78,14 @@ export const UserTransportCard = ({ transportData }) => {
                         <CommuteIcon sx={{ color: "primary.main" }} />
                         <ListItemText
                             sx={{ ml: "10px" }}
-                            primary={transportData.name}
+                            primary={transportData.meanOfTransport}
                         />
                     </ListItem>
                     <ListItem>
                         <CircleIcon sx={{ color: "primary.main" }} />
                         <ListItemText
                             sx={{ ml: "10px" }}
-                            primary={transportData.meetingLocation}
+                            primary={transportData.source}
                         />
                     </ListItem>
                     <ListItem>
@@ -73,21 +99,21 @@ export const UserTransportCard = ({ transportData }) => {
                         <AccessTimeIcon sx={{ color: "primary.main" }} />
                         <ListItemText
                             sx={{ ml: "10px" }}
-                            primary={`${transportData.hours}h ${transportData.minutes}m`}
+                            primary={parseTime(transportData.duration)}
                         />
                     </ListItem>
                     <ListItem>
                         <CalendarMonthOutlinedIcon sx={{ color: "primary.main" }} />
                         <ListItemText
                             sx={{ ml: "10px" }}
-                            primary={transportData.meetingDate}
+                            primary={format(parseISO(transportData.meetingTime), "dd/mm/yyyy")}
                         />
                     </ListItem>
                     <ListItem sx={{ ml: "10px", mt: "-20px" }}>
                         <SubdirectoryArrowRightOutlinedIcon sx={{ color: "text.secondary" }} />
                         <ListItemText
                             sx={{ ml: "10px" }}
-                            secondary={`meeting at ${format(transportData.meetingTime, "HH:mm")}`}
+                            secondary={`meeting at ${format(parseISO(transportData.meetingTime), "HH:mm")}`}
                         />
                     </ListItem>
                     <ListItem>

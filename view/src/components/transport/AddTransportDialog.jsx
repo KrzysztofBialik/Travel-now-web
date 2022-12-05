@@ -26,9 +26,11 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doPost } from '../utils/fetch-utils';
+import * as durationn from 'duration-fns'
 
 
-export const AddTransportDialog = ({ open, onClose }) => {
+export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
@@ -59,6 +61,7 @@ export const AddTransportDialog = ({ open, onClose }) => {
     const DESCRIPTION_LIMIT = 250;
     const [description, setDescription] = useState({ value: "", length: 0 });
     const [descriptionError, setDescriptionError] = useState(null);
+    const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
 
     const defaultInputValues = {
         transportOption,
@@ -155,9 +158,28 @@ export const AddTransportDialog = ({ open, onClose }) => {
         resolver: yupResolver(validationSchema),
     });
 
-    const handleCreateTransport = (tripName, meetingLocation, destination, minDays, hours, minutes, meetingDate, meetingTime, price, description) => {
-        setSuccessToastOpen(true);
-        close();
+    const handleCreateTransport = async (tripName, meetingLocation, destination, minDays, hours, minutes, meetingDate, meetingTime, price, description) => {
+        var postBody = {'duration':durationn.toString({ hours: parseInt(hours), minutes: parseInt(minutes) }),
+                        'price':price,
+                        'source':meetingLocation,
+                        'destination':destination,
+                        'startDate':meetingDate,
+                        'endDate':meetingDate,
+                        'meanOfTransport':tripName,
+                        'description':description,
+                        'meetingTime':meetingTime,
+                        'link':null
+        };
+        await doPost('/api/v1/transport/user-transport?' + new URLSearchParams({ accommodationId:accommodationId }).toString(), postBody)
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                close();
+                onSuccess();
+            })
+            .catch(err => {
+                setErrorToastOpen(true); 
+                setCreationError(err.message);
+            });
     };
 
     const close = () => {
@@ -186,7 +208,7 @@ export const AddTransportDialog = ({ open, onClose }) => {
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Transport option added." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} />
 
             <Dialog
                 open={open}
@@ -197,7 +219,7 @@ export const AddTransportDialog = ({ open, onClose }) => {
                 <DialogTitle variant="h4" sx={{ backgroundColor: "primary.main" }}>Add transport option</DialogTitle>
                 <DialogContent>
                     <form
-                        onSubmit={handleSubmit(() => handleCreateTransport(transportOption.value, meetingLocation.value, hours, minutes, price, description.value))}
+                        onSubmit={handleSubmit(() => handleCreateTransport(transportOption.value, meetingLocation.value, destination.value, 0, hours, minutes, meetingDate, meetingTime, price, description.value))}
                     >
                         <TextField
                             sx={{ mt: "25px" }}

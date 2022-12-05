@@ -138,6 +138,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
             <TransportDialog
                 open={transportDialogOpen}
                 onClose={() => { setTransportDialogOpen(false) }}
+                accommodationId={accommodationData.accommodationId}
             />
             <Card
                 sx={{ height: "100%", borderRadius: "10px" }}
