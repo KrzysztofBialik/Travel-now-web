@@ -21,6 +21,8 @@ import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import { CreatedTripConfirmationDialog } from './CreatedTripConfirmationDialog';
+import { ErrorToast } from '../toasts/ErrorToast';
+import { doPost } from '../utils/fetch-utils';
 
 
 const currencies = [
@@ -46,9 +48,11 @@ const currencies = [
     },
 ];
 
-export const CreateTripDialog = ({ open, onClose, createTrip }) => {
+export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
 
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
+    const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
     const DESCRIPTION_LIMIT = 250;
 
     const defaultInputValues = {
@@ -88,22 +92,41 @@ export const CreateTripDialog = ({ open, onClose, createTrip }) => {
 
     const descriptionWatch = watch("description");
 
-    const handleCreateTrip = () => {
-        console.log(getValues());
-        close();
-        setConfirmDialogOpen(true);
-    };
-
     const close = () => {
         reset();
         onClose();
     };
 
+    const handleCreateTrip = async () => {
+        var values = getValues();
+        var postBody = {'name':values.tripName,
+                        'currency':values.currency,
+                        'description':values.description,
+                        'votesLimit': 0,
+                        'startLocation':values.startingLocation,
+                        'startCity':values.startingLocation,
+                        'minimalNumberOfDays':values.minDays,
+                        'minimalNumberOfParticipants':values.minParticipants};
+        await doPost('/api/v1/trip-group/group', postBody)
+            .then(response => {
+                if(response.ok) {
+                    setConfirmDialogOpen(true);
+                    close();
+                }              
+            })
+            .catch(err => {
+                setErrorToastOpen(true); 
+                setCreationError(err.message)
+            });
+    };
+
     return (
         <div>
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} />
             <CreatedTripConfirmationDialog
                 open={confirmDialogOpen}
                 onClose={() => setConfirmDialogOpen(false)}
+                onSuccess={() => onSuccess()}
             />
             <Dialog
                 open={open}
