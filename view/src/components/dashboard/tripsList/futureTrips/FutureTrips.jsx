@@ -58,7 +58,7 @@ export const FutureTrips = ({ trips }) => {
                             icon="fact_checked"
                             title="Trip summary"
                             description="Check general info about the trip"
-                            route="/tripSummary"
+                            route={`/tripSummary/${groupId}`}
                         />
                     </Grid>
                 </Grid>

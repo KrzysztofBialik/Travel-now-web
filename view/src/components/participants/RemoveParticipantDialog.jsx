@@ -11,7 +11,7 @@ import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { DeletingPermissionApiErrorToast } from '../toasts/DeletingPermissionApiErrorToast';
 import { doDelete } from "../../components/utils/fetch-utils";
-import {Routes, Route, useNavigate} from 'react-router-dom';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 
 export const RemoveParticipantDialog = ({ open, onClose, groupId, userId, isDeletingHimself, onSuccess }) => {
 
@@ -21,42 +21,43 @@ export const RemoveParticipantDialog = ({ open, onClose, groupId, userId, isDele
     const [apiErrorMessage, setApiErrorMessage] = useState("")
     const navigate = useNavigate();
 
+    const title = isDeletingHimself ? "Leave group" : "Remove";
+    const info = isDeletingHimself ?
+        "If you confirm you will leave this trip group"
+        :
+        "If you confirm, this participant will be removed from trip group";
+
     const handleSuccessClose = async () => {
         await deleteUserFromGroup()
         onClose();
-        }
+    }
 
     const handleSuccessDeletion = async () => {
         setSuccessToastOpen(true);
         onSuccess();
     }
-        
+
     const leaveGroup = () => {
         navigate('/dashboard');
-      };
-
-    const handleErrorClose = () => {
-        setErrorToastOpen(true);
-        onClose();
     };
 
     const deleteUserFromGroup = async () => {
         if (isDeletingHimself) {
-            await doDelete('/api/v1/trip-group/user?' + new URLSearchParams({ groupId: groupId}).toString())
-            .then(response => leaveGroup())
-            .catch(err => {
-                setApiErrorToastOpen(true)
-                setApiErrorMessage(err.message);
-            });
+            await doDelete('/api/v1/trip-group/user?' + new URLSearchParams({ groupId: groupId }).toString())
+                .then(response => leaveGroup())
+                .catch(err => {
+                    setApiErrorToastOpen(true)
+                    setApiErrorMessage(err.message);
+                });
         }
-        else{
-            await doDelete('/api/v1/trip-group/coordinator-user?' + new URLSearchParams({ groupId: groupId ,userId: userId}).toString())
-            .then(response => handleSuccessDeletion())
-            .catch(err => {
-                setApiErrorToastOpen(true)
-                setApiErrorMessage(err.message);
-            });
-    }
+        else {
+            await doDelete('/api/v1/trip-group/coordinator-user?' + new URLSearchParams({ groupId: groupId, userId: userId }).toString())
+                .then(response => handleSuccessDeletion())
+                .catch(err => {
+                    setApiErrorToastOpen(true)
+                    setApiErrorMessage(err.message);
+                });
+        }
 
     }
 
@@ -64,29 +65,37 @@ export const RemoveParticipantDialog = ({ open, onClose, groupId, userId, isDele
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Participant successfully removed from group." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
-            <DeletingPermissionApiErrorToast open={apiErrorToastOpen} onClose={() => {setApiErrorToastOpen(false)
-                                                                                     }} message={apiErrorMessage} />
+            <DeletingPermissionApiErrorToast open={apiErrorToastOpen} onClose={() => {
+                setApiErrorToastOpen(false)
+            }} message={apiErrorMessage} />
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Remove</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        If you confirm, this participant will be removed from the trip group.
+                <DialogTitle sx={{ pb: 1 }}>
+                    {title}
+                </DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
+                    <DialogContentText sx={{ mb: "10px" }}>
+                        {info}
                     </DialogContentText>
                     <DialogActions>
                         <Button
                             variant="outlined"
-                            onClick={handleErrorClose}
-                            sx={{ borderRadius: "20px" }}
+                            onClick={onClose}
+                            sx={{ borderRadius: "20px", fontSize: "12px" }}
                         >
                             Cancel
                         </Button>
                         <Button
                             variant="contained"
                             onClick={handleSuccessClose}
-                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
                         >
                             Confirm
                         </Button>

@@ -17,8 +17,8 @@ export const URL = '/participants/:groupId';
 export const NAME = "Participants";
 
 export const ParticipantsPage = () => {
-    
-    const {groupId} = useParams();
+
+    const { groupId } = useParams();
 
     const [groupStage, setGroupStage] = useState([]);
 
@@ -26,19 +26,19 @@ export const ParticipantsPage = () => {
 
     const getGroupData = async () => {
         await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(response => setGroupStage(response.groupStage))
-        .catch(err => console.log('Request Failed', err));
+            .then(response => response.json())
+            .then(response => setGroupStage(response.groupStage))
+            .catch(err => console.log('Request Failed', err));
 
-        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId")}).toString())
-        .then(response => response.json())
-        .then(response => setIsCoordinator(response))
-        .catch(err => console.log('Request Failed', err));
+        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+            .then(response => response.json())
+            .then(response => setIsCoordinator(response))
+            .catch(err => console.log('Request Failed', err));
     }
 
     useEffect(() => {
         getGroupData();
-      }, [])
+    }, [])
 
 
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
@@ -81,13 +81,20 @@ export const ParticipantsPage = () => {
                 >
                     <Box sx={{
                         display: "flex",
-                        flexDirection: "row",
+                        flexDirection: "column",
                         // justifyContent: "center",
                         alignItems: 'center',
                         width: "100%",
+                        height: "40px",
                         mb: "50px",
                     }}>
-                        <>
+                        <Box sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            alignItems: 'center',
+                            width: "100%"
+                        }}>
                             <Typography
                                 variant="h3"
                                 sx={{
@@ -99,6 +106,17 @@ export const ParticipantsPage = () => {
                             >
                                 Participants
                             </Typography>
+                        </Box>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "flex-end",
+                                alignItems: 'center',
+                                width: "100%",
+                                mt: -6
+                            }}
+                        >
                             {(groupStage === "PLANNING_STAGE" && isCoordinator) &&
                                 <Button
                                     variant="contained"
@@ -108,7 +126,7 @@ export const ParticipantsPage = () => {
                                     Invite
                                     <PersonAddIcon sx={{ ml: 2 }} />
                                 </Button>}
-                        </>
+                        </Box>
                     </Box>
                     <ParticipantsTable groupStage={groupStage} isCoordinator={isCoordinator} groupId={groupId} />
                 </Box>

@@ -6,6 +6,9 @@ import { Dialog } from '@mui/material';
 import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogTitle } from '@mui/material';
+import { IconButton } from '@mui/material';
+import { Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { InfoToast } from '../toasts/InfoToast';
 
 
@@ -32,9 +35,32 @@ export const InviteDialog = ({ open, onClose }) => {
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle sx={{ mb: "10px" }}>Get invite link</DialogTitle>
-                <DialogContent>
+                <DialogTitle
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        color: "#000000",
+                    }}
+                >
+                    <Typography sx={{ fontSize: "24px" }}>
+                        Get invitation link
+                    </Typography>
+                    <IconButton
+                        sx={{ p: 0 }}
+                        onClick={onClose}
+                    >
+                        <CloseIcon sx={{ color: "primary.main", fontSize: "24px" }} />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
                     <TextField
                         sx={{ minWidth: "500px" }}
                         margin="normal"
@@ -46,7 +72,7 @@ export const InviteDialog = ({ open, onClose }) => {
                     <DialogActions>
                         <Button
                             variant="contained"
-                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "12px" }}
                             onClick={copy}
                         >
                             Copy

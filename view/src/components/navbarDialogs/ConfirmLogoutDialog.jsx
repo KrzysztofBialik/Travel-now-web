@@ -41,15 +41,22 @@ export const ConfirmLogoutDialog = ({ open, onClose, logoutAction }) => {
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        minWidth: "400px",
+                        maxWidth: "400px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Select</DialogTitle>
-                <DialogContent>
-                    <DialogContentText sx={{ mb: "10px" }}>
-                        If you confirm, this attraction will be selected as a starting point of the day.
+                <DialogTitle sx={{ pb: 0 }}>Logout</DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
+                    <DialogContentText sx={{ mb: "20px" }}>
+                        If you confirm, you will be logged out from app and redirected to starter page.
                     </DialogContentText>
                     <DialogActions>
                         <Button
-                            sx={{ borderRadius: "20px" }}
+                            sx={{ borderRadius: "20px", fontSize: "12px" }}
                             variant="outlined"
                             onClick={onClose}
                         >
@@ -58,7 +65,7 @@ export const ConfirmLogoutDialog = ({ open, onClose, logoutAction }) => {
                         <Button
                             variant="contained"
                             onClick={logout}
-                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
                         >
                             Confirm
                         </Button>

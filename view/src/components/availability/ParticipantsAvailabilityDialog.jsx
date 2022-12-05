@@ -8,6 +8,9 @@ import { Dialog } from "@mui/material";
 import { DialogTitle } from "@mui/material";
 import { CardContent } from '@mui/material';
 import { Collapse } from '@mui/material';
+import { IconButton } from '@mui/material';
+import { Typography } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DateRange } from 'react-date-range';
@@ -50,28 +53,31 @@ export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailabilit
                 onClose={handleClose}
                 fullWidth={true}
                 maxWidth={"lg"}
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
                 <DialogTitle
                     sx={{
                         backgroundColor: "primary.main",
                         display: "flex",
                         flexDirection: "row",
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        color: "#FFFFFF"
                     }}
                 >
-                    {user}'s availability
-                    <Button variant="contained"
-                        sx={{
-                            backgroundColor: "secondary.main",
-                            borderRadius: "20px",
-                            "&:hover": {
-                                backgroundColor: "secondary.dark",
-                            }
-                        }}
+                    <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                        {user}'s availability
+                    </Typography>
+                    <IconButton
+                        sx={{ p: 0 }}
                         onClick={handleClose}
                     >
-                        Close
-                    </Button>
+                        <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
+                    </IconButton>
                 </DialogTitle>
                 <Box sx={{
                     position: 'relative',
