@@ -69,6 +69,7 @@ export const DayPlanPage = (props) => {
     };
 
     const getData = async () => {
+        setLodaing(true)
         doGet('/api/v1/day-plan?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(json => { setdayPlansRaw(json); return json })

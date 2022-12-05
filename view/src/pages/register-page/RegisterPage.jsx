@@ -108,7 +108,7 @@ export const RegisterPage = () => {
 
     const handleRegister = async (values) => {
         var postBody = {'email': values.email,
-                        'phoneNumber': '+' + values.code + values.phone,
+                        'phoneNumber': '+' + values.code + ' ' + values.phone,
                         'password': values.confirmPassword,
                         'firstName': values.firstName,
                         'surname':values.surname,

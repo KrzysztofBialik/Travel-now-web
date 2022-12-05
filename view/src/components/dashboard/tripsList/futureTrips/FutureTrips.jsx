@@ -13,7 +13,6 @@ export const FutureTrips = ({ trips }) => {
     console.log(trips)
     const tripsPlanningStage = trips.filter(trip => trip.groupStage === 'PLANNING_STAGE')
     const futureTrips = tripsPlanningStage.map(({ groupId, name, description, groupStage }) => (
-    const futureTrips = tripsPlanningStage.map(({ groupId, name, description, groupStage }) => (
         <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
             <Grid item xs={12} lg={4} sx={{ mx: "auto" }}>
                 <DashboardFlipCard
@@ -21,7 +20,7 @@ export const FutureTrips = ({ trips }) => {
                     title={name}
                     description={description}
                     action={{
-                        route: "/tripSummary",
+                        route: "/tripSummary/" + groupId,
                         label: "Trip summary",
                         description: "Possible description of the trip"
                     }} />

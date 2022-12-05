@@ -168,7 +168,7 @@ export const futureTripButtonsDataWithGroupId = (groupId) => {
     {
         id: 4,
         name: "Summary",
-        link: "/tripSummary",
+        link: "/tripSummary/" + groupId,
     }
 
 ];

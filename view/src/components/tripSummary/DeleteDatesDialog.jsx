@@ -9,22 +9,38 @@ import { DialogTitle } from '@mui/material';
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doPut } from '../utils/fetch-utils';
 
-export const DeleteDatesDialog = ({ open, onClose, deleteDates }) => {
+export const DeleteDatesDialog = ({ open, onClose, deleteDates, groupId, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [apiErrorMessage, setApiErrorMessage] = useState("Ups! Something went wrong. Try again.")
 
     const handleSuccessClose = () => {
         setSuccessToastOpen(true);
         deleteDates();
+        onSuccess();
         onClose();
     };
+
+    const handleDeletion = async () => {
+        await doPut('/api/v1/trip-group/selected-availability?' + new URLSearchParams({ groupId: groupId}).toString())
+            .then(response => {
+                if(response.ok) {
+                    handleSuccessClose();
+                }
+            })
+            .catch(err => {
+                setErrorToastOpen(true)
+                setApiErrorMessage(err.message);
+            });
+    }
 
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Dates successfully deleted." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={apiErrorMessage} />
 
             <Dialog
                 open={open}
@@ -45,7 +61,7 @@ export const DeleteDatesDialog = ({ open, onClose, deleteDates }) => {
                         </Button>
                         <Button
                             variant="contained"
-                            onClick={handleSuccessClose}
+                            onClick={handleDeletion}
                             sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                         >
                             Confirm

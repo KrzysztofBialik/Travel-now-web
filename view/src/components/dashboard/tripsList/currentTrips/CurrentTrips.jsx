@@ -19,7 +19,7 @@ export const CurrentTrips = ({ trips }) => {
                     title={name}
                     description={description}
                     action={{
-                        route: "/tripSummary",
+                        route: "/tripSummary/" + groupId,
                         label: "Trip summary",
                         description: "check details of this trip",
                     }} />
@@ -57,8 +57,8 @@ export const CurrentTrips = ({ trips }) => {
                         <DashboardOptionCard
                             icon="fact_checked"
                             title="Trip summary"
-                            description="Check general info about the trip"
-                            route="/tripSummary"
+                            description="Check general info about the trip."
+                            route={`/tripSummary/${groupId}`}
                         />
                     </Grid>
                 </Grid>
