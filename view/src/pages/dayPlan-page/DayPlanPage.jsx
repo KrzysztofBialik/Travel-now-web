@@ -38,7 +38,6 @@ import { SearchAttractionDialog } from "../../components/attraction/SearchAttrac
 import { doGet, doGetAwait } from "../../components/utils/fetch-utils";
 import { CircularProgress } from "@mui/material";
 import { secondsToMilliseconds, set } from "date-fns/esm";
-import { useParams } from "react-router-dom";
 
 export const URL = '/dayPlan/:groupId';
 export const NAME = "DayPlan";
