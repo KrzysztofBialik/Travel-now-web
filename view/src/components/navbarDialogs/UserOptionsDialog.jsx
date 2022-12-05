@@ -28,18 +28,6 @@ import { doGet } from "../../components/utils/fetch-utils";
 import { doPatch } from "../../components/utils/fetch-utils";
 
 
-
-
-// const userData = {
-//     email: "254573@student.pwr.edu.pl",
-//     firstName: "Krzysztof",
-//     surname: "Bialik",
-//     code: "48",
-//     phone: "123587496",
-//     birthDate: new Date(2000, 1, 9),
-//     password: "Password111",
-// }
-
 export const UserOptionsDialog = ({ open, onClose }) => {
 
     const today = new Date();
