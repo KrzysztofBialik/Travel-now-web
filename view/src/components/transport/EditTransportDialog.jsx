@@ -26,32 +26,35 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import * as durationn from 'duration-fns'
+import { doPatch } from '../utils/fetch-utils';
 
 
-export const EditTransportDialog = ({ open, onClose, transportData }) => {
+export const EditTransportDialog = ({ open, onClose, transportData, onSuccess }) => {
 
-    const transportOptionLength = transportData.name.length;
-    const meetingLocationLength = transportData.meetingLocation.length;
+    const transportOptionLength = transportData.meanOfTransport.length;
+    const meetingLocationLength = transportData.source.length;
     const destinationLength = transportData.destination.length;
     const descriptionLength = transportData.description.length;
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [editionError, setEditionError] = useState("Ups! Something went wrong. Try again.");
 
-    const [transportOption, setTransportOption] = useState({ value: transportData.name, length: transportOptionLength });
+    const [transportOption, setTransportOption] = useState({ value: transportData.meanOfTransport, length: transportOptionLength });
     const [transportOptionError, setTransportOptionError] = useState("You have to provide transport option.");
 
-    const [meetingLocation, setMeetingLocation] = useState({ value: transportData.meetingLocation, length: meetingLocationLength });
+    const [meetingLocation, setMeetingLocation] = useState({ value: transportData.source, length: meetingLocationLength });
     const [meetingLocationError, setMeetingLocationError] = useState("You have to provide meeting location.");
 
     const [destination, setDestination] = useState({ value: transportData.destination, length: destinationLength });
     const [destinationError, setDestinationError] = useState("You have to provide destination.");
 
     //ewentualnie podmienić, że domyślna to 1
-    const [hours, setHours] = useState(transportData.hours);
+    const [hours, setHours] = useState(durationn.parse(transportData.duration).hours);
     const [hoursError, setHoursError] = useState("Must be a valid hour(0 - 23).");
 
-    const [minutes, setMinutes] = useState(transportData.minutes);
+    const [minutes, setMinutes] = useState(durationn.parse(transportData.duration).minutes);
     const [minutesError, setMinutesError] = useState("Must be a valid minute(0 - 59).");
 
     const [meetingDate, setMeetingDate] = useState(transportData.meetingDate);
@@ -158,9 +161,27 @@ export const EditTransportDialog = ({ open, onClose, transportData }) => {
         resolver: yupResolver(validationSchema),
     });
 
-    const handleEditTransport = (tripName, meetingLocation, destination, minDays, hours, minutes, meetingDate, meetingTime, price, description) => {
-        setSuccessToastOpen(true);
-        close();
+    const handleEditTransport = async (tripName, meetingLocation, destination, minDays, hours, minutes, meetingDate, meetingTime, price, description) => {
+        var postBody = {'duration':durationn.toString({ hours: parseInt(hours), minutes: parseInt(minutes) }),
+                        'price':price,
+                        'source':meetingLocation,
+                        'destination':destination,
+                        'startDate':meetingDate,
+                        'endDate':meetingDate,
+                        'meanOfTransport':tripName,
+                        'description':description,
+                        'meetingTime':meetingTime,
+                        'link':null
+        };
+        await doPatch('/api/v1/transport/user-transport?' + new URLSearchParams({ transportId:transportData.transportId }).toString(), postBody)
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                close();
+                onSuccess();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setEditionError(err.message)
+            });
     };
 
     const close = () => {
@@ -188,7 +209,7 @@ export const EditTransportDialog = ({ open, onClose, transportData }) => {
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Transport option successfully edited." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={editionError} />
 
             <Dialog
                 open={open}
@@ -203,7 +224,7 @@ export const EditTransportDialog = ({ open, onClose, transportData }) => {
                 </DialogTitle>
                 <DialogContent>
                     <form
-                        onSubmit={handleSubmit(() => handleEditTransport(transportOption.value, meetingLocation.value, hours, minutes, price, description.value))}
+                        onSubmit={handleSubmit(() => handleEditTransport(transportOption.value, meetingLocation.value, destination.value, 0, hours, minutes, meetingDate, meetingTime, price, description.value))}
                     >
                         <TextField
                             sx={{ mt: "25px" }}
@@ -400,7 +421,6 @@ export const EditTransportDialog = ({ open, onClose, transportData }) => {
                                 variant="outlined"
                                 sx={{ borderRadius: "20px" }}
                                 onClick={() => {
-                                    setErrorToastOpen(true)
                                     close()
                                 }}
                             >

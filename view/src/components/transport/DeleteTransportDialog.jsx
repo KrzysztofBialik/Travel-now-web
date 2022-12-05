@@ -9,11 +9,13 @@ import { DialogTitle } from '@mui/material';
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doDelete } from '../utils/fetch-utils';
 
-export const DeleteTransportDialog = ({ open, onClose }) => {
+export const DeleteTransportDialog = ({ open, onClose, transportId, accommodationId, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [deletionError, setDeletionError] = useState("Ups! Something went wrong. Try again.");
 
     const handleSuccessClose = () => {
         setSuccessToastOpen(true);
@@ -25,10 +27,22 @@ export const DeleteTransportDialog = ({ open, onClose }) => {
     //     onClose();
     // };
 
+    const handleDelete = async () => {
+        await doDelete('/api/v1/transport/user-transport?' + new URLSearchParams({ accommodationId:accommodationId, transportId:transportId }).toString())
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                handleSuccessClose();
+                onSuccess();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setDeletionError(err.message)
+            });
+    };
+
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Trasnport option successfully deleted." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={deletionError} />
 
             <Dialog
                 open={open}
@@ -49,7 +63,7 @@ export const DeleteTransportDialog = ({ open, onClose }) => {
                         </Button>
                         <Button
                             variant="contained"
-                            onClick={handleSuccessClose}
+                            onClick={handleDelete}
                             sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                         >
                             Confirm
