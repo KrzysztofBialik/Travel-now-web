@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
+import { useEffect } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import Box from '@mui/material/Box';
@@ -23,29 +24,60 @@ import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { doGet } from "../../components/utils/fetch-utils";
+import { doPatch } from "../../components/utils/fetch-utils";
 
 
-const userData = {
-    email: "254573@student.pwr.edu.pl",
-    firstName: "Krzysztof",
-    surname: "Bialik",
-    code: "48",
-    phone: "123587496",
-    birthDate: new Date(2000, 1, 9),
-    password: "Password111",
-}
+
+
+// const userData = {
+//     email: "254573@student.pwr.edu.pl",
+//     firstName: "Krzysztof",
+//     surname: "Bialik",
+//     code: "48",
+//     phone: "123587496",
+//     birthDate: new Date(2000, 1, 9),
+//     password: "Password111",
+// }
 
 export const UserOptionsDialog = ({ open, onClose }) => {
 
     const today = new Date();
 
-    const defaultInputValues = {
-        firstName: userData.firstName,
-        surname: userData.surname,
-        code: userData.code,
-        phone: userData.phone,
-        birthDate: userData.birthDate
+    const[userData, setUserData] = useState([])
+
+    const updateData = () => {
+
     }
+
+    const getUserData = async () => {
+        await doGet('/api/v1/user?' + new URLSearchParams({ userId: localStorage.getItem("userId")}).toString())
+        .then(response => response.json())
+        .then(response => {
+            console.log("UserData");
+            console.log(response);
+            setNecessaryData(response);
+
+        })
+        .catch(err => console.log('Request Failed', err));
+    }
+
+    useEffect(() => {
+        getUserData();
+      }, [])
+
+
+    const setNecessaryData = (response) => {
+        console.log("response")
+        console.log(response)
+        const allPhoneNumber = response.phoneNumber.split(" ");
+            var code = allPhoneNumber[0].slice();
+            code = code.slice(1, code.length)
+            const phoneNumber = allPhoneNumber[1];
+            setUserData({userId: response.userId ,email: response.email, firstName: response.firstName, surname: response.surname,
+                 code: code,  phone: phoneNumber, birthDate: response.birthday});
+    }
+
 
     const validationSchema = Yup.object().shape({
         firstName: Yup
@@ -74,16 +106,33 @@ export const UserOptionsDialog = ({ open, onClose }) => {
 
     const { register, handleSubmit, reset, formState: { errors }, control, setValue, getValues } = useForm({
         resolver: yupResolver(validationSchema),
-        defaultValues: defaultInputValues
     });
 
     const handleChangeData = (values) => {
-        console.log(getValues());
+
+        editUserAccount(getValues());
     };
+
+
+    const editUserAccount = async (values) => {
+        console.log("hello there")
+        console.log(values)
+        var postBody = {'userId':localStorage.getItem('userId'), 'phoneNumber':'+' + values.code + ' ' + values.phone, 'firstName':values.firstName, 'surname': values.surname, 'brithday': values.birthDate};
+        await doPatch('/api/v1/user', postBody)
+            .then(response => response.json())
+            .then(response => {
+            setNecessaryData(response);
+        })
+        .catch(err => console.log('Request Failed', err));
+    }
 
     const onKeyDown = (e) => {
         e.preventDefault();
     };
+
+
+
+
 
     return (
         <>
@@ -126,7 +175,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                             sx={{
                                 width: "100%",
                                 minWidth: '450px',
-                                height: "700px",
+                                height: "600px",
                                 my: 10,
                                 display: 'flex',
                                 overflow: "visible",
@@ -209,7 +258,8 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                 type="string"
                                                 margin="normal"
                                                 placeholder='First name'
-                                                name='first name'
+                                                name='First name'
+                                                defaultValue={userData.firstName}
                                                 label='First name'
                                                 fullWidth
                                                 variant="outlined"
@@ -229,6 +279,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                 margin="normal"
                                                 placeholder='Surname'
                                                 name='surname'
+                                                defaultValue={userData.surname}
                                                 label='Surname'
                                                 fullWidth
                                                 variant="outlined"
@@ -254,6 +305,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                         margin="normal"
                                                         placeholder='Code'
                                                         name='code'
+                                                        defaultValue={userData.code}
                                                         label='Code'
                                                         variant="outlined"
                                                         InputProps={{
@@ -286,6 +338,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                     margin="normal"
                                                     placeholder='Phone'
                                                     name='phone'
+                                                    defaultValue={userData.phone}
                                                     label='Phone'
                                                     variant="outlined"
                                                     InputProps={{
@@ -303,12 +356,16 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                                 <Controller
                                                     name={"birthDate"}
+                                                    defaultValue={userData.birthDate}
                                                     control={control}
                                                     sx={{ mb: 1 }}
+                                                    
                                                     render={({ field: { onChange, value } }) =>
                                                         <DatePicker
                                                             disableFuture
                                                             label="Birth date"
+                                                            value={value}
+                                                            onChange={onChange}
                                                             // components={{
                                                             //     OpenPickerIcon: CakeIcon
                                                             // }}
@@ -335,30 +392,12 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                                     helperText={errors.birthDate?.message}
                                                                 />
                                                             }
-                                                            value={value}
-                                                            onChange={onChange}
+                                                        
                                                             inputFormat="yyyy-MM-dd"
                                                         />
                                                     }
                                                 />
                                             </LocalizationProvider>
-                                            <TextField
-                                                disabled
-                                                type="string"
-                                                margin="normal"
-                                                name='password'
-                                                label='Password'
-                                                value={userData.password}
-                                                fullWidth
-                                                variant="outlined"
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <LockOutlinedIcon sx={{ color: "primary.main" }} />
-                                                        </InputAdornment>
-                                                    )
-                                                }}
-                                            />
                                             <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center" }}>
                                                 <Button
                                                     type="submit"
@@ -366,6 +405,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                     sx={{
                                                         mt: 3, mb: 2, borderRadius: "10px", width: "150px", color: "#FFFFFF"
                                                     }}
+
                                                 >
                                                     Change data
                                                 </Button>
