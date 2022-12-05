@@ -29,19 +29,15 @@ export const ParticipantsPage = () => {
         .then(response => response.json())
         .then(response => setGroupStage(response.groupStage))
         .catch(err => console.log('Request Failed', err));
-    }
 
-    const getUserCoordinator = async () => {
         await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId")}).toString())
         .then(response => response.json())
         .then(response => setIsCoordinator(response))
         .catch(err => console.log('Request Failed', err));
     }
 
-
     useEffect(() => {
         getGroupData();
-        getUserCoordinator();
       }, [])
 
 
@@ -59,6 +55,7 @@ export const ParticipantsPage = () => {
             }}>
             <NavigationNavbar
                 buttonsData={groupStage === "PLANNING_STAGE" ? futureTripButtonsDataWithGroupId(groupId) : currentTripButtonsDataWithGroupId(groupId)}
+                groupId={groupId}
             />
             <InviteDialog open={inviteDialogOpen} onClose={() => setInviteDialogOpen(false)} />
             <Box sx={{

@@ -169,6 +169,7 @@ export const DayPlanPage = (props) => {
                 }}>
                 <NavigationNavbar
                     buttonsData={currentTripButtonsData}
+                    groupId={groupId}
                 />
                 <Box sx={{
                     pt: 10,

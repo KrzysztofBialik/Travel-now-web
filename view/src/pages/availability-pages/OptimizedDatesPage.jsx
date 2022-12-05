@@ -97,7 +97,10 @@ export const OptimizedDatesPage = () => {
             position: 'relative',
             minHeight: '100%'
         }}>
-            <NavigationNavbar buttonsData={futureTripButtonsDataWithGroupId(groupId)} />
+            <NavigationNavbar 
+            buttonsData={futureTripButtonsDataWithGroupId(groupId)}
+            groupId={groupId}
+            />
             <Box sx={{
                 py: 10,
                 display: "flex",

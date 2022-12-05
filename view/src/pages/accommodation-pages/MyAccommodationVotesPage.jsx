@@ -137,7 +137,10 @@ export const MyAccommodationVotesPage = () => {
                 position: 'relative',
                 minHeight: '100%'
             }}>
-            <NavigationNavbar buttonsData={futureTripButtonsDataWithGroupId(groupId)} />
+            <NavigationNavbar 
+            buttonsData={futureTripButtonsDataWithGroupId(groupId)}
+            groupId={groupId}
+            />
             <Box sx={{
                 p: 10,
                 // margin: 10,
