@@ -99,7 +99,10 @@ export const AvailabilityPage = () => {
             position: 'relative',
             minHeight: '100%'
         }}>
-            <NavigationNavbar buttonsData={futureTripButtonsDataWithGroupId(groupId)} />
+            <NavigationNavbar 
+            buttonsData={futureTripButtonsDataWithGroupId(groupId)}
+            groupId={groupId}
+            />
             <DateRangePickerDialog open={dateRangePickerDialogOpen}
                 onClose={() => setDateRangePickerDialogOpen(false)}
                 initialRange={[{ startDate: null, endDate: null, key: "selection" }]}

@@ -15,6 +15,8 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { useState } from "react";
+import { useEffect } from "react";
+
 import { Dialog } from '@mui/material';
 import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
@@ -26,8 +28,10 @@ import { UserOptionsDialog } from '../../navbarDialogs/UserOptionsDialog';
 import { TripGroupOptionsDialog } from '../../navbarDialogs/TripGroupOptionsDialog';
 import { ConfirmLogoutDialog } from './ConfirmLogoutDialog';
 import {Routes, Route, useNavigate} from 'react-router-dom';
+import { doGet } from '../../utils/fetch-utils'
 
-export const NavigationNavbar = ({ buttonsData }) => {
+
+export const NavigationNavbar = ({ buttonsData, groupId }) => {
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
@@ -37,11 +41,11 @@ export const NavigationNavbar = ({ buttonsData }) => {
     const [tripGroupOptionsDialogOpen, setTripGroupOptionsDialogOpen] = useState(false);
     const [userOptionsDialogOpen, setUserOptionsDialogOpen] = useState(false);
     const [userLogoutDialogOpen, setUserLogoutDialogOpen] = useState(false);
+    const [isCoordinator, setIsCoordinator] = useState(false)
     const navigate = useNavigate();
 
 
     const open = Boolean(anchorEl);
-    const isCoordinator = false;
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -105,6 +109,19 @@ export const NavigationNavbar = ({ buttonsData }) => {
     const handleLogutDialogClose = () => {
         setUserLogoutDialogOpen(false)
     }
+
+    const getIsCoordinator = async () => {
+        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+        .then(response => setIsCoordinator(response.json))
+        .catch(err => console.log(err.message));
+    };
+
+    useEffect(() => {
+        getIsCoordinator();
+      }, [])
+
+
+
 
     window.addEventListener('scroll', removeMenus);
 

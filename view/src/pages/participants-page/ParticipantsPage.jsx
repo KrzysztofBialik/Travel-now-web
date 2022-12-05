@@ -55,6 +55,7 @@ export const ParticipantsPage = () => {
             }}>
             <NavigationNavbar
                 buttonsData={groupStage === "PLANNING_STAGE" ? futureTripButtonsDataWithGroupId(groupId) : currentTripButtonsDataWithGroupId(groupId)}
+                groupId={groupId}
             />
             <InviteDialog open={inviteDialogOpen} onClose={() => setInviteDialogOpen(false)} />
             <Box sx={{
