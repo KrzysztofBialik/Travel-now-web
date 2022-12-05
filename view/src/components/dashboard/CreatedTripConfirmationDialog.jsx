@@ -7,7 +7,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
 
-export const CreatedTripConfirmationDialog = ({ open, onClose }) => {
+export const CreatedTripConfirmationDialog = ({ open, onClose, onSuccess }) => {
+
+    const close = () => {
+        onSuccess();
+        onClose();
+    };
 
     return (
         <div>
@@ -34,7 +39,7 @@ export const CreatedTripConfirmationDialog = ({ open, onClose }) => {
                                     borderColor: "primary.dark"
                                 }
                             }}
-                            onClick={onClose}
+                            onClick={close}
                         >
                             Return
                         </Button>

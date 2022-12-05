@@ -54,6 +54,7 @@ export const DashboardPage = () => {
                 open={createTripDialogOpen}
                 onClose={() => setCreateTripDialogOpen(false)}
                 createTrip={createTrip}
+                onSuccess={() => getTrips()}
             />
             {/* <SimpleNavbar /> */}
             <NavigationNavbar buttonsData={[]} />
