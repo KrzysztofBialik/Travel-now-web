@@ -20,7 +20,7 @@ export const FutureTrips = ({trips}) => {
                     title={name}
                     description={description}
                     action={{
-                        route: "/tripSummary",
+                        route: "/tripSummary/" + groupId,
                         label: "Trip summary",
                         description: "Possible description of the trip."
                     }} />
@@ -58,7 +58,7 @@ export const FutureTrips = ({trips}) => {
                             icon="fact_checked"
                             title="Trip summary"
                             description="Check general info about the trip."
-                            route="/tripSummary"
+                            route={`/tripSummary/${groupId}`}
                         />
                     </Grid>
                 </Grid>

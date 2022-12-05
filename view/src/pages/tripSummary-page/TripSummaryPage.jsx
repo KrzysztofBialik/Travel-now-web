@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Box, TextField } from '@mui/material';
 import { IconButton } from '@mui/material';
 import { Typography } from '@mui/material';
@@ -25,11 +25,12 @@ import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
 
 
 import "./TripSummaryPage.css"
-import { Link } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { DeleteAccommodationDialog } from '../../components/tripSummary/DeleteAccommodationDialog';
 import { DeleteDatesDialog } from '../../components/tripSummary/DeleteDatesDialog';
+import { doGet } from '../../components/utils/fetch-utils';
 
-export const URL = '/tripSummary';
+export const URL = '/tripSummary/:groupId';
 export const NAME = "TripSummary";
 
 const center = { lat: 0, lng: 0 }
@@ -37,13 +38,18 @@ const center = { lat: 0, lng: 0 }
 
 export const TripSummaryPage = () => {
 
-    const isCoordinator = true;
+    var groupId = useParams();
+
+    const isCordinator = false;
     const isPlanningStage = true;
     const accommodationSelected = true;
 
     const [deleteDatesDialogOpen, setDeleteDatesDialogOpen] = useState(false);
     const [deleteAccommodationDialogOpen, setDeleteAccommodationDialogOpen] = useState(false);
     const [dateRangePickerDialogOpen, setDateRangePickerDialogOpen] = useState(false);
+    const [loadingSelected, setLoadingSelected] = useState(true);
+    const [seletcedAccommodation, setSeletcedAccommodation] = useState(null);
+    const [center, setCenter] = useState({ lat: 0, lng: 0 }) 
     const [range, setRange] = useState([
         {
             startDate: new Date(),
@@ -82,6 +88,39 @@ export const TripSummaryPage = () => {
     // else {
     //     navigationButtonsData = pastTripButtonsData;
     // }
+
+    const isCorinator = async () => {
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+            .catch(err => console.log(err.message));
+        var body = await resp.json();
+        isCordinator = body;
+    };
+
+    const getChosenAccommodation = async () => {
+        setLoadingSelected(true)
+        doGet('/api/v1/trip-group/accommodation-dto?' + new URLSearchParams({ groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(accommodation => {
+            if(accommodation.groupId === null) {
+                setSeletcedAccommodation(null)
+            } else {
+                setSeletcedAccommodation(
+                    <Grid item xs={12} md={4} key={accommodation.accommodationId}>
+                        <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} onSuccess={() => console.log()}/>
+                    </Grid>)
+                    setCenter({ lat: accommodation.latitude, lng : accommodation.longitude })
+            }
+        })
+        .then(next => setLoadingSelected(false))
+        .catch(err => console.log('Request Failed', err));
+    };
+
+    
+
+    useEffect(() => {
+        isCorinator();
+        getChosenAccommodation();
+      }, [])
 
     return (
         <Box sx={{
@@ -167,7 +206,7 @@ export const TripSummaryPage = () => {
                                         <Typography variant="h6" sx={{ color: "#FFFFFF" }} >
                                             Dates of the trip
                                         </Typography>
-                                        {(isPlanningStage && isCoordinator) ?
+                                        {(isPlanningStage && isCordinator) ?
                                             <IconButton sx={{ p: 0 }} onClick={deleteDatesAction}>
                                                 <DeleteIcon
                                                     sx={{ color: "error.main", fontSize: "32px" }}></DeleteIcon>
@@ -194,7 +233,7 @@ export const TripSummaryPage = () => {
                                         <></>
                                         <TextField
                                             sx={{ width: "50%", minWidth: "240px" }}
-                                            disabled={!isPlanningStage || !isCoordinator}
+                                            disabled={!isPlanningStage || !isCordinator}
                                             type='string'
                                             margin="normal"
                                             step='any'
@@ -211,7 +250,7 @@ export const TripSummaryPage = () => {
                                             }}
                                             helperText={isPlanningStage ? "Only coordinator can change dates here or choose one of the ranges from the optimized section"
                                                 : ""}
-                                            onClick={(isPlanningStage && isCoordinator) ? () => setDateRangePickerDialogOpen(true) : undefined}
+                                            onClick={(isPlanningStage && isCordinator) ? () => setDateRangePickerDialogOpen(true) : undefined}
                                             value={(range[0].startDate !== null && range[0].endDate !== null) ?
                                                 `${format(range[0].startDate, "dd.MM.yyyy")} - ${format(range[0].endDate, "dd.MM.yyyy")}`
                                                 : "No dates selected"
@@ -348,7 +387,7 @@ export const TripSummaryPage = () => {
                                         <Typography variant="h6" sx={{ color: "#FFFFFF" }} >
                                             Accommodation
                                         </Typography>
-                                        {(isPlanningStage && isCoordinator) ?
+                                        {(isPlanningStage && isCordinator) ?
                                             <IconButton sx={{ p: 0 }} onClick={deleteAccommodationAction}>
                                                 <DeleteIcon sx={{ color: "error.main", fontSize: "32px" }}></DeleteIcon>
                                             </IconButton>
@@ -369,7 +408,7 @@ export const TripSummaryPage = () => {
                                             {accommodationSelected ?
                                                 <>
                                                     <Grid item xs={5}>
-                                                        <AccommodationCard accommodationData={[]} canModify={false} selected={true} />
+                                                        <AccommodationCard accommodationData={[]} canModify={false} selected={true} votes={[]}/>
                                                     </Grid>
                                                     <Grid item xs={5} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                                                         {isLoaded ?
@@ -493,7 +532,7 @@ export const TripSummaryPage = () => {
                                         }}
                                     // elevation={4}
                                     >
-                                        <ParticipantsTable />
+                                        <ParticipantsTable groupId={groupId}/>
                                     </Box>
                                     <Box
                                         sx={{
@@ -527,7 +566,7 @@ export const TripSummaryPage = () => {
                                 alignItems: "center",
                                 justifyContent: "space-around"
                             }}>
-                                {(isPlanningStage && isCoordinator) ?
+                                {(isPlanningStage && isCordinator) ?
                                     <Button variant="contained"
                                         sx={{
                                             fontSize: "28px",

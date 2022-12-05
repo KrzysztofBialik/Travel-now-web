@@ -17,7 +17,7 @@ export const PastTrips = ({trips}) => {
                     title={name}
                     description={description}
                     action={{
-                        route: "/tripSummary",
+                        route: "/tripSummary/" + groupId,
                         label: "Trip summary",
                         description: "Let's meet in Rome."
                     }} />
