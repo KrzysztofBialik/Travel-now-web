@@ -11,92 +11,45 @@ import { doGet } from '../utils/fetch-utils';
 import { useState } from 'react';
 
 
-const userData = [
-    {
-        id: 1,
-        firstName: "Robert",
-        lastName: "Lewandowski",
-        phoneNumber: "+48 111222333",
-        role: "Coordinator"
-    },
-    {
-        id: 2,
-        firstName: "Marcin",
-        lastName: "Cebula",
-        phoneNumber: "+48 444555666",
-        role: "Participant"
-    },
-    {
-        id: 3,
-        firstName: "Kamila",
-        lastName: "Marchlewicz",
-        phoneNumber: "+48 777888999",
-        role: "Participant"
-    },
-    {
-        id: 4,
-        firstName: "Jakub",
-        lastName: "Zastępczy",
-        phoneNumber: "+48 123456789",
-        role: "Participant"
-    },
-    {
-        id: 5,
-        firstName: "Zuzia",
-        lastName: "Siemaszko",
-        phoneNumber: "+48 987456123",
-        role: "Participant"
-    }
-]
+// const userData = [
+//     {
+//         id: 1,
+//         firstName: "Robert",
+//         lastName: "Lewandowski",
+//         phoneNumber: "+48 111222333",
+//         role: "Coordinator"
+//     },
+//     {
+//         id: 2,
+//         firstName: "Marcin",
+//         lastName: "Cebula",
+//         phoneNumber: "+48 444555666",
+//         role: "Participant"
+//     },
+//     {
+//         id: 3,
+//         firstName: "Kamila",
+//         lastName: "Marchlewicz",
+//         phoneNumber: "+48 777888999",
+//         role: "Participant"
+//     },
+//     {
+//         id: 4,
+//         firstName: "Jakub",
+//         lastName: "Zastępczy",
+//         phoneNumber: "+48 123456789",
+//         role: "Participant"
+//     },
+//     {
+//         id: 5,
+//         firstName: "Zuzia",
+//         lastName: "Siemaszko",
+//         phoneNumber: "+48 987456123",
+//         role: "Participant"
+//     }
+// ]
 
-export const ParticipantsTable = (groupId) => {
-    const [usersData, setUsersData] = useState([]);
-    const [groupCoordinators, setGroupCoordinators] = useState([]);
-
-    const getUsersData = async () => {
-        await doGet('/api/v1/user-group/participants?' + new URLSearchParams({ groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(response => setUsersData(response))
-        .catch(err => console.log('Request Failed', err));
-
-        await doGet('/api/v1/user-group/coordinators?' + new URLSearchParams({ groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(response => setGroupCoordinators(response))
-        .catch(err => console.log('Request Failed', err));
-    }
-
-    var userFullData = []
-    const userWithRoles = () => {
-        for(var i = 0 ; i < usersData.length; i++) {
-            var user = {}
-            let userId = usersData[i].userId;
-            let firstName = usersData[i].firstName;
-            let surname = usersData[i].surname;
-            let phoneNumber = usersData[i].phoneNumber;
-            let email = usersData[i].email;
-            let role;
-            
-            if(groupCoordinators.some(coordinator => coordinator.userId === usersData[i].userId)){
-                role = "COORDINATOR"
-            }
-            else {
-                role = "PARTICIPANT";
-            }
-            user['userId'] = userId;
-            user['firstName'] = firstName;
-            user['surname'] = surname;
-            user['phoneNumber'] = phoneNumber;
-            user['email'] = email;
-            user['role'] = role;
-            userFullData.push(user);
-        }
-    }
-
-    userWithRoles();
-
-    useEffect(() => {
-        getUsersData();
-    })
+export const ParticipantsTable = ({ userData }) => {
     
     return (
         <TableContainer component={Paper}>
@@ -112,11 +65,11 @@ export const ParticipantsTable = (groupId) => {
                 <TableBody>
                     {userData.map((user) => (
                         <TableRow
-                            key={user.id}
+                            key={user.userId}
                             sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                         >
-                            <TableCell align="left">{user.firstName}</TableCell>
-                            <TableCell align="left">{user.lastName}</TableCell>
+                            <TableCell align="center">{user.firstName}</TableCell>
+                            <TableCell align="center">{user.surname}</TableCell>
                             <TableCell align="center">{user.phoneNumber}</TableCell>
                             <TableCell align="center">{user.role}</TableCell>
                         </TableRow>

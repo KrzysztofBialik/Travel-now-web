@@ -15,7 +15,7 @@ import format from 'date-fns/format';
 import { AccommodationCard } from '../../components/accommodations/accommodationCard/AccommodationCard';
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
 import { ParticipantsTable } from '../../components/tripSummary/ParticipantsTable';
-import { futureTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
+import { futureTripButtonsDataWithGroupId } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { futureTripButtonsData2 } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { currentTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { pastTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
@@ -29,6 +29,8 @@ import { Link, useParams } from 'react-router-dom';
 import { DeleteAccommodationDialog } from '../../components/tripSummary/DeleteAccommodationDialog';
 import { DeleteDatesDialog } from '../../components/tripSummary/DeleteDatesDialog';
 import { doGet } from '../../components/utils/fetch-utils';
+import { parseISO } from 'date-fns/esm';
+import { formatISO, parse, parseJSON } from 'date-fns';
 
 export const URL = '/tripSummary/:groupId';
 export const NAME = "TripSummary";
@@ -38,18 +40,23 @@ const center = { lat: 0, lng: 0 }
 
 export const TripSummaryPage = () => {
 
-    var groupId = useParams();
+    const {groupId} = useParams();
 
-    const isCordinator = false;
-    const isPlanningStage = true;
-    const accommodationSelected = true;
+    const [isCordinator, setIsCordinator]  = useState(false);;
+    const [isPlanningStage, setIsPlanningStage]  = useState(false);
+
+    const [usersData, setUsersData] = useState([]);
+    const [groupCoordinators, setGroupCoordinators] = useState([]);
 
     const [deleteDatesDialogOpen, setDeleteDatesDialogOpen] = useState(false);
     const [deleteAccommodationDialogOpen, setDeleteAccommodationDialogOpen] = useState(false);
     const [dateRangePickerDialogOpen, setDateRangePickerDialogOpen] = useState(false);
     const [loadingSelected, setLoadingSelected] = useState(true);
     const [seletcedAccommodation, setSeletcedAccommodation] = useState(null);
+    const [sharedAvailability, setSharedAvailability] = useState(null);
     const [center, setCenter] = useState({ lat: 0, lng: 0 }) 
+    const [userFullData, setUserFullData] = useState([]) 
+    const [tripGroup, setTripGroup] = useState([]);
     const [range, setRange] = useState([
         {
             startDate: new Date(),
@@ -93,7 +100,7 @@ export const TripSummaryPage = () => {
         var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
             .catch(err => console.log(err.message));
         var body = await resp.json();
-        isCordinator = body;
+        setIsCordinator(body);
     };
 
     const getChosenAccommodation = async () => {
@@ -115,11 +122,73 @@ export const TripSummaryPage = () => {
         .catch(err => console.log('Request Failed', err));
     };
 
-    
+    const getUsersData = async () => {
+        await doGet('/api/v1/user-group/participants?' + new URLSearchParams({ groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(response => setUsersData(response))
+        .catch(err => console.log('Request Failed', err));
+
+        await doGet('/api/v1/user-group/coordinators?' + new URLSearchParams({ groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(response => setGroupCoordinators(response))
+        .catch(err => console.log('Request Failed', err));
+    }
+
+    const getTripData = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({groupId: groupId }).toString())
+        .then(response => response.json())
+        .then(response => {
+            setTripGroup(response);
+            setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
+        })
+        .catch(err => console.log('Request Failed', err));
+    }
+
+    const getSelectedAvailability = async () => {
+        await doGet('/api/v1/shared-availability?' + new URLSearchParams({sharedGroupAvailabilityId: tripGroup.selectedSharedAvailability }).toString())
+        .then(response => response.json())
+        .then(response => {
+            setSharedAvailability(response);
+            setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
+        })
+        .catch(err => console.log('Request Failed', err));
+    }
+
+    var tempData = [];
+    const userWithRoles = () => {
+        
+        for(var i = 0 ; i < usersData.length; i++) {
+            var user = {}
+            let userId = usersData[i].userId;
+            let firstName = usersData[i].firstName;
+            let surname = usersData[i].surname;
+            let phoneNumber = usersData[i].phoneNumber;
+            let email = usersData[i].email;
+            let role;
+            
+            if(groupCoordinators.some(coordinator => coordinator.userId === usersData[i].userId)){
+                role = "COORDINATOR"
+            }
+            else {
+                role = "PARTICIPANT";
+            }
+            user['userId'] = userId;
+            user['firstName'] = firstName;
+            user['surname'] = surname;
+            user['phoneNumber'] = phoneNumber;
+            user['email'] = email;
+            user['role'] = role;
+            tempData.push(user);
+        }        
+    }
+
+    userWithRoles();
 
     useEffect(() => {
         isCorinator();
+        getUsersData();
         getChosenAccommodation();
+        getTripData();
       }, [])
 
     return (
@@ -127,7 +196,7 @@ export const TripSummaryPage = () => {
             position: 'relative',
             minHeight: '100%'
         }}>
-            <NavigationNavbar buttonsData={futureTripButtonsData} />
+            <NavigationNavbar buttonsData={futureTripButtonsDataWithGroupId(groupId)} />
             <Box sx={{
                 p: 10,
                 mx: { xs: 2, lg: 3 },
@@ -158,18 +227,22 @@ export const TripSummaryPage = () => {
                                     mb: "30px"
                                 }}
                             >
-                                "Trip name" summary
+                                {tripGroup.name} summary
                             </Typography>
                         </Grid>
 
                         {/*-----------------------------------sekcja tabel-----------------------------------*/}
                         <Grid container item xs={12} spacing={10}>
                             {/*------------------------------------trip dates------------------------------------*/}
-                            <DeleteDatesDialog open={deleteDatesDialogOpen} onClose={() => setDeleteDatesDialogOpen(false)} deleteDates={deleteDates} />
+                            <DeleteDatesDialog open={deleteDatesDialogOpen} onClose={() => setDeleteDatesDialogOpen(false)} deleteDates={deleteDates} groupId={groupId} onSuccess={() => getTripData()} />
                             <DateRangePickerDialog open={dateRangePickerDialogOpen}
                                 onClose={() => setDateRangePickerDialogOpen(false)}
                                 initialRange={range}
-                                rangeChange={(ranges) => handleRangesChange(ranges)} />
+                                rangeChange={(ranges) => handleRangesChange(ranges)}
+                                onSuccess={() => getTripData()}
+                                shared={true}
+                                groupId={groupId}
+                                />
                             <Grid item xs={6}>
                                 <Card
                                     sx={{
@@ -232,7 +305,7 @@ export const TripSummaryPage = () => {
                                         }
                                         <></>
                                         <TextField
-                                            sx={{ width: "50%", minWidth: "240px" }}
+                                            sx={{ width: "50%", minWidth: "330px" }}
                                             disabled={!isPlanningStage || !isCordinator}
                                             type='string'
                                             margin="normal"
@@ -251,8 +324,8 @@ export const TripSummaryPage = () => {
                                             helperText={isPlanningStage ? "Only coordinator can change dates here or choose one of the ranges from the optimized section"
                                                 : ""}
                                             onClick={(isPlanningStage && isCordinator) ? () => setDateRangePickerDialogOpen(true) : undefined}
-                                            value={(range[0].startDate !== null && range[0].endDate !== null) ?
-                                                `${format(range[0].startDate, "dd.MM.yyyy")} - ${format(range[0].endDate, "dd.MM.yyyy")}`
+                                            value={(tripGroup.selectedSharedAvailability !== null) ?
+                                                `From: ${tripGroup.startDate} To: ${tripGroup.endDate}`
                                                 : "No dates selected"
                                             }
                                         />
@@ -267,7 +340,7 @@ export const TripSummaryPage = () => {
                                             }}
                                         >
                                             {isPlanningStage ?
-                                                <Link to="/availability">
+                                                <Link to={"/availability/" + groupId}>
                                                     <Button variant="contained"
                                                         sx={{
                                                             backgroundColor: "primary.main",
@@ -342,7 +415,7 @@ export const TripSummaryPage = () => {
                                             }}
                                         >
                                             <Typography variant="h4">
-                                                Wrocław, centrum handlowe Borek
+                                                {tripGroup.startLocation}
                                             </Typography>
                                         </Box>
                                     </Box>
@@ -350,7 +423,7 @@ export const TripSummaryPage = () => {
                             </Grid>
 
                             {/*------------------------------------Accommodation------------------------------------*/}
-                            <DeleteAccommodationDialog open={deleteAccommodationDialogOpen} onClose={() => setDeleteAccommodationDialogOpen(false)} />
+                            <DeleteAccommodationDialog open={deleteAccommodationDialogOpen} onClose={() => setDeleteAccommodationDialogOpen(false)}  groupId={groupId} onSuccess={() => getChosenAccommodation()}/>
                             <Grid item xs={12}>
                                 <Card
                                     sx={{
@@ -405,11 +478,9 @@ export const TripSummaryPage = () => {
                                         minHeight: "200px"
                                     }}>
                                         <Grid container spacing={10} sx={{ display: "flex", justifyContent: "center", alignItems: "flex-start" }}>
-                                            {accommodationSelected ?
+                                            {seletcedAccommodation !== null ?
                                                 <>
-                                                    <Grid item xs={5}>
-                                                        <AccommodationCard accommodationData={[]} canModify={false} selected={true} votes={[]}/>
-                                                    </Grid>
+                                                    {seletcedAccommodation}
                                                     <Grid item xs={5} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                                                         {isLoaded ?
                                                             <GoogleMap
@@ -459,7 +530,7 @@ export const TripSummaryPage = () => {
                                             }}
                                         >
                                             {isPlanningStage ?
-                                                <Link to="/accommodations">
+                                                <Link to={"/accommodations/" + groupId}>
                                                     <Button variant="contained"
                                                         sx={{
                                                             backgroundColor: "primary.main",
@@ -532,7 +603,7 @@ export const TripSummaryPage = () => {
                                         }}
                                     // elevation={4}
                                     >
-                                        <ParticipantsTable groupId={groupId}/>
+                                        <ParticipantsTable userData={tempData}/>
                                     </Box>
                                     <Box
                                         sx={{
@@ -544,7 +615,7 @@ export const TripSummaryPage = () => {
                                             bottom: 0
                                         }}
                                     >
-                                        <Link to="/participants">
+                                        <Link to={"/participants/" + groupId}>
                                             <Button variant="contained"
                                                 sx={{
                                                     backgroundColor: "primary.main",
