@@ -52,7 +52,7 @@ import { parseISO } from 'date-fns';
 const center = { lat: 51.11006414847989, lng: 17.057531914047086 }
 const origin = "51.088444225016154, 16.998315448807766"
 const destination = "41.38913481961653, 2.156520537014847"
-// const tripPoints = { origin: origin, destination: destination }
+const tripPoints = { origin: origin, destination: destination }
 
 const exampleUserTransport = {
     name: "Flixbus",

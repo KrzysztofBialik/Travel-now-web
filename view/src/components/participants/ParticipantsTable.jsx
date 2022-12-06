@@ -232,7 +232,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                                     icon={<CurrencyExchangeIcon sx={{ color: "primary.main" }} />}
                                     label="Check expenses"
                                     sx={{ color: "primary.main" }}
-                                    onClick={() => { navigate("/expenses") }}
+                                    onClick={() => { navigate("/finances/" + groupId) }}
                                     showInMenu
                                 />
                             ];
@@ -244,7 +244,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                                     icon={<CurrencyExchangeIcon sx={{ color: "primary.main" }} />}
                                     label="Check expenses"
                                     sx={{ color: "primary.main" }}
-                                    onClick={() => { navigate("/expenses") }}
+                                    onClick={() => { navigate("/finances/" + groupId) }}
                                     showInMenu
                                 />,
                                 <GridActionsCellItem
@@ -275,7 +275,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                                 icon={<CurrencyExchangeIcon sx={{ color: "primary.main" }} />}
                                 label="Check expenses"
                                 sx={{ color: "primary.main" }}
-                                onClick={() => { navigate("/expenses") }}
+                                onClick={() => { navigate("/finances/" + groupId) }}
                                 showInMenu
                             />
                         ];
