@@ -21,7 +21,7 @@ import HandshakeIcon from '@mui/icons-material/Handshake';
 import { useParams } from "react-router-dom";
 
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
-import { currentTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
+import { currentTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { pastTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { ExpenseCard } from "../../components/finances/ExpenseCard";
 import { AddExpenseDialog } from "../../components/finances/AddExpenseDialog";
@@ -559,7 +559,7 @@ export const FinancesPage = () => {
                     minHeight: '100%'
                 }}>
                 <NavigationNavbar
-                    buttonsData={groupStage === 2 ? currentTripButtonsData : pastTripButtonsData}
+                    buttonsData={groupStage === 2 ? currentTripButtonsDataWithGroupId(groupId) : pastTripButtonsData}
                 />
                 <Box sx={{
                     pt: 10,

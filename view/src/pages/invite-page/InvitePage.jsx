@@ -4,11 +4,43 @@ import { Dialog } from "@mui/material";
 import { Box } from "@mui/material";
 import { Card } from '@mui/material';
 import { SimpleNavbar } from "../../components/navbars/SimpleNavbar";
+import {  useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { doPut } from '../../components/utils/fetch-utils';
+import { useNavigate } from 'react-router-dom';
 
 export const URL = '/invite';
 export const NAME = "Invite";
 
 export const InvitePage = () => {
+
+    const [searchParams, setSearchParams] = useSearchParams();
+    const navigate = useNavigate();
+
+    const handleAcceptInvitation = async () => {
+        console.log(searchParams.get("token"))
+        if(localStorage.getItem("userId") === null) {
+            localStorage.setItem('token', searchParams.get("token"))
+            navigate("/login?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("token")}).toString());
+        } else {
+            await doPut('/api/v1/invitation?' + new URLSearchParams({ token: searchParams.get("token"), user:localStorage.getItem("userId")}).toString())
+            .then(response => {
+                if(response.ok) {
+                    navigate('/dashboard')
+                }
+            })
+            .catch(err => {
+                console.log(err);
+                navigate("/register?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("token")}).toString());
+            });
+        }
+        
+    }
+
+    useEffect(() => {
+        handleAcceptInvitation();
+      }, [])
+
     return (
         <>
             <SimpleNavbar />

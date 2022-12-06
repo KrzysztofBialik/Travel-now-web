@@ -16,6 +16,9 @@ import { AccommodationCard } from '../../components/accommodations/accommodation
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
 import { ParticipantsTable } from '../../components/tripSummary/ParticipantsTable';
 import { futureTripButtonsDataWithGroupId } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
+import { pastTripButtonsDataWithGroupId } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
+import { currentTripButtonsDataWithGroupId } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
+
 import { futureTripButtonsData2 } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { currentTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { pastTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
@@ -80,6 +83,18 @@ export const TripSummaryPage = () => {
     const deleteAccommodationAction = () => {
         setDeleteAccommodationDialogOpen(true);
     };
+
+    const selectNavbar = () => {
+        if(tripGroup.groupStage === 'PLANNING_STAGE') {
+            return futureTripButtonsDataWithGroupId(groupId);
+        }
+        else if(tripGroup.groupStage === 'TRIP_STAGE') {
+            return currentTripButtonsDataWithGroupId(groupId);
+        }
+        else {
+            return pastTripButtonsDataWithGroupId(groupId)
+        }
+    }
 
     //na podstawie informacji o grupie będzie pobierany stan tego tripa i dzięki temu wyświetlane odpowiednie opcje na navbarze
     // let navigationButtonsData = [];
@@ -196,7 +211,9 @@ export const TripSummaryPage = () => {
             position: 'relative',
             minHeight: '100%'
         }}>
-            <NavigationNavbar buttonsData={futureTripButtonsDataWithGroupId(groupId)} />
+            <NavigationNavbar 
+            
+            buttonsData={selectNavbar()} />
             <Box sx={{
                 p: 10,
                 mx: { xs: 2, lg: 3 },

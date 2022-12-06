@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -31,6 +31,7 @@ export const NAME = "Login";
 
 export const LoginPage = () => {
 
+    const [searchParams, setSearchParams] = useSearchParams();
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const [invalidData, setInvalidData] = useState(false);
@@ -77,7 +78,12 @@ export const LoginPage = () => {
             .then(json => {
                 localStorage.setItem("userId", json.userId)
                 reset();
-                navigate("/dashboard");
+                if(searchParams.get("redirectTo") !== null) {
+                    navigate(searchParams.get("redirectTo"))
+                } else {
+                    navigate("/dashboard");
+                }
+                
             })
             .catch(err => {
                 setLoginLoading(false);
@@ -271,7 +277,7 @@ export const LoginPage = () => {
                                 </form>
                                 <Grid container justifyContent="center">
                                     <Grid item>
-                                        <Link href="/register" variant="body2">
+                                        <Link href={searchParams.get("redirectTo") !== null ? "/register?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("redirectTo")}).toString() : "/register"} variant="body2">
                                             Don't have an account? Sign Up
                                         </Link>
                                     </Grid>
