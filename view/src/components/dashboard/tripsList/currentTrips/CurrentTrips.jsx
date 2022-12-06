@@ -40,7 +40,7 @@ export const CurrentTrips = ({ trips }) => {
                             icon="currency_exchange"
                             title="Finances"
                             description="Control finances during the trip"
-                            route="/finances"
+                            route={`/finances/${groupId}`}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>

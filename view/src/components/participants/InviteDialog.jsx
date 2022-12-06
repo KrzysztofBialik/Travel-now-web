@@ -10,18 +10,39 @@ import { IconButton } from '@mui/material';
 import { Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { InfoToast } from '../toasts/InfoToast';
+import { useEffect } from 'react';
+import { doGet } from '../utils/fetch-utils';
+import { ErrorToast } from '../toasts/ErrorToast';
 
 
-export const InviteDialog = ({ open, onClose }) => {
+export const InviteDialog = ({ open, onClose, groupId, inviteLink, copiedText, errorToast }) => {
 
-    const inviteLink = "https://travelnow/invite?token=aeggdffkvnsfvkjdfnfdf374ty83478897hgvuvnineiwjvnuiruhw34hh";
+    // const inviteLink = "https://travelnow/invite?token=aeggdffkvnsfvkjdfnfdf374ty83478897hgvuvnineiwjvnuiruhw34hh";
 
-    const [copiedText, setCopiedtext] = useState(inviteLink);
+    // const [inviteLink, setInviteLink] = useState("");
+    // const [copiedText, setCopiedtext] = useState(inviteLink);
     const [infoToastOpen, setInfoToastOpen] = useState(false);
 
-    const inputHandler = (event) => {
-        setCopiedtext(event.target.value);
-    };
+    // const inputHandler = (event) => {
+    //     setCopiedtext(event.target.value);
+    // };
+
+    // const getInvitationLink = async () => {
+    //     await doGet('/api/v1/invitation?' + new URLSearchParams({ group: groupId }).toString())
+    //         .then(response => {
+    //             setInviteLink(response.headers.get('Location').replace('http://localhost:8080/api/v1/invitation/', 'http://localhost:3000/invite'))
+    //             setCopiedtext(response.headers.get('Location').replace('http://localhost:8080/api/v1/invitation/', 'http://localhost:3000/invite'))
+    //         })
+    //         .catch(err => {
+    //             setErrorToastOpen(true)
+    //             setCreationError(err.message)
+    //         });
+    //     console.log('kupa')
+    // }
+
+    // useEffect(() => {
+    //     getInvitationLink();
+    // })
 
     const copy = async () => {
         await navigator.clipboard.writeText(copiedText);
@@ -32,6 +53,7 @@ export const InviteDialog = ({ open, onClose }) => {
     return (
         <>
             <InfoToast open={infoToastOpen} onClose={() => setInfoToastOpen(false)} message="Invite link copied!" />
+            {/* <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} /> */}
             <Dialog
                 open={open}
                 onClose={onClose}
@@ -66,7 +88,7 @@ export const InviteDialog = ({ open, onClose }) => {
                         margin="normal"
                         label="Link"
                         defaultValue={inviteLink}
-                        onChange={inputHandler}
+                        onChange={copy}
                     >
                     </TextField>
                     <DialogActions>

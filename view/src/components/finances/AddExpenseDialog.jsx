@@ -33,75 +33,76 @@ import CloseIcon from '@mui/icons-material/Close';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 
+import { doPost } from "../../components/utils/fetch-utils";
 
-const participants = [
-    {
-        id: 1,
-        name: "BoBa"
-    },
-    {
-        id: 2,
-        name: "Krzychu77"
-    },
-    {
-        id: 3,
-        name: "Olisadebe"
-    },
-    {
-        id: 4,
-        name: "Piterm33"
-    },
-    {
-        id: 5,
-        name: "BoBa"
-    },
-    {
-        id: 6,
-        name: "Krzychu77"
-    },
-    {
-        id: 7,
-        name: "Olisadebe"
-    },
-    {
-        id: 8,
-        name: "Piterm33"
-    },
-    {
-        id: 9,
-        name: "BoBa"
-    },
-    {
-        id: 10,
-        name: "Krzychu77"
-    },
-    {
-        id: 11,
-        name: "Olisadebe"
-    },
-    {
-        id: 12,
-        name: "Piterm33"
-    },
-    {
-        id: 13,
-        name: "BoBa"
-    },
-    {
-        id: 14,
-        name: "Krzychu77"
-    },
-    {
-        id: 15,
-        name: "Olisadebe"
-    },
-    {
-        id: 16,
-        name: "Piterm33"
-    }
-];
+// const participants = [
+//     {
+//         id: 1,
+//         name: "BoBa"
+//     },
+//     {
+//         id: 2,
+//         name: "Krzychu77"
+//     },
+//     {
+//         id: 3,
+//         name: "Olisadebe"
+//     },
+//     {
+//         id: 4,
+//         name: "Piterm33"
+//     },
+//     {
+//         id: 5,
+//         name: "BoBa"
+//     },
+//     {
+//         id: 6,
+//         name: "Krzychu77"
+//     },
+//     {
+//         id: 7,
+//         name: "Olisadebe"
+//     },
+//     {
+//         id: 8,
+//         name: "Piterm33"
+//     },
+//     {
+//         id: 9,
+//         name: "BoBa"
+//     },
+//     {
+//         id: 10,
+//         name: "Krzychu77"
+//     },
+//     {
+//         id: 11,
+//         name: "Olisadebe"
+//     },
+//     {
+//         id: 12,
+//         name: "Piterm33"
+//     },
+//     {
+//         id: 13,
+//         name: "BoBa"
+//     },
+//     {
+//         id: 14,
+//         name: "Krzychu77"
+//     },
+//     {
+//         id: 15,
+//         name: "Olisadebe"
+//     },
+//     {
+//         id: 16,
+//         name: "Piterm33"
+//     }
+// ];
 
-export const AddExpenseDialog = ({ open, onClose }) => {
+export const AddExpenseDialog = ({ open, onClose, participants, groupId, onSuccess }) => {
 
     // const { control, setValue } = useFormContext();
     // const [selectedParticipants, setSelectedParticipants] = useState([]);
@@ -123,50 +124,23 @@ export const AddExpenseDialog = ({ open, onClose }) => {
         selectedParticipants: participants.map((participant) => ({ formName: participant.id, checked: false }))
     };
 
-    // useEffect(() => {
-    //     setValue("checkbox", selectedParticipants);
-    //     setSelectedParticipantsError(
-    //         selectedParticipants.length === 0 ? "You have to select min 1 person." : null
-    //     );
-    // }, [selectedParticipants]);
+    const postExpenditure = async  (values) => {
+        console.log("Boba chuj")
+        console.log(values.selectedParticipants)
 
-    // const [values, setValues] = useState(defaultInputValues);
+        var postBody = {'creatorId':localStorage.getItem('userId'), title: values.expenseName, price: values.price,
+         debtorsIds: values.selectedParticipants.map(s => s.formName)};
+        await doPost('/api/v1/finance-optimizer?' + new URLSearchParams( {groupId: groupId }).toString(), postBody )
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                onSuccess();
+            })
+            .catch(err => {setErrorToastOpen(true); 
+                setErrorToastOpen(err.message)
+            });
+    }
 
-    // const onExpenseNameChange = (value) => {
-    //     setExpenseNameError(
-    //         value.length === 0 ? "You have to provide expense name." : null
-    //     )
-    //     setExpenseName({ value: value, length: value.length });
-    // };
 
-    // const onPriceChange = (value) => {
-    //     setPriceError(
-    //         value < 0 ? "You have to provide a price that is not a negative number." : null
-    //     );
-    //     setPrice(value);
-    // };
-
-    // const handleSelect = (value) => {
-    //     const isPresent = selectedParticipants.indexOf(value);
-    //     if (isPresent !== -1) {
-    //         const remaining = selectedParticipants.filter((participant) => participant !== value);
-    //         setSelectedParticipants(remaining);
-    //     } else {
-    //         setSelectedParticipants((prevParticipants) => [...prevParticipants, value]);
-    //     }
-    // };
-
-    // const handleSelectAll = () => {
-    //     if (!everyoneSelected) {
-    //         const allParticipants = participants.map(participant => participant.id);
-    //         setSelectedParticipants(allParticipants);
-    //     }
-    //     else {
-    //         setSelectedParticipants([]);
-    //     }
-
-    //     setEveryoneSelected(!everyoneSelected);
-    // }
 
     const validationSchema = Yup.object().shape({
         expenseName: Yup
@@ -193,12 +167,10 @@ export const AddExpenseDialog = ({ open, onClose }) => {
     });
 
     const handleAddExpense = (values) => {
-        // console.log(expenseName);
-        // console.log(cost);
-        // console.log(debtors);
+
         console.log(values);
         console.log(getValues());
-        setSuccessToastOpen(true);
+        postExpenditure(values);
         close();
     };
 
@@ -326,23 +298,27 @@ export const AddExpenseDialog = ({ open, onClose }) => {
                             </FormHelperText>
                         </Box>
                         <Box sx={{ display: "flex", flexDirection: "column", overflow: "none" }}>
-                            <FormControlLabel
+                        <Typography
+                                sx={{ backgroundColor: "#dee2e6", pl: 2 , py: 1, fontSize: "25px" }}
+
+                            >Contributors</Typography>
+                            {/* <FormControlLabel
                                 sx={{ backgroundColor: "#dee2e6", mx: 0 }}
-                                control={
-                                    <Controller
-                                        name={"selectedParticipants"}
-                                        control={control}
-                                        render={({ field: { onChange, value } }) =>
-                                            <Checkbox
-                                                checked={value.every((v) => v.checked)}
-                                                onChange={() => onChange(value.some((v) => !v.checked) ?
-                                                    value.map((v) => ({ ...v, checked: true })) : value.map((v) => ({ ...v, checked: false })))}
-                                            />
-                                        }
-                                    />
-                                }
+                                // control={
+                                //     <Controller
+                                //         name={"selectedParticipants"}
+                                //         control={control}
+                                //         render={({ field: { onChange, value } }) =>
+                                //             <Checkbox
+                                //                 checked={value.every((v) => v.checked)}
+                                //                 onChange={() => onChange(value.some((v) => !v.checked) ?
+                                //                     value.map((v) => ({ ...v, checked: true })) : value.map((v) => ({ ...v, checked: false })))}
+                                //             />
+                                //         }
+                                //     />
+                                // }
                                 label={"Contributors"}
-                            />
+                            /> */}
                         </Box>
                         <Box sx={{ display: "flex", maxHeight: "240px", flexDirection: "column", ml: 3, mb: 2, overflow: "auto" }}>
                             <FormGroup                            >
@@ -363,7 +339,7 @@ export const AddExpenseDialog = ({ open, onClose }) => {
                                                     }
                                                 />
                                             }
-                                            label={participant.name}
+                                            label={participant.fullName}
                                             key={participant.id}
                                         />
                                     );

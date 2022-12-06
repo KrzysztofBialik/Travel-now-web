@@ -94,17 +94,38 @@ export const pastTripButtonsData = [
     }
 ];
 
+export const pastTripButtonsDataWithGroupId = (groupId) => {
+return [
+    {
+        id: 1,
+        name: "Finances",
+        link: "/finances/" + groupId,
+    },
+    {
+        id: 1,
+        name: "Summary",
+        link: "/tripSummary/" + groupId,
+    },
+
+    {
+        id: 3,
+        name: "Media",
+        link: "/media",
+    }
+];
+}
+
 export const currentTripButtonsDataWithGroupId = (groupId) => {
  return [
     {
         id: 1,
         name: "Day Plans",
-        link: "/dayPlan",
+        link: "/dayPlan/" + groupId,
     },
     {
         id: 2,
         name: "Finances",
-        link: "/finances",
+        link: "/finances/" + groupId,
     },
     {
         id: 3,
@@ -114,7 +135,7 @@ export const currentTripButtonsDataWithGroupId = (groupId) => {
     {
         id: 4,
         name: "Summary",
-        link: "/tripSummary",
+        link: "/tripSummary/" + groupId,
     }
 ];
 }

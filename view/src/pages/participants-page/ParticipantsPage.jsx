@@ -12,6 +12,7 @@ import { currentTripButtonsDataWithGroupId, futureTripButtonsDataWithGroupId } f
 import { ParticipantsTable } from "../../components/participants/ParticipantsTable";
 import { InviteDialog } from "../../components/participants/InviteDialog";
 import { doGet } from "../../components/utils/fetch-utils";
+import { ErrorToast } from "../../components/toasts/ErrorToast";
 
 export const URL = '/participants/:groupId';
 export const NAME = "Participants";
@@ -23,6 +24,11 @@ export const ParticipantsPage = () => {
     const [groupStage, setGroupStage] = useState([]);
 
     const [isCoordinator, setIsCoordinator] = useState([]);
+    const [inviteLink, setInviteLink] = useState("");
+    const [copiedText, setCopiedtext] = useState(inviteLink);
+    const [errorToast, setErrorToast] = useState(false);
+    const [errorToastOpen, setErrorToastOpen] = useState(errorToast);
+    const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
 
     const getGroupData = async () => {
         await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
@@ -43,8 +49,21 @@ export const ParticipantsPage = () => {
 
     const [inviteDialogOpen, setInviteDialogOpen] = useState(false);
 
-    const inviteAction = () => {
-        setInviteDialogOpen(true);
+    const inviteAction = async () => {
+        await doGet('/api/v1/invitation?' + new URLSearchParams({ group: groupId }).toString())
+            .then(response => {
+                if(response.ok) {
+                    setInviteLink(response.headers.get('Location').replace('http://localhost:8080/api/v1/invitation/', 'http://localhost:3000/invite'))
+                    setCopiedtext(response.headers.get('Location').replace('http://localhost:8080/api/v1/invitation/', 'http://localhost:3000/invite'))
+                    setInviteDialogOpen(true);
+                }
+               
+            })
+            .catch(err => {
+                setErrorToastOpen(true)
+                setCreationError(err.message)
+            });
+        
     }
 
     return (
@@ -53,11 +72,12 @@ export const ParticipantsPage = () => {
                 position: 'relative',
                 height: '100%'
             }}>
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} />
             <NavigationNavbar
                 buttonsData={groupStage === "PLANNING_STAGE" ? futureTripButtonsDataWithGroupId(groupId) : currentTripButtonsDataWithGroupId(groupId)}
                 groupId={groupId}
             />
-            <InviteDialog open={inviteDialogOpen} onClose={() => setInviteDialogOpen(false)} />
+            <InviteDialog open={inviteDialogOpen} onClose={() => setInviteDialogOpen(false)} groupId={groupId} copiedText={copiedText} inviteLink={inviteLink} />
             <Box sx={{
                 pt: 10,
                 display: "flex",

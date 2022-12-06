@@ -29,7 +29,7 @@ import format from "date-fns/format";
 import { ResolveSettlementDialog } from "./ResolveSettlementDialog";
 
 
-export const SettlementCard = ({ settlementData, canResolve }) => {
+export const SettlementCard = ({ settlementData, canResolve, groupId, requestId, onSuccess }) => {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [resolveSettlementDialogOpen, setResolveSettlementDialogOpen] = useState(false);
@@ -40,6 +40,7 @@ export const SettlementCard = ({ settlementData, canResolve }) => {
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -65,6 +66,9 @@ export const SettlementCard = ({ settlementData, canResolve }) => {
                 open={resolveSettlementDialogOpen}
                 onClose={() => (setResolveSettlementDialogOpen(false))}
                 handleResolve={handleResolve}
+                groupId={groupId}
+                requestId={requestId}
+                onSuccess={() => onSuccess()}
             />
             <Card
                 sx={{
