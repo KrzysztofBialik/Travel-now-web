@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 import { Card } from "@mui/material";
 import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -6,6 +8,7 @@ import { IconButton } from "@mui/material";
 import { Menu } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import { ListItemText } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { Paper } from '@mui/material';
 import { Dialog } from "@mui/material";
 import { DialogTitle } from "@mui/material";
@@ -25,10 +28,14 @@ import CloseIcon from '@mui/icons-material/Close';
 import format from "date-fns/format";
 import { DeleteExpenseDialog } from "./DeleteExpenseDialog";
 import { EditExpenseDialog } from "./EditExpenseDialog";
+import { doGet } from "../utils/fetch-utils";
 
 export const ExpenseCard = ({ expenseData }) => {
 
+    const { groupId } = useParams();
     const [anchorEl, setAnchorEl] = useState(null);
+    const [currencyLoading, setCurrencyLoading] = useState(false);
+    const [currency, setCurrency] = useState("");
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -37,12 +44,29 @@ export const ExpenseCard = ({ expenseData }) => {
 
     console.log("dsadsadsadsadasdasat")
     console.log(expenseData)
-    const allContributors = expenseData.contributors.map(ed =>(
-     <TableRow>
-        <TableCell align="left">{ed.name}</TableCell>
-    </TableRow>
+    const allContributors = expenseData.contributors.map(ed => (
+        <TableRow>
+            <TableCell align="left">{ed.name}</TableCell>
+        </TableRow>
     )
     );
+
+    const getCurrency = async () => {
+        setCurrencyLoading(true);
+        var resp = await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                var currency = response.currency;
+                setCurrency(currency);
+                console.log(currency);
+            })
+            .then(setCurrencyLoading(false))
+            .catch(err => console.log('Request Failed', err));
+    };
+
+    useEffect(() => {
+        getCurrency();
+    }, []);
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -215,7 +239,7 @@ export const ExpenseCard = ({ expenseData }) => {
                     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", ml: 2 }}>
                             <Typography sx={{ fontSize: "24px", color: "primary.main" }}>
-                                {expenseData.cost} PLN
+                                {currencyLoading ? <CircularProgress size="24px" sx={{ ml: 2, mt: 1 }} /> : `${expenseData.cost} ${currency}`}
                             </Typography>
                             <Typography sx={{ fontSize: "18px", color: "text.secondary" }}>
                                 {format(expenseData.date, "dd.MM.yyyy")}
