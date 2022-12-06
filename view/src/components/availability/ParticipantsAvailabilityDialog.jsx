@@ -14,6 +14,8 @@ import { DateRange } from 'react-date-range';
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { OtherParticipantsAvailabilityTable } from "./OtherParticipantsAvailabilityTable";
+import { parseISO } from "date-fns/esm";
+import { useEffect } from 'react';
 
 
 export const URL = '/availability';
@@ -30,9 +32,10 @@ const ExpandMore = styled((props) => {
 }));
 
 
-export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailability, user }) => {
+export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailability }) => {
 
     const [expanded, setExpanded] = useState(false);
+    const [fixedAvailabilities, setFixedAvailabilities] = useState([])
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -42,6 +45,18 @@ export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailabilit
         setExpanded(false);
         onClose();
     };
+
+    console.log("passed user availabilities");
+    console.log(usersAvailability);
+
+    const fixAvailabilities = () => {
+       setFixedAvailabilities(usersAvailability.map(availability => ({availabilityId: availability.availabilityId, userId: availability.userId, groupId: availability.groupId,
+            startDate: parseISO(availability.dateFrom), endDate: parseISO(availability.dateTo), disabled: true})))
+    }
+
+    useEffect(() => {
+        fixAvailabilities();
+      }, [])
 
     return (
         <>
@@ -59,7 +74,7 @@ export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailabilit
                         justifyContent: "space-between"
                     }}
                 >
-                    {user}'s availability
+                     Availability
                     <Button variant="contained"
                         sx={{
                             backgroundColor: "secondary.main",
@@ -100,7 +115,7 @@ export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailabilit
                                     m: "20px"
                                 }}>
                                     <DateRange
-                                        ranges={usersAvailability}
+                                        ranges={fixedAvailabilities}
                                         onChange={null}
                                         months={3}
                                         weekStartsOn={1}
@@ -148,7 +163,7 @@ export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailabilit
                             </CardActions>
                             <Collapse in={expanded} timeout="auto" unmountOnExit>
                                 <CardContent>
-                                    <OtherParticipantsAvailabilityTable availabilities={usersAvailability} />
+                                    <OtherParticipantsAvailabilityTable availabilities={fixedAvailabilities} />
                                 </CardContent>
                             </Collapse>
                         </Card >
