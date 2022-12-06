@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState } from "react";
 import { Typography } from '@mui/material';
 import { IconButton } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -53,6 +54,7 @@ const currencies = [
 
 export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
 
+    const [isCreating, setIsCreating] = useState(false);
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
@@ -101,24 +103,28 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
     };
 
     const handleCreateTrip = async () => {
+        setIsCreating(true);
         var values = getValues();
-        var postBody = {'name':values.tripName,
-                        'currency':values.currency,
-                        'description':values.description,
-                        'votesLimit': 0,
-                        'startLocation':values.startingLocation,
-                        'startCity':values.startingLocation,
-                        'minimalNumberOfDays':values.minDays,
-                        'minimalNumberOfParticipants':values.minParticipants};
+        var postBody = {
+            'name': values.tripName,
+            'currency': values.currency,
+            'description': values.description,
+            'votesLimit': 0,
+            'startLocation': values.startingLocation,
+            'startCity': values.startingLocation,
+            'minimalNumberOfDays': values.minDays,
+            'minimalNumberOfParticipants': values.minParticipants
+        };
         await doPost('/api/v1/trip-group/group', postBody)
             .then(response => {
-                if(response.ok) {
+                if (response.ok) {
                     setConfirmDialogOpen(true);
                     close();
-                }              
+                }
             })
             .catch(err => {
-                setErrorToastOpen(true); 
+                setIsCreating(false);
+                setErrorToastOpen(true);
                 setCreationError(err.message)
             });
     };
@@ -137,6 +143,7 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                 aria-labelledby="responsive-dialog-title"
                 PaperProps={{
                     style: {
+                        minHeight: "640px",
                         borderRadius: "20px"
                     }
                 }}
@@ -309,21 +316,55 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                             <span>{`${descriptionWatch.length}/${DESCRIPTION_LIMIT}`}</span>
                         </FormHelperText>
 
+                        {/* {isCreating ?
+                            <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "flex-end", pr: 7 }}>
+                                <CircularProgress />
+                            </Box>
+                            :
+                            <DialogActions>
+                                <Button
+                                    variant="outlined"
+                                    sx={{ borderRadius: "20px" }}
+                                    onClick={() => close()}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{ borderRadius: "20px", color: "#FFFFFF" }}
+                                >
+                                    Create trip
+                                </Button>
+                            </DialogActions>
+                        } */}
                         <DialogActions>
-                            <Button
-                                variant="outlined"
-                                sx={{ borderRadius: "20px" }}
-                                onClick={() => close()}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                sx={{ borderRadius: "20px", color: "#FFFFFF" }}
-                            >
-                                Create trip
-                            </Button>
+                            {isCreating ?
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{ borderRadius: "20px", color: "#FFFFFF", width: "130px" }}
+                                >
+                                    <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                </Button>
+                                :
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{ borderRadius: "20px" }}
+                                        onClick={() => close()}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{ borderRadius: "20px", color: "#FFFFFF", width: "130px" }}
+                                    >
+                                        Create trip
+                                    </Button>
+                                </>
+                            }
                         </DialogActions>
                     </form>
                 </DialogContent>

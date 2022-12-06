@@ -18,7 +18,7 @@ export const CreatedTripConfirmationDialog = ({ open, onClose, onSuccess }) => {
         <div>
             <Dialog
                 open={open}
-                onClose={onClose}
+                onClose={close}
                 PaperProps={{
                     style: {
                         borderRadius: "20px"
@@ -36,7 +36,7 @@ export const CreatedTripConfirmationDialog = ({ open, onClose, onSuccess }) => {
                         <Button
                             variant="contained"
                             sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
-                            onClick={onClose}
+                            onClick={close}
                         >
                             Return
                         </Button>

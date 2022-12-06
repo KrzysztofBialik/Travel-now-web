@@ -16,33 +16,23 @@ import { BACKGROUND_DASHBOARD } from '../../components/images/Images.jsx';
 import { doGet } from "../../components/utils/fetch-utils";
 
 
-
-
 export const URL = '/dashboard';
 export const NAME = "Dashboard";
 
 export const DashboardPage = () => {
 
-
     const [createTripDialogOpen, setCreateTripDialogOpen] = useState(false);
     const [tripsList, setTripsList] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const getTrips = async () => {
+        setIsLoading(true);
         await doGet('/api/v1/trip-group/groups/' + localStorage.getItem("userId"))
             .then(response => response.json())
             .then(response => setTripsList(response))
+            .then(setIsLoading(false))
             .catch(err => console.log('Request Failed', err));
     }
-    //utworzenie nowej wycieczki
-    const createTrip = (tripName, startingLocation, currency, minDays, minParticipants, description) => {
-        console.log("create Trip");
-        console.log(tripName);
-        console.log(startingLocation);
-        console.log(currency);
-        console.log(minDays);
-        console.log(minParticipants);
-        console.log(description);
-    };
 
     useEffect(() => {
         getTrips();
@@ -53,7 +43,6 @@ export const DashboardPage = () => {
             <CreateTripDialog
                 open={createTripDialogOpen}
                 onClose={() => setCreateTripDialogOpen(false)}
-                createTrip={createTrip}
                 onSuccess={() => getTrips()}
             />
             {/* <SimpleNavbar /> */}

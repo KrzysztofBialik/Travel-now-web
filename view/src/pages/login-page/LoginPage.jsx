@@ -1,77 +1,12 @@
-// // import { doGet, doPost } from "../../utils/fetch-utils";
-// import { LoginForm } from "../../components/login/LoginForm";
-// // import { useEffect, useState } from "react";
-// import Box from '@mui/material/Box';
-// import { Container } from '@mui/material';
-
-// export const URL = '/login';
-// export const NAME = "Login";
-
-// export const LoginPage = ({ setUser }) => {
-//     // const [loggingIn, setLoggingIn] = useState(true)
-
-//     // useEffect(() => {
-//     //     if (localStorage.getItem("ACCESS_TOKEN") !== null) {
-//     //         doGet("/api/users/me")
-//     //             .then(response => response.json())
-//     //             .then(userInfo => {
-//     //                 setUser({
-//     //                     authenticated: true,
-//     //                     currentUser: userInfo
-//     //                 })
-//     //             })
-//     //             .catch(error => console.error(error))
-//     //     } else {
-//     //         setLoggingIn(false)
-//     //     }
-
-//     //     return () => {
-//     //         setLoggingIn(false)
-//     //     }
-//     // }, [setUser])
-
-//     // const signIn = (email, password) => {
-//     //     const body = {
-//     //         email: email,
-//     //         password: password,
-//     //     }
-
-//     //     doPost("/api/auth/login", body, false)
-//     //         .then(response => {
-//     //             const jwt = response.headers.get("Authorization")
-//     //             localStorage.setItem("ACCESS_TOKEN", jwt)
-//     //             return response.json()
-//     //         })
-//     //         .then(userInfo => {
-//     //             setUser({
-//     //                 authenticated: true,
-//     //                 currentUser: userInfo
-//     //             });
-//     //         })
-//     //         .catch(error => console.error(error))
-//     // }
-
-//     // if (loggingIn) {
-//     //     return null;
-//     // }
-
-//     return (
-//         <Container>
-//             <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-//                 <LoginForm />
-//             </Box>
-//         </Container>
-//     )
-// }
-
 import * as React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { InputAdornment } from '@mui/material';
+import { InputAdornment, ListItemSecondaryAction } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
+import { CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Link from '@mui/material/Link';
@@ -101,6 +36,7 @@ export const LoginPage = () => {
     const [invalidData, setInvalidData] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [creationError, setCreationError] = useState("Something gone wrong. Try again");
+    const [loginLoading, setLoginLoading] = useState(false);
 
     const defaultInputValues = {
         email: "",
@@ -125,6 +61,7 @@ export const LoginPage = () => {
     });
 
     const handleLogin = async (values) => {
+        setLoginLoading(true);
         var postBody = {
             'email': values.email,
             'password': values.password,
@@ -143,6 +80,7 @@ export const LoginPage = () => {
                 navigate("/dashboard");
             })
             .catch(err => {
+                setLoginLoading(false);
                 if (err.message === '401') {
                     setInvalidData(true);
                 }
@@ -299,14 +237,35 @@ export const LoginPage = () => {
                                         helperText={invalidData && "Incorrect email or password"}
                                     />
                                     <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                                        {/* {true ?
+                                            <Box sx={{ my: 2 }}>
+                                                <CircularProgress />
+                                            </Box>
+                                            :
+                                            <Button
+                                                type="submit"
+                                                variant="contained"
+                                                sx={{
+                                                    mt: 3, mb: 2, borderRadius: "10px", width: "150px", color: "#FFFFFF"
+                                                }}
+                                            >
+                                                Sign In
+                                            </Button>
+                                        } */}
+
+
                                         <Button
                                             type="submit"
                                             variant="contained"
                                             sx={{
-                                                mt: 3, mb: 2, borderRadius: "10px", width: "150px", color: "#FFFFFF"
+                                                mt: 3, mb: 2, borderRadius: "20px", width: "150px", color: "#FFFFFF"
                                             }}
                                         >
-                                            Sign In
+                                            {loginLoading ?
+                                                <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                                :
+                                                "Sign in"
+                                            }
                                         </Button>
                                     </Box>
                                 </form>
