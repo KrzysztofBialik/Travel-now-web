@@ -7,6 +7,9 @@ import 'react-date-range/dist/theme/default.css';
 
 export const OtherParticipantsAvailabilityTable = ({ availabilities }) => {
 
+    console.log("Last step")
+    console.log(availabilities)
+
     const availabilityColumns = [
 
         {
@@ -47,6 +50,7 @@ export const OtherParticipantsAvailabilityTable = ({ availabilities }) => {
                 autoHeight
                 columns={availabilityColumns}
                 rows={availabilities}
+                getRowId={row => row.availabilityId}
                 hideFooter
             />
         </Box>

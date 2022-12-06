@@ -26,6 +26,9 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { doGet } from "../../components/utils/fetch-utils";
 import { doPatch } from "../../components/utils/fetch-utils";
+import { UpdatedUserConfirmationDialog } from './UpdatedUserConfirmationDialog';
+import { ErrorUserConfirmationDialog } from './ErrorUserConfirmationDialog';
+
 
 
 export const UserOptionsDialog = ({ open, onClose }) => {
@@ -33,6 +36,10 @@ export const UserOptionsDialog = ({ open, onClose }) => {
     const today = new Date();
 
     const[userData, setUserData] = useState([])
+    const [confirmUpdatedDialogOpen, setConfirmUpdateDialogOpen] = useState(false);
+    const [confirmErrorDialogOpen, setConfirmErrorDialogOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(false);
+
 
     const updateData = () => {
 
@@ -97,9 +104,13 @@ export const UserOptionsDialog = ({ open, onClose }) => {
     });
 
     const handleChangeData = (values) => {
-
         editUserAccount(getValues());
+
     };
+
+    const handleSuccess = () => {
+        setConfirmUpdateDialogOpen(true);
+    }
 
 
     const editUserAccount = async (values) => {
@@ -110,8 +121,13 @@ export const UserOptionsDialog = ({ open, onClose }) => {
             .then(response => response.json())
             .then(response => {
             setNecessaryData(response);
+            handleSuccess();
         })
-        .catch(err => console.log('Request Failed', err));
+        .catch(err => {
+            setConfirmErrorDialogOpen(true);
+            setErrorMessage(err.message)
+            console.log('Request Failed', err.message)
+        });
     }
 
     const onKeyDown = (e) => {
@@ -124,6 +140,15 @@ export const UserOptionsDialog = ({ open, onClose }) => {
 
     return (
         <>
+                <UpdatedUserConfirmationDialog
+                open={confirmUpdatedDialogOpen}
+                onClose={() => setConfirmUpdateDialogOpen(false)}
+            />
+            <ErrorUserConfirmationDialog
+                open={confirmErrorDialogOpen}
+                onClose={() => setConfirmErrorDialogOpen(false)}
+                message={errorMessage}
+            />
             <Dialog
                 fullScreen
                 open={open}

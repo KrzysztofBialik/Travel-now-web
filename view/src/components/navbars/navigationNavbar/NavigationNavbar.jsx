@@ -165,6 +165,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
             <TripGroupOptionsDialog
                 open={tripGroupOptionsDialogOpen}
                 onClose={() => setTripGroupOptionsDialogOpen(false)}
+                groupId={groupId}
             />
             <UserOptionsDialog
                 open={userOptionsDialogOpen}
