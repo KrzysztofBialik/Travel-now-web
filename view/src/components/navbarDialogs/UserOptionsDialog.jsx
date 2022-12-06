@@ -12,6 +12,7 @@ import { Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { InputAdornment } from '@mui/material';
 import { Avatar } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { TextField } from '@mui/material';
 import { FormHelperText } from '@mui/material';
 import { Typography } from '@mui/material';
@@ -35,42 +36,44 @@ export const UserOptionsDialog = ({ open, onClose }) => {
 
     const today = new Date();
 
-    const[userData, setUserData] = useState([])
+    const [userData, setUserData] = useState([])
     const [confirmUpdatedDialogOpen, setConfirmUpdateDialogOpen] = useState(false);
     const [confirmErrorDialogOpen, setConfirmErrorDialogOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
-
+    const [isUpdating, setIsUpdating] = useState(false);
 
     const updateData = () => {
 
     }
 
     const getUserData = async () => {
-        await doGet('/api/v1/user?' + new URLSearchParams({ userId: localStorage.getItem("userId")}).toString())
-        .then(response => response.json())
-        .then(response => {
-            console.log("UserData");
-            console.log(response);
-            setNecessaryData(response);
+        await doGet('/api/v1/user?' + new URLSearchParams({ userId: localStorage.getItem("userId") }).toString())
+            .then(response => response.json())
+            .then(response => {
+                console.log("UserData");
+                console.log(response);
+                setNecessaryData(response);
 
-        })
-        .catch(err => console.log('Request Failed', err));
+            })
+            .catch(err => console.log('Request Failed', err));
     }
 
     useEffect(() => {
         getUserData();
-      }, [])
+    }, [])
 
 
     const setNecessaryData = (response) => {
         console.log("response")
         console.log(response)
         const allPhoneNumber = response.phoneNumber.split(" ");
-            var code = allPhoneNumber[0].slice();
-            code = code.slice(1, code.length)
-            const phoneNumber = allPhoneNumber[1];
-            setUserData({userId: response.userId ,email: response.email, firstName: response.firstName, surname: response.surname,
-                 code: code,  phone: phoneNumber, birthDate: response.birthday});
+        var code = allPhoneNumber[0].slice();
+        code = code.slice(1, code.length)
+        const phoneNumber = allPhoneNumber[1];
+        setUserData({
+            userId: response.userId, email: response.email, firstName: response.firstName, surname: response.surname,
+            code: code, phone: phoneNumber, birthDate: response.birthday
+        });
     }
 
 
@@ -114,33 +117,31 @@ export const UserOptionsDialog = ({ open, onClose }) => {
 
 
     const editUserAccount = async (values) => {
+        setIsUpdating(true);
         console.log("hello there")
         console.log(values)
-        var postBody = {'userId':localStorage.getItem('userId'), 'phoneNumber':'+' + values.code + ' ' + values.phone, 'firstName':values.firstName, 'surname': values.surname, 'brithday': values.birthDate};
+        var postBody = { 'userId': localStorage.getItem('userId'), 'phoneNumber': '+' + values.code + ' ' + values.phone, 'firstName': values.firstName, 'surname': values.surname, 'brithday': values.birthDate };
         await doPatch('/api/v1/user', postBody)
             .then(response => response.json())
             .then(response => {
-            setNecessaryData(response);
-            handleSuccess();
-        })
-        .catch(err => {
-            setConfirmErrorDialogOpen(true);
-            setErrorMessage(err.message)
-            console.log('Request Failed', err.message)
-        });
+                setNecessaryData(response);
+                handleSuccess();
+            })
+            .catch(err => {
+                setIsUpdating(false);
+                setConfirmErrorDialogOpen(true);
+                setErrorMessage(err.message)
+                console.log('Request Failed', err.message)
+            });
     }
 
     const onKeyDown = (e) => {
         e.preventDefault();
     };
 
-
-
-
-
     return (
         <>
-                <UpdatedUserConfirmationDialog
+            <UpdatedUserConfirmationDialog
                 open={confirmUpdatedDialogOpen}
                 onClose={() => setConfirmUpdateDialogOpen(false)}
             />
@@ -372,7 +373,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                     defaultValue={userData.birthDate}
                                                     control={control}
                                                     sx={{ mb: 1 }}
-                                                    
+
                                                     render={({ field: { onChange, value } }) =>
                                                         <DatePicker
                                                             disableFuture
@@ -405,7 +406,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                                     helperText={errors.birthDate?.message}
                                                                 />
                                                             }
-                                                        
+
                                                             inputFormat="yyyy-MM-dd"
                                                         />
                                                     }
@@ -416,11 +417,15 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                     type="submit"
                                                     variant="contained"
                                                     sx={{
-                                                        mt: 3, mb: 2, borderRadius: "10px", width: "150px", color: "#FFFFFF"
+                                                        mt: 3, mb: 2, borderRadius: "20px", width: "150px", color: "#FFFFFF"
                                                     }}
 
                                                 >
-                                                    Change data
+                                                    {isUpdating ?
+                                                        <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                                        :
+                                                        "Change data"
+                                                    }
                                                 </Button>
                                             </Box>
                                         </form>
