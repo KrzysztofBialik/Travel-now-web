@@ -277,7 +277,7 @@ export const LoginPage = () => {
                                 </form>
                                 <Grid container justifyContent="center">
                                     <Grid item>
-                                        <Link href="/register" variant="body2">
+                                        <Link href={searchParams.get("redirectTo") !== null ? "/register?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("redirectTo")}).toString() : "/register"} variant="body2">
                                             Don't have an account? Sign Up
                                         </Link>
                                     </Grid>

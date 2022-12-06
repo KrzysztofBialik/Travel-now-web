@@ -24,9 +24,14 @@ export const InvitePage = () => {
             navigate("/login?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("token")}).toString());
         } else {
             await doPut('/api/v1/invitation?' + new URLSearchParams({ token: searchParams.get("token"), user:localStorage.getItem("userId")}).toString())
-            .then(response => console.log(response))
+            .then(response => {
+                if(response.ok) {
+                    navigate('/dashboard')
+                }
+            })
             .catch(err => {
                 console.log(err);
+                navigate("/register?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("token")}).toString());
             });
         }
         
