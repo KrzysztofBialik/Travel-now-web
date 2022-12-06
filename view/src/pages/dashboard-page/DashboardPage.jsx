@@ -56,7 +56,7 @@ export const DashboardPage = () => {
                     mt: -5,
                     placeItems: "center",
                     minHeight: "75vh",
-                    minWidth: "1000px",
+                    minWidth: "1200px",
                     width: "100%"
                 }}
             >

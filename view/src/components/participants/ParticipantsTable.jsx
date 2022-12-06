@@ -58,7 +58,8 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
     const [userId, setUserId] = useState("");
     const [isDeletingHimself, setIsDeletingHimself] = useState(false);
     const [availabilities, setAvailabilities] = useState([]);
-    const [usersAvailability, setUsersAvailability] = useState([])
+    const [usersAvailability, setUsersAvailability] = useState([]);
+    const [userFullName, setUserFullName] = useState("");
 
     const getAvailabilities = async () => {
         await doGet('/api/v1/availability/group/' + groupId)
@@ -100,7 +101,8 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
     };
 
 
-    const checkParticipantsAvailability = ({ userAvailability }) => {
+    const checkParticipantsAvailability = (userAvailability, userFullName) => {
+        setUserFullName(userFullName);
         setUsersAvailability(userAvailability);
         setParticipantsAvailabilityDialogOpen(true);
     }
@@ -154,9 +156,8 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                 const role = params.row.role;
                 const isSameUser = userId === parseInt(localStorage.getItem("userId"))
                 const userAvailability = availabilities[userId];
-                console.log(availabilities)
-                console.log(userId);
-                console.log(userAvailability);
+                // console.log(userId);
+                // console.log(userAvailability);
                 if (isCoordinator) {
                     if (groupStage === "PLANNING_STAGE") {
                         if (role === "PARTICIPANT") {
@@ -172,7 +173,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                                     icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
                                     label="Check availability"
                                     sx={{ color: "primary.main" }}
-                                    onClick={() => checkParticipantsAvailability({ userAvailability })}
+                                    onClick={() => checkParticipantsAvailability(userAvailability, fullName)}
                                     showInMenu
                                 />,
 
@@ -191,7 +192,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                                     icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
                                     label="Check availability"
                                     sx={{ color: "primary.main" }}
-                                    onClick={() => checkParticipantsAvailability({ userAvailability })}
+                                    onClick={() => checkParticipantsAvailability(userAvailability, fullName)}
                                     showInMenu
                                 />,
                                 <GridActionsCellItem
@@ -211,7 +212,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                                     icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
                                     label="Check availability"
                                     sx={{ color: "primary.main" }}
-                                    onClick={() => checkParticipantsAvailability({ userAvailability })}
+                                    onClick={() => checkParticipantsAvailability(userAvailability, fullName)}
                                     showInMenu
                                 />,
                                 <GridActionsCellItem
@@ -263,7 +264,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                             <GridActionsCellItem
                                 icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
                                 label="Check availability"
-                                onClick={() => checkParticipantsAvailability({ userAvailability })}
+                                onClick={() => checkParticipantsAvailability(userAvailability, fullName)}
                                 showInMenu
                             />
                         ];
@@ -337,8 +338,9 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                 />
                 <ParticipantsAvailabilityDialog
                     open={participantsAvailabilityDialogOpen}
-                    onClose={() => { setParticipantsAvailabilityDialogOpen(false) }}
+                    onClose={() => { setParticipantsAvailabilityDialogOpen(false); setUsersAvailability([]); }}
                     usersAvailability={usersAvailability}
+                    userFullName={userFullName}
                 />
                 <DataGrid
                     sx={{

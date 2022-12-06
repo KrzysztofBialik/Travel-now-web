@@ -25,6 +25,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { SelectStartingPointDialog } from "./SelectStartingPointDialog";
 import { EditAttractionDialog } from "./EditAttractionDialog";
 import { DeleteAttractionDialog } from "./DeleteAttractionDialog";
+import { PLACEHOLDER_IMAGE } from "../images/Images";
 
 
 const ExpandMore = styled((props) => {
@@ -44,9 +45,10 @@ export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) =>
     const [selectStartingPointDialogOpen, setSelectStartingPointDialogOpen] = useState(false);
     const [editAttractionDialogOpen, setEditAttractionDialogOpen] = useState(false);
     const [deleteAttractionDialogOpen, setDeleteAttractionDialogOpen] = useState(false);
-    const [mapsLink, setMapsLink] = useState(attractionData.attractionLink)
+    const [mapsLink, setMapsLink] = useState(attractionData.attractionLink);
     const open = Boolean(anchorEl);
 
+    console.log(attractionData.photoLink);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -124,7 +126,7 @@ export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) =>
                                 <CardMedia
                                     sx={{ borderRadius: "15px" }}
                                     component="img"
-                                    image={getPhotoUrl(attractionData.photoLink)}
+                                    image={attractionData.photoLink !== null ? getPhotoUrl(attractionData.photoLink) : PLACEHOLDER_IMAGE}
                                 />
                             </Box>
                         </Box>

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useState } from "react";
 import { Button } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { Dialog } from '@mui/material';
 import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
@@ -13,6 +14,7 @@ import { doDelete } from "../../components/utils/fetch-utils";
 
 export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => {
 
+    const [isDeleting, setIsDeleting] = useState(false);
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [deletionError, setDeletionError] = useState("Ups! Something went wrong. Try again.");
@@ -28,6 +30,7 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
     };
 
     const handleDeleteDayPlan = async (dayPlanId) => {
+        setIsDeleting(true);
         await doDelete('/api/v1/day-plan?dayPlanId=' + dayPlanId)
             .then(response => {
                 setSuccessToastOpen(response.ok);
@@ -35,6 +38,7 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
                 onSuccess();
             })
             .catch(err => {
+                setIsDeleting(false);
                 setErrorToastOpen(true);
                 setDeletionError(err.message)
             });
@@ -62,24 +66,32 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
                         If you confirm, your day plan will be deleted.
                     </DialogContentText>
                     <DialogActions>
-                        <Button
-                            sx={{ borderRadius: "20px", fontSize: "12px" }}
-                            variant="outlined"
-                            onClick={onClose}
-                        >
-                            Cancel
-                        </Button>
-                        <Button
-                            variant="contained"
-                            onClick={() => handleDeleteDayPlan(dayPlanId)}
-                            sx={{
-                                color: "#FFFFFF",
-                                borderRadius: "20px",
-                                fontSize: "12px"
-                            }}
-                        >
-                            Cancel
-                        </Button>
+                        {isDeleting ?
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                sx={{ borderRadius: "20px", color: "#FFFFFF", width: "100px" }}
+                            >
+                                <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                            </Button>
+                            :
+                            <>
+                                <Button
+                                    variant="outlined"
+                                    sx={{ borderRadius: "20px" }}
+                                    onClick={onClose}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{ borderRadius: "20px", color: "#FFFFFF", width: "100px" }}
+                                >
+                                    Confirm
+                                </Button>
+                            </>
+                        }
                     </DialogActions>
                 </DialogContent>
             </Dialog>

@@ -16,6 +16,7 @@ import * as Yup from 'yup';
 import { Box } from '@mui/material';
 import { Typography } from '@mui/material';
 import { IconButton } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { FormHelperText } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
@@ -92,6 +93,7 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
+    const [isCreating, setIsCreating] = useState(false);
     const [dayPlanName, setDayPlanName] = useState({ value: "", length: 0 });
     const [dayPlanNameError, setDayPlanNameError] = useState("You have to provide day plan name.");
     const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
@@ -156,6 +158,7 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
     };
 
     const handleCreateDayPlan = async (dayPlanName, date, icon) => {
+        setIsCreating(true);
         var postBody = { 'groupId': localStorage.getItem('groupId'), 'name': dayPlanName, 'date': date, 'iconType': icon };
         await doPost('/api/v1/day-plan', postBody)
             .then(response => {
@@ -164,6 +167,7 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
                 onSuccess();
             })
             .catch(err => {
+                setIsCreating(false);
                 setErrorToastOpen(true);
                 setCreationError(err.message)
             });
@@ -317,20 +321,32 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
                             </TextField>
                         </Box>
                         <DialogActions>
-                            <Button
-                                variant="outlined"
-                                sx={{ borderRadius: "20px" }}
-                                onClick={() => close()}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                sx={{ color: "#FFFFFF", borderRadius: "20px" }}
-                            >
-                                Create
-                            </Button>
+                            {isCreating ?
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{ borderRadius: "20px", color: "#FFFFFF", width: "120px" }}
+                                >
+                                    <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                </Button>
+                                :
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{ borderRadius: "20px" }}
+                                        onClick={() => close()}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{ borderRadius: "20px", color: "#FFFFFF", width: "120px" }}
+                                    >
+                                        Create
+                                    </Button>
+                                </>
+                            }
                         </DialogActions>
                     </form>
                 </DialogContent>

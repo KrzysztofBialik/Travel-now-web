@@ -7,6 +7,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import { Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
@@ -15,6 +18,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import { FormHelperText } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
@@ -23,6 +27,7 @@ import { doPost } from '../utils/fetch-utils';
 
 export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess }) => {
 
+    const [isAdding, setIsAdding] = useState(false);
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
@@ -84,7 +89,8 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess }) =>
     });
 
     const handleAddAccommodation = async (link, price, description) => {
-        var postBody = {'groupId':groupId, 'creatorId': parseInt(localStorage.getItem('userId')), 'accommodationLink':link, 'description':description, 'price':parseFloat(price)};
+        setIsAdding(true);
+        var postBody = { 'groupId': groupId, 'creatorId': parseInt(localStorage.getItem('userId')), 'accommodationLink': link, 'description': description, 'price': parseFloat(price) };
         await doPost('/api/v1/accommodation', postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
@@ -92,9 +98,10 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess }) =>
                 onSuccess();
             })
             .catch(err => {
-                setErrorToastOpen(true); 
-                setCreationError(err.message)
+                setErrorToastOpen(true);
+                // setCreationError(err.message)
             });
+        setIsAdding(false);
     };
 
 
@@ -111,7 +118,6 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess }) =>
         setPrice("0");
         setPriceError("Price of accommodation must be a positive number.");
         setDescription({ value: "", length: 0 });
-        setSuccessToastOpen(true);
         onClose();
     };
 
@@ -129,8 +135,33 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess }) =>
                 open={open}
                 onClose={onClose}
                 aria-labelledby="responsive-dialog-title"
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle variant="h4">Add accommodation</DialogTitle>
+                <DialogTitle
+                    sx={{
+                        backgroundColor: "primary.main",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        color: "#FFFFFF",
+                        mb: 2
+                    }}
+                >
+                    <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                        Add accommodation
+                    </Typography>
+                    <IconButton
+                        sx={{ p: 0 }}
+                        onClick={close}
+                    >
+                        <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
+                    </IconButton>
+                </DialogTitle>
                 <DialogContent>
                     <DialogContentText variant="body1" mb="20px">
                         Provide link to booking or airbnb, price and description.
@@ -231,21 +262,44 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess }) =>
                         </FormHelperText>
 
                         <DialogActions>
-                            <Button onClick={onClose}>Cancel</Button>
+                            {isAdding ?
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{ borderRadius: "20px", color: "#FFFFFF", width: "90px" }}
+                                >
+                                    <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                </Button>
+                                :
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{ borderRadius: "20px" }}
+                                        onClick={() => close()}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{ borderRadius: "20px", color: "#FFFFFF", width: "90px" }}
+                                    >
+                                        Add
+                                    </Button>
+                                </>
+                            }
+                            {/* <Button 
+                            variant="outlined"
+                            onClick={onClose}
+                            >
+                                Cancel
+                                </Button>
                             <Button
                                 type="submit"
                                 variant="contained"
                                 color="primary"
                             >
                                 Add
-                            </Button>
-                            {/* <Button
-                                type="button"
-                                onClick={() => {
-                                    trigger();
-                                }}
-                            >
-                                Trigger All
                             </Button> */}
                         </DialogActions>
                     </form>

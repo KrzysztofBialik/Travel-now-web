@@ -50,8 +50,7 @@ const ExpandMore = styled((props) => {
 
 export const AccommodationsPage = () => {
 
-    const {groupId} = useParams();
-
+    const { groupId } = useParams();
     const [numOfVotes, setNumOfVotes] = useState(0)
     const [userVote, setUserVote] = useState(false);
     const [expanded, setExpanded] = useState(false);
@@ -59,9 +58,9 @@ export const AccommodationsPage = () => {
     const [accommodationsRaw, setAccommodationsRaw] = useState([]);
     const [loading, setLoading] = useState(true);
     const [loadingSelected, setLoadingSelected] = useState(true);
-    const [seletcedAccommodation, setSeletcedAccommodation] = useState(null);
-    const [center, setCenter] = useState({ lat: 0, lng: 0 }) 
-    
+    const [selectedAccommodation, setSelectedAccommodation] = useState(null);
+    const [center, setCenter] = useState({ lat: 0, lng: 0 });
+
     var isCordinator = false;
 
     const voteAction = () => {
@@ -72,7 +71,7 @@ export const AccommodationsPage = () => {
         else {
             setNumOfVotes(numOfVotes + 1);
         }
-    }
+    };
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -92,41 +91,43 @@ export const AccommodationsPage = () => {
     const getData = async () => {
         setLoading(true);
         doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(json => {setAccommodationsRaw(json); return json})
-        .then(accommodations => {setAllAccommodations(accommodations.map((accommodation) => (
-                <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
-                    <AccommodationCard accommodationData={accommodation.accommodation} canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={false} votes={accommodation.userVoted}/>
-                </Grid>)));
+            .then(response => response.json())
+            .then(json => { setAccommodationsRaw(json); return json })
+            .then(accommodations => {
+                console.log(accommodations)
+                setAllAccommodations(accommodations.map((accommodation) => (
+                    <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
+                        <AccommodationCard accommodationData={accommodation.accommodation} canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={false} votes={accommodation.userVoted} />
+                    </Grid>)));
                 setLoading(false);
             })
-        .catch(err => console.log('Request Failed', err));
+            .catch(err => console.log('Request Failed', err));
     };
 
     const getChosenAccommodation = async () => {
         setLoadingSelected(true)
         doGet('/api/v1/trip-group/accommodation-dto?' + new URLSearchParams({ groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(accommodation => {
-            if(accommodation.groupId === null) {
-                setSeletcedAccommodation(null)
-            } else {
-                setSeletcedAccommodation(
-                    <Grid item xs={12} md={4} key={accommodation.accommodationId}>
-                        <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} onSuccess={() => getData()}/>
-                    </Grid>)
-                    setCenter({ lat: accommodation.latitude, lng : accommodation.longitude })
-            }
-        })
-        .then(next => setLoadingSelected(false))
-        .catch(err => console.log('Request Failed', err));
+            .then(response => response.json())
+            .then(accommodation => {
+                if (accommodation.groupId === null) {
+                    setSelectedAccommodation(null)
+                } else {
+                    setSelectedAccommodation(
+                        <Grid item xs={12} key={accommodation.accommodationId}>
+                            <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} onSuccess={() => getData()} />
+                        </Grid>)
+                    setCenter({ lat: accommodation.latitude, lng: accommodation.longitude })
+                }
+            })
+            .then(next => setLoadingSelected(false))
+            .catch(err => console.log('Request Failed', err));
     };
 
     useEffect(() => {
         isCorinator();
         getData();
         getChosenAccommodation();
-      }, [])
+    }, [])
 
     return (
         <Box
@@ -134,10 +135,10 @@ export const AccommodationsPage = () => {
                 position: 'relative',
                 minHeight: '100%'
             }}>
-            <NavigationNavbar 
-            buttonsData={futureTripButtonsDataWithGroupId(groupId)}
-            groupId={groupId}
-             />
+            <NavigationNavbar
+                buttonsData={futureTripButtonsDataWithGroupId(groupId)}
+                groupId={groupId}
+            />
             <Box sx={{
                 p: 10,
                 // margin: 10,
@@ -150,69 +151,9 @@ export const AccommodationsPage = () => {
             }}
             // elevation={4}
             >
-               { seletcedAccommodation !== null ?
-                <>
-                    <Box
-                        sx={{
-                            p: 4,
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            // minWidth: "1200px"
-                            maxWidth: "1200px",
-                            // width: "1200px"
-                            mb: "20px"
-                        }}
-                    >
-                        <Grid container
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}>
-                            <Grid item xs={12}>
-                                <Typography
-                                    variant="h3"
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: 'center',
-                                        mb: "30px"
-                                    }}
-                                >
-                                    Currently chosen accommodation
-                                </Typography>
-                            </Grid>
-                            <Grid container item xs={12} spacing={10}
-                                sx={{
-                                    display: "flex",
-                                    justifyContent: "flex-start",
-                                    alignItems: 'flex-start'
-                                }}
-                            >
-                                {seletcedAccommodation}
-                                <Grid item xs={12} md={6} >
-                                    {isLoaded ?
-                                        <GoogleMap
-                                            zoom={14}
-                                            center={center}
-                                            mapContainerClassName="map-container"
-                                        >
-                                            <MarkerF position={center} />
-                                        </GoogleMap>
-                                        :
-                                        <Typography variant="h1">Loading...</Typography>}
-                                </Grid>
-                            </Grid>
-                        </Grid>
-                    </Box>
-                        <Divider variant="middle" sx={{ width: "100%" }} />
-                    </>
-                    
-                    :
-                    <></>
-                } 
-                <Box
+                {selectedAccommodation !== null ?
+                    <>
+                        <Box
                             sx={{
                                 p: 4,
                                 display: "flex",
@@ -221,65 +162,142 @@ export const AccommodationsPage = () => {
                                 // minWidth: "1200px"
                                 maxWidth: "1200px",
                                 // width: "1200px"
-                                my: "20px"
+                                mb: "20px"
                             }}
-                    >   
-                        <Grid container
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                alignItems: "center",
-                            }}>
-                            <Grid item xs={12}>
-                                <Typography
-                                    variant="h3"
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: 'center',
-                                        mb: "30px"
-                                    }}
-                                >
-                                    Possible accommodations
-                                </Typography>
-                            </Grid>
-                        
-
-                    
-                {
-                    !loading ?
-                            <Grid container item xs={12}
-                                spacing={5}
+                        >
+                            <Grid container
                                 sx={{
                                     display: "flex",
-                                    justifyContent: "flex-start",
-                                    alignItems: 'flex-start',
-                                    // gridAutoRows: "1fr"
-                                    // gap: "50px"
-                                    // rowGap: "50px",
-                                    // columnGap: "50px"
-                                }}
-                            >
-                                {allAccommodations}
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                }}>
+                                <Grid item xs={12}>
+                                    <Typography
+                                        variant="h3"
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: 'center',
+                                            mb: "30px"
+                                        }}
+                                    >
+                                        Currently chosen accommodation
+                                    </Typography>
+                                </Grid>
+                                <Grid container item xs={12} spacing={10}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "flex-start",
+                                        alignItems: 'flex-start'
+                                    }}
+                                >
+                                    <Grid item xs={12} md={6}>
+                                        {selectedAccommodation}
+                                    </Grid>
+                                    <Grid item xs={12} md={6} >
+                                        {isLoaded ?
+                                            <GoogleMap
+                                                zoom={14}
+                                                center={center}
+                                                mapContainerClassName="map-container"
+                                            >
+                                                <MarkerF position={center} />
+                                            </GoogleMap>
+                                            :
+                                            <Typography variant="h1">Loading...</Typography>}
+                                    </Grid>
+                                </Grid>
                             </Grid>
+                        </Box>
+                        <Divider variant="middle" sx={{ width: "100%" }} />
+                    </>
+
                     :
-                    <Box
+                    <></>
+                }
+                <Box
+                    sx={{
+                        p: 4,
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        // minWidth: "1200px"
+                        maxWidth: "1200px",
+                        // width: "1200px"
+                        my: "20px"
+                    }}
+                >
+                    <Grid container
                         sx={{
                             display: "flex",
-                            flexDirection: "column",
                             justifyContent: "center",
                             alignItems: "center",
-                            minHeight: "400px"
-                            // border: "2px solid black"
-                        }}
-                    >  
-                        <CircularProgress />
-                    </Box>
-                                            
-                }
-                     </Grid>
-                    </Box>
-                
+                        }}>
+                        <Grid item xs={12}>
+                            <Typography
+                                variant="h3"
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: 'center',
+                                    mb: "30px"
+                                }}
+                            >
+                                Possible accommodations
+                            </Typography>
+                        </Grid>
+                        {
+                            !loading ?
+                                <Grid container item xs={12}
+                                    spacing={5}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "flex-start",
+                                        alignItems: 'flex-start',
+                                        // gridAutoRows: "1fr"
+                                        // gap: "50px"
+                                        // rowGap: "50px",
+                                        // columnGap: "50px"
+                                    }}
+                                >
+                                    {allAccommodations !== [] ?
+                                        allAccommodations
+                                        :
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                width: "100%",
+                                                minHeight: "400px"
+                                                // border: "2px solid black"
+                                            }}
+                                        >
+                                            <Typography sx={{ fontSize: "32px" }}>
+                                                No accommodation suggestions provided yet
+                                            </Typography>
+                                        </Box>
+                                    }
+                                </Grid>
+                                :
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        minHeight: "400px"
+                                        // border: "2px solid black"
+                                    }}
+                                >
+                                    <CircularProgress />
+                                </Box>
+
+                        }
+                    </Grid>
+                </Box>
+
             </Box >
         </Box >
     );

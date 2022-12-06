@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
 import { Card } from "@mui/material";
 import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -7,6 +9,7 @@ import { Menu } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import { ListItemText } from "@mui/material";
 import { Paper } from '@mui/material';
+import { CircularProgress } from "@mui/material";
 import { Dialog } from "@mui/material";
 import { DialogTitle } from "@mui/material";
 import { Table } from "@mui/material";
@@ -25,13 +28,17 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import CloseIcon from '@mui/icons-material/Close';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import format from "date-fns/format";
+import { doGet } from "../utils/fetch-utils";
 
 import { ResolveSettlementDialog } from "./ResolveSettlementDialog";
 
 
-export const SettlementCard = ({ settlementData, canResolve, groupId, requestId, onSuccess }) => {
+export const SettlementCard = ({ settlementData, canResolve, requestId, onSuccess }) => {
 
+    const { groupId } = useParams();
     const [anchorEl, setAnchorEl] = useState(null);
+    const [currencyLoading, setCurrencyLoading] = useState(false);
+    const [currency, setCurrency] = useState("");
     const [resolveSettlementDialogOpen, setResolveSettlementDialogOpen] = useState(false);
     const [isResolved, setIsResolved] = useState(!canResolve);
     const [updatedData, setUpdatedData] = useState(settlementData);
@@ -41,6 +48,22 @@ export const SettlementCard = ({ settlementData, canResolve, groupId, requestId,
         setAnchorEl(event.currentTarget);
     };
 
+    const getCurrency = async () => {
+        setCurrencyLoading(true);
+        var resp = await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                var currency = response.currency;
+                setCurrency(currency);
+                console.log(currency);
+            })
+            .then(setCurrencyLoading(false))
+            .catch(err => console.log('Request Failed', err));
+    };
+
+    useEffect(() => {
+        getCurrency();
+    }, []);
 
     const handleClose = () => {
         setAnchorEl(null);
@@ -145,7 +168,7 @@ export const SettlementCard = ({ settlementData, canResolve, groupId, requestId,
                             </Box>}
                         </Box>
                         <Typography sx={{ fontSize: "24px", color: "primary.main", mb: 1 }}>
-                            {updatedData.amount} PLN
+                            {currencyLoading ? <CircularProgress size="24px" sx={{ ml: 2, mt: 1 }} /> : `${updatedData.amount} ${currency}`}
                         </Typography>
                         <Typography sx={{ fontSize: "16px", color: "secondary.main" }}>
                             {updatedData.status}

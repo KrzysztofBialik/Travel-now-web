@@ -5,6 +5,7 @@ import { Typography } from '@mui/material';
 import { IconButton } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import { Button } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { Dialog } from '@mui/material';
 import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
@@ -93,7 +94,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
 
     // const initialDate = format(new Date(dayPlanData.year, dayPlanData.month, dayPlanData.day), "MM/dd/yyyy");
     const initialDate = format(parseISO(dayPlanData.date), "MM/dd/yyyy");
-
+    const [isEditing, setIsEditing] = useState(false);
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
@@ -162,6 +163,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
     };
 
     const handleEditDayPlan = async (dayPlanName, date, icon) => {
+        setIsEditing(true);
         var postBody = { 'groupId': localStorage.getItem('groupId'), 'name': dayPlanName, 'date': format(new Date(Date.parse(date)), "yyyy-MM-dd"), 'iconType': icon };
         await doPatch('/api/v1/day-plan?dayPlanId=' + dayPlanData.dayPlanId, postBody)
             .then(response => {
@@ -170,6 +172,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                 onSuccess();
             })
             .catch(err => {
+                setIsEditing(true);
                 setErrorToastOpen(true);
                 setEditionError(err.message)
             });
@@ -315,7 +318,33 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                             </TextField>
                         </Box>
                         <DialogActions>
-                            <Button
+                            {isEditing ?
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{ borderRadius: "20px", color: "#FFFFFF", width: "100px" }}
+                                >
+                                    <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                </Button>
+                                :
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{ borderRadius: "20px" }}
+                                        onClick={() => close()}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{ borderRadius: "20px", color: "#FFFFFF", width: "100px" }}
+                                    >
+                                        Confirm
+                                    </Button>
+                                </>
+                            }
+                            {/* <Button
                                 variant="outlined"
                                 sx={{ borderRadius: "20px" }}
                                 onClick={() => close()}
@@ -328,7 +357,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                                 sx={{ borderRadius: "20px", color: "#FFFFFF" }}
                             >
                                 Edit
-                            </Button>
+                            </Button> */}
                         </DialogActions>
                     </form>
                 </DialogContent>

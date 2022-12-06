@@ -67,10 +67,11 @@ export const AvailabilityPage = () => {
                 })));
             })
             .catch(err => console.log('Request Failed', err));
-    }
+    };
+
     useEffect(() => {
         getAvailabilities();
-    }, [])
+    }, []);
 
 
     function customDayContent(day) {
@@ -101,9 +102,9 @@ export const AvailabilityPage = () => {
             position: 'relative',
             minHeight: '100%'
         }}>
-            <NavigationNavbar 
-            buttonsData={futureTripButtonsDataWithGroupId(groupId)}
-            groupId={groupId}
+            <NavigationNavbar
+                buttonsData={futureTripButtonsDataWithGroupId(groupId)}
+                groupId={groupId}
             />
             <DateRangePickerDialog open={dateRangePickerDialogOpen}
                 onClose={() => setDateRangePickerDialogOpen(false)}

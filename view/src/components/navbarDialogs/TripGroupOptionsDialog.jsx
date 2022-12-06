@@ -1,8 +1,10 @@
 import * as React from 'react';
 import { useState } from 'react';
+import { useMemo } from 'react';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import { MenuItem } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import Box from '@mui/material/Box';
 import { DialogContent } from '@mui/material';
 import { DialogActions } from '@mui/material';
@@ -60,22 +62,35 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
     const [confirmUpdatedDialogOpen, setConfirmUpdateDialogOpen] = useState(false);
     const [confirmErrorDialogOpen, setConfirmErrorDialogOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
+    const [descriptionLength, setDescriptionLength] = useState(0);
 
-    const [tripData, setTripData] = useState(" ");
+    const [tripData, setTripData] = useState({});
     const DESCRIPTION_LIMIT = 250;
-    
+
     const getTripData = async () => {
-        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId}).toString())
-        .then(response => response.json())
-        .then(response => {
-           setNecessaryData(response);
-        })
-        .catch(err => console.log('Request Failed', err));
+        setIsLoading(true);
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                setNecessaryData(response);
+            })
+            .then(setIsLoading(false))
+            .catch(err => console.log('Request Failed', err));
     }
 
     useEffect(() => {
         getTripData();
-      }, [])
+    }, []);
+
+    // useEffect(() => {
+    //     reset(tripData);
+    // }, [tripData.description]);
+
+    useEffect(() => {
+        reset(tripData);
+    }, [tripData])
 
     const validationSchema = Yup.object().shape({
         tripName: Yup
@@ -100,11 +115,17 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
 
     const { register, handleSubmit, reset, formState: { errors }, control, watch, setValue, getValues } = useForm({
         resolver: yupResolver(validationSchema),
+        defaultValues: useMemo(() => {
+            return tripData;
+        }, [tripData])
     });
 
     const setNecessaryData = (response) => {
-        setTripData({tripName: response.name ,startingLocation: response.startLocation, currency: response.currency, minDays: response.minimalNumberOfDays,
-            minParticipants: response.minimalNumberOfParticipants,  description: response.description})
+        setDescriptionLength(response.description.length);
+        setTripData({
+            tripName: response.name, startingLocation: response.startLocation, currency: response.currency, minDays: response.minimalNumberOfDays,
+            minParticipants: response.minimalNumberOfParticipants, description: response.description
+        })
     }
     const handleUpdateTrip = () => {
         editUserAccount(getValues());
@@ -120,25 +141,29 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
     };
 
     const editUserAccount = async (values) => {
+        setIsUpdating(true);
         console.log("hello there")
         console.log(values)
-        var postBody = {'name': values.tripName, 'currency': values.currency, 'description':values.description, 'startLocation': values.startingLocation,
-         'minimalNumberOfDays': values.minDays, 'minimalNumberOfParticipants': values.minParticipants};
+        var postBody = {
+            'name': values.tripName, 'currency': values.currency, 'description': values.description, 'startLocation': values.startingLocation,
+            'minimalNumberOfDays': values.minDays, 'minimalNumberOfParticipants': values.minParticipants
+        };
 
-        await doPatch('/api/v1/trip-group/group?' + new URLSearchParams({ groupId: groupId}).toString(), postBody)
+        await doPatch('/api/v1/trip-group/group?' + new URLSearchParams({ groupId: groupId }).toString(), postBody)
             .then(response => response.json())
             .then(response => {
-            setNecessaryData(response);
-            handleSuccess();
-        })
-        .catch(err => {
-            setConfirmErrorDialogOpen(true);
-            setErrorMessage(err.message)
-            console.log('Request Failed', err.message)
-        });
+                setNecessaryData(response);
+                handleSuccess();
+            })
+            .catch(err => {
+                setIsUpdating(false);
+                setConfirmErrorDialogOpen(true);
+                setErrorMessage(err.message)
+                console.log('Request Failed', err.message)
+            });
     }
 
-    const descriptionWatch = watch("description");
+    // const descriptionWatch = watch("description");
 
     return (
         <>
@@ -146,7 +171,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                 open={confirmUpdatedDialogOpen}
                 onClose={() => setConfirmUpdateDialogOpen(false)}
             />
-             <ErrorTripConfirmationDialog
+            <ErrorTripConfirmationDialog
                 open={confirmErrorDialogOpen}
                 onClose={() => setConfirmErrorDialogOpen(false)}
                 message={errorMessage}
@@ -190,7 +215,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                             sx={{
                                 width: "100%",
                                 minWidth: '600px',
-                                height: "570px",
+                                minHeight: "570px",
                                 my: 10,
                                 display: 'flex',
                                 overflow: "visible",
@@ -234,7 +259,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                     }}
                                 >
                                     <Typography component="h1" variant="h5" color="#FFFFFF">
-                                        Manage profile data
+                                        Manage trip group data
                                     </Typography>
                                     <RuleIcon sx={{ color: "secondary.main", fontSize: "42px" }} />
                                 </Box>
@@ -394,16 +419,19 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                 }}
                                             >
                                                 <span>{errors.description?.message}</span>
-                                                {/* <span>{`${descriptionWatch.length}/${DESCRIPTION_LIMIT}`}</span> */}
+                                                <span>{0}/{DESCRIPTION_LIMIT}</span>
                                             </FormHelperText>
-
                                             <DialogActions>
                                                 <Button
                                                     type="submit"
                                                     variant="contained"
-                                                    sx={{ borderRadius: "10px", color: "#FFFFFF" }}
+                                                    sx={{ borderRadius: "20px", color: "#FFFFFF", width: "140px" }}
                                                 >
-                                                    Update data
+                                                    {isUpdating ?
+                                                        <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                                        :
+                                                        "Update data"
+                                                    }
                                                 </Button>
                                             </DialogActions>
                                         </form>
