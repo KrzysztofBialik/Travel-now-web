@@ -20,58 +20,61 @@ export const PromoteParticipantDialog = ({ open, onClose, groupId, userId, onSuc
     const [apiErrorMessage, setApiErrorMessage] = useState("")
 
 
-    const handleSuccessClose =async () => {
+    const handleSuccessClose = async () => {
         await promoteUserToCoordinator();
         onClose();
     };
 
-    const handleGivingCorrectPermission = async  () => {
+    const handleGivingCorrectPermission = async () => {
         setSuccessToastOpen(true);
         onSuccess();
-    }
-
-    const handleErrorClose = () => {
-        setErrorToastOpen(true);
-        onClose();
     };
 
     const promoteUserToCoordinator = async () => {
-        await doPut('/api/v1/user-group/coordinator?' + new URLSearchParams({ groupId: groupId,  userId: userId}).toString())
+        await doPut('/api/v1/user-group/coordinator?' + new URLSearchParams({ groupId: groupId, userId: userId }).toString())
             .then(response => handleGivingCorrectPermission())
             .catch(err => {
                 setApiErrorToastOpen(true)
                 setApiErrorMessage(err.message);
             });
-        }
+    }
 
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="User promoted to coordinator." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
-            <DeletingPermissionApiErrorToast open={apiErrorToastOpen} onClose={() => {setApiErrorToastOpen(false)
-                                                                                     }} message={apiErrorMessage} />
+            <DeletingPermissionApiErrorToast open={apiErrorToastOpen} onClose={() => {
+                setApiErrorToastOpen(false)
+            }} message={apiErrorMessage} />
 
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Promote</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
-                        If you confirm, this user will have coordinator status.
+                <DialogTitle sx={{ pb: 1 }}>
+                    Promote
+                </DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
+                    <DialogContentText sx={{ mb: "10px" }}>
+                        If you confirm, this user will gain coordinator status
                     </DialogContentText>
                     <DialogActions>
                         <Button
                             variant="outlined"
-                            onClick={handleErrorClose}
-                            sx={{ borderRadius: "20px" }}
+                            onClick={onClose}
+                            sx={{ borderRadius: "20px", fontSize: "12px" }}
                         >
                             Cancel
                         </Button>
                         <Button
                             variant="contained"
                             onClick={handleSuccessClose}
-                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
                         >
                             Confirm
                         </Button>

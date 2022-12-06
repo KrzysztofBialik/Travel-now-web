@@ -72,31 +72,6 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                                     />
                                 </Box>
                             </Box>
-                            {/* <Box
-                                sx={{
-                                    width: "55%",
-                                    minHeight: "150px",
-                                    maxHeight: "150px"
-                                }}
-                            > */}
-                            {/* <Box
-                                    sx={{
-                                        height: "100%",
-                                        width: "100%",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "space-between"
-                                    }}
-                                > */}
-                            {/* <Box
-                                    sx={{
-                                        height: "100%",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "flex-start",
-                                        alignItems: "flex-start"
-                                    }}
-                                > */}
                             <Box
                                 sx={{
                                     width: "55%",
@@ -106,43 +81,59 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                                     display: "flex",
                                     flexDirection: "column",
                                     justifyContent: "flex-start",
-                                    alignItems: "flex-start"
+                                    alignItems: "flex-start",
+                                    // textOverflow: "ellipsis",
+                                    // overflow: "hidden",
+                                    // WebkitLineClamp: "2"
                                 }}
                             >
-                                <Typography
-                                    sx={{
-                                        height: "100%",
-                                        color: "black",
-                                        fontSize: "28px",
-                                        overflow: "hidden",
-                                        textOverflow: "ellipsis",
-                                        display: "-webkit-box",
-                                        WebkitLineClamp: "3",
-                                        WebkitBoxOrient: "vertical"
-                                    }}
-                                    align="left"
+                                <Box sx={{
+                                    minHeight: "30%",
+                                    maxHeight: "70%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "flex-start",
+                                    alignItems: "flex-start",
+                                    overflow: "hidden",
+                                }}
                                 >
-                                    {/* {attractionData.attractionName} */}
-                                    aaaaaaa
-                                    aaaaaaaaaaaaaaaa
-                                    aaaaaaaaaaaaaaaa
-                                    aaaaaaa
-                                    aaaa
-                                </Typography>
-                                <Typography
-                                    variant="body2"
-                                    color="text.secondary"
-                                    sx={{
-                                        height: "50%"
-                                    }}
-                                    align="left"
+                                    <Typography
+                                        sx={{
+                                            color: "black",
+                                            fontSize: "28px",
+                                            display: "-webkit-box",
+                                            textOverflow: "ellipsis",
+                                            WebkitLineClamp: "2",
+                                            WebkitBoxOrient: "vertical"
+                                        }}
+                                        align="left"
+                                    >
+                                        {attractionData.attractionName}
+                                    </Typography>
+                                </Box>
+                                <Box sx={{
+                                    height: "30%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "flex-start",
+                                    alignItems: "flex-start",
+                                }}
                                 >
-                                    {attractionData.address}
-                                </Typography>
+                                    <Typography
+                                        variant="body2"
+                                        color="text.secondary"
+                                        align="left"
+                                        sx={{
+                                            display: "-webkit-box",
+                                            textOverflow: "ellipsis",
+                                            WebkitLineClamp: "2",
+                                            WebkitBoxOrient: "vertical"
+                                        }}
+                                    >
+                                        {attractionData.address}
+                                    </Typography>
+                                </Box>
                             </Box>
-                            {/* </Box> */}
-                            {/* </Box> */}
-                            {/* </Box> */}
                         </Box>
                     </ButtonBase>
                     <Box sx={{ display: "flex", justifyContent: "flex-end", mt: -5 }}>

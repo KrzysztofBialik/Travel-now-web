@@ -6,6 +6,9 @@ import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
+import { Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
@@ -27,13 +30,14 @@ export const SelectStartingPointDialog = ({ open, onClose, dayPlanId, attraction
     };
 
     const handleSelection = async () => {
-        await doPatch('/api/v1/day-plan/start?' + new URLSearchParams({ dayPlanId:dayPlanId, attractionId:attractionId  }).toString())
+        await doPatch('/api/v1/day-plan/start?' + new URLSearchParams({ dayPlanId: dayPlanId, attractionId: attractionId }).toString())
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 setErrorToastOpen(!response.ok);
                 onClose();
             })
-            .catch(err => {setErrorToastOpen(true); 
+            .catch(err => {
+                setErrorToastOpen(true);
                 setCreationError(err.message)
             });
     };
@@ -46,15 +50,24 @@ export const SelectStartingPointDialog = ({ open, onClose, dayPlanId, attraction
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        minWidth: "400px",
+                        maxWidth: "400px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Select</DialogTitle>
-                <DialogContent>
+                <DialogTitle sx={{ pb: 0 }}>
+                    Select
+                </DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
                     <DialogContentText sx={{ mb: "10px" }}>
                         If you confirm, this attraction will be selected as a starting point of the day.
                     </DialogContentText>
                     <DialogActions>
                         <Button
-                            sx={{ borderRadius: "20px" }}
+                            sx={{ borderRadius: "20px", fontSize: "12px" }}
                             variant="outlined"
                             onClick={handleErrorClose}
                         >
@@ -63,7 +76,7 @@ export const SelectStartingPointDialog = ({ open, onClose, dayPlanId, attraction
                         <Button
                             variant="contained"
                             onClick={handleSelection}
-                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
                         >
                             Confirm
                         </Button>

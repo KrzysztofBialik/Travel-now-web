@@ -77,7 +77,13 @@ export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) =>
 
     var getPhotoUrl = (photoReference) => {
         return 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=' + photoReference + '&key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-    }
+    };
+
+    const removeMenus = () => {
+        setAnchorEl(null);
+    };
+
+    window.addEventListener('scroll', removeMenus);
 
     return (
         <>
@@ -100,19 +106,9 @@ export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) =>
                 onSuccess={(id) => onDeletion(id)}
             />
             <Card
-                sx={{ height: "100%", width: "100%", maxWidth: "100%", borderRadius: "10px" }}
+                sx={{ height: "100%", width: "100%", maxWidth: "100%", borderRadius: "20px" }}
                 elevation={5}
             >
-                {/* <CardMedia
-                    component="img"
-                    image={attractionData.imageLink}
-                    alt="Paella dish"
-                    sx={{
-                        height: "250px",
-                        // backgroundRepeat: "no-repeat",
-                        // backgroundSize: "cover"
-                    }}
-                /> */}
                 <CardContent >
                     <Box sx={{ display: "flex", flexDirection: "row", justifyCOntent: "space-between", width: "100%", columnGap: "20px" }}>
                         <Box sx={{ width: "40%" }}>
@@ -126,26 +122,57 @@ export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) =>
                                 }}
                             >
                                 <CardMedia
-                                    sx={{ borderRadius: "10px" }}
+                                    sx={{ borderRadius: "15px" }}
                                     component="img"
                                     image={getPhotoUrl(attractionData.photoLink)}
                                 />
                             </Box>
                         </Box>
-                        <Box sx={{ width: "55%", minHeight: "200px" }}>
-                            <Box sx={{ height: "100%", width: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+                        <Box
+                            sx={{
+                                width: "55%",
+                                minHeight: "200px",
+                                maxHeight: "200px"
+                            }}
+                        >
+                            <Box
+                                sx={{
+                                    height: "100%",
+                                    width: "100%",
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "space-between"
+                                }}
+                            >
                                 <Box
                                     sx={{
+                                        height: "75%",
+                                        width: "100%",
                                         display: "flex",
                                         flexDirection: "column",
                                     }}
                                 >
-                                    <Box sx={{ mb: 1, display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "flex-start" }}>
+                                    <Box
+                                        sx={{
+                                            minHeight: "30%",
+                                            maxHeight: "70%",
+                                            display: "flex",
+                                            flexDirection: "row",
+                                            justifyContent: "space-between",
+                                            alignItems: "flex-start",
+                                            overflow: "hidden",
+                                        }}
+                                    >
                                         <Typography
                                             sx={{
                                                 color: "black",
-                                                fontSize: "32px",
-                                            }}>
+                                                fontSize: "28px",
+                                                display: "-webkit-box",
+                                                textOverflow: "ellipsis",
+                                                WebkitLineClamp: "2",
+                                                WebkitBoxOrient: "vertical"
+                                            }}
+                                        >
                                             {attractionData.name}
                                         </Typography>
                                         {canModify && <Box sx={{ mr: "-10px" }}>
@@ -168,6 +195,11 @@ export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) =>
                                                 anchorEl={anchorEl}
                                                 open={open}
                                                 onClose={handleClose}
+                                                disableScrollLock={true}
+                                                transformOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'left',
+                                                }}
                                                 MenuListProps={{
                                                     'aria-labelledby': 'basic-button',
                                                 }}
@@ -185,20 +217,39 @@ export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) =>
                                                     </Typography>
                                                 </MenuItem>
                                                 <MenuItem onClick={deleteAction}>
-                                                    <DeleteIcon sx={{ mr: "20px", color: "primary.main" }} />
-                                                    <Typography sx={{ color: "primary.main" }}>
+                                                    <DeleteIcon sx={{ mr: "20px", color: "error.main" }} />
+                                                    <Typography sx={{ color: "error.main" }}>
                                                         Delete
                                                     </Typography>
                                                 </MenuItem>
                                             </Menu>
                                         </Box>}
                                     </Box>
-                                    <Typography variant="body2" color="text.secondary">
-                                        {attractionData.address}
-                                    </Typography>
-
+                                    <Box sx={{ height: "30%" }}>
+                                        <Typography
+                                            variant="body2"
+                                            color="text.secondary"
+                                            align="left"
+                                            sx={{
+                                                display: "-webkit-box",
+                                                textOverflow: "ellipsis",
+                                                WebkitLineClamp: "2",
+                                                WebkitBoxOrient: "vertical"
+                                            }}
+                                        >
+                                            {attractionData.address}
+                                        </Typography>
+                                    </Box>
                                 </Box>
-                                <Box sx={{ alignSelf: "flex-start" }}>
+                                <Box
+                                    sx={{
+                                        height: "25%",
+                                        width: "100%",
+                                        display: "flex",
+                                        justifyContent: "flex-start",
+                                        alignItems: "flex-end"
+                                    }}
+                                >
                                     <Button
                                         variant="outlined"
                                         target="_blank"
@@ -246,7 +297,10 @@ export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) =>
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <CardContent>
                         <Typography paragraph>
-                            {attractionData.description}
+                            {attractionData.description.length === 0 ?
+                                "No description provided" :
+                                attractionData.description
+                            }
                         </Typography>
                     </CardContent>
                 </Collapse>

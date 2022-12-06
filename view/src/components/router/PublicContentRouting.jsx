@@ -13,6 +13,7 @@ import { DayPlanPage, URL as DayPlanURL } from '../../pages/dayPlan-page/DayPlan
 import { FinancesPage, URL as FinancesURL } from '../../pages/finances-page/FinancesPage';
 import { ParticipantsPage, URL as ParticipantsURL } from '../../pages/participants-page/ParticipantsPage';
 import { TripSummaryPage, URL as TripSummaryURL } from '../../pages/tripSummary-page/TripSummaryPage';
+import { InvitePage, URL as InviteURL } from '../../pages/invite-page/InvitePage';
 
 
 export const PublicContentRouting = () => {
@@ -36,6 +37,7 @@ export const PublicContentRouting = () => {
                 <Route exact path={FinancesURL} element={<FinancesPage />} />
                 <Route exact path={ParticipantsURL} element={<ParticipantsPage />} />
                 <Route exact path={TripSummaryURL} element={<TripSummaryPage />} />
+                <Route exact path={InviteURL} element={<InvitePage />} />
             </Routes>
         </BrowserRouter>
     );

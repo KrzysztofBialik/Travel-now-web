@@ -18,27 +18,24 @@ export const CreatedTripConfirmationDialog = ({ open, onClose, onSuccess }) => {
         <div>
             <Dialog
                 open={open}
-                onClose={onClose}
+                onClose={close}
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Congratulations!</DialogTitle>
-                <DialogContent>
-                    <DialogContentText>
+                <DialogTitle sx={{ pb: 0 }}>
+                    Congratulations!
+                </DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
+                    <DialogContentText sx={{ mb: "10px" }}>
                         You have created your next trip. Next step - planning.
                     </DialogContentText>
                     <DialogActions>
                         <Button
-                            variant="outlined"
-                            sx={{
-                                borderRadius: "10px",
-                                mx: "10px",
-                                mb: "10px",
-                                backgroundColor: "primary.main",
-                                color: "#FFFFFF",
-                                "&:hover": {
-                                    backgroundColor: "primary.dark",
-                                    borderColor: "primary.dark"
-                                }
-                            }}
+                            variant="contained"
+                            sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
                             onClick={close}
                         >
                             Return

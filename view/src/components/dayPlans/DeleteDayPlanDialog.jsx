@@ -11,7 +11,7 @@ import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doDelete } from "../../components/utils/fetch-utils";
 
-export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess}) => {
+export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
@@ -34,7 +34,8 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess}) => {
                 handleSuccessClose();
                 onSuccess();
             })
-            .catch(err => {setErrorToastOpen(true); 
+            .catch(err => {
+                setErrorToastOpen(true);
                 setDeletionError(err.message)
             });
     };
@@ -42,20 +43,27 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess}) => {
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Day plan successfully deleted." />
-            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={ deletionError } />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={deletionError} />
 
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Delete</DialogTitle>
-                <DialogContent>
-                    <DialogContentText sx={{ mb: "10px" }}>
+                <DialogTitle sx={{ pb: 0 }}>
+                    Delete
+                </DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
+                    <DialogContentText sx={{ mb: "20px" }}>
                         If you confirm, your day plan will be deleted.
                     </DialogContentText>
                     <DialogActions>
                         <Button
-                            sx={{ borderRadius: "20px" }}
+                            sx={{ borderRadius: "20px", fontSize: "12px" }}
                             variant="outlined"
                             onClick={onClose}
                         >
@@ -64,9 +72,13 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess}) => {
                         <Button
                             variant="contained"
                             onClick={() => handleDeleteDayPlan(dayPlanId)}
-                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                            sx={{
+                                color: "#FFFFFF",
+                                borderRadius: "20px",
+                                fontSize: "12px"
+                            }}
                         >
-                            Confirm
+                            Cancel
                         </Button>
                     </DialogActions>
                 </DialogContent>

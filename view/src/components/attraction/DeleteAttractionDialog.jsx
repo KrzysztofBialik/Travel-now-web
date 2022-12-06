@@ -17,25 +17,16 @@ export const DeleteAttractionDialog = ({ open, onClose, dayPlanId, attractionId,
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [deletionError, setDeletionError] = useState("Ups! Something went wrong. Try again.");
 
-    const handleSuccessClose = () => {
-        setSuccessToastOpen(true);
-        onClose();
-    };
-
-    const handleErrorClose = () => {
-        setErrorToastOpen(true);
-        onClose();
-    };
-
     const handleDeleteAttraction = async () => {
-        await doDelete('/api/v1/attraction?' + new URLSearchParams({ dayPlanId:dayPlanId, attractionId:attractionId  }).toString())
+        await doDelete('/api/v1/attraction?' + new URLSearchParams({ dayPlanId: dayPlanId, attractionId: attractionId }).toString())
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 setErrorToastOpen(!response.ok);
                 onSuccess(dayPlanId);
                 onClose();
             })
-            .catch(err => {setErrorToastOpen(true); 
+            .catch(err => {
+                setErrorToastOpen(true);
                 setDeletionError(err.message);
             });
     }
@@ -48,24 +39,32 @@ export const DeleteAttractionDialog = ({ open, onClose, dayPlanId, attractionId,
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Delete</DialogTitle>
-                <DialogContent>
-                    <DialogContentText sx={{ mb: "10px" }}>
+                <DialogTitle sx={{ pb: 0 }}
+                >
+                    Delete
+                </DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
+                    <DialogContentText sx={{ mb: "20px" }}>
                         If you confirm, attraction will be deleted.
                     </DialogContentText>
                     <DialogActions>
                         <Button
-                            sx={{ borderRadius: "20px" }}
+                            sx={{ borderRadius: "20px", fontSize: "12px" }}
                             variant="outlined"
-                            onClick={handleErrorClose}
+                            onClick={onClose}
                         >
                             Cancel
                         </Button>
                         <Button
                             variant="contained"
                             onClick={handleDeleteAttraction}
-                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
                         >
                             Confirm
                         </Button>

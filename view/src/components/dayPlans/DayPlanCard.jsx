@@ -103,6 +103,12 @@ export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan, onSucces
         setAnchorEl(null);
     };
 
+    const removeMenus = () => {
+        setAnchorEl(null);
+    };
+
+    window.addEventListener('scroll', removeMenus);
+
     const dayPlanIcon = icons.filter(icon => icon.id === dayPlanData.iconType).map(icon =>
         <Box key={icon.id}>
             {icon.icon}
@@ -148,18 +154,22 @@ export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan, onSucces
                     }}
                     onClick={() => showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId)}
                 >
-                    <Box sx={{ display: "flex", flexDirection: "row" }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                         {dayPlanIcon}
-                        <ListItemText
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "flex-start",
-                                justifyContent: "flex-start"
-                            }}
-                            primary={dayPlanData.name}
-                            secondary={dayPlanData.date}
-                        />
+                        <Box sx={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+                            <Typography
+                                align="left"
+                                sx={{ fontSize: "16px", color: "text.primary" }}
+                            >
+                                {dayPlanData.name}
+                            </Typography>
+                            <Typography
+                                align="left"
+                                sx={{ fontSize: "14px", color: "text.secondary" }}
+                            >
+                                {dayPlanData.date}
+                            </Typography>
+                        </Box>
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "row" }}>
                         <Typography
@@ -197,6 +207,11 @@ export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan, onSucces
                             anchorEl={anchorEl}
                             open={open}
                             onClose={handleClose}
+                            disableScrollLock={true}
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                            }}
                             MenuListProps={{
                                 'aria-labelledby': 'basic-button',
                             }}
@@ -208,8 +223,8 @@ export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan, onSucces
                                 </Typography>
                             </MenuItem>
                             <MenuItem onClick={deleteAction}>
-                                <DeleteIcon sx={{ mr: "20px", color: "primary.main" }} />
-                                <Typography sx={{ color: "primary.main" }}>
+                                <DeleteIcon sx={{ mr: "20px", color: "error.main" }} />
+                                <Typography sx={{ color: "error.main" }}>
                                     Delete
                                 </Typography>
                             </MenuItem>

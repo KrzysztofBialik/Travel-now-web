@@ -14,11 +14,12 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Box } from '@mui/material';
+import { Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { FormHelperText } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import EditIcon from '@mui/icons-material/Edit';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ChurchIcon from '@mui/icons-material/Church';
 import CastleIcon from '@mui/icons-material/Castle';
 import SailingIcon from '@mui/icons-material/Sailing';
@@ -27,10 +28,10 @@ import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
 import WaterIcon from '@mui/icons-material/Water';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
+import CloseIcon from '@mui/icons-material/Close';
 import DownhillSkiingIcon from '@mui/icons-material/DownhillSkiing';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { SuccessToast } from '../toasts/SuccessToast';
-import { isToday } from 'date-fns/esm';
 import isValid from 'date-fns/isValid';
 import isBefore from 'date-fns/isBefore';
 import { doPost } from "../../components/utils/fetch-utils";
@@ -155,14 +156,15 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
     };
 
     const handleCreateDayPlan = async (dayPlanName, date, icon) => {
-        var postBody = {'groupId':localStorage.getItem('groupId'), 'name':dayPlanName, 'date':date, 'iconType':icon};
+        var postBody = { 'groupId': localStorage.getItem('groupId'), 'name': dayPlanName, 'date': date, 'iconType': icon };
         await doPost('/api/v1/day-plan', postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 close();
                 onSuccess();
             })
-            .catch(err => {setErrorToastOpen(true); 
+            .catch(err => {
+                setErrorToastOpen(true);
                 setCreationError(err.message)
             });
     };
@@ -186,8 +188,43 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
                 open={open}
                 onClose={onClose}
                 aria-labelledby="responsive-dialog-title"
+                PaperProps={{
+                    style: {
+                        minWidth: "400px",
+                        maxWidth: "400px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle variant="h4">Create new day plan</DialogTitle>
+                <DialogTitle
+                    sx={{
+                        backgroundColor: "primary.main",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        color: "#FFFFFF",
+                        mb: 2
+                    }}
+                >
+                    <Typography sx={{ color: "#FFFFFF", fontSize: "24px" }}>
+                        Create new day plan
+                    </Typography>
+                    <IconButton
+                        sx={{ p: 0 }}
+                        onClick={onClose}
+                    >
+                        <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
+                    </IconButton>
+                </DialogTitle>
+                {/* <DialogTitle variant="h4" 
+                sx={{
+                     color: "#FFFFFF",
+                      backgroundColor: "primary.main" 
+                      }}
+                      >
+                        Create new day plan
+                        </DialogTitle> */}
                 <DialogContent>
                     <form
                         onSubmit={handleSubmit(() => handleCreateDayPlan(dayPlanName.value, values.date, values.icon))}
@@ -249,20 +286,6 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
                                     }
                                 />
                             </LocalizationProvider>
-                            {/* <TextField
-                                variant="outlined"
-                                type='date'
-                                autoFocus
-                                placeholder='Date'
-                                name='date'
-                                label='Date'
-                                margin="normal"
-                                {...register('date')}
-                                error={Boolean(errors.date) ? (Boolean(dateError)) : false}
-                                helperText={Boolean(errors.date) && dateError}
-                                value={date}
-                                onChange={(newDate) => onDateChange(newDate)}
-                            /> */}
                         </Box>
                         <DialogContentText variant="body1" sx={{ my: "-10px" }}>
                             Icon:
@@ -304,8 +327,7 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
                             <Button
                                 type="submit"
                                 variant="contained"
-                                color="primary"
-                                sx={{ borderRadius: "20px" }}
+                                sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                             >
                                 Create
                             </Button>

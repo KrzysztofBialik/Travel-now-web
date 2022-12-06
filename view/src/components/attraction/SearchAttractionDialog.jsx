@@ -22,6 +22,7 @@ import * as Yup from 'yup';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
+import CloseIcon from '@mui/icons-material/Close';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { AttractionCard } from './AttractionCard';
 import { AttractionCandidateCard } from './AttractionCandidateCard';
@@ -66,9 +67,9 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
     const handleSearch = async (attractionName) => {
         setLoading(true)
         doGet('/api/v1/attraction/find?' + new URLSearchParams({ name: attractionName }).toString())
-        .then(response => response.json())  // convert to json
-        .then(json => {setCandidates(json); setLoading(false)})
-        .catch(err => console.log('Request Failed', err));
+            .then(response => response.json())  // convert to json
+            .then(json => { setCandidates(json); setLoading(false) })
+            .catch(err => console.log('Request Failed', err));
     };
 
     const handleClose = () => {
@@ -127,41 +128,34 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
                 aria-labelledby="responsive-dialog-title"
                 PaperProps={{
                     style: {
-                        height: "75%",
+                        height: "100%",
                         minHeight: "500px",
                         width: "70%",
-                        maxWidth: "700px"
-                        // minWidth: "700px"
+                        maxWidth: "700px",
+                        borderRadius: "20px"
                     }
                 }}
                 sx={{ overflow: "hidden" }}
             >
                 <DialogTitle
-                    variant="h4"
                     sx={{
                         backgroundColor: "primary.main",
                         display: "flex",
                         flexDirection: "row",
                         justifyContent: "space-between",
+                        alignItems: "center",
                         color: "#FFFFFF"
                     }}
                 >
-                    <Box sx={{ color: "#FFFFFF" }}>
+                    <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                         Search attractions
-                    </Box>
-                    <Button variant="outlined"
-                        sx={{
-                            borderRadius: "20px",
-                            backgroundColor: "secondary.main",
-                            color: "#000000",
-                            "&:hover": {
-                                backgroundColor: "secondary.dark"
-                            }
-                        }}
+                    </Typography>
+                    <IconButton
+                        sx={{ p: 0 }}
                         onClick={handleClose}
                     >
-                        Close
-                    </Button>
+                        <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
+                    </IconButton>
                 </DialogTitle>
                 <DialogContent>
                     <Box sx={{ width: "100%", display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-between", mt: 2 }}>
@@ -223,11 +217,11 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
                                 height: "90%"
                                 // border: "2px solid black"
                             }}
-                        >  
+                        >
                             <CircularProgress />
                         </Box>
                         :
-                        candidates.length === 0 ? 
+                        candidates.length === 0 ?
                             <Box sx={{ width: "100%", height: "90%", display: "flex", justifyContent: "center", alignItems: "center" }}>
                                 <Typography variant="h5">Search attractions and add them to day plan</Typography>
                             </Box>
@@ -243,15 +237,6 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
                                 </List>
                             </Box>
                     }
-                    {/* <Search>
-                        <SearchIconWrapper>
-                            <SearchIcon />
-                        </SearchIconWrapper>
-                        <StyledInputBase
-                            placeholder="Search…"
-                            inputProps={{ 'aria-label': 'search' }}
-                        />
-                    </Search> */}
                 </DialogContent>
             </Dialog>
         </div >

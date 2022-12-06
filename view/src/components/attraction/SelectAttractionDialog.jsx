@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useState } from "react";
-import { Button } from '@mui/material';
+import { Button, Typography } from '@mui/material';
+import { Box } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { Dialog } from '@mui/material';
 import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
@@ -10,8 +12,10 @@ import { TextField } from '@mui/material';
 import { FormHelperText } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { CardMedia } from '@mui/material';
 import * as Yup from 'yup';
 import InputAdornment from '@mui/material/InputAdornment';
+import CloseIcon from '@mui/icons-material/Close';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doPost } from "../../components/utils/fetch-utils";
@@ -36,6 +40,10 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
     };
 
     const [values, setValues] = useState(defaultInputValues);
+
+    var getPhotoUrl = (photoReference) => {
+        return 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=' + photoReference + '&key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    }
 
     const onDescriptionChange = (value) => {
         setDescriptionError(
@@ -95,12 +103,63 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                 open={open}
                 onClose={onClose}
                 aria-labelledby="responsive-dialog-title"
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle variant="h4" sx={{ backgroundColor: "primary.main", color: "#FFFFFF", mb: "10px" }}>Select attraction</DialogTitle>
-                <DialogContent>
-                    <DialogContentText variant="body1" mb="30px">
+                <DialogTitle
+                    sx={{
+                        backgroundColor: "primary.main",
+                        color: "#FFFFFF",
+                        mb: "10px",
+                        // pt: 2,
+                        // pb: 1,
+                        py: 2
+                    }}
+                >
+                    <Box
+                        sx={{
+                            width: "100%",
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignContent: "center"
+                        }}>
+                        <Typography variant="h4"
+                        >
+                            Select attraction
+                        </Typography>
+                        <IconButton
+                            sx={{ p: 0 }}
+                            onClick={onClose}
+                        >
+                            <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
+                        </IconButton>
+                    </Box>
+                </DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
+                    <DialogContentText variant="body1">
                         Add description to your selected attraction.
                     </DialogContentText>
+                    <Box
+                        sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "center",
+                            height: "200px",
+                            width: "100%",
+                            mt: 3,
+                            mb: 1
+                        }}
+                    >
+                        <CardMedia
+                            sx={{ borderRadius: "10px" }}
+                            component="img"
+                            image={getPhotoUrl(attractionData.photoLink)}
+                        />
+                    </Box>
                     <form
                         onSubmit={handleSubmit(() => handleAttractionAddition(attractionName, description.value))}
                     >
@@ -108,6 +167,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                             type="string"
                             disabled
                             autoFocus
+                            label="Attraction name"
                             margin="normal"
                             step='any'
                             name='attractionName'
@@ -146,15 +206,18 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                         </FormHelperText>
                         <DialogActions>
                             <Button
-                                varaint="outlined"
+                                variant="outlined"
                                 onClick={handleErrorClose}
+                                sx={{
+                                    borderRadius: "20px"
+                                }}
                             >
                                 Cancel
                             </Button>
                             <Button
                                 type="submit"
                                 variant="contained"
-                                sx={{ color: "#FFFFFF" }}
+                                sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                             >
                                 Select
                             </Button>

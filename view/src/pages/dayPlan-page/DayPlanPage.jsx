@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useEffect } from 'react';
+import { useParams } from "react-router-dom";
 import { Avatar } from "@mui/material";
 import { Box } from "@mui/material";
 import { Menu } from "@mui/material";
@@ -37,14 +38,13 @@ import { SearchAttractionDialog } from "../../components/attraction/SearchAttrac
 import { doGet, doGetAwait } from "../../components/utils/fetch-utils";
 import { CircularProgress } from "@mui/material";
 import { secondsToMilliseconds, set } from "date-fns/esm";
-import { useParams } from "react-router-dom";
 
 export const URL = '/dayPlan/:groupId';
 export const NAME = "DayPlan";
 
 export const DayPlanPage = (props) => {
 
-    const {groupId} = useParams();
+    const { groupId } = useParams();
 
     const [createDayPlanDialogOpen, setCreateDayPlanDialogOpen] = useState(false);
     const [searchAttractionDialogOpen, setSearchAttractionDialogOpen] = useState(false);
@@ -71,16 +71,17 @@ export const DayPlanPage = (props) => {
     const getData = async () => {
         setLodaing(true)
         doGet('/api/v1/day-plan?' + new URLSearchParams({ groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(json => {setdayPlansRaw(json); return json})
-        .then(dayPlans => {setAllDayPlans(dayPlans.map(dayPlan => (
-                        <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
-                            <DayPlanCard dayPlanData={dayPlan} canModify={isCordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()}/>
-                        </ListItem>
-                        )));
-                        setLodaing(false)
-                    })
-        .catch(err => console.log('Request Failed', err));
+            .then(response => response.json())
+            .then(json => { setdayPlansRaw(json); return json })
+            .then(dayPlans => {
+                setAllDayPlans(dayPlans.map(dayPlan => (
+                    <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
+                        <DayPlanCard dayPlanData={dayPlan} canModify={isCordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
+                    </ListItem>
+                )));
+                setLodaing(false)
+            })
+            .catch(err => console.log('Request Failed', err));
     };
 
     useEffect(() => {
@@ -189,7 +190,9 @@ export const DayPlanPage = (props) => {
                             justifyContent: "center",
                             alignItems: "center",
                             minWidth: "90%",
-                            minHeight: "100%"
+                            maxWidth: "95%",
+                            minHeight: "100%",
+                            mb: 5
                         }}
                     >
                         <Grid container spacing={10}
@@ -203,7 +206,7 @@ export const DayPlanPage = (props) => {
                                         overflow: "visible",
                                         display: "flex",
                                         flexDirection: "column",
-                                        justifyContent: "space-between",
+                                        justifyContent: "flex-start",
                                         position: "relative",
                                         overflowWrap: "break-word",
                                         backgroundClip: "border-box",
@@ -294,12 +297,13 @@ export const DayPlanPage = (props) => {
                                         overflow: "visible",
                                         display: "flex",
                                         flexDirection: "column",
-                                        justifyContent: "space-between",
+                                        justifyContent: "flex-start",
                                         position: "relative",
                                         overflowWrap: "break-word",
                                         backgroundClip: "border-box",
                                         minHeight: "300px",
-                                        minWidth: "800px",
+                                        minWidth: "700px",
+                                        // maxWidth: "700px",
                                         borderRadius: "10px"
                                     }}
                                     elevation={16}
@@ -365,7 +369,6 @@ export const DayPlanPage = (props) => {
                                         alignItems: "stretch",
                                         flexDirection: "column",
                                         justifyContent: "flex-start",
-                                        justifyItems: "center",
                                         margin: 2,
                                         minHeight: "200px"
                                     }}>
@@ -383,6 +386,7 @@ export const DayPlanPage = (props) => {
                                             <Box
                                                 sx={{
                                                     // height: "100%",
+                                                    width: "100%",
                                                     display: "flex",
                                                     flexDirection: "column",
                                                     alignItems: "flex-start",
@@ -417,7 +421,7 @@ export const DayPlanPage = (props) => {
                                                     <Box sx={{ height: "100%", width: "100%", display: "flex", justifyContent: "center" }}>
                                                         <List sx={{
                                                             // height: "100%", 
-                                                            px: 0, minWidth: "90%", maxWidth: "90%"
+                                                            px: 0, minWidth: "700px", maxWidth: "700px"
                                                         }}>
                                                             {isOptimizedDayPlan ? optimizedAttractions : allAttractions}
                                                         </List>
@@ -425,13 +429,13 @@ export const DayPlanPage = (props) => {
                                                 :
                                                 dayPlanName === "" ?
                                                     <Box sx={{ height: "100%", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                                        <Typography variant="h4" >
+                                                        <Typography variant="h4" sx={{ display: "flex", justifyContent: "center", minWidth: "700px", maxWidth: "700px" }} >
                                                             Choose day plan to see the details
                                                         </Typography>
                                                     </Box>
                                                     :
                                                     <Box sx={{ height: "100%", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                                        <Typography variant="h4" >
+                                                        <Typography variant="h4" sx={{ display: "flex", justifyContent: "center", minWidth: "700px", maxWidth: "700px" }} >
                                                             Add attractions to see the detailed plan
                                                         </Typography>
                                                     </Box>

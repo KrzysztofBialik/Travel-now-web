@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { useState } from "react";
 import { Box } from '@mui/material';
+import { Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { MenuItem } from '@mui/material';
 import { Button } from '@mui/material';
 import { Dialog } from '@mui/material';
@@ -20,6 +22,7 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import InputAdornment from '@mui/material/InputAdornment';
 import EditIcon from '@mui/icons-material/Edit';
 import ChurchIcon from '@mui/icons-material/Church';
+import CloseIcon from '@mui/icons-material/Close';
 import CastleIcon from '@mui/icons-material/Castle';
 import SailingIcon from '@mui/icons-material/Sailing';
 import LocationCityIcon from '@mui/icons-material/LocationCity';
@@ -29,7 +32,6 @@ import LandscapeIcon from '@mui/icons-material/Landscape';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import DownhillSkiingIcon from '@mui/icons-material/DownhillSkiing';
 import format from 'date-fns/format';
-import toDate from 'date-fns/toDate';
 import parseISO from 'date-fns/parseISO';
 
 import { SuccessToast } from '../toasts/SuccessToast';
@@ -160,14 +162,15 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
     };
 
     const handleEditDayPlan = async (dayPlanName, date, icon) => {
-        var postBody = {'groupId':localStorage.getItem('groupId'), 'name':dayPlanName, 'date':format(new Date(Date.parse(date)), "yyyy-MM-dd"), 'iconType':icon};
+        var postBody = { 'groupId': localStorage.getItem('groupId'), 'name': dayPlanName, 'date': format(new Date(Date.parse(date)), "yyyy-MM-dd"), 'iconType': icon };
         await doPatch('/api/v1/day-plan?dayPlanId=' + dayPlanData.dayPlanId, postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 close();
                 onSuccess();
             })
-            .catch(err => {setErrorToastOpen(true); 
+            .catch(err => {
+                setErrorToastOpen(true);
                 setEditionError(err.message)
             });
     };
@@ -191,8 +194,35 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                 open={open}
                 onClose={onClose}
                 aria-labelledby="responsive-dialog-title"
+                PaperProps={{
+                    style: {
+                        minWidth: "400px",
+                        maxWidth: "400px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle variant="h4">Create new day plan</DialogTitle>
+                <DialogTitle
+                    sx={{
+                        backgroundColor: "primary.main",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        color: "#FFFFFF",
+                        mb: 2
+                    }}
+                >
+                    <Typography sx={{ color: "#FFFFFF", fontSize: "24px" }}>
+                        Edit day plan
+                    </Typography>
+                    <IconButton
+                        sx={{ p: 0 }}
+                        onClick={onClose}
+                    >
+                        <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
+                    </IconButton>
+                </DialogTitle>
                 <DialogContent>
                     <form
                         onSubmit={handleSubmit(() => handleEditDayPlan(dayPlanName.value, values.date, values.icon))}
@@ -254,20 +284,6 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                                     }
                                 />
                             </LocalizationProvider>
-                            {/* <TextField
-                                variant="outlined"
-                                type='date'
-                                autoFocus
-                                placeholder='Date'
-                                name='date'
-                                label='Date'
-                                margin="normal"
-                                {...register('date')}
-                                error={Boolean(errors.date) ? (Boolean(dateError)) : false}
-                                helperText={Boolean(errors.date) && dateError}
-                                value={date}
-                                onChange={(newDate) => onDateChange(newDate)}
-                            /> */}
                         </Box>
                         <DialogContentText variant="body1" sx={{ my: "-10px" }}>
                             Icon:
@@ -286,7 +302,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                                 {...register('icon')}
                                 error={errors.icon ? true : false}
                                 helperText={errors.icon?.message}
-                                value={values.icon || ""}
+                                value={dayPlanData.iconType}
                                 onChange={(event) => { handleChange({ ...values, icon: event.target.value }) }}
                             >
                                 {icons.map((icon) => (

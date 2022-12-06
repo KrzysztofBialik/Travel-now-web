@@ -26,8 +26,8 @@ import './NavigationNavbar.css';
 import { MenuItems } from './MenuItems'
 import { UserOptionsDialog } from '../../navbarDialogs/UserOptionsDialog';
 import { TripGroupOptionsDialog } from '../../navbarDialogs/TripGroupOptionsDialog';
-import { ConfirmLogoutDialog } from './ConfirmLogoutDialog';
-import {Routes, Route, useNavigate} from 'react-router-dom';
+import { ConfirmLogoutDialog } from '../../navbarDialogs/ConfirmLogoutDialog';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { doGet } from '../../utils/fetch-utils'
 
 
@@ -112,13 +112,13 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
 
     const getIsCoordinator = async () => {
         await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
-        .then(response => setIsCoordinator(response.json))
-        .catch(err => console.log(err.message));
+            .then(response => setIsCoordinator(response.json))
+            .catch(err => console.log(err.message));
     };
 
     useEffect(() => {
         getIsCoordinator();
-      }, [])
+    }, [])
 
 
 
@@ -157,11 +157,11 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
 
     return (
         <>
-         <ConfirmLogoutDialog
-         open={userLogoutDialogOpen}
-         onClose={() => setUserLogoutDialogOpen(false)}
-         logoutAction={logoutAction}
-         />
+            <ConfirmLogoutDialog
+                open={userLogoutDialogOpen}
+                onClose={() => setUserLogoutDialogOpen(false)}
+                logoutAction={logoutAction}
+            />
             <TripGroupOptionsDialog
                 open={tripGroupOptionsDialogOpen}
                 onClose={() => setTripGroupOptionsDialogOpen(false)}
@@ -175,7 +175,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                 <AppBar
                     sx={{
                         width: "100%",
-                        minWidth: "1000px",
+                        minWidth: "1200px",
                         borderBottomLeftRadius: "20px",
                         borderBottomRightRadius: "20px",
                         position: "relative",
@@ -210,7 +210,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                         <Box sx={{ display: "flex", flexDirection: "row" }}>
                             {buttonsData.length !== 0 &&
                                 <Box sx={{ flexGrow: 0, mr: 2 }}>
-                                    <Tooltip title="Open trip group settings">
+                                    <Tooltip title="Open trip group menu">
                                         <IconButton
                                             onClick={handleOpenGroupMenu}
                                             sx={{
@@ -245,30 +245,32 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                         onClose={handleCloseGroupMenu}
                                     >
                                         {isCoordinator ?
-                                            <>
+                                            [
                                                 <MenuItem
+                                                    key={1}
                                                     onClick={handleTripGroupOptionsAction}
                                                 >
                                                     <SettingsIcon sx={{ color: "primary.dark", mr: 1 }} />
                                                     <Typography sx={{ textAlign: "center", color: "primary.dark" }}>
                                                         Trip group settings
                                                     </Typography>
-                                                </MenuItem>
+                                                </MenuItem>,
                                                 <MenuItem
+                                                    key={2}
                                                     onClick={handleDeleteGroup}
                                                 >
                                                     <DeleteIcon sx={{ color: "error.main", mr: 1 }} />
-                                                    <Typography sx={{ textAlign: "center", color: "primary.dark" }}>
+                                                    <Typography sx={{ textAlign: "center", color: "error.main" }}>
                                                         Delete group
                                                     </Typography>
                                                 </MenuItem>
-                                            </>
+                                            ]
                                             :
                                             <MenuItem
                                                 onClick={handleLeaveGroup}
                                             >
-                                                <ExitToAppIcon sx={{ color: "primary.dark", mr: 1 }} />
-                                                <Typography sx={{ textAlign: "center", color: "primary.dark" }}>
+                                                <ExitToAppIcon sx={{ color: "error.main", mr: 1 }} />
+                                                <Typography sx={{ textAlign: "center", color: "error.main" }}>
                                                     Leave group
                                                 </Typography>
                                             </MenuItem>
@@ -277,7 +279,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                 </Box>
                             }
                             <Box sx={{ flexGrow: 0 }}>
-                                <Tooltip title="Open user settings">
+                                <Tooltip title="Open user menu">
                                     <IconButton
                                         onClick={handleOpenUserMenu}
                                         sx={{
@@ -312,6 +314,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                     onClose={handleCloseUserMenu}
                                 >
                                     <MenuItem
+                                        key={1}
                                         onClick={handleUserOptionsAction}
                                     >
                                         <SettingsIcon sx={{ color: "primary.dark", mr: 1 }} />
@@ -320,6 +323,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                         </Typography>
                                     </MenuItem>
                                     <MenuItem
+                                        key={2}
                                         onClick={() => handleLogout()}
                                     >
                                         <LogoutIcon sx={{ color: "primary.dark", mr: 1 }} />

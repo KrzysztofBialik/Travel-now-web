@@ -3,7 +3,7 @@ import { Box } from "@mui/system";
 import { Card } from "@mui/material";
 // import { Link } from "@mui/material";
 import { Icon } from "@mui/material";
-import {BrowserRouter as Router, Link} from 'react-router-dom';
+import { BrowserRouter as Router, Link } from 'react-router-dom';
 
 
 export const DashboardOptionCard = ({ icon, title, description, route, groupId }) => {
@@ -21,18 +21,14 @@ export const DashboardOptionCard = ({ icon, title, description, route, groupId }
                     padding: "20px",
                     "&:hover": { transform: "scale3d(1.05, 1.05, 1)", boxShadow: 10 }
                 }}>
-                <Box lineHeight={1} p={2} textAlign="center">
-                    <Typography
-                        display="block"
-                    >
-                        <Icon sx={{ fontSize: "40px", color: "primary.dark" }}>{icon}</Icon>
-                    </Typography>
+                <Box p={2} textAlign="center">
+                    <Icon fontSize="42px" sx={{ color: "primary.dark" }}>{icon}</Icon>
                     <Typography
                         display="block"
                         variant="5"
                         fontWeight="bold"
                         mt={1}
-                        mb={1.5}
+                        mb={1}
                     >
                         {title}
                     </Typography>
