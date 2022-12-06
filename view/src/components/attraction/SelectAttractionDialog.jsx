@@ -19,6 +19,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doPost } from "../../components/utils/fetch-utils";
+import { PLACEHOLDER_IMAGE } from '../images/Images';
 
 
 export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWithSelect, dayPlanId, onSuccess }) => {
@@ -43,7 +44,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
 
     var getPhotoUrl = (photoReference) => {
         return 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=' + photoReference + '&key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-    }
+    };
 
     const onDescriptionChange = (value) => {
         setDescriptionError(
@@ -157,7 +158,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                         <CardMedia
                             sx={{ borderRadius: "10px" }}
                             component="img"
-                            image={getPhotoUrl(attractionData.photoLink)}
+                            image={attractionData.photoLink !== null ? getPhotoUrl(attractionData.photoLink) : PLACEHOLDER_IMAGE}
                         />
                     </Box>
                     <form

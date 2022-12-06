@@ -21,6 +21,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MapIcon from '@mui/icons-material/Map';
+import { PLACEHOLDER_IMAGE } from "../images/Images";
 
 
 export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDialog }) => {
@@ -68,7 +69,7 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                                     <CardMedia
                                         sx={{ borderRadius: "10px" }}
                                         component="img"
-                                        image={getPhotoUrl(attractionData.photoLink)}
+                                        image={attractionData.photoLink !== null ? getPhotoUrl(attractionData.photoLink) : PLACEHOLDER_IMAGE}
                                     />
                                 </Box>
                             </Box>

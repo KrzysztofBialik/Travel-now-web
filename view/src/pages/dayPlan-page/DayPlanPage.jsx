@@ -16,17 +16,7 @@ import { Switch } from "@mui/material";
 import { FormControlLabel } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
-import { Divider } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-import ChurchIcon from '@mui/icons-material/Church';
-import CastleIcon from '@mui/icons-material/Castle';
-import SailingIcon from '@mui/icons-material/Sailing';
-import LocationCityIcon from '@mui/icons-material/LocationCity';
-import DirectionsWalkIcon from '@mui/icons-material/DirectionsWalk';
-import WaterIcon from '@mui/icons-material/Water';
-import LandscapeIcon from '@mui/icons-material/Landscape';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import DownhillSkiingIcon from '@mui/icons-material/DownhillSkiing';
 
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { currentTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
@@ -116,8 +106,7 @@ export const DayPlanPage = (props) => {
                 <DayPlanCard dayPlanData={dayPlan} canModify={isCordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
             </ListItem>
         )));
-
-    }
+    };
 
     const getOptimized = async () => {
         setLoadingOptimized(true)

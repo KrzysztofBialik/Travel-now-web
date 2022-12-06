@@ -35,7 +35,9 @@ const ExpandMore = styled((props) => {
 }));
 
 
-export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailability }) => {
+export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailability, userFullName }) => {
+
+    console.log(usersAvailability);
 
     const [expanded, setExpanded] = useState(false);
     const [fixedAvailabilities, setFixedAvailabilities] = useState([])
@@ -49,9 +51,6 @@ export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailabilit
         onClose();
     };
 
-    console.log("passed user availabilities");
-    console.log(usersAvailability);
-
     const fixAvailabilities = () => {
         setFixedAvailabilities(usersAvailability.map(availability => ({
             availabilityId: availability.availabilityId, userId: availability.userId, groupId: availability.groupId,
@@ -61,7 +60,7 @@ export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailabilit
 
     useEffect(() => {
         fixAvailabilities();
-    }, [])
+    }, [usersAvailability])
 
     return (
         <>
@@ -72,7 +71,8 @@ export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailabilit
                 maxWidth={"lg"}
                 PaperProps={{
                     style: {
-                        borderRadius: "20px"
+                        borderRadius: "20px",
+                        overflowY: "scroll"
                     }
                 }}
             >
@@ -87,7 +87,7 @@ export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailabilit
                     }}
                 >
                     <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
-                        's availability
+                        {userFullName}'s availability
                     </Typography>
                     <IconButton
                         onClick={handleClose}

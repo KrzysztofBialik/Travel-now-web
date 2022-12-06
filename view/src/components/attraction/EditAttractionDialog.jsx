@@ -9,6 +9,7 @@ import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
 import { TextField } from '@mui/material';
+import { CardMedia } from '@mui/material';
 import { FormHelperText } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -18,6 +19,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doPatch } from "../../components/utils/fetch-utils";
+import { PLACEHOLDER_IMAGE } from '../images/Images';
 
 
 export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
@@ -32,6 +34,10 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
     const [description, setDescription] = useState({ value: attractionData.description, length: descriptionLength });
     const [descriptionError, setDescriptionError] = useState(descriptionLength > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null);
     const [editionError, setEditionError] = useState("Ups! Something went wrong. Try again.");
+
+    var getPhotoUrl = (photoReference) => {
+        return 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=' + photoReference + '&key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+    };
 
     const defaultInputValues = {
         attractionName,
@@ -131,6 +137,11 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
                     <DialogContentText variant="body1" mb="20px">
                         Edit description of attraction.
                     </DialogContentText>
+                    <CardMedia
+                        sx={{ borderRadius: "10px" }}
+                        component="img"
+                        image={attractionData.photoLink !== null ? getPhotoUrl(attractionData.photoLink) : PLACEHOLDER_IMAGE}
+                    />
                     <form
                         onSubmit={handleSubmit(() => handleEditAttraction(attractionName, description.value))}
                     >
