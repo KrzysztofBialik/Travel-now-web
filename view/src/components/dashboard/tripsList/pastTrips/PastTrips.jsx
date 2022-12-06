@@ -29,7 +29,7 @@ export const PastTrips = ({trips}) => {
                             icon="currency_exchange"
                             title="Finances"
                             description="Manage unregulated transactions."
-                            route="/finances"
+                            route={`/finances/${groupId}`}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
