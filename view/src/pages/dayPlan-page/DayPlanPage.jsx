@@ -29,7 +29,7 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import DownhillSkiingIcon from '@mui/icons-material/DownhillSkiing';
 
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
-import { currentTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
+import { currentTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { pastTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { CreateDayPlanDialog } from "../../components/dayPlans/CreateDayPlanDialog";
 import { DayPlanCard } from "../../components/dayPlans/DayPlanCard";
@@ -169,7 +169,7 @@ export const DayPlanPage = (props) => {
                     minHeight: '100%'
                 }}>
                 <NavigationNavbar
-                    buttonsData={currentTripButtonsData}
+                    buttonsData={currentTripButtonsDataWithGroupId(groupId)}
                     groupId={groupId}
                 />
                 <Box sx={{
