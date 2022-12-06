@@ -17,70 +17,9 @@ import { RemoveParticipantDialog } from './RemoveParticipantDialog';
 import { PromoteParticipantDialog } from './PromoteParticipantDialog';
 import { ParticipantsAvailabilityDialog } from '../availability/ParticipantsAvailabilityDialog';
 import { doGet } from "../../components/utils/fetch-utils";
-
+import { parseISO } from "date-fns/esm";
 import { get } from 'react-hook-form';
 import { useEffect } from 'react';
-
-export const availabilities = [
-    {
-        id: 1,
-        startDate: new Date(2022, 10, 21),
-        endDate: new Date(2022, 10, 27),
-        user: "BoBa",
-        disabled: true
-    },
-    {
-        id: 2,
-        startDate: new Date(2022, 11, 5),
-        endDate: new Date(2022, 11, 9),
-        user: "BoBa",
-        disabled: true
-    },
-    {
-        id: 3,
-        startDate: new Date(2022, 11, 30),
-        endDate: new Date(2023, 0, 4),
-        user: "Piterm33",
-        disabled: true
-    },
-    {
-        id: 4,
-        startDate: new Date(2023, 0, 6),
-        endDate: new Date(2023, 0, 8),
-        user: "Piterm33",
-        disabled: true
-    },
-    {
-        id: 5,
-        startDate: new Date(2022, 11, 14),
-        endDate: new Date(2022, 11, 18),
-        user: "Piterm33",
-        disabled: true
-    },
-    {
-        id: 6,
-        startDate: new Date(2022, 11, 14),
-        endDate: new Date(2022, 11, 18),
-        user: "Krzychu77",
-        disabled: true
-    },
-    {
-        id: 7,
-        startDate: new Date(2023, 0, 5),
-        endDate: new Date(2023, 0, 12),
-        user: "Krzychu77",
-        disabled: true
-    },
-    {
-        id: 8,
-        startDate: new Date(2022, 11, 10),
-        endDate: new Date(2022, 11, 30),
-        user: "Olisadebe",
-        disabled: true
-    }
-];
-
-
 
 function CustomToolbar() {
     return (
@@ -114,13 +53,31 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
     const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
     const [promoteDialogOpen, setPromoteDialogOpen] = useState(false);
     const [participantsAvailabilityDialogOpen, setParticipantsAvailabilityDialogOpen] = useState(false);
-    const [usersAvailability, setUsersAvailability] = useState([]);
-    const [username, setUsername] = useState("");
     const [userId, setUserId] = useState("");
     const [isDeletingHimself, setIsDeletingHimself] = useState(false);
+    const [availabilities, setAvailabilities] = useState([]);
+    const [usersAvailability, setUsersAvailability] = useState([])
+
+    const getAvailabilities = async () => {
+        await doGet('/api/v1/availability/group/' + groupId)
+        .then(response => response.json())
+        .then(response => {
+            console.log("please")
+            console.log(response)
+            setAvailabilities(response);
+        })
+    //     .then(response => {
+    //         setAvailabilities(
+    //   response.map(availability => ({availabilityId: availability.availabilityId, userId: availability.userId, groupId: availability.groupId,
+    //              startDate: parseISO(availability.dateFrom), endDate: parseISO(availability.dateTo), disabled: true})));
+    //     })
+        .catch(err => console.log('Request Failed', err));
+    }
+
 
     useEffect(() => {
         getUsersData();
+        getAvailabilities();
       }, [])
 
 
@@ -139,9 +96,8 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
     };
 
 
-    const checkParticipantsAvailability = ({ username, userAvailability }) => {
+    const checkParticipantsAvailability = ({userAvailability}) => {
         setUsersAvailability(userAvailability);
-        setUsername(username);
         setParticipantsAvailabilityDialogOpen(true);
     }
 
@@ -190,11 +146,13 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                 </strong>
             ), type: 'actions', flex: 1, hideable: true, headerAlign: 'center', minWidth: 100,
             getActions: (params) => {
-                const username = params.row.username;
                 const userId = params.row.userId;
                 const role = params.row.role;
                 const isSameUser = userId === parseInt(localStorage.getItem("userId"))
-                const userAvailability = availabilities.filter(availability => (availability.user === params.row.username))
+                const userAvailability = availabilities[userId];
+                console.log(availabilities)
+                console.log(userId);
+                console.log(userAvailability);
                 if (isCoordinator) {
                 if(groupStage === "PLANNING_STAGE") {
                     if (role === "PARTICIPANT") {
@@ -208,7 +166,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                             <GridActionsCellItem
                                 icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
                                 label="Check availability"
-                                onClick={() => checkParticipantsAvailability({ username, userAvailability })}
+                                onClick={() => checkParticipantsAvailability({userAvailability})}
                                 showInMenu
                             />,
                             <GridActionsCellItem
@@ -230,7 +188,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                             <GridActionsCellItem
                                 icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
                                 label="Check availability"
-                                onClick={() => checkParticipantsAvailability({ username, userAvailability })}
+                                onClick={() => checkParticipantsAvailability({userAvailability})}
                                 showInMenu
                             />
                         ];
@@ -247,7 +205,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                             <GridActionsCellItem
                                 icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
                                 label="Check availability"
-                                onClick={() => checkParticipantsAvailability({ username, userAvailability })}
+                                onClick={() => checkParticipantsAvailability({userAvailability})}
                                 showInMenu
                             />
                         ];
@@ -290,7 +248,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                             <GridActionsCellItem
                                 icon={<EventAvailableIcon sx={{ color: "primary.main" }} />}
                                 label="Check availability"
-                                onClick={() => checkParticipantsAvailability({ username, userAvailability })}
+                                onClick={() => checkParticipantsAvailability({ userAvailability })}
                                 showInMenu
                             />
                         ];
@@ -365,7 +323,6 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                     open={participantsAvailabilityDialogOpen}
                     onClose={() => { setParticipantsAvailabilityDialogOpen(false) }}
                     usersAvailability={usersAvailability}
-                    user={username}
                 />
                 <DataGrid
                     sx={{

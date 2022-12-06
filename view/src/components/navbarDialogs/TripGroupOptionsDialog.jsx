@@ -23,6 +23,11 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import RuleIcon from '@mui/icons-material/Rule';
 import { UpdatedTripConfirmationDialog } from './UpdatedTripConfirmationDialog';
+import { ErrorTripConfirmationDialog } from './ErrorTripConfirmationDialog';
+import { doGet } from "../../components/utils/fetch-utils";
+import { doPatch } from "../../components/utils/fetch-utils";
+import { useEffect } from 'react';
+
 
 
 const currencies = [
@@ -49,28 +54,28 @@ const currencies = [
 ];
 
 
-const tripData = {
-    tripName: "Barcelona trip",
-    startingLocation: "Wrocław, centrum handlowe Borek",
-    currency: 'PLN',
-    minDays: 4,
-    minParticipants: 5,
-    description: "Lecimy za hajs z projektu ZPI."
-}
 
-export const TripGroupOptionsDialog = ({ open, onClose }) => {
+export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
 
     const [confirmUpdatedDialogOpen, setConfirmUpdateDialogOpen] = useState(false);
-    const DESCRIPTION_LIMIT = 250;
+    const [confirmErrorDialogOpen, setConfirmErrorDialogOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(false);
 
-    const defaultInputValues = {
-        tripName: tripData.tripName,
-        startingLocation: tripData.startingLocation,
-        currency: tripData.currency,
-        minDays: tripData.minDays,
-        minParticipants: tripData.minParticipants,
-        description: tripData.description
+    const [tripData, setTripData] = useState(" ");
+    const DESCRIPTION_LIMIT = 250;
+    
+    const getTripData = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId}).toString())
+        .then(response => response.json())
+        .then(response => {
+           setNecessaryData(response);
+        })
+        .catch(err => console.log('Request Failed', err));
     }
+
+    useEffect(() => {
+        getTripData();
+      }, [])
 
     const validationSchema = Yup.object().shape({
         tripName: Yup
@@ -95,26 +100,56 @@ export const TripGroupOptionsDialog = ({ open, onClose }) => {
 
     const { register, handleSubmit, reset, formState: { errors }, control, watch, setValue, getValues } = useForm({
         resolver: yupResolver(validationSchema),
-        defaultValues: defaultInputValues
     });
 
-    const descriptionWatch = watch("description");
-
+    const setNecessaryData = (response) => {
+        setTripData({tripName: response.name ,startingLocation: response.startLocation, currency: response.currency, minDays: response.minimalNumberOfDays,
+            minParticipants: response.minimalNumberOfParticipants,  description: response.description})
+    }
     const handleUpdateTrip = () => {
-        console.log(getValues());
-        setConfirmUpdateDialogOpen(true);
+        editUserAccount(getValues());
     };
+
+    const handleSuccess = () => {
+        setConfirmUpdateDialogOpen(true);
+    }
 
     const close = () => {
         reset();
         onClose();
     };
 
+    const editUserAccount = async (values) => {
+        console.log("hello there")
+        console.log(values)
+        var postBody = {'name': values.tripName, 'currency': values.currency, 'description':values.description, 'startLocation': values.startingLocation,
+         'minimalNumberOfDays': values.minDays, 'minimalNumberOfParticipants': values.minParticipants};
+
+        await doPatch('/api/v1/trip-group/group?' + new URLSearchParams({ groupId: groupId}).toString(), postBody)
+            .then(response => response.json())
+            .then(response => {
+            setNecessaryData(response);
+            handleSuccess();
+        })
+        .catch(err => {
+            setConfirmErrorDialogOpen(true);
+            setErrorMessage(err.message)
+            console.log('Request Failed', err.message)
+        });
+    }
+
+    const descriptionWatch = watch("description");
+
     return (
         <>
             <UpdatedTripConfirmationDialog
                 open={confirmUpdatedDialogOpen}
                 onClose={() => setConfirmUpdateDialogOpen(false)}
+            />
+             <ErrorTripConfirmationDialog
+                open={confirmErrorDialogOpen}
+                onClose={() => setConfirmErrorDialogOpen(false)}
+                message={errorMessage}
             />
             <Dialog
                 fullScreen
@@ -223,6 +258,7 @@ export const TripGroupOptionsDialog = ({ open, onClose }) => {
                                                 placeholder='Trip name'
                                                 name='trip name'
                                                 label='Trip name'
+                                                defaultValue={tripData.tripName}
                                                 fullWidth
                                                 variant="outlined"
                                                 InputProps={{
@@ -242,6 +278,7 @@ export const TripGroupOptionsDialog = ({ open, onClose }) => {
                                                 margin="normal"
                                                 placeholder='Starting location'
                                                 name='startingLocation'
+                                                defaultValue={tripData.startingLocation}
                                                 label='Starting location'
                                                 fullWidth
                                                 variant="outlined"
@@ -268,6 +305,7 @@ export const TripGroupOptionsDialog = ({ open, onClose }) => {
                                                             select
                                                             margin='normal'
                                                             variant='outlined'
+                                                            defaultValue={tripData.currency}
                                                             label='currency'
                                                             InputProps={{
                                                                 startAdornment: (
@@ -295,6 +333,7 @@ export const TripGroupOptionsDialog = ({ open, onClose }) => {
                                                     margin="normal"
                                                     placeholder='Min days'
                                                     name='minDays'
+                                                    defaultValue={tripData.minDays}
                                                     label='Min days'
                                                     variant="outlined"
                                                     InputProps={{
@@ -315,6 +354,7 @@ export const TripGroupOptionsDialog = ({ open, onClose }) => {
                                                     margin="normal"
                                                     placeholder='Min participants'
                                                     name='minParticipants'
+                                                    defaultValue={tripData.minParticipants}
                                                     label='Min participants'
                                                     variant="outlined"
                                                     InputProps={{
@@ -338,6 +378,7 @@ export const TripGroupOptionsDialog = ({ open, onClose }) => {
                                                 placeholder='Description'
                                                 name='description'
                                                 label='Description'
+                                                defaultValue={tripData.description}
                                                 fullWidth
                                                 variant="outlined"
                                                 {...register('description')}
@@ -353,7 +394,7 @@ export const TripGroupOptionsDialog = ({ open, onClose }) => {
                                                 }}
                                             >
                                                 <span>{errors.description?.message}</span>
-                                                <span>{`${descriptionWatch.length}/${DESCRIPTION_LIMIT}`}</span>
+                                                {/* <span>{`${descriptionWatch.length}/${DESCRIPTION_LIMIT}`}</span> */}
                                             </FormHelperText>
 
                                             <DialogActions>
