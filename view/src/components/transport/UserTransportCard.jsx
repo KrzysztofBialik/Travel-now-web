@@ -1,10 +1,13 @@
 import { useState } from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Card } from "@mui/material";
 import { CardActions } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import { List } from "@mui/material";
 import { ListItem } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { ListItemText } from "@mui/material";
 import CommuteIcon from '@mui/icons-material/Commute';
 import CircleIcon from '@mui/icons-material/Circle';
@@ -17,9 +20,13 @@ import { EditTransportDialog } from "./EditTransportDialog";
 import { DeleteTransportDialog } from "./DeleteTransportDialog";
 import { format, parseISO } from "date-fns";
 import * as durationn from 'duration-fns'
+import { doGet } from "../utils/fetch-utils";
 
 export const UserTransportCard = ({ transportData, onSuccess, accommodationId }) => {
 
+    const { groupId } = useParams();
+    const [currencyLoading, setCurrencyLoading] = useState(false);
+    const [currency, setCurrency] = useState("");
     const [editTransportDialogOpen, setEditTransportDialogOpen] = useState(false);
     const [deleteTransportDialogOpen, setDeleteTransportDialogOpen] = useState(false);
 
@@ -34,19 +41,36 @@ export const UserTransportCard = ({ transportData, onSuccess, accommodationId })
     const parseTime = (duration) => {
         var time = durationn.parse(duration);
         return constructString(time)
-    }
+    };
+
+    const getCurrency = async () => {
+        setCurrencyLoading(true);
+        var resp = await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                var currency = response.currency;
+                setCurrency(currency);
+                console.log(currency);
+            })
+            .then(setCurrencyLoading(false))
+            .catch(err => console.log('Request Failed', err));
+    };
+
+    useEffect(() => {
+        getCurrency();
+    }, []);
 
     const constructString = (time) => {
         var result = "";
-        if(time.days !== 0) {
+        if (time.days !== 0) {
             result = result + time.days + "d "
         }
 
-        if(time.hours !== 0) {
+        if (time.hours !== 0) {
             result = result + time.hours + "h "
         }
 
-        if(time.minutes !== 0) {
+        if (time.minutes !== 0) {
             result = result + time.minutes + "m "
         }
         return result;
@@ -120,7 +144,7 @@ export const UserTransportCard = ({ transportData, onSuccess, accommodationId })
                         <AttachMoneyOutlinedIcon sx={{ color: "primary.main" }} />
                         <ListItemText
                             sx={{ ml: "10px" }}
-                            primary={`${transportData.price} PLN`}
+                            primary={currencyLoading ? <CircularProgress size="20px" sx={{ ml: 2, mt: 1 }} /> : `${transportData.price} ${currency}`}
                         />
                     </ListItem>
                     <ListItem>

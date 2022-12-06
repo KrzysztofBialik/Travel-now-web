@@ -43,10 +43,10 @@ const center = { lat: 0, lng: 0 }
 
 export const TripSummaryPage = () => {
 
-    const {groupId} = useParams();
+    const { groupId } = useParams();
 
-    const [isCordinator, setIsCordinator]  = useState(false);;
-    const [isPlanningStage, setIsPlanningStage]  = useState(false);
+    const [isCordinator, setIsCordinator] = useState(false);;
+    const [isPlanningStage, setIsPlanningStage] = useState(false);
 
     const [usersData, setUsersData] = useState([]);
     const [groupCoordinators, setGroupCoordinators] = useState([]);
@@ -57,8 +57,8 @@ export const TripSummaryPage = () => {
     const [loadingSelected, setLoadingSelected] = useState(true);
     const [seletcedAccommodation, setSeletcedAccommodation] = useState(null);
     const [sharedAvailability, setSharedAvailability] = useState(null);
-    const [center, setCenter] = useState({ lat: 0, lng: 0 }) 
-    const [userFullData, setUserFullData] = useState([]) 
+    const [center, setCenter] = useState({ lat: 0, lng: 0 })
+    const [userFullData, setUserFullData] = useState([])
     const [tripGroup, setTripGroup] = useState([]);
     const [range, setRange] = useState([
         {
@@ -85,10 +85,10 @@ export const TripSummaryPage = () => {
     };
 
     const selectNavbar = () => {
-        if(tripGroup.groupStage === 'PLANNING_STAGE') {
+        if (tripGroup.groupStage === 'PLANNING_STAGE') {
             return futureTripButtonsDataWithGroupId(groupId);
         }
-        else if(tripGroup.groupStage === 'TRIP_STAGE') {
+        else if (tripGroup.groupStage === 'TRIP_STAGE') {
             return currentTripButtonsDataWithGroupId(groupId);
         }
         else {
@@ -121,58 +121,58 @@ export const TripSummaryPage = () => {
     const getChosenAccommodation = async () => {
         setLoadingSelected(true)
         doGet('/api/v1/trip-group/accommodation-dto?' + new URLSearchParams({ groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(accommodation => {
-            if(accommodation.groupId === null) {
-                setSeletcedAccommodation(null)
-            } else {
-                setSeletcedAccommodation(
-                    <Grid item xs={12} md={4} key={accommodation.accommodationId}>
-                        <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} onSuccess={() => console.log()}/>
-                    </Grid>)
-                    setCenter({ lat: accommodation.latitude, lng : accommodation.longitude })
-            }
-        })
-        .then(next => setLoadingSelected(false))
-        .catch(err => console.log('Request Failed', err));
+            .then(response => response.json())
+            .then(accommodation => {
+                if (accommodation.groupId === null) {
+                    setSeletcedAccommodation(null)
+                } else {
+                    setSeletcedAccommodation(
+                        <Grid item xs={12} md={4} key={accommodation.accommodationId}>
+                            <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} onSuccess={() => console.log()} />
+                        </Grid>)
+                    setCenter({ lat: accommodation.latitude, lng: accommodation.longitude })
+                }
+            })
+            .then(next => setLoadingSelected(false))
+            .catch(err => console.log('Request Failed', err));
     };
 
     const getUsersData = async () => {
         await doGet('/api/v1/user-group/participants?' + new URLSearchParams({ groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(response => setUsersData(response))
-        .catch(err => console.log('Request Failed', err));
+            .then(response => response.json())
+            .then(response => setUsersData(response))
+            .catch(err => console.log('Request Failed', err));
 
         await doGet('/api/v1/user-group/coordinators?' + new URLSearchParams({ groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(response => setGroupCoordinators(response))
-        .catch(err => console.log('Request Failed', err));
+            .then(response => response.json())
+            .then(response => setGroupCoordinators(response))
+            .catch(err => console.log('Request Failed', err));
     }
 
     const getTripData = async () => {
-        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(response => {
-            setTripGroup(response);
-            setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
-        })
-        .catch(err => console.log('Request Failed', err));
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                setTripGroup(response);
+                setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
+            })
+            .catch(err => console.log('Request Failed', err));
     }
 
     const getSelectedAvailability = async () => {
-        await doGet('/api/v1/shared-availability?' + new URLSearchParams({sharedGroupAvailabilityId: tripGroup.selectedSharedAvailability }).toString())
-        .then(response => response.json())
-        .then(response => {
-            setSharedAvailability(response);
-            setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
-        })
-        .catch(err => console.log('Request Failed', err));
+        await doGet('/api/v1/shared-availability?' + new URLSearchParams({ sharedGroupAvailabilityId: tripGroup.selectedSharedAvailability }).toString())
+            .then(response => response.json())
+            .then(response => {
+                setSharedAvailability(response);
+                setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
+            })
+            .catch(err => console.log('Request Failed', err));
     }
 
     var tempData = [];
     const userWithRoles = () => {
-        
-        for(var i = 0 ; i < usersData.length; i++) {
+
+        for (var i = 0; i < usersData.length; i++) {
             var user = {}
             let userId = usersData[i].userId;
             let firstName = usersData[i].firstName;
@@ -180,8 +180,8 @@ export const TripSummaryPage = () => {
             let phoneNumber = usersData[i].phoneNumber;
             let email = usersData[i].email;
             let role;
-            
-            if(groupCoordinators.some(coordinator => coordinator.userId === usersData[i].userId)){
+
+            if (groupCoordinators.some(coordinator => coordinator.userId === usersData[i].userId)) {
                 role = "COORDINATOR"
             }
             else {
@@ -194,7 +194,7 @@ export const TripSummaryPage = () => {
             user['email'] = email;
             user['role'] = role;
             tempData.push(user);
-        }        
+        }
     }
 
     userWithRoles();
@@ -204,16 +204,16 @@ export const TripSummaryPage = () => {
         getUsersData();
         getChosenAccommodation();
         getTripData();
-      }, [])
+    }, [])
 
     return (
         <Box sx={{
             position: 'relative',
             minHeight: '100%'
         }}>
-            <NavigationNavbar 
-            
-            buttonsData={selectNavbar()} />
+            <NavigationNavbar
+
+                buttonsData={selectNavbar()} />
             <Box sx={{
                 p: 10,
                 mx: { xs: 2, lg: 3 },
@@ -244,7 +244,10 @@ export const TripSummaryPage = () => {
                                     mb: "30px"
                                 }}
                             >
-                                {tripGroup.name} summary
+                                <Typography variant="h3" sx={{ color: "primary.main", mr: 2 }}>
+                                    {tripGroup.name}
+                                </Typography>
+                                summary
                             </Typography>
                         </Grid>
 
@@ -259,7 +262,7 @@ export const TripSummaryPage = () => {
                                 onSuccess={() => getTripData()}
                                 shared={true}
                                 groupId={groupId}
-                                />
+                            />
                             <Grid item xs={6}>
                                 <Card
                                     sx={{
@@ -440,7 +443,7 @@ export const TripSummaryPage = () => {
                             </Grid>
 
                             {/*------------------------------------Accommodation------------------------------------*/}
-                            <DeleteAccommodationDialog open={deleteAccommodationDialogOpen} onClose={() => setDeleteAccommodationDialogOpen(false)}  groupId={groupId} onSuccess={() => getChosenAccommodation()}/>
+                            <DeleteAccommodationDialog open={deleteAccommodationDialogOpen} onClose={() => setDeleteAccommodationDialogOpen(false)} groupId={groupId} onSuccess={() => getChosenAccommodation()} />
                             <Grid item xs={12}>
                                 <Card
                                     sx={{
@@ -620,7 +623,7 @@ export const TripSummaryPage = () => {
                                         }}
                                     // elevation={4}
                                     >
-                                        <ParticipantsTable userData={tempData}/>
+                                        <ParticipantsTable userData={tempData} />
                                     </Box>
                                     <Box
                                         sx={{

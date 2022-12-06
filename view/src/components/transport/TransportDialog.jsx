@@ -52,7 +52,7 @@ import { parseISO } from 'date-fns';
 const center = { lat: 51.11006414847989, lng: 17.057531914047086 }
 const origin = "51.088444225016154, 16.998315448807766"
 const destination = "41.38913481961653, 2.156520537014847"
-// const tripPoints = { origin: origin, destination: destination }
+const tripPoints = { origin: origin, destination: destination }
 
 const exampleUserTransport = {
     name: "Flixbus",
@@ -105,6 +105,8 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
+    const [isCarTransport, setIsCarTransport] = useState(false);
+    const [isPlaneTransport, setIsPlaneTransport] = useState(false);
     const [addTransportDialogOpen, setAddTransportDialogOpen] = useState(false);
     const [directionsResponse, setDirectionsResponse] = useState(null);
     const [distance, setDistance] = useState("");
@@ -129,7 +131,7 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
     });
 
     const getData = async () => {
-        setLoading(true)
+        setLoading(true);
         await doPost('/api/v1/transport?' + new URLSearchParams({ accommodationId: accommodationId }).toString())
             .then(response => response.json())
             .then(json => {
@@ -156,6 +158,10 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
             )
             .catch(err => console.log('Request Failed', err));
     };
+
+    useEffect(() => {
+        calculateRoute();
+    }, [carTransportData])
 
     const mapPlaneData = (plane) => {
         return (
@@ -382,69 +388,100 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                         minHeight: "200px"
                                     }}>
                                         {
-                                            !loading ?
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                        justifyItems: "center",
-                                                        alignItems: "center",
-                                                        justifyContent: "space-around",
-                                                        minHeight: "400px"
-                                                    }}
-                                                >
-                                                    <Grid container sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                                        <Grid item xs={5}>
-                                                            <Box
-                                                                sx={{
-                                                                    display: "flex",
-                                                                    justifyContent: "space-between",
-                                                                    flexDirection: "column",
-                                                                    minHeight: "400px"
-                                                                }}
-                                                            >
-                                                                <List sx={{ width: '100%', maxWidth: 360 }}>
-                                                                    <ListItem>
-                                                                        <ForkRightIcon sx={{ color: "primary.main", backgroundColor: "#FFFFFF", fontSize: "48px", mr: "10px" }} />
-                                                                        <ListItemText primary="Distance" secondary={Math.round(carTransportData[0].distanceInKm / 1000 * 100) / 100 + 'km'} />
-                                                                    </ListItem>
-                                                                    <ListItem>
-                                                                        <AccessTimeIcon sx={{ color: "primary.main", backgroundColor: "#FFFFFF", fontSize: "48px", mr: "10px" }} />
-                                                                        <ListItemText primary="Duration" secondary={parseTime(carTransportData[0].duration)} />
-                                                                    </ListItem>
-                                                                </List>
-                                                                <Button
-                                                                    variant="outlined"
-                                                                    target="_blank"
-                                                                    rel="noreferrer"
-                                                                    href={mapsLink}
+                                            (!loading && isLoaded) ?
+                                                (carTransportData.length === 0) ?
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            justifyItems: "center",
+                                                            alignItems: "center",
+                                                            justifyContent: "space-around",
+                                                            minHeight: "400px"
+                                                        }}
+                                                    >
+                                                        <Grid container sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                                            <Grid item xs={12}>
+                                                                <Box
                                                                     sx={{
-                                                                        borderRadius: "20px",
-                                                                        m: 3,
-                                                                        width: "180px",
-                                                                        '&:hover': { color: "#FFFFFF", backgroundColor: "primary.main" }
+                                                                        display: "flex",
+                                                                        justifyContent: "center",
+                                                                        alignItems: "center",
+                                                                        flexDirection: "column",
+                                                                        minHeight: "400px",
+                                                                        minWidth: "400px",
                                                                     }}
                                                                 >
-                                                                    <MapIcon sx={{ mr: "10px" }} />
-                                                                    See in maps
-                                                                </Button>
-                                                            </Box>
+                                                                    <Typography sx={{ fontSize: "24px", color: "primary.main" }}>
+                                                                        No car transport found
+                                                                    </Typography>
+                                                                </Box>
+                                                            </Grid>
                                                         </Grid>
-                                                        <Grid item xs={7} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                                                            {isLoaded ?
-                                                                <GoogleMap
-                                                                    zoom={14}
-                                                                    center={center}
-                                                                    mapContainerClassName="map"
+                                                    </Box>
+                                                    :
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            justifyItems: "center",
+                                                            alignItems: "center",
+                                                            justifyContent: "space-around",
+                                                            minHeight: "400px"
+                                                        }}
+                                                    >
+                                                        <Grid container sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                                            <Grid item xs={5}>
+                                                                <Box
+                                                                    sx={{
+                                                                        display: "flex",
+                                                                        justifyContent: "space-between",
+                                                                        flexDirection: "column",
+                                                                        minHeight: "400px"
+                                                                    }}
                                                                 >
-                                                                    <MarkerF position={center} />
-                                                                    {directionsResponse && <DirectionsRenderer directions={directionsResponse} options={{ strokeColor: "#2ab7ca" }} />}
-                                                                </GoogleMap>
-                                                                :
-                                                                <Typography variant="h1">Loading...</Typography>}
+                                                                    <List sx={{ width: '100%', maxWidth: 360 }}>
+                                                                        <ListItem>
+                                                                            <ForkRightIcon sx={{ color: "primary.main", backgroundColor: "#FFFFFF", fontSize: "48px", mr: "10px" }} />
+                                                                            <ListItemText primary="Distance" secondary={Math.round(carTransportData[0].distanceInKm / 1000 * 100) / 100 + 'km'} />
+                                                                        </ListItem>
+                                                                        <ListItem>
+                                                                            <AccessTimeIcon sx={{ color: "primary.main", backgroundColor: "#FFFFFF", fontSize: "48px", mr: "10px" }} />
+                                                                            <ListItemText primary="Duration" secondary={parseTime(carTransportData[0].duration)} />
+                                                                        </ListItem>
+                                                                    </List>
+                                                                    <Button
+                                                                        variant="outlined"
+                                                                        target="_blank"
+                                                                        rel="noreferrer"
+                                                                        href={mapsLink}
+                                                                        sx={{
+                                                                            borderRadius: "20px",
+                                                                            m: 3,
+                                                                            width: "180px",
+                                                                            '&:hover': { color: "#FFFFFF", backgroundColor: "primary.main" }
+                                                                        }}
+                                                                    >
+                                                                        <MapIcon sx={{ mr: "10px" }} />
+                                                                        See in maps
+                                                                    </Button>
+                                                                </Box>
+                                                            </Grid>
+                                                            <Grid item xs={7} sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                                                {isLoaded ?
+                                                                    <GoogleMap
+                                                                        zoom={14}
+                                                                        center={center}
+                                                                        mapContainerClassName="map"
+                                                                    >
+                                                                        <MarkerF position={center} />
+                                                                        {directionsResponse && <DirectionsRenderer directions={directionsResponse} options={{ strokeColor: "#2ab7ca" }} />}
+                                                                    </GoogleMap>
+                                                                    :
+                                                                    <Typography variant="h1">Loading...</Typography>}
+                                                            </Grid>
                                                         </Grid>
-                                                    </Grid>
-                                                </Box>
+                                                    </Box>
                                                 :
                                                 <Box
                                                     sx={{
@@ -508,48 +545,79 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                     }}>
                                         {
                                             !loading ?
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                        // justifyItems: "center",
-                                                        alignItems: "center",
-                                                        // justifyContent: "space-around",
-                                                        minHeight: "400px"
-                                                        // border: "2px solid black"
-                                                    }}
-                                                >
-                                                    <Box sx={{ width: "100%" }}>
-                                                        <List>
-                                                            {planeDataList}
-                                                        </List>
-                                                    </Box>
-                                                    <Box sx={{ width: "100%", height: "200px", minHeight: "200px" }}>
-                                                        <List>
-                                                            <ListItem>
-                                                                <ConnectingAirportsIcon sx={{ color: "primary.main" }} />
-                                                                <ListItemText
-                                                                    sx={{ ml: "10px" }}
-                                                                    primary={"2"}
-                                                                />
-                                                            </ListItem>
-                                                            <ListItem sx={{ mt: "-10px", display: "flex", alignItems: "flex-start" }}>
-                                                                <AccessTimeIcon sx={{ color: "primary.main" }} />
-                                                                <Box sx={{ display: "flex", flexDirection: "row", width: "90%", m: 0 }}>
-                                                                    <List sx={{ width: "50%", p: 0 }}>
-                                                                        <ListItem sx={{ py: 0 }}>To the airport:</ListItem>
-                                                                        <ListItem sx={{ py: 0 }}>Flight with transfers:</ListItem>
-                                                                        <ListItem sx={{ py: 0 }}>From the airport:</ListItem>
-                                                                        <ListItem sx={{ py: 0 }}>Total:</ListItem>
-                                                                    </List>
-                                                                    <List sx={{ width: "50%", p: 0 }}>
-                                                                        {planeDurations}
-                                                                    </List>
+                                                (planeTransportData.length === 0) ?
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            justifyItems: "center",
+                                                            alignItems: "center",
+                                                            justifyContent: "space-around",
+                                                            minHeight: "400px"
+                                                        }}
+                                                    >
+                                                        <Grid container sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                                            <Grid item xs={12}>
+                                                                <Box
+                                                                    sx={{
+                                                                        display: "flex",
+                                                                        justifyContent: "center",
+                                                                        alignItems: "center",
+                                                                        flexDirection: "column",
+                                                                        minHeight: "400px",
+                                                                        minWidth: "400px",
+                                                                    }}
+                                                                >
+                                                                    <Typography sx={{ fontSize: "24px", color: "primary.main" }}>
+                                                                        No plane transport found
+                                                                    </Typography>
                                                                 </Box>
-                                                            </ListItem>
-                                                        </List>
+                                                            </Grid>
+                                                        </Grid>
                                                     </Box>
-                                                </Box>
+                                                    :
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            // justifyItems: "center",
+                                                            alignItems: "center",
+                                                            // justifyContent: "space-around",
+                                                            minHeight: "400px"
+                                                            // border: "2px solid black"
+                                                        }}
+                                                    >
+                                                        <Box sx={{ width: "100%" }}>
+                                                            <List>
+                                                                {planeDataList}
+                                                            </List>
+                                                        </Box>
+                                                        <Box sx={{ width: "100%", height: "200px", minHeight: "200px" }}>
+                                                            <List>
+                                                                <ListItem>
+                                                                    <ConnectingAirportsIcon sx={{ color: "primary.main" }} />
+                                                                    <ListItemText
+                                                                        sx={{ ml: "10px" }}
+                                                                        primary={"2"}
+                                                                    />
+                                                                </ListItem>
+                                                                <ListItem sx={{ mt: "-10px", display: "flex", alignItems: "flex-start" }}>
+                                                                    <AccessTimeIcon sx={{ color: "primary.main" }} />
+                                                                    <Box sx={{ display: "flex", flexDirection: "row", width: "90%", m: 0 }}>
+                                                                        <List sx={{ width: "50%", p: 0 }}>
+                                                                            <ListItem sx={{ py: 0 }}>To the airport:</ListItem>
+                                                                            <ListItem sx={{ py: 0 }}>Flight with transfers:</ListItem>
+                                                                            <ListItem sx={{ py: 0 }}>From the airport:</ListItem>
+                                                                            <ListItem sx={{ py: 0 }}>Total:</ListItem>
+                                                                        </List>
+                                                                        <List sx={{ width: "50%", p: 0 }}>
+                                                                            {planeDurations}
+                                                                        </List>
+                                                                    </Box>
+                                                                </ListItem>
+                                                            </List>
+                                                        </Box>
+                                                    </Box>
                                                 :
                                                 <Box
                                                     sx={{
@@ -630,33 +698,64 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                     }}>
                                         {
                                             !loading ?
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                        justifyItems: "center",
-                                                        alignItems: "center",
-                                                        justifyContent: "space-around",
-                                                        minHeight: "400px"
-                                                        // border: "2px solid black"
-                                                    }}
-                                                >
-                                                    <Grid container item xs={12}
-                                                        spacing={4}
+                                                (userTransport.length === 0) ?
+                                                    <Box
                                                         sx={{
                                                             display: "flex",
-                                                            justifyContent: "flex-start",
-                                                            alignItems: 'flex-start',
-                                                            my: "0px",
-                                                            // gridAutoRows: "1fr"
-                                                            // gap: "50px"
-                                                            // rowGap: "50px",
-                                                            // columnGap: "50px"
+                                                            flexDirection: "column",
+                                                            justifyItems: "center",
+                                                            alignItems: "center",
+                                                            justifyContent: "space-around",
+                                                            minHeight: "400px"
                                                         }}
                                                     >
-                                                        {userTransport}
-                                                    </Grid>
-                                                </Box>
+                                                        <Grid container sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                                            <Grid item xs={12}>
+                                                                <Box
+                                                                    sx={{
+                                                                        display: "flex",
+                                                                        justifyContent: "center",
+                                                                        alignItems: "center",
+                                                                        flexDirection: "column",
+                                                                        minHeight: "400px",
+                                                                        minWidth: "400px",
+                                                                    }}
+                                                                >
+                                                                    <Typography sx={{ fontSize: "24px", color: "primary.main" }}>
+                                                                        No user transport added
+                                                                    </Typography>
+                                                                </Box>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Box>
+                                                    :
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            justifyItems: "center",
+                                                            alignItems: "center",
+                                                            justifyContent: "space-around",
+                                                            minHeight: "400px"
+                                                            // border: "2px solid black"
+                                                        }}
+                                                    >
+                                                        <Grid container item xs={12}
+                                                            spacing={4}
+                                                            sx={{
+                                                                display: "flex",
+                                                                justifyContent: "flex-start",
+                                                                alignItems: 'flex-start',
+                                                                my: "0px",
+                                                                // gridAutoRows: "1fr"
+                                                                // gap: "50px"
+                                                                // rowGap: "50px",
+                                                                // columnGap: "50px"
+                                                            }}
+                                                        >
+                                                            {userTransport}
+                                                        </Grid>
+                                                    </Box>
                                                 :
                                                 <Box
                                                     sx={{
