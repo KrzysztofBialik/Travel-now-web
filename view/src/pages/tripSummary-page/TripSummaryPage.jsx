@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Box, TextField } from '@mui/material';
+import { useNavigate, useSearchParams } from "react-router-dom";
+
 import { IconButton } from '@mui/material';
 import { Typography } from '@mui/material';
 import { Card } from '@mui/material';
@@ -32,6 +34,8 @@ import { Link, useParams } from 'react-router-dom';
 import { DeleteAccommodationDialog } from '../../components/tripSummary/DeleteAccommodationDialog';
 import { DeleteDatesDialog } from '../../components/tripSummary/DeleteDatesDialog';
 import { doGet } from '../../components/utils/fetch-utils';
+import { doPut } from '../../components/utils/fetch-utils';
+
 import { parseISO } from 'date-fns/esm';
 import { formatISO, parse, parseJSON } from 'date-fns';
 
@@ -42,7 +46,7 @@ const center = { lat: 0, lng: 0 }
 
 
 export const TripSummaryPage = () => {
-
+    const navigate = useNavigate()
     const {groupId} = useParams();
 
     const [isCordinator, setIsCordinator]  = useState(false);;
@@ -165,6 +169,15 @@ export const TripSummaryPage = () => {
         .then(response => {
             setSharedAvailability(response);
             setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
+        })
+        .catch(err => console.log('Request Failed', err));
+    }
+
+    const startTrip = async () => {
+        await doPut('/api/v1/trip-group?' + new URLSearchParams({groupId : groupId}).toString())
+        .then(response => response.json())
+        .then(response => {
+            window.location.reload();
         })
         .catch(err => console.log('Request Failed', err));
     }
@@ -662,8 +675,10 @@ export const TripSummaryPage = () => {
                                             backgroundColor: "primary.main",
                                             borderRadius: "20px",
                                             '&:hover': { backgroundColor: "primary.light" }
-                                        }}>
-                                        Begin trip
+                                        }}
+                                        onClick={startTrip}>
+                                        Begin tri
+                            
                                     </Button>
                                     :
                                     <></>
