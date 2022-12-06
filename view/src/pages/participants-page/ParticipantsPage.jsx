@@ -57,7 +57,7 @@ export const ParticipantsPage = () => {
                 buttonsData={groupStage === "PLANNING_STAGE" ? futureTripButtonsDataWithGroupId(groupId) : currentTripButtonsDataWithGroupId(groupId)}
                 groupId={groupId}
             />
-            <InviteDialog open={inviteDialogOpen} onClose={() => setInviteDialogOpen(false)} />
+            <InviteDialog open={inviteDialogOpen} onClose={() => setInviteDialogOpen(false)} groupId={groupId} />
             <Box sx={{
                 pt: 10,
                 display: "flex",
