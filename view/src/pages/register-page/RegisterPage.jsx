@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import * as Yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
@@ -53,6 +53,7 @@ export const RegisterPage = () => {
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [creationError, setCreationError] = useState("Something gone wrong. Try again");
     const [registerProcess, setRegisterProcess] = useState(false);
+    const [searchParams, setSearchParams] = useSearchParams();
 
 
     const defaultInputValues = {
@@ -123,8 +124,12 @@ export const RegisterPage = () => {
             .then(response => {
                 if (response.ok) {
                     setSuccessToastOpen(true);
-                    setTimeout(() => {
-                        navigate("/login");
+                    setTimeout(() => {                     
+                        if(searchParams.get("redirectTo") !== null) {
+                            navigate("/login?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("redirectTo")}).toString());
+                        } else {
+                            navigate("/login");
+                        }
                     }, 3000);
 
                 }
