@@ -2,6 +2,9 @@ import * as React from 'react';
 import { useState } from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
+import { Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -16,6 +19,7 @@ import InputAdornment from '@mui/material/InputAdornment';
 import EditIcon from '@mui/icons-material/Edit';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import CloseIcon from '@mui/icons-material/Close';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import CommuteIcon from '@mui/icons-material/Commute';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
@@ -32,6 +36,7 @@ import * as durationn from 'duration-fns'
 
 export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess }) => {
 
+    const [isCreating, setIsCreating] = useState(false);
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
@@ -159,27 +164,30 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess }
     });
 
     const handleCreateTransport = async (tripName, meetingLocation, destination, minDays, hours, minutes, meetingDate, meetingTime, price, description) => {
-        var postBody = {'duration':durationn.toString({ hours: parseInt(hours), minutes: parseInt(minutes) }),
-                        'price':price,
-                        'source':meetingLocation,
-                        'destination':destination,
-                        'startDate':meetingDate,
-                        'endDate':meetingDate,
-                        'meanOfTransport':tripName,
-                        'description':description,
-                        'meetingTime':meetingTime,
-                        'link':null
+        setIsCreating(true);
+        var postBody = {
+            'duration': durationn.toString({ hours: parseInt(hours), minutes: parseInt(minutes) }),
+            'price': price,
+            'source': meetingLocation,
+            'destination': destination,
+            'startDate': meetingDate,
+            'endDate': meetingDate,
+            'meanOfTransport': tripName,
+            'description': description,
+            'meetingTime': meetingTime,
+            'link': null
         };
-        await doPost('/api/v1/transport/user-transport?' + new URLSearchParams({ accommodationId:accommodationId }).toString(), postBody)
+        await doPost('/api/v1/transport/user-transport?' + new URLSearchParams({ accommodationId: accommodationId }).toString(), postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 close();
                 onSuccess();
             })
             .catch(err => {
-                setErrorToastOpen(true); 
+                setErrorToastOpen(true);
                 setCreationError(err.message);
             });
+        setIsCreating(false);
     };
 
     const close = () => {
@@ -214,9 +222,33 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess }
                 open={open}
                 onClose={onClose}
                 aria-labelledby="responsive-dialog-title"
-            // disableScrollLock
+                PaperProps={{
+                    style: {
+                        minHeight: "640px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle variant="h4" sx={{ backgroundColor: "primary.main" }}>Add transport option</DialogTitle>
+                <DialogTitle sx={{
+                    backgroundColor: "primary.main",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    color: "#FFFFFF",
+                    mb: 2
+                }}
+                >
+                    <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                        Add transport option
+                    </Typography>
+                    <IconButton
+                        sx={{ p: 0 }}
+                        onClick={close}
+                    >
+                        <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
+                    </IconButton>
+                </DialogTitle>
                 <DialogContent>
                     <form
                         onSubmit={handleSubmit(() => handleCreateTransport(transportOption.value, meetingLocation.value, destination.value, 0, hours, minutes, meetingDate, meetingTime, price, description.value))}
@@ -411,25 +443,32 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess }
                             <span>{`${description.length}/${DESCRIPTION_LIMIT}`}</span>
                         </FormHelperText>
                         <DialogActions>
-                            <Button
-                                variant="outlined"
-                                sx={{ borderRadius: "20px" }}
-                                onClick={() => {
-                                    setErrorToastOpen(true)
-                                    close()
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                sx={{ borderRadius: "20px" }}
-                                onClick={() => handleCreateTransport}
-                            >
-                                Add
-                            </Button>
+                            {isCreating ?
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{ borderRadius: "20px", color: "#FFFFFF", width: "90px" }}
+                                >
+                                    <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                </Button>
+                                :
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{ borderRadius: "20px" }}
+                                        onClick={() => close()}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{ borderRadius: "20px", color: "#FFFFFF", width: "90px" }}
+                                    >
+                                        Add
+                                    </Button>
+                                </>
+                            }
                         </DialogActions>
                     </form>
                 </DialogContent>

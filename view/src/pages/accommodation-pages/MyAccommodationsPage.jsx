@@ -47,7 +47,7 @@ const ExpandMore = styled((props) => {
 
 
 export const MyAccommodationsPage = () => {
-    const {groupId} = useParams();
+    const { groupId } = useParams();
     // const [numOfVotes, setNumOfVotes] = useState(accommodationsData.givenVotes)
     // const [userVote, setUserVote] = useState(false);
     const [expanded, setExpanded] = useState(false);
@@ -67,54 +67,55 @@ export const MyAccommodationsPage = () => {
     const getData = async () => {
         setLoading(true);
         doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId, userId: parseInt(localStorage.getItem('userId')) }).toString())
-        .then(response => response.json())
-        .then(json => {setAccommodationsRaw(json); return json})
-        .then(accommodations => {setMyAccommodations(accommodations.map((accommodation) => (
-            <Grid container item xs={12} spacing={10} key={accommodation.accommodation.accommodationId}
-                sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: 'flex-start',
-                    mb: 8,
-                }}
-            >
-                <Grid item xs={12} md={5}>
-                    <AccommodationCard accommodationData={accommodation.accommodation} canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))} selected={false} votes={accommodation.userVoted} onSuccess={() => getData()} />
-                </Grid>
-                <Grid item xs={12} md={5} >
-                    {isLoaded ?
-                        <GoogleMap
-                            zoom={14}
-                            center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
-                            mapContainerClassName="map-container"
-                        >
-                            <MarkerF position={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }} />
-                        </GoogleMap>
-                        :
-                        <Box
+            .then(response => response.json())
+            .then(json => { setAccommodationsRaw(json); return json })
+            .then(accommodations => {
+                setMyAccommodations(accommodations.map((accommodation) => (
+                    <Grid container item xs={12} spacing={10} key={accommodation.accommodation.accommodationId}
                         sx={{
                             display: "flex",
-                            flexDirection: "column",
                             justifyContent: "center",
-                            alignItems: "center",
-                            minHeight: "400px"
-                            // border: "2px solid black"
+                            alignItems: 'flex-start',
+                            mb: 8,
                         }}
-                        >  
-                        <CircularProgress />
-                        </Box>}
-                </Grid>
-            </Grid>
-        )));
+                    >
+                        <Grid item xs={12} md={5}>
+                            <AccommodationCard accommodationData={accommodation.accommodation} canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))} selected={false} votes={accommodation.userVoted} onSuccess={() => getData()} />
+                        </Grid>
+                        <Grid item xs={12} md={5} >
+                            {isLoaded ?
+                                <GoogleMap
+                                    zoom={14}
+                                    center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
+                                    mapContainerClassName="map-container"
+                                >
+                                    <MarkerF position={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }} />
+                                </GoogleMap>
+                                :
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        minHeight: "400px"
+                                        // border: "2px solid black"
+                                    }}
+                                >
+                                    <CircularProgress />
+                                </Box>}
+                        </Grid>
+                    </Grid>
+                )));
                 setLoading(false);
             })
-        .catch(err => console.log('Request Failed', err));
+            .catch(err => console.log('Request Failed', err));
     };
 
     useEffect(() => {
         getData();
-        
-      }, [])
+
+    }, [])
 
     return (
         <>
@@ -129,9 +130,9 @@ export const MyAccommodationsPage = () => {
                     position: 'relative',
                     minHeight: '100%',
                 }}>
-                <NavigationNavbar 
-                buttonsData={futureTripButtonsDataWithGroupId(groupId)} 
-                groupId={groupId}
+                <NavigationNavbar
+                    buttonsData={futureTripButtonsDataWithGroupId(groupId)}
+                    groupId={groupId}
                 />
                 <Box sx={{
                     p: 10,
@@ -141,7 +142,8 @@ export const MyAccommodationsPage = () => {
                     justifyContent: 'center',
                     alignItems: 'center',
                     flexDirection: "column",
-                    minWidth: "1200px"
+                    minWidth: "1200px",
+                    minHeight: '400px'
                 }}
                 // elevation={4}
                 >
@@ -191,7 +193,21 @@ export const MyAccommodationsPage = () => {
                             </Grid>
                         </Grid>
                     </Box>
-                    {myAccommodations}
+                    {myAccommodations.length === 0 ?
+                        <Box sx={{
+                            minHeight: "400px",
+                            minWidth: "100%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center"
+                        }}>
+                            <Typography sx={{ fontSize: "32px", color: "primary.main" }}>
+                                No accommodations added yet
+                            </Typography>
+                        </Box>
+                        :
+                        { myAccommodations }
+                    }
                 </Box >
             </Box >
         </>

@@ -232,6 +232,8 @@ export const AccommodationsPage = () => {
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
+                            minWidth: "700px",
+                            width: "100%"
                         }}>
                         <Grid item xs={12}>
                             <Typography
@@ -252,25 +254,30 @@ export const AccommodationsPage = () => {
                                     spacing={5}
                                     sx={{
                                         display: "flex",
-                                        justifyContent: "flex-start",
-                                        alignItems: 'flex-start',
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        minWidth: "700px",
+                                        minHeight: "400px",
+                                        width: "100%"
                                         // gridAutoRows: "1fr"
                                         // gap: "50px"
                                         // rowGap: "50px",
                                         // columnGap: "50px"
                                     }}
                                 >
-                                    {allAccommodations !== [] ?
+                                    {false ?
                                         allAccommodations
                                         :
                                         <Box
                                             sx={{
+                                                color: "primary.main",
                                                 display: "flex",
                                                 flexDirection: "column",
                                                 justifyContent: "center",
                                                 alignItems: "center",
                                                 width: "100%",
-                                                minHeight: "400px"
+                                                minHeight: "400px",
+                                                width: "100%"
                                                 // border: "2px solid black"
                                             }}
                                         >
