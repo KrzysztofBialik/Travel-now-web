@@ -175,10 +175,10 @@ export const TripSummaryPage = () => {
 
     const startTrip = async () => {
         await doPut('/api/v1/trip-group?' + new URLSearchParams({groupId : groupId}).toString())
-        .then(response => response.json())
         .then(response => {
-            window.location.reload();
-        })
+            console.log("Niceeee")
+            window.location.reload(false);
+                })
         .catch(err => console.log('Request Failed', err));
     }
 
@@ -680,7 +680,7 @@ export const TripSummaryPage = () => {
                                             '&:hover': { backgroundColor: "primary.light" }
                                         }}
                                         onClick={startTrip}>
-                                        Begin tri
+                                        Begin trip
                             
                                     </Button>
                                     :
