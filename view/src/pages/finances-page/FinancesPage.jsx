@@ -18,6 +18,7 @@ import AddIcon from '@mui/icons-material/Add';
 import ReceiptIcon from '@mui/icons-material/Receipt';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import HandshakeIcon from '@mui/icons-material/Handshake';
+import { useParams } from "react-router-dom";
 
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { currentTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
@@ -26,247 +27,250 @@ import { ExpenseCard } from "../../components/finances/ExpenseCard";
 import { AddExpenseDialog } from "../../components/finances/AddExpenseDialog";
 import { SettlementCard } from "../../components/finances/SettlementCard";
 import { BalanceChart } from "../../components/finances/BalanceChart";
+import { doGet } from "../../components/utils/fetch-utils";
+import { parseISO } from "date-fns/esm";
+import { format } from "date-fns";
 
 
-export const URL = '/finances';
+export const URL = '/finances/:groupId';
 export const NAME = "Finances";
 
-const expensesData = [
-    {
-        id: 1,
-        person: "Olisadebe",
-        title: "Dinner",
-        cost: 170.40,
-        date: new Date(2022, 11, 21),
-        debtors: true
-    },
-    {
-        id: 2,
-        person: "Krzychu77",
-        title: "Fruits",
-        cost: 30.00,
-        date: new Date(2022, 11, 21),
-        debtors: false
-    },
-    {
-        id: 3,
-        person: "Piterm33",
-        title: "Museum tickets",
-        cost: 200.00,
-        date: new Date(2022, 11, 21),
-        debtors: true
-    },
-    {
-        id: 4,
-        person: "BoBa",
-        title: "Kebab",
-        cost: 60.89,
-        date: new Date(2022, 11, 21),
-        debtors: true
-    },
-    {
-        id: 5,
-        person: "Krzychu77",
-        title: "Souvenirs",
-        cost: 50.20,
-        date: new Date(2022, 11, 21),
-        debtors: false
-    },
-    {
-        id: 6,
-        person: "Olisadebe",
-        title: "Beers",
-        cost: 78.45,
-        date: new Date(2022, 11, 21),
-        debtors: true
-    },
-    {
-        id: 7,
-        person: "Krzychu77",
-        title: "Museum tickets",
-        cost: 200.00,
-        date: new Date(2022, 11, 21),
-        debtors: false
-    },
-    {
-        id: 8,
-        person: "BoBa",
-        title: "Kebab",
-        cost: 60.89,
-        date: new Date(2022, 11, 21),
-        debtors: true
-    },
-    {
-        id: 9,
-        person: "Krzychu77",
-        title: "Souvenirs",
-        cost: 50.20,
-        date: new Date(2022, 11, 21),
-        debtors: false
-    },
-    {
-        id: 10,
-        person: "Olisadebe",
-        title: "Beers",
-        cost: 78.45,
-        date: new Date(2022, 11, 21),
-        debtors: true
-    },
-];
+// const expensesData = [
+//     {
+//         id: 1,
+//         person: "Olisadebe",
+//         title: "Dinner",
+//         cost: 170.40,
+//         date: new Date(2022, 11, 21),
+//         debtors: true
+//     },
+//     {
+//         id: 2,
+//         person: "Krzychu77",
+//         title: "Fruits",
+//         cost: 30.00,
+//         date: new Date(2022, 11, 21),
+//         debtors: false
+//     },
+//     {
+//         id: 3,
+//         person: "Piterm33",
+//         title: "Museum tickets",
+//         cost: 200.00,
+//         date: new Date(2022, 11, 21),
+//         debtors: true
+//     },
+//     {
+//         id: 4,
+//         person: "BoBa",
+//         title: "Kebab",
+//         cost: 60.89,
+//         date: new Date(2022, 11, 21),
+//         debtors: true
+//     },
+//     {
+//         id: 5,
+//         person: "Krzychu77",
+//         title: "Souvenirs",
+//         cost: 50.20,
+//         date: new Date(2022, 11, 21),
+//         debtors: false
+//     },
+//     {
+//         id: 6,
+//         person: "Olisadebe",
+//         title: "Beers",
+//         cost: 78.45,
+//         date: new Date(2022, 11, 21),
+//         debtors: true
+//     },
+//     {
+//         id: 7,
+//         person: "Krzychu77",
+//         title: "Museum tickets",
+//         cost: 200.00,
+//         date: new Date(2022, 11, 21),
+//         debtors: false
+//     },
+//     {
+//         id: 8,
+//         person: "BoBa",
+//         title: "Kebab",
+//         cost: 60.89,
+//         date: new Date(2022, 11, 21),
+//         debtors: true
+//     },
+//     {
+//         id: 9,
+//         person: "Krzychu77",
+//         title: "Souvenirs",
+//         cost: 50.20,
+//         date: new Date(2022, 11, 21),
+//         debtors: false
+//     },
+//     {
+//         id: 10,
+//         person: "Olisadebe",
+//         title: "Beers",
+//         cost: 78.45,
+//         date: new Date(2022, 11, 21),
+//         debtors: true
+//     },
+// ];
 
-const settlementsData = [
-    {
-        id: 1,
-        amount: 100.00,
-        debtor: "Krzychu77",
-        debtee: "Olisadebe",
-        status: "PENDING"
-    },
-    {
-        id: 2,
-        amount: 25.47,
-        debtor: "Piterm33",
-        debtee: "Krzychu77",
-        status: "PENDING"
-    },
-    {
-        id: 3,
-        amount: 50.55,
-        debtor: "Olisadebe",
-        debtee: "BoBa",
-        status: "RESOLVED"
-    },
-    {
-        id: 4,
-        amount: 61.32,
-        debtor: "Krzychu77",
-        debtee: "BoBa",
-        status: "PENDING"
-    },
-    {
-        id: 5,
-        amount: 25.25,
-        debtor: "Piterm33",
-        debtee: "BoBa",
-        status: "RESOLVED"
-    },
-    {
-        id: 6,
-        amount: 40.00,
-        debtor: "BoBa",
-        debtee: "Olisadebe",
-        status: "RESOLVED"
-    },
-    {
-        id: 7,
-        amount: 250.50,
-        debtor: "Piterm33",
-        debtee: "Olisadebe",
-        status: "PENDING"
-    },
-    {
-        id: 8,
-        amount: 3.35,
-        debtor: "BoBa",
-        debtee: "Olisadebe",
-        status: "RESOLVED"
-    },
-    {
-        id: 9,
-        amount: 4.50,
-        debtor: "Olisadebe",
-        debtee: "Piterm33",
-        status: "PENDING"
-    },
-    {
-        id: 10,
-        amount: 25.68,
-        debtor: "Piterm33",
-        debtee: "Olisadebe",
-        status: "RESOLVED"
-    },
-    {
-        id: 11,
-        amount: 21.37,
-        debtor: "BoBa",
-        debtee: "Piterm33",
-        status: "PENDING"
-    },
-    {
-        id: 12,
-        amount: 4.20,
-        debtor: "Krzychu77",
-        debtee: "Olisadebe",
-        status: "RESOLVED"
-    }
-];
+// const settlementsData = [
+//     {
+//         id: 1,
+//         amount: 100.00,
+//         debtor: "Krzychu77",
+//         debtee: "Olisadebe",
+//         status: "PENDING"
+//     },
+//     {
+//         id: 2,
+//         amount: 25.47,
+//         debtor: "Piterm33",
+//         debtee: "Krzychu77",
+//         status: "PENDING"
+//     },
+//     {
+//         id: 3,
+//         amount: 50.55,
+//         debtor: "Olisadebe",
+//         debtee: "BoBa",
+//         status: "RESOLVED"
+//     },
+//     {
+//         id: 4,
+//         amount: 61.32,
+//         debtor: "Krzychu77",
+//         debtee: "BoBa",
+//         status: "PENDING"
+//     },
+//     {
+//         id: 5,
+//         amount: 25.25,
+//         debtor: "Piterm33",
+//         debtee: "BoBa",
+//         status: "RESOLVED"
+//     },
+//     {
+//         id: 6,
+//         amount: 40.00,
+//         debtor: "BoBa",
+//         debtee: "Olisadebe",
+//         status: "RESOLVED"
+//     },
+//     {
+//         id: 7,
+//         amount: 250.50,
+//         debtor: "Piterm33",
+//         debtee: "Olisadebe",
+//         status: "PENDING"
+//     },
+//     {
+//         id: 8,
+//         amount: 3.35,
+//         debtor: "BoBa",
+//         debtee: "Olisadebe",
+//         status: "RESOLVED"
+//     },
+//     {
+//         id: 9,
+//         amount: 4.50,
+//         debtor: "Olisadebe",
+//         debtee: "Piterm33",
+//         status: "PENDING"
+//     },
+//     {
+//         id: 10,
+//         amount: 25.68,
+//         debtor: "Piterm33",
+//         debtee: "Olisadebe",
+//         status: "RESOLVED"
+//     },
+//     {
+//         id: 11,
+//         amount: 21.37,
+//         debtor: "BoBa",
+//         debtee: "Piterm33",
+//         status: "PENDING"
+//     },
+//     {
+//         id: 12,
+//         amount: 4.20,
+//         debtor: "Krzychu77",
+//         debtee: "Olisadebe",
+//         status: "RESOLVED"
+//     }
+// ];
 // const settlementsData = [
 //     {
 //         debtee: "Krzychu77"
 //     }
 // ]
 
-const balancesData = [
-    {
-        id: 1,
-        user: "Boba",
-        balance: 125.46
-    },
-    {
-        id: 2,
-        user: "Krzychu77",
-        balance: -50.00
-    },
-    {
-        id: 3,
-        user: "Olisadebe",
-        balance: 100
-    },
-    {
-        id: 4,
-        user: "Piterm33",
-        balance: -125.40
-    },
-    {
-        id: 5,
-        user: "Boba",
-        balance: -50.06
-    },
-    {
-        id: 6,
-        user: "Krzychu77",
-        balance: 0
-    },
-    {
-        id: 7,
-        user: "Olisadebe",
-        balance: 240
-    },
-    {
-        id: 8,
-        user: "Piterm33",
-        balance: -150
-    },
-    {
-        id: 9,
-        user: "Boba",
-        balance: -300
-    },
-    {
-        id: 10,
-        user: "Krzychu77",
-        balance: 202
-    },
-    {
-        id: 11,
-        user: "Olisadebe",
-        balance: -12.54
-    },
-    {
-        id: 12,
-        user: "Piterm33",
-        balance: 10.54
-    },
+// const balancesData = [
+//     {
+//         id: 1,
+//         user: "Boba",
+//         balance: 125.46
+//     },
+//     {
+//         id: 2,
+//         user: "Krzychu77",
+//         balance: -50.00
+//     },
+//     {
+//         id: 3,
+//         user: "Olisadebe",
+//         balance: 100
+//     },
+//     {
+//         id: 4,
+//         user: "Piterm33",
+//         balance: -125.40
+//     },
+//     {
+//         id: 5,
+//         user: "Boba",
+//         balance: -50.06
+//     },
+//     {
+//         id: 6,
+//         user: "Krzychu77",
+//         balance: 0
+//     },
+//     {
+//         id: 7,
+//         user: "Olisadebe",
+//         balance: 240
+//     },
+//     {
+//         id: 8,
+//         user: "Piterm33",
+//         balance: -150
+//     },
+//     {
+//         id: 9,
+//         user: "Boba",
+//         balance: -300
+//     },
+//     {
+//         id: 10,
+//         user: "Krzychu77",
+//         balance: 202
+//     },
+//     {
+//         id: 11,
+//         user: "Olisadebe",
+//         balance: -12.54
+//     },
+//     {
+//         id: 12,
+//         user: "Piterm33",
+//         balance: 10.54
+//     },
     // {
     //     id: 11,
     //     user: "Olisadebe",
@@ -327,30 +331,144 @@ const balancesData = [
     //     user: "Piterm33",
     //     balance: 10.54
     // }
-]
+// ]
 
 export const FinancesPage = () => {
-
+    const { groupId } = useParams();
     const [addExpenseDialogOpen, setAddExpenseDialogOpen] = useState(false);
     const [myExpensesButtonOn, setMyExpensesButtonOn] = useState(false);
     const [myContributionsButtonOn, setMyContributionsButtonOn] = useState(false);
-    const [allExpenses, setAllExpenses] = useState(expensesData.map(expense => (
+    const [expensesData, setExpensesData] = useState([]);
+    const [allExpenditureCreators, setAllExpenditureCreators] = useState([]);
+    const [allUsers, setAllUsers] = useState([]);
+    const [currentUser, setCurrentUser] = useState([])
+    const [allExpenses, setAllExpenses] = useState([])
+    const [settlementsData, setSettlementsData] = useState([])
+    const [balanceData, setBalanceData] = useState([])
+
+
+    const getBalanceData = async (userList) => {
+        await doGet('/api/v1/finance-optimizer/balance?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                const map = new Map(Object.entries(response));
+                var balanceFullData = []
+                map.forEach((balance, userId) => {
+                    var balanceUser = {}
+                    const person = userList.find(user => user.id === parseInt(userId)).fullName;
+                    balanceUser['id'] = userId;
+                    balanceUser['user'] = person; 
+                    balanceUser['balance'] = balance;
+                    balanceFullData.push(balanceUser);
+                  });
+
+            console.log("BALANCE DATA");
+            console.log(balanceFullData);
+            setBalanceData(balanceFullData);
+
+            })
+            .catch(err => console.log('Request Failed', err));
+
+    }
+
+    const getAllUsersInGroup = async () => {
+        await doGet('/api/v1/user-group/participants?' + new URLSearchParams({ groupId: groupId}).toString())
+        .then(response => response.json())
+        .then(response => {
+            setCurrentUser(response.find(user => user.userId === parseInt(localStorage.getItem("userId"))))
+            const person = response.map(user => ({id: user.userId, fullName: user.firstName + " " +  user.surname}));
+            setAllUsers(person);
+            getExpensesData(person)
+            getSettlementsData(person);
+            getBalanceData(person);
+        })
+        .catch(err => console.log('Request Failed', err));
+
+
+    }
+
+    const getSettlementsData = async (userList) => {
+        await doGet('/api/v1/finance-request?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId")}).toString())
+        .then(response => response.json())
+        .then(response => {
+            var set = response.map(settlement => {
+                const debtor = userList.find(user => user.id === settlement.debtor).fullName;
+                const debtee = userList.find(user => user.id === settlement.debtee).fullName;
+                const debtorId =  settlement.debtor;
+                const debteeId = settlement.debtee
+
+                return ({
+                id : settlement.financialRequestId, amount: settlement.amount, debtor: debtor, debtee: debtee, debtorId: debtorId, debteeId : debteeId,  status: settlement.status
+            })});
+        setSettlementsData(set);
+        console.log("125412515151521")
+        console.log(set)
+        setOtherSettlements(set.filter(settlement => 
+            // console.log("12431256364326");
+            // console.log(settlementsData)
+                settlement.debteeId !== parseInt(localStorage.getItem("userId")) && settlement.debtorId !== parseInt(localStorage.getItem("userId"))).map(settlement => {
+                console.log("Settlement 1");
+                console.log(set)
+                return(  
+                <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
+                    <SettlementCard settlementData={settlement} canResolve={false} />
+                </ListItem>
+    
+            )}));
+        setMySettlements(set.filter(settlement =>
+            settlement.debtorId === parseInt(localStorage.getItem("userId")) || settlement.debteeId === parseInt(localStorage.getItem("userId"))).map(settlement => {
+                console.log("My Settlement");
+                console.log(settlement)
+                return(
+                <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
+                    <SettlementCard settlementData={settlement} canResolve={settlement.debteeId === parseInt(localStorage.getItem("userId")) && settlement.status === "PENDING"} />
+                </ListItem>
+            )}));
+        
+        })
+        .catch(err => console.log('Request Failed', err));
+    }
+    const getExpensesData = async (userList) => {
+        await doGet('/api/v1/finance-optimizer?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+
+                setExpensesData(response.map(expenditure => {
+                    const person = userList.find(user => user.id === expenditure.creatorId).fullName;
+                    const isDebtor = expenditure.expenseDebtors.some(debtor => debtor === parseInt(localStorage.getItem("userId")))
+                    const contributors = expenditure.expenseDebtors.map(ed => {
+                        return ({name: userList.find(user => user.id === ed).fullName})})
+                    return ({
+                    id : expenditure.expenditureId, personId : expenditure.creatorId ,person : person ,
+                    title : expenditure.title, cost: expenditure.price, date: parseISO(expenditure.generationDate) , isDebtor : isDebtor, contributors: contributors
+                })}))
+            })
+            .catch(err => console.log('Request Failed', err));
+
+    }
+
+
+    useEffect(() => {
+        getAllUsersInGroup();
+    }, [])
+
+    useEffect(() => {
+        setAllExpenses(expensesData.map(expense => (
         <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
             <ExpenseCard expenseData={expense} />
         </ListItem>
     )));
-    const [otherSettlements, setOtherSettlements] = useState(settlementsData.filter(settlement =>
-        settlement.debtee !== "Krzychu77" && settlement.debtor !== "Krzychu77").map(settlement => (
-            <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
-                <SettlementCard settlementData={settlement} canResolve={false} />
-            </ListItem>
-        )));
-    const [mySettlements, setMySettlements] = useState(settlementsData.filter(settlement =>
-        settlement.debtee === "Krzychu77" || settlement.debtor === "Krzychu77").map(settlement => (
-            <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
-                <SettlementCard settlementData={settlement} canResolve={settlement.debtee === "Krzychu77" && settlement.status === "PENDING"} />
-            </ListItem>
-        )));
+    }, [expensesData])
+
+
+
+
+
+
+    const [otherSettlements, setOtherSettlements] = useState([]);
+
+
+    const [mySettlements, setMySettlements] = useState([]);
 
     const groupStage = 2;
     const isCoordinator = true;
@@ -377,7 +495,11 @@ export const FinancesPage = () => {
             )));
         }
         else {
-            setAllExpenses(expensesData.filter(expense => expense.person === "Krzychu77").map(expense => (
+            console.log("here?")
+            console.log(currentUser)
+            console.log(expensesData)
+
+            setAllExpenses(expensesData.filter(expense => expense.personId === currentUser.userId).map(expense => (
                 <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
                     <ExpenseCard expenseData={expense} />
                 </ListItem>
@@ -414,6 +536,9 @@ export const FinancesPage = () => {
             <AddExpenseDialog
                 open={addExpenseDialogOpen}
                 onClose={() => setAddExpenseDialogOpen(false)}
+                participants={allUsers}
+                groupId={groupId}
+                onSuccess={() => getAllUsersInGroup()}
             />
             <Box
                 sx={{
@@ -561,7 +686,7 @@ export const FinancesPage = () => {
                                                 overflow: "auto"
                                             }}
                                         >
-                                            {allExpenses.length === 0 ?
+                                            {allExpenses.length === 0  ?
                                                 <Typography sx={{ color: "primary.main", fontSize: "32px" }}>
                                                     Add expenses
                                                 </Typography>
@@ -643,7 +768,7 @@ export const FinancesPage = () => {
                                                 overflowY: "auto"
                                             }}
                                         >
-                                            <BalanceChart balancesData={balancesData} />
+                                            <BalanceChart balancesData={balanceData} />
                                         </Box>
                                     </Box>
                                 </Card>
@@ -724,7 +849,7 @@ export const FinancesPage = () => {
                                                     overflow: "auto"
                                                 }}
                                             >
-                                                {mySettlements.length === 0 ?
+                                                {mySettlements.length === 0  ?
                                                     <Typography sx={{ color: "primary.dark", fontSize: "24px", mt: -10 }}>
                                                         You have no settlements right now.
                                                     </Typography>

@@ -34,6 +34,16 @@ export const ExpenseCard = ({ expenseData }) => {
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const open = Boolean(anchorEl);
 
+
+    console.log("dsadsadsadsadasdasat")
+    console.log(expenseData)
+    const allContributors = expenseData.contributors.map(ed =>(
+     <TableRow>
+        <TableCell align="left">{ed.name}</TableCell>
+    </TableRow>
+    )
+    );
+
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -148,42 +158,10 @@ export const ExpenseCard = ({ expenseData }) => {
                     <TableContainer component={Paper} >
                         <Table size="small" >
                             <TableBody>
-                                <TableRow>
+                                {/* <TableRow>
                                     <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
-                                <TableRow>
-                                    <TableCell align="left">Krzychu77</TableCell>
-                                </TableRow>
+                                </TableRow> */}
+                                {allContributors}
                             </TableBody>
                         </Table>
                     </TableContainer>

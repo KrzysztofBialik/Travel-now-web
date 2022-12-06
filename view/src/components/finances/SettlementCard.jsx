@@ -41,6 +41,9 @@ export const SettlementCard = ({ settlementData, canResolve }) => {
         setAnchorEl(event.currentTarget);
     };
 
+
+    console.log("aaaaaaaaaaaaaaaaaaaa")
+    console.log(settlementData)
     const handleClose = () => {
         setAnchorEl(null);
     };
