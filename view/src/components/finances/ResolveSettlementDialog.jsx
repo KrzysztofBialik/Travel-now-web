@@ -6,11 +6,12 @@ import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
+import { doPatch } from "../../components/utils/fetch-utils";
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 
-export const ResolveSettlementDialog = ({ open, onClose, handleResolve }) => {
+export const ResolveSettlementDialog = ({ open, onClose, handleResolve, requestId, groupId , onSuccess}) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
@@ -24,6 +25,17 @@ export const ResolveSettlementDialog = ({ open, onClose, handleResolve }) => {
         setErrorToastOpen(true);
         onClose();
     };
+
+    const acceptFinancialRequest = async () => {
+        await doPatch('/api/v1/finance-request?' + new URLSearchParams({ requestId : requestId ,groupId: groupId }).toString() )
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                onSuccess();
+            })
+            .catch(err => {
+                setErrorToastOpen(true);
+            });
+    }
 
     return (
         <div>
