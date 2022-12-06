@@ -17,7 +17,7 @@ export const ResolveSettlementDialog = ({ open, onClose, handleResolve, requestI
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
     const handleSuccessClose = () => {
-        setSuccessToastOpen(true);
+        acceptFinancialRequest()
         handleResolve();
     };
 
@@ -27,7 +27,7 @@ export const ResolveSettlementDialog = ({ open, onClose, handleResolve, requestI
     };
 
     const acceptFinancialRequest = async () => {
-        await doPatch('/api/v1/finance-request?' + new URLSearchParams({ requestId : requestId ,groupId: groupId }).toString() )
+        await doPatch('/api/v1/finance-request/accept?' + new URLSearchParams({ requestId : requestId ,groupId: groupId }).toString() )
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 onSuccess();

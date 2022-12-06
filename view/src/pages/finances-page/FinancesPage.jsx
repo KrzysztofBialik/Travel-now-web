@@ -411,7 +411,14 @@ export const FinancesPage = () => {
                 console.log(set)
                 return(  
                 <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
-                    <SettlementCard settlementData={settlement} canResolve={false} />
+                    <SettlementCard 
+                    settlementData={settlement} 
+                    canResolve={false}
+                    groupId={groupId}
+                    requestId={settlement.id}
+                    onSuccess={() => getAllUsersInGroup() }
+                    
+                    />
                 </ListItem>
     
             )}));
@@ -421,7 +428,13 @@ export const FinancesPage = () => {
                 console.log(settlement)
                 return(
                 <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
-                    <SettlementCard settlementData={settlement} canResolve={settlement.debteeId === parseInt(localStorage.getItem("userId")) && settlement.status === "PENDING"} />
+                    <SettlementCard 
+                    settlementData={settlement} 
+                    canResolve={settlement.debteeId === parseInt(localStorage.getItem("userId")) && settlement.status === "PENDING"}
+                    groupId={groupId}
+                    requestId={settlement.id}
+                    onSuccess={() => getAllUsersInGroup() }
+                     />
                 </ListItem>
             )}));
         
