@@ -11,6 +11,7 @@ import { DialogContent } from '@mui/material';
 import { DialogTitle } from '@mui/material';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doDelete } from '../utils/fetch-utils';
+import { SuccessToast } from '../toasts/SuccessToast';
 
 
 export const ConfirmDeleteGroupDialog = ({ open, onClose, groupId }) => {
@@ -18,13 +19,17 @@ export const ConfirmDeleteGroupDialog = ({ open, onClose, groupId }) => {
     const [isDeleting, setIsDeleting] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [deleteError, setDeleteError] = useState("Ups! Something went wrong. Try again.");
+    const [successToastOpen, setSuccessToastOpen] = useState(false);
     const navigate = useNavigate();
 
     const deleteAction = async () => {
         setIsDeleting(true);
         await doDelete('/api/v1/trip-group/group?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => {
-                navigate('/dashboard');
+                setSuccessToastOpen(true); 
+                setTimeout(() => {                           
+                    navigate('/dashboard', { leftGroup: true });
+                }, 4000);
             })
             .catch(err => {
                 setErrorToastOpen(true);
@@ -40,6 +45,7 @@ export const ConfirmDeleteGroupDialog = ({ open, onClose, groupId }) => {
 
     return (
         <div>
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Group has been deleted. You will be redirected to dashboard." />
             <ErrorToast
                 open={errorToastOpen}
                 onClose={() => setErrorToastOpen(false)}
