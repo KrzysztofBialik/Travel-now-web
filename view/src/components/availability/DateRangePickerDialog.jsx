@@ -12,7 +12,7 @@ import 'react-date-range/dist/theme/default.css';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doPost } from "../../components/utils/fetch-utils";
-import { format } from 'date-fns';
+import { format, addHours } from "date-fns";
 
 
 export const DateRangePickerDialog = ({ open, onClose, initialRange, restrictedDays, groupId, rangeChange, onSuccess, shared=false }) => {
@@ -37,7 +37,7 @@ export const DateRangePickerDialog = ({ open, onClose, initialRange, restrictedD
 
     const handleCreateAvailability = async (groupId, range) => {
         if(shared) {
-            await doPost('/api/v1/shared-availability?' + new URLSearchParams({ groupId: groupId, dateFrom:format(range[0].startDate, 'yyyy-MM-dd') , dateTo:format(range[0].endDate, 'yyyy-MM-dd') }).toString())
+            await doPost('/api/v1/shared-availability?' + new URLSearchParams({ groupId: groupId, dateFrom:format(range[0].startDate, 'yyyy-MM-dd') , dateTo:format(range[0].endDate, 'yyyy-MM-dd')}).toString())
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 onSuccess();
@@ -47,7 +47,7 @@ export const DateRangePickerDialog = ({ open, onClose, initialRange, restrictedD
                 setErrorMessage(err.message);
             });
         } else {
-            var postBody = {'userId':localStorage.getItem('userId'), 'groupId': groupId, 'dateFrom':range[0].startDate, 'dateTo':range[0].endDate};
+            var postBody = {'userId':localStorage.getItem('userId'), 'groupId': groupId, 'dateFrom':format(range[0].startDate, 'yyyy-MM-dd'), 'dateTo':format(range[0].endDate, 'yyyy-MM-dd')};
             await doPost('/api/v1/availability/user', postBody)
                 .then(response => {
                     setSuccessToastOpen(response.ok);
