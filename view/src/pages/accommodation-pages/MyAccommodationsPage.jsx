@@ -79,7 +79,7 @@ export const MyAccommodationsPage = () => {
                         <AccommodationCard accommodationData={accommodation.accommodation} canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))} selected={false} votes={accommodation.userVoted} onSuccess={() => getData()} />
                     </Grid>
                     <Grid item xs={12} md={5} >
-                        {isLoaded ?
+                        {true ?
                             <GoogleMap
                                 zoom={14}
                                 center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
