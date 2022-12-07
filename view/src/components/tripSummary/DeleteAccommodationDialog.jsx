@@ -38,7 +38,7 @@ export const DeleteAccommodationDialog = ({ open, onClose, groupId, onSuccess })
 
     return (
         <div>
-            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully deleted." />
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully uselected." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={apiErrorMessage} />
 
             <Dialog
