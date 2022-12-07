@@ -83,6 +83,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [descriptionLength, setDescriptionLength] = useState(0);
     const [tripData, setTripData] = useState({});
+    const [groupStage, setGroupStage] = useState([])
     const DESCRIPTION_LIMIT = 250;
 
     useEffect(() => {
@@ -140,6 +141,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
             tripName: response.name, startingLocation: response.startLocation, currency: response.currency, minDays: response.minimalNumberOfDays,
             minParticipants: response.minimalNumberOfParticipants, description: response.description
         })
+        setGroupStage(response.groupStage)
     }
     const handleUpdateTrip = () => {
         editUserAccount(getValues());
@@ -175,6 +177,13 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                 console.log('Request Failed', err.message)
             });
         setIsUpdating(false);
+    }
+
+    const isPlanningStage = () => {
+        if(groupStage === "PLANNING") {
+            return false;
+        }
+        return true;
     }
 
     // const descriptionWatch = watch("description");
@@ -317,12 +326,14 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     error={!!errors.tripName}
                                                     helperText={errors.tripName?.message}
                                                 />
+                                                
                                                 <TextField
                                                     type='string'
                                                     margin="normal"
                                                     placeholder='Starting location'
                                                     name='startingLocation'
                                                     defaultValue={tripData.startingLocation}
+                                                    disabled={isPlanningStage()}
                                                     label='Starting location'
                                                     fullWidth
                                                     variant="outlined"
