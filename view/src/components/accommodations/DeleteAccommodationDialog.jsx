@@ -35,19 +35,21 @@ export const DeleteAccommodationDialog = ({ open, onClose, accommodationId, onSu
     const handleDeleteAttraction = async () => {
         await doDelete('/api/v1/accommodation?' + new URLSearchParams({ accommodationId: accommodationId }).toString())
             .then(response => {
-                setSuccessToastOpen(response.ok);
-                setErrorToastOpen(!response.ok);
+                handleSuccessClose()
                 onSuccess();
                 onClose();
             })
             .catch(err => {
-                setErrorToastOpen(true);
                 setDeletionError(err.message);
+                setErrorToastOpen(true);               
             });
     };
 
     return (
         <div>
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully uselected." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={deletionError} />
+
             <Dialog
                 open={open}
                 onClose={onClose}

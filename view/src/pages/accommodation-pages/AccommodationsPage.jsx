@@ -52,7 +52,7 @@ export const AccommodationsPage = () => {
             .then(accommodations => {
                 setAllAccommodations(accommodations.map((accommodation) => (
                     <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
-                        <AccommodationCard accommodationData={accommodation.accommodation} canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={false} votes={accommodation.userVoted} />
+                        <AccommodationCard accommodationData={accommodation.accommodation} canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={false} votes={accommodation.userVoted} onSuccess={() => {getData(); getChosenAccommodation()}} />
                     </Grid>)));
             })
             .catch(err => console.log('Request Failed', err));
