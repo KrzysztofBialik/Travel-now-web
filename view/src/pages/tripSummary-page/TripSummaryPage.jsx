@@ -159,7 +159,7 @@ export const TripSummaryPage = () => {
                 setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
             })
             .catch(err => console.log('Request Failed', err));
-    }
+    };
 
     const getSelectedAvailability = async () => {
         await doGet('/api/v1/shared-availability?' + new URLSearchParams({ sharedGroupAvailabilityId: tripGroup.selectedSharedAvailability }).toString())
@@ -169,16 +169,16 @@ export const TripSummaryPage = () => {
                 setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
             })
             .catch(err => console.log('Request Failed', err));
-    }
+    };
 
     const startTrip = async () => {
         await doPut('/api/v1/trip-group?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => {
-                console.log("Niceeee")
                 window.location.reload(false);
             })
             .catch(err => console.log('Request Failed', err));
-    }
+    };
+
 
     var tempData = [];
     const userWithRoles = () => {
@@ -265,7 +265,8 @@ export const TripSummaryPage = () => {
                         <Grid container item xs={12} spacing={10}>
                             {/*------------------------------------trip dates------------------------------------*/}
                             <DeleteDatesDialog open={deleteDatesDialogOpen} onClose={() => setDeleteDatesDialogOpen(false)} deleteDates={deleteDates} groupId={groupId} onSuccess={() => getTripData()} />
-                            <DateRangePickerDialog open={dateRangePickerDialogOpen}
+                            <DateRangePickerDialog
+                                open={dateRangePickerDialogOpen}
                                 onClose={() => setDateRangePickerDialogOpen(false)}
                                 initialRange={range}
                                 rangeChange={(ranges) => handleRangesChange(ranges)}
@@ -354,7 +355,7 @@ export const TripSummaryPage = () => {
                                             helperText={isPlanningStage ? "Only coordinator can change dates here or choose one of the ranges from the optimized section"
                                                 : ""}
                                             onClick={(isPlanningStage && isCordinator) ? () => setDateRangePickerDialogOpen(true) : undefined}
-                                            value={(tripGroup.selectedSharedAvailability !== null) ?
+                                            value={tripGroup.selectedSharedAvailability ?
                                                 `From: ${tripGroup.startDate} To: ${tripGroup.endDate}`
                                                 : "No dates selected"
                                             }

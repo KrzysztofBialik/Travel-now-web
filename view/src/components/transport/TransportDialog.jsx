@@ -5,26 +5,13 @@ import Box from '@mui/material/Box';
 import ListItemText from '@mui/material/ListItemText';
 import ListItem from '@mui/material/ListItem';
 import List from '@mui/material/List';
-import Divider from '@mui/material/Divider';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import Slide from '@mui/material/Slide';
-import Zoom from '@mui/material/Zoom';
 import { DialogContent, DialogTitle, StepLabel, Stepper, Step, CircularProgress } from '@mui/material';
 import { Grid } from '@mui/material';
 import { Card } from '@mui/material';
 import { useState } from 'react';
-import { Link } from '@mui/material';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { TextField } from '@mui/material';
-import { InputAdornment } from '@mui/material';
-import { ListItemAvatar } from '@mui/material';
-import { Avatar } from '@mui/material';
-import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import format from 'date-fns/format';
 import { GoogleMap, useLoadScript, MarkerF, DirectionsRenderer } from '@react-google-maps/api';
 import { useRef } from 'react';
@@ -38,10 +25,6 @@ import "./TransportDialog.css";
 import { useEffect } from 'react';
 import { AddTransportDialog } from './AddTransportDialog';
 import { UserTransportCard } from './UserTransportCard';
-import MobileStepper from '@mui/material/MobileStepper';
-import Paper from '@mui/material/Paper';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import ConnectingAirportsIcon from '@mui/icons-material/ConnectingAirports';
 import { LUFTHANSA_LOGO } from '../images/Images';
 import { doGet, doPost } from "../../components/utils/fetch-utils";
@@ -54,48 +37,25 @@ const origin = "51.088444225016154, 16.998315448807766"
 const destination = "41.38913481961653, 2.156520537014847"
 const tripPoints = { origin: origin, destination: destination }
 
-const exampleUserTransport = {
-    name: "Flixbus",
-    meetingLocation: "Dworzec autobusowy Wrocław",
-    destination: "Estación de Autobuses Barcelona Nord",
-    hours: 30,
-    minutes: 30,
-    meetingDate: "10/12/2022",
-    meetingTime: new Date(2014, 8, 25, 18, 20),
-    price: 1200,
-    description: "This is a direct connection to Barcelona by bus."
-}
+// const exampleUserTransport = {
+//     name: "Flixbus",
+//     meetingLocation: "Dworzec autobusowy Wrocław",
+//     destination: "Estación de Autobuses Barcelona Nord",
+//     hours: 30,
+//     minutes: 30,
+//     meetingDate: "10/12/2022",
+//     meetingTime: new Date(2014, 8, 25, 18, 20),
+//     price: 1200,
+//     description: "This is a direct connection to Barcelona by bus."
+// }
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
     // return <Zoom style={{ transitionDelay: "200ms" }} direction="up" ref={ref} {...props} />;
 });
 
-const steps = [
-    {
-        label: 'Select campaign settings',
-        description: `For each ad campaign that you create, you can control how much
-              you're willing to spend on clicks and conversions, which networks
-              and geographical locations you want your ads to show on, and more.`,
-    },
-    {
-        label: 'Create an ad group',
-        description:
-            'An ad group contains one or more ads which target a shared set of keywords.',
-    },
-    {
-        label: 'Create an ad',
-        description: `Try out different ad text to see what brings in the most customers,
-              and learn how to enhance your ads using features like ad extensions.
-              If you run into any problems with your ads, find out how to tell if
-              they're running and how to resolve approval issues.`,
-    },
-];
-
-
 export const TransportDialog = ({ open, onClose, accommodationId }) => {
     const [activeStep, setActiveStep] = useState(0);
-    const maxSteps = steps.length;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -161,7 +121,7 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
 
     useEffect(() => {
         calculateRoute();
-    }, [carTransportData])
+    }, [carTransportData]);
 
     const mapPlaneData = (plane) => {
         return (
@@ -217,7 +177,7 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                 </Stepper>
             </ListItem>
         )
-    }
+    };
 
     const mapPlaneDurations = (travel) => {
         return ([
@@ -227,13 +187,13 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
             <ListItem sx={{ py: 0 }}>{parseTime(travel.duration)}</ListItem>
         ]
         )
-    }
+    };
 
     const mapUserTransport = (transport) => {
         return (<Grid item xs={12} md={4}>
             <UserTransportCard transportData={transport} onSuccess={() => getData()} accommodationId={accommodationId} />
         </Grid>)
-    }
+    };
 
     const subtractDurations = (dur1, dur2) => {
         var dur1Hours = (dur1.days * 24) + dur1.hours + (dur1.minutes / 60)
@@ -241,20 +201,19 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
         var differnce = dur1Hours - dur2Hours;
         return { 'days': Math.floor(differnce / 24), 'hours': (differnce - (Math.floor(differnce / 24) * 24) - (differnce - Math.floor(differnce))), 'minutes': Math.floor((differnce - Math.floor(differnce)) * 60) }
 
-    }
+    };
 
     useEffect(() => {
         if (open) {
             getData();
             calculateRoute();
-            console.log("pobieranie trasy");
         }
-    }, [open])
+    }, [open]);
 
     const parseTime = (duration) => {
         var time = durationn.parse(duration);
         return constructString(time)
-    }
+    };
 
     const constructString = (time) => {
         var result = "";
@@ -270,7 +229,7 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
             result = result + time.minutes + "m "
         }
         return result;
-    }
+    };
 
     async function calculateRoute() {
         // eslint-disable-next-line no-undef
@@ -306,7 +265,9 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                         justifyContent: "space-between"
                     }}
                 >
-                    <Box sx={{ color: "#FFFFFF" }}>Transport options</Box>
+                    <Box sx={{ color: "#FFFFFF" }}>
+                        Transport options
+                    </Box>
                     <Button variant="outlined"
                         sx={{
                             borderRadius: "20px",
@@ -323,7 +284,6 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                     </Button>
                 </DialogTitle>
                 <DialogContent>
-
                     <Box sx={{
                         mx: "100px",
                         display: "flex",
@@ -332,15 +292,29 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                         flexDirection: "column",
                         minWidth: "1200px"
                     }}>
-                        <Box sx={{ mt: "50px", mb: "80px", width: "75%" }}>
-                            <Stepper orientation="vertical">
-                                <Step>
-                                    <StepLabel icon={<CircleIcon sx={{ color: "primary.main" }} />}><Typography sx={{ fontSize: "28px" }}>{source}</Typography></StepLabel>
-                                </Step>
-                                <Step>
-                                    <StepLabel icon={<LocationOnIcon sx={{ color: "primary.main" }} />}><Typography sx={{ fontSize: "28px" }}>{destination}</Typography></StepLabel>
-                                </Step>
-                            </Stepper>
+                        <Box sx={{ mt: "50px", mb: "80px", width: "75%" }} elevation={10}>
+                            {true ?
+                                <Card sx={{ width: "200px", height: "100px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                    <CircularProgress sx={{ color: "primary.main" }} />
+                                </Card>
+                                :
+                                <Stepper orientation="vertical">
+                                    <Step>
+                                        <StepLabel icon={<CircleIcon sx={{ color: "primary.main" }} />}>
+                                            <Typography sx={{ fontSize: "28px" }}>
+                                                {source}
+                                            </Typography>
+                                        </StepLabel>
+                                    </Step>
+                                    <Step>
+                                        <StepLabel icon={<LocationOnIcon sx={{ color: "primary.main" }} />}>
+                                            <Typography sx={{ fontSize: "28px" }}>
+                                                {destination}
+                                            </Typography>
+                                        </StepLabel>
+                                    </Step>
+                                </Stepper>
+                            }
                         </Box>
                         <Grid container item xs={12} spacing={10}
                             sx={{

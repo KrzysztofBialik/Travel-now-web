@@ -199,7 +199,7 @@ export const MyAccommodationVotesPage = () => {
                         </Typography>
                     </Box>
                     :
-                    { myVotes }
+                    myVotes
                 }
             </Box >
         </Box >
