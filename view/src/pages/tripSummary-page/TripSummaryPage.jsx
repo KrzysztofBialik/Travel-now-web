@@ -38,6 +38,8 @@ import { doPut } from '../../components/utils/fetch-utils';
 
 import { parseISO } from 'date-fns/esm';
 import { formatISO, parse, parseJSON } from 'date-fns';
+import { SuccessToast } from '../../components/toasts/SuccessToast';
+import { ErrorToast } from '../../components/toasts/ErrorToast';
 
 export const URL = '/tripSummary/:groupId';
 export const NAME = "TripSummary";
@@ -130,7 +132,7 @@ export const TripSummaryPage = () => {
                 } else {
                     setSeletcedAccommodation(
                         <Grid item xs={12} md={4} key={accommodation.accommodationId}>
-                            <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} />
+                            <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} showSelectButton={false} />
                         </Grid>)
                     setCenter({ lat: accommodation.latitude, lng: accommodation.longitude })
                 }

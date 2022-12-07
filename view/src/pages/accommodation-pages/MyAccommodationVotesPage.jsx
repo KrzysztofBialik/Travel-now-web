@@ -98,7 +98,7 @@ export const MyAccommodationVotesPage = () => {
                             <AccommodationCard accommodationData={accommodation.accommodation} canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))} selected={false} votes={accommodation.userVoted} onSuccess={() => getData()} />
                         </Grid>
                         <Grid item xs={12} md={5} >
-                            {isLoaded ?
+                            {true ?
                                 <GoogleMap
                                     zoom={14}
                                     center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
@@ -199,7 +199,16 @@ export const MyAccommodationVotesPage = () => {
                         </Typography>
                     </Box>
                     :
-                    myVotes
+                    <Box sx={{
+                        minHeight: "400px",
+                        minWidth: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center"
+                    }}>
+                        {myVotes}
+                    </Box>
+
                 }
             </Box >
         </Box >

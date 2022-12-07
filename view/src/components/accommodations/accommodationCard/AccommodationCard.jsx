@@ -30,6 +30,8 @@ import "./AccommodationCard.css";
 import { doDelete, doPatch, doPost, doGet } from "../../utils/fetch-utils";
 import { PLACEHOLDER_IMAGE } from "../../images/Images";
 import { useEffect } from "react";
+import { SuccessToast } from "../../toasts/SuccessToast";
+import { ErrorToast } from "../../toasts/ErrorToast";
 
 
 const ExpandMore = styled((props) => {
@@ -43,7 +45,7 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const AccommodationCard = ({ accommodationData, canModify, selected, votes, onSuccess, canOpenTransport }) => {
+export const AccommodationCard = ({ accommodationData, canModify, selected, votes, onSuccess, showSelectButton = true }) => {
 
     const { groupId } = useParams();
     const [currencyLoading, setCurrencyLoading] = useState(false);
@@ -58,6 +60,9 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const [transportDialogOpen, setTransportDialogOpen] = useState(false);
     const [userName, setUserName] = useState("");
+    const [successToastOpen, setSuccessToastOpen] = useState(false);
+    const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [apiErrorMessage, setApiErrorMessage] = useState("Ups! Something went wrong. Try again.");
     const [noDatesSelectedDialogOpen, setNoDatesSelectedDialogOpen] = useState(false);
     const [selectedSharedAvailability, setSelectedSharedAvailability] = useState(null);
     const open = Boolean(anchorEl);
@@ -142,8 +147,8 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 }
             })
             .catch(err => {
-                // setErrorToastOpen(true); 
-                // setEditionError(err.message)
+                setErrorToastOpen(true);
+                setApiErrorMessage(err.message)
             });
     };
 
@@ -155,13 +160,15 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 }
             })
             .catch(err => {
-                // setErrorToastOpen(true); 
-                // setEditionError(err.message)
+                setErrorToastOpen(true);
+                setApiErrorMessage(err.message)
             });
     };
 
     return (
         <>
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully selected." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={apiErrorMessage} />
             <NoDatesSelectedDialog
                 open={noDatesSelectedDialogOpen}
                 onClose={() => setNoDatesSelectedDialogOpen(false)}
@@ -169,6 +176,9 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
             <SelectAccommodationDialog
                 open={selectDialogOpen}
                 onClose={() => { setSelectDialogOpen(false) }}
+                accommodationId={accommodationData.accommodationId}
+                groupId={groupId}
+                onSuccess={() => onSuccess()}
             />
             <EditAccommodationDialog
                 open={editDialogOpen}
@@ -275,12 +285,18 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                                     'aria-labelledby': 'basic-button',
                                 }}
                             >
-                                <MenuItem onClick={() => selectAction()}>
-                                    <DoneIcon sx={{ mr: "20px", color: "primary.main" }} />
-                                    <Typography sx={{ color: "primary.main" }}>
-                                        Select
-                                    </Typography>
-                                </MenuItem>
+                                {
+                                    showSelectButton ?
+                                        <MenuItem onClick={() => selectAction()}>
+                                            <DoneIcon sx={{ mr: "20px", color: "primary.main" }} />
+                                            <Typography sx={{ color: "primary.main" }}>
+                                                Select
+                                            </Typography>
+                                        </MenuItem>
+                                        :
+                                        <></>
+                                }
+
                                 <MenuItem onClick={editAction}>
                                     <EditIcon sx={{ mr: "20px", color: "primary.main" }} />
                                     <Typography sx={{ color: "primary.main" }}>
