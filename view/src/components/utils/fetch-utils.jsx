@@ -1,4 +1,6 @@
-export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'http://51.132.58.149:8080' : '';
+// export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'http://51.132.58.149:8080' : '';
+export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : '';
+
 
 export const doGet = (endpoint) => {
     const headers = addAuthorizationHeader({
@@ -89,7 +91,7 @@ const checkForError = async (response) => {
             throw new Error(json.message)
         }
 
-        if(response.status === 401) {
+        if (response.status === 401) {
             throw new Error("401")
         }
         throw new Error("Something went wrong")

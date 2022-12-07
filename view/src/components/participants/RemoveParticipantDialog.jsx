@@ -1,17 +1,17 @@
 import * as React from 'react';
 import { useState } from "react";
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { Dialog } from '@mui/material';
 import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
-
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { DeletingPermissionApiErrorToast } from '../toasts/DeletingPermissionApiErrorToast';
 import { doDelete } from "../../components/utils/fetch-utils";
-import { Routes, Route, useNavigate } from 'react-router-dom';
+
 
 export const RemoveParticipantDialog = ({ open, onClose, groupId, userId, isDeletingHimself, onSuccess }) => {
 
@@ -58,8 +58,7 @@ export const RemoveParticipantDialog = ({ open, onClose, groupId, userId, isDele
                     setApiErrorMessage(err.message);
                 });
         }
-
-    }
+    };
 
     return (
         <div>

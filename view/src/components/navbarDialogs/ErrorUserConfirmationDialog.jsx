@@ -18,7 +18,7 @@ export const ErrorUserConfirmationDialog = ({ open, onClose, message }) => {
                 <DialogTitle>Updating user account failed!</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                        There were error while updating your account. Sorry for inconvenience.
+                        There was an error while updating your account. Sorry for inconvenience.
                     </DialogContentText>
                     <DialogActions>
                         <Button

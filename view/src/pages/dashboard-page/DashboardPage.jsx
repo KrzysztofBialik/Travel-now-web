@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { Grid } from '@mui/material';
 import { Typography } from '@mui/material';
 import { Card } from '@mui/material';
 import { Divider } from '@mui/material';
 import { Button } from '@mui/material';
-
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar.jsx';
 import { CreateTripDialog } from '../../components/dashboard/CreateTripDialog.jsx';
 import { FutureTrips } from '../../components/dashboard/tripsList/futureTrips/FutureTrips.jsx';

@@ -56,9 +56,6 @@ export const MyAccommodationsPage = () => {
     const [loading, setLoading] = useState(true);
     const [accommodationsRaw, setAccommodationsRaw] = useState([]);
 
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -69,53 +66,52 @@ export const MyAccommodationsPage = () => {
         doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId, userId: parseInt(localStorage.getItem('userId')) }).toString())
             .then(response => response.json())
             .then(json => { setAccommodationsRaw(json); return json })
-            .then(accommodations => {
-                setMyAccommodations(accommodations.map((accommodation) => (
-                    <Grid container item xs={12} spacing={10} key={accommodation.accommodation.accommodationId}
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: 'flex-start',
-                            mb: 8,
-                        }}
-                    >
-                        <Grid item xs={12} md={5}>
-                            <AccommodationCard accommodationData={accommodation.accommodation} canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))} selected={false} votes={accommodation.userVoted} onSuccess={() => getData()} />
-                        </Grid>
-                        <Grid item xs={12} md={5} >
-                            {isLoaded ?
-                                <GoogleMap
-                                    zoom={14}
-                                    center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
-                                    mapContainerClassName="map-container"
-                                >
-                                    <MarkerF position={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }} />
-                                </GoogleMap>
-                                :
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        minHeight: "400px"
-                                        // border: "2px solid black"
-                                    }}
-                                >
-                                    <CircularProgress />
-                                </Box>}
-                        </Grid>
+            .then(accommodations => setMyAccommodations(accommodations.map(accommodation => (
+                <Grid container item xs={12} spacing={10} key={accommodation.accommodation.accommodationId}
+                    sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: 'flex-start',
+                        mb: 8,
+                    }}
+                >
+                    <Grid item xs={12} md={5}>
+                        <AccommodationCard accommodationData={accommodation.accommodation} canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))} selected={false} votes={accommodation.userVoted} onSuccess={() => getData()} />
                     </Grid>
-                )));
-                setLoading(false);
-            })
+                    <Grid item xs={12} md={5} >
+                        {isLoaded ?
+                            <GoogleMap
+                                zoom={14}
+                                center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
+                                mapContainerClassName="map-container"
+                            >
+                                <MarkerF position={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }} />
+                            </GoogleMap>
+                            :
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    justifyContent: "center",
+                                    alignItems: "center",
+                                    minHeight: "400px"
+                                    // border: "2px solid black"
+                                }}
+                            >
+                                <CircularProgress />
+                            </Box>}
+                    </Grid>
+                </Grid>
+            ))))
             .catch(err => console.log('Request Failed', err));
+        setLoading(false);
+
     };
 
     useEffect(() => {
         getData();
 
-    }, [])
+    }, []);
 
     return (
         <>
@@ -206,7 +202,7 @@ export const MyAccommodationsPage = () => {
                             </Typography>
                         </Box>
                         :
-                        { myAccommodations }
+                        myAccommodations
                     }
                 </Box >
             </Box >

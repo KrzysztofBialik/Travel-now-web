@@ -51,54 +51,6 @@ import { doPost } from "../../components/utils/fetch-utils";
 //     {
 //         id: 4,
 //         name: "Piterm33"
-//     },
-//     {
-//         id: 5,
-//         name: "BoBa"
-//     },
-//     {
-//         id: 6,
-//         name: "Krzychu77"
-//     },
-//     {
-//         id: 7,
-//         name: "Olisadebe"
-//     },
-//     {
-//         id: 8,
-//         name: "Piterm33"
-//     },
-//     {
-//         id: 9,
-//         name: "BoBa"
-//     },
-//     {
-//         id: 10,
-//         name: "Krzychu77"
-//     },
-//     {
-//         id: 11,
-//         name: "Olisadebe"
-//     },
-//     {
-//         id: 12,
-//         name: "Piterm33"
-//     },
-//     {
-//         id: 13,
-//         name: "BoBa"
-//     },
-//     {
-//         id: 14,
-//         name: "Krzychu77"
-//     },
-//     {
-//         id: 15,
-//         name: "Olisadebe"
-//     },
-//     {
-//         id: 16,
-//         name: "Piterm33"
 //     }
 // ];
 
@@ -124,18 +76,21 @@ export const AddExpenseDialog = ({ open, onClose, participants, groupId, onSucce
         selectedParticipants: participants.map((participant) => ({ formName: participant.id, checked: false }))
     };
 
-    const postExpenditure = async  (values) => {
+    const postExpenditure = async (values) => {
         console.log("Boba chuj")
         console.log(values.selectedParticipants)
 
-        var postBody = {'creatorId':localStorage.getItem('userId'), title: values.expenseName, price: values.price,
-         debtorsIds: values.selectedParticipants.map(s => s.formName)};
-        await doPost('/api/v1/finance-optimizer?' + new URLSearchParams( {groupId: groupId }).toString(), postBody )
+        var postBody = {
+            'creatorId': localStorage.getItem('userId'), title: values.expenseName, price: values.price,
+            debtorsIds: values.selectedParticipants.map(s => s.formName)
+        };
+        await doPost('/api/v1/finance-optimizer?' + new URLSearchParams({ groupId: groupId }).toString(), postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 onSuccess();
             })
-            .catch(err => {setErrorToastOpen(true); 
+            .catch(err => {
+                setErrorToastOpen(true);
                 setErrorToastOpen(err.message)
             });
     }
@@ -298,8 +253,8 @@ export const AddExpenseDialog = ({ open, onClose, participants, groupId, onSucce
                             </FormHelperText>
                         </Box>
                         <Box sx={{ display: "flex", flexDirection: "column", overflow: "none" }}>
-                        <Typography
-                                sx={{ backgroundColor: "#dee2e6", pl: 2 , py: 1, fontSize: "25px" }}
+                            <Typography
+                                sx={{ backgroundColor: "#dee2e6", pl: 2, py: 1, fontSize: "25px" }}
 
                             >Contributors</Typography>
                             {/* <FormControlLabel

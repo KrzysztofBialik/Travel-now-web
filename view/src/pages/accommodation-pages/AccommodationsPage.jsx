@@ -1,52 +1,22 @@
-import { Box, CircularProgress, Divider } from "@mui/material";
+import { useState } from "react";
+import { styled } from '@mui/material/styles';
+import { Box } from "@mui/material";
+import { Divider } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
-import { Card } from "@mui/material";
-import { Button } from "@mui/material";
-
+import IconButton from '@mui/material/IconButton';
+import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
+import { useParams } from "react-router-dom";
+import { doGet } from "../../components/utils/fetch-utils";
+import { useEffect } from "react";
 import { AccommodationCard } from "../../components/accommodations/accommodationCard/AccommodationCard";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { futureTripButtonsData, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 
-//------------------------importy do drugiej opcji---------------------------------
-import { useState } from "react";
-import { styled } from '@mui/material/styles';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ThumbUpOffIcon from '@mui/icons-material/ThumbUpOutlined';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import LinkIcon from '@mui/icons-material/Link';
-import EmojiTransportationIcon from '@mui/icons-material/EmojiTransportation';
-
-
-import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
-import { useParams } from "react-router-dom";
-import { doGet, doGetAwait } from "../../components/utils/fetch-utils";
-import { useEffect } from "react";
 
 export const URL = '/accommodations/:groupId';
 export const NAME = "Accommodations";
-
-const navbarButtonsData = futureTripButtonsData;
-
-
-const ExpandMore = styled((props) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
-    }),
-}));
 
 export const AccommodationsPage = () => {
 
@@ -63,20 +33,6 @@ export const AccommodationsPage = () => {
 
     var isCordinator = false;
 
-    const voteAction = () => {
-        setUserVote(!userVote)
-        if (userVote) {
-            setNumOfVotes(numOfVotes - 1);
-        }
-        else {
-            setNumOfVotes(numOfVotes + 1);
-        }
-    };
-
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
-
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     });
@@ -89,19 +45,18 @@ export const AccommodationsPage = () => {
     };
 
     const getData = async () => {
-        setLoading(true);
+        setLoading(false);
         doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(json => { setAccommodationsRaw(json); return json })
             .then(accommodations => {
-                console.log(accommodations)
                 setAllAccommodations(accommodations.map((accommodation) => (
                     <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
                         <AccommodationCard accommodationData={accommodation.accommodation} canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={false} votes={accommodation.userVoted} />
                     </Grid>)));
-                setLoading(false);
             })
             .catch(err => console.log('Request Failed', err));
+        setLoading(false);
     };
 
     const getChosenAccommodation = async () => {
@@ -149,7 +104,6 @@ export const AccommodationsPage = () => {
                 flexDirection: "column",
                 minWidth: "1200px"
             }}
-            // elevation={4}
             >
                 {selectedAccommodation !== null ?
                     <>
@@ -211,7 +165,6 @@ export const AccommodationsPage = () => {
                         </Box>
                         <Divider variant="middle" sx={{ width: "100%" }} />
                     </>
-
                     :
                     <></>
                 }
@@ -242,7 +195,7 @@ export const AccommodationsPage = () => {
                                     display: "flex",
                                     justifyContent: "center",
                                     alignItems: 'center',
-                                    mb: "30px"
+                                    mb: "80px"
                                 }}
                             >
                                 Possible accommodations
@@ -254,37 +207,38 @@ export const AccommodationsPage = () => {
                                     spacing={5}
                                     sx={{
                                         display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
+                                        // justifyContent: "center",
+                                        alignItems: "flex-start",
                                         minWidth: "700px",
                                         minHeight: "400px",
-                                        width: "100%"
-                                        // gridAutoRows: "1fr"
+                                        width: "100%",
+                                        gridAutoRows: "1fr"
                                         // gap: "50px"
                                         // rowGap: "50px",
                                         // columnGap: "50px"
                                     }}
                                 >
-                                    {false ?
-                                        allAccommodations
-                                        :
-                                        <Box
-                                            sx={{
-                                                color: "primary.main",
-                                                display: "flex",
-                                                flexDirection: "column",
-                                                justifyContent: "center",
-                                                alignItems: "center",
-                                                width: "100%",
-                                                minHeight: "400px",
-                                                width: "100%"
-                                                // border: "2px solid black"
-                                            }}
-                                        >
-                                            <Typography sx={{ fontSize: "32px" }}>
-                                                No accommodation suggestions provided yet
-                                            </Typography>
-                                        </Box>
+                                    {
+                                        allAccommodations.length !== 0 ?
+                                            allAccommodations
+                                            :
+                                            <Box
+                                                sx={{
+                                                    color: "primary.main",
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    justifyContent: "center",
+                                                    alignItems: "center",
+                                                    width: "100%",
+                                                    minHeight: "400px",
+                                                    width: "100%"
+                                                    // border: "2px solid black"
+                                                }}
+                                            >
+                                                <Typography sx={{ fontSize: "32px" }}>
+                                                    No accommodation suggestions provided yet
+                                                </Typography>
+                                            </Box>
                                     }
                                 </Grid>
                                 :
@@ -298,9 +252,8 @@ export const AccommodationsPage = () => {
                                         // border: "2px solid black"
                                     }}
                                 >
-                                    <CircularProgress />
+                                    <CircularProgress sx={{ color: "primary.main" }} />
                                 </Box>
-
                         }
                     </Grid>
                 </Box>
