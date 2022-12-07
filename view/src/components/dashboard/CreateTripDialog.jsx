@@ -47,6 +47,26 @@ const currencies = [
     },
     {
         id: 4,
+        value: 'CZK',
+        label: 'CZK',
+    },
+    {
+        id: 5,
+        value: 'GBP',
+        label: 'GBP',
+    },
+    {
+        id: 6,
+        value: 'HRK',
+        label: 'HRK',
+    },
+    {
+        id: 7,
+        value: 'UAH',
+        label: 'UAH',
+    },
+    {
+        id: 8,
         value: 'JPY',
         label: 'JPY',
     },
@@ -217,7 +237,6 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                             helperText={errors.startingLocation?.message}
                         />
                         <Box sx={{ display: "flex", justifyContent: "space-between", alignContent: "center" }} >
-
                             <Controller
                                 name='currency'
                                 control={control}

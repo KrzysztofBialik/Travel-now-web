@@ -48,13 +48,10 @@ const center = { lat: 0, lng: 0 }
 export const TripSummaryPage = () => {
 
     const { groupId } = useParams();
-
     const [isCordinator, setIsCordinator] = useState(false);;
     const [isPlanningStage, setIsPlanningStage] = useState(false);
-
     const [usersData, setUsersData] = useState([]);
     const [groupCoordinators, setGroupCoordinators] = useState([]);
-
     const [deleteDatesDialogOpen, setDeleteDatesDialogOpen] = useState(false);
     const [deleteAccommodationDialogOpen, setDeleteAccommodationDialogOpen] = useState(false);
     const [dateRangePickerDialogOpen, setDateRangePickerDialogOpen] = useState(false);
@@ -64,6 +61,7 @@ export const TripSummaryPage = () => {
     const [center, setCenter] = useState({ lat: 0, lng: 0 })
     const [userFullData, setUserFullData] = useState([])
     const [tripGroup, setTripGroup] = useState([]);
+
     const [range, setRange] = useState([
         {
             startDate: new Date(),
@@ -132,7 +130,7 @@ export const TripSummaryPage = () => {
                 } else {
                     setSeletcedAccommodation(
                         <Grid item xs={12} md={4} key={accommodation.accommodationId}>
-                            <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} onSuccess={() => console.log()} />
+                            <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} />
                         </Grid>)
                     setCenter({ lat: accommodation.latitude, lng: accommodation.longitude })
                 }
@@ -174,12 +172,12 @@ export const TripSummaryPage = () => {
     }
 
     const startTrip = async () => {
-        await doPut('/api/v1/trip-group?' + new URLSearchParams({groupId : groupId}).toString())
-        .then(response => {
-            console.log("Niceeee")
-            window.location.reload(false);
-                })
-        .catch(err => console.log('Request Failed', err));
+        await doPut('/api/v1/trip-group?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => {
+                console.log("Niceeee")
+                window.location.reload(false);
+            })
+            .catch(err => console.log('Request Failed', err));
     }
 
     var tempData = [];
@@ -224,9 +222,7 @@ export const TripSummaryPage = () => {
             position: 'relative',
             minHeight: '100%'
         }}>
-            <NavigationNavbar
-
-                buttonsData={selectNavbar()} />
+            <NavigationNavbar buttonsData={selectNavbar()} groupId={groupId} />
             <Box sx={{
                 p: 10,
                 mx: { xs: 2, lg: 3 },
@@ -248,8 +244,7 @@ export const TripSummaryPage = () => {
                 >
                     <Grid container spacing={10}>
                         <Grid item xs={12} alignItems="center" sx={{ mx: "auto" }}>
-                            <Typography
-                                variant="h3"
+                            <Box
                                 sx={{
                                     display: "flex",
                                     justifyContent: "center",
@@ -260,8 +255,10 @@ export const TripSummaryPage = () => {
                                 <Typography variant="h3" sx={{ color: "primary.main", mr: 2 }}>
                                     {tripGroup.name}
                                 </Typography>
-                                summary
-                            </Typography>
+                                <Typography variant="h3">
+                                    summary
+                                </Typography>
+                            </Box>
                         </Grid>
 
                         {/*-----------------------------------sekcja tabel-----------------------------------*/}
@@ -681,7 +678,7 @@ export const TripSummaryPage = () => {
                                         }}
                                         onClick={startTrip}>
                                         Begin trip
-                            
+
                                     </Button>
                                     :
                                     <></>

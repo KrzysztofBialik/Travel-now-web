@@ -1,39 +1,33 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { Button } from '@mui/material';
 import { Tooltip } from '@mui/material';
 import { IconButton } from '@mui/material';
 import { Menu } from '@mui/material';
 import { MenuItem } from '@mui/material';
+import { useState } from "react";
+import { useEffect } from "react";
+import { MenuItems } from './MenuItems';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LogoutIcon from '@mui/icons-material/Logout';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { useState } from "react";
-import { useEffect } from "react";
-
-import { Dialog } from '@mui/material';
-import { DialogActions } from '@mui/material';
-import { DialogContent } from '@mui/material';
-import { DialogContentText } from '@mui/material';
-import { DialogTitle } from '@mui/material';
-import './NavigationNavbar.css';
-import { MenuItems } from './MenuItems'
 import { UserOptionsDialog } from '../../navbarDialogs/UserOptionsDialog';
 import { TripGroupOptionsDialog } from '../../navbarDialogs/TripGroupOptionsDialog';
 import { ConfirmLogoutDialog } from '../../navbarDialogs/ConfirmLogoutDialog';
-import { Routes, Route, useNavigate } from 'react-router-dom';
-import { doGet } from '../../utils/fetch-utils'
+import { ConfirmLeaveGroupDialog } from '../../navbarDialogs/LeaveGroupDialogOpen';
+import { ConfirmDeleteGroupDialog } from '../../navbarDialogs/DeleteGroupDialog';
+import { doGet } from '../../utils/fetch-utils';
+import './NavigationNavbar.css';
 
 
 export const NavigationNavbar = ({ buttonsData, groupId }) => {
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
     const [anchorElGroup, setAnchorElGroup] = React.useState(null);
     const [leaveGroupDialogOpen, setLeaveGroupDialogOpen] = useState(false);
@@ -44,14 +38,17 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
     const [isCoordinator, setIsCoordinator] = useState(false)
     const navigate = useNavigate();
 
+    useEffect(() => {
+        if (groupId) {
+            getIsCoordinator();
+        }
+    }, []);
 
-    const open = Boolean(anchorEl);
-
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-    const handleClose = () => {
-        setAnchorEl(null);
+    const getIsCoordinator = async () => {
+        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+            .then(response => response.json())
+            .then(response => setIsCoordinator(response))
+            .catch(err => console.log(err.message));
     };
 
     const handleOpenUserMenu = (event) => {
@@ -99,64 +96,27 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
         localStorage.removeItem("ACCESS_TOKEN");
         localStorage.removeItem("userId");
         navigate('/');
-    }
+    };
 
     const removeMenus = () => {
         setAnchorElGroup(null);
         setAnchorElUser(null);
     };
 
-    const handleLogutDialogClose = () => {
-        setUserLogoutDialogOpen(false)
-    }
-
-    const getIsCoordinator = async () => {
-        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
-            .then(response => setIsCoordinator(response.json))
-            .catch(err => console.log(err.message));
-    };
-
-    useEffect(() => {
-        getIsCoordinator();
-    }, [])
-
-
-
-
     window.addEventListener('scroll', removeMenus);
-
-    function dropdownMenus(buttonsData) {
-        const buttons = [];
-
-        for (var i = 0; i < buttonsData.length; i++) {
-            buttons.push(
-                <>
-                    <Button
-                        key={buttonsData[i].id}
-                        variant="contained"
-                        sx={{ width: "150px" }}
-                        onClick={handleClick}
-                    >
-                        {buttonsData[i].name}
-                    </Button>
-                    <Menu
-                        id="basic-menu"
-                        anchorEl={anchorEl}
-                        open={open}
-                        onClose={handleClose}
-                        MenuListProps={{
-                            'aria-labelledby': 'basic-button',
-                        }}
-                    >
-                    </Menu>
-                </>
-            )
-        }
-        return buttons;
-    }
 
     return (
         <>
+            <ConfirmDeleteGroupDialog
+                open={deleteGroupDialogOpen}
+                onClose={() => setDeleteGroupDialogOpen(false)}
+                groupId={groupId}
+            />
+            <ConfirmLeaveGroupDialog
+                open={leaveGroupDialogOpen}
+                onClose={() => setLeaveGroupDialogOpen(false)}
+                groupId={groupId}
+            />
             <ConfirmLogoutDialog
                 open={userLogoutDialogOpen}
                 onClose={() => setUserLogoutDialogOpen(false)}
@@ -257,6 +217,15 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                                 </MenuItem>,
                                                 <MenuItem
                                                     key={2}
+                                                    onClick={handleLeaveGroup}
+                                                >
+                                                    <ExitToAppIcon sx={{ color: "error.main", mr: 1 }} />
+                                                    <Typography sx={{ textAlign: "center", color: "error.main" }}>
+                                                        Leave group
+                                                    </Typography>
+                                                </MenuItem>,
+                                                <MenuItem
+                                                    key={3}
                                                     onClick={handleDeleteGroup}
                                                 >
                                                     <DeleteIcon sx={{ color: "error.main", mr: 1 }} />

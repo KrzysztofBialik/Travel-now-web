@@ -23,15 +23,10 @@ export const DeleteAccommodationDialog = ({ open, onClose, groupId, onSuccess })
         onClose();
     };
 
-    // const handleErrorClose = () => {
-    //     setErrorToastOpen(true);
-    //     onClose();
-    // };
-
     const handleDeletion = async () => {
-        await doPut('/api/v1/trip-group/selected-accommodation?' + new URLSearchParams({ groupId: groupId}).toString())
+        await doPut('/api/v1/trip-group/selected-accommodation?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => {
-                if(response.ok) {
+                if (response.ok) {
                     handleSuccessClose();
                 }
             })
@@ -39,7 +34,7 @@ export const DeleteAccommodationDialog = ({ open, onClose, groupId, onSuccess })
                 setErrorToastOpen(true)
                 setApiErrorMessage(err.message);
             });
-    }
+    };
 
     return (
         <div>

@@ -30,8 +30,6 @@ import { doGet } from "../../components/utils/fetch-utils";
 import { doPatch } from "../../components/utils/fetch-utils";
 import { useEffect } from 'react';
 
-
-
 const currencies = [
     {
         id: 1,
@@ -50,11 +48,30 @@ const currencies = [
     },
     {
         id: 4,
+        value: 'CZK',
+        label: 'CZK',
+    },
+    {
+        id: 5,
+        value: 'GBP',
+        label: 'GBP',
+    },
+    {
+        id: 6,
+        value: 'HRK',
+        label: 'HRK',
+    },
+    {
+        id: 7,
+        value: 'UAH',
+        label: 'UAH',
+    },
+    {
+        id: 8,
         value: 'JPY',
         label: 'JPY',
     },
 ];
-
 
 
 export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
@@ -65,9 +82,14 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
     const [descriptionLength, setDescriptionLength] = useState(0);
-
     const [tripData, setTripData] = useState({});
     const DESCRIPTION_LIMIT = 250;
+
+    useEffect(() => {
+        if (groupId) {
+            getTripData();
+        }
+    }, []);
 
     const getTripData = async () => {
         setIsLoading(true);
@@ -76,17 +98,9 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
             .then(response => {
                 setNecessaryData(response);
             })
-            .then(setIsLoading(false))
             .catch(err => console.log('Request Failed', err));
-    }
-
-    useEffect(() => {
-        getTripData();
-    }, []);
-
-    // useEffect(() => {
-    //     reset(tripData);
-    // }, [tripData.description]);
+        setIsLoading(false);
+    };
 
     useEffect(() => {
         reset(tripData);
@@ -156,11 +170,11 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                 handleSuccess();
             })
             .catch(err => {
-                setIsUpdating(false);
                 setConfirmErrorDialogOpen(true);
                 setErrorMessage(err.message)
                 console.log('Request Failed', err.message)
             });
+        setIsUpdating(false);
     }
 
     // const descriptionWatch = watch("description");
@@ -273,168 +287,171 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                     minHeight: "200px"
                                 }}>
                                     <Box sx={{ height: "100%", width: "100%" }}>
-                                        <form
-                                            onSubmit={handleSubmit(handleUpdateTrip)}
-                                        >
-                                            <TextField
-                                                type='string'
-                                                autoFocus
-                                                margin="normal"
-                                                placeholder='Trip name'
-                                                name='trip name'
-                                                label='Trip name'
-                                                defaultValue={tripData.tripName}
-                                                fullWidth
-                                                variant="outlined"
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <EditIcon sx={{ color: "primary.main" }} />
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
-                                                {...register('tripName')}
-                                                error={!!errors.tripName}
-                                                helperText={errors.tripName?.message}
-                                            />
-                                            <TextField
-                                                type='string'
-                                                autoFocus
-                                                margin="normal"
-                                                placeholder='Starting location'
-                                                name='startingLocation'
-                                                defaultValue={tripData.startingLocation}
-                                                label='Starting location'
-                                                fullWidth
-                                                variant="outlined"
-                                                InputProps={{
-                                                    startAdornment: (
-                                                        <InputAdornment position="start">
-                                                            <LocationOnIcon sx={{ color: "primary.main" }} />
-                                                        </InputAdornment>
-                                                    ),
-                                                }}
-                                                {...register('startingLocation')}
-                                                error={!!errors.startingLocation}
-                                                helperText={errors.startingLocation?.message}
-                                            />
-                                            <Box sx={{ display: "flex", justifyContent: "space-between", alignContent: "center" }} >
-
-                                                <Controller
-                                                    name='currency'
-                                                    control={control}
-                                                    render={({ field: { onChange, value } }) => (
-                                                        <TextField
-                                                            sx={{ minWidth: "150px", width: "150px" }}
-                                                            fullWidth
-                                                            select
-                                                            margin='normal'
-                                                            variant='outlined'
-                                                            defaultValue={tripData.currency}
-                                                            label='currency'
-                                                            InputProps={{
-                                                                startAdornment: (
-                                                                    <InputAdornment position="start">
-                                                                        <CurrencyExchangeIcon sx={{ color: "primary.main", mr: "10px" }} />
-                                                                    </InputAdornment>
-                                                                ),
-                                                            }}
-                                                            value={value}
-                                                            onChange={onChange}
-                                                            error={!!errors.currency}
-                                                            helperText={errors.currency?.message}
-                                                        >
-                                                            {currencies.map((currency) => (
-                                                                <MenuItem key={currency.label} value={currency.value}>
-                                                                    {currency.label}
-                                                                </MenuItem>
-                                                            ))}
-                                                        </TextField>)}
-                                                />
-                                                <TextField
-                                                    sx={{ minWidth: "150px", width: "150px" }}
-                                                    type="number"
-                                                    autoFocus
-                                                    margin="normal"
-                                                    placeholder='Min days'
-                                                    name='minDays'
-                                                    defaultValue={tripData.minDays}
-                                                    label='Min days'
-                                                    variant="outlined"
-                                                    InputProps={{
-                                                        startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <AccessTimeIcon sx={{ color: "primary.main" }} />
-                                                            </InputAdornment>
-                                                        ),
-                                                    }}
-                                                    {...register('minDays')}
-                                                    error={!!errors.minDays}
-                                                    helperText={errors.minDays?.message}
-                                                />
-                                                <TextField
-                                                    sx={{ minWidth: "150px", width: "150px" }}
-                                                    type="number"
-                                                    autoFocus
-                                                    margin="normal"
-                                                    placeholder='Min participants'
-                                                    name='minParticipants'
-                                                    defaultValue={tripData.minParticipants}
-                                                    label='Min participants'
-                                                    variant="outlined"
-                                                    InputProps={{
-                                                        startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <PeopleAltOutlinedIcon sx={{ color: "primary.main" }} />
-                                                            </InputAdornment>
-                                                        ),
-                                                    }}
-                                                    {...register('minParticipants')}
-                                                    error={!!errors.minParticipants}
-                                                    helperText={errors.minParticipants?.message}
-                                                />
+                                        {false ?
+                                            <Box sx={{ minHeight: "485px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                <CircularProgress />
                                             </Box>
-                                            <TextField
-                                                type='string'
-                                                autoFocus
-                                                margin="normal"
-                                                multiline
-                                                rows={4}
-                                                placeholder='Description'
-                                                name='description'
-                                                label='Description'
-                                                defaultValue={tripData.description}
-                                                fullWidth
-                                                variant="outlined"
-                                                {...register('description')}
-                                                error={!!errors.description}
-                                            />
-                                            <FormHelperText
-                                                error={!!errors.description}
-                                                sx={{
-                                                    display: "flex",
-                                                    justifyContent: "space-between",
-                                                    padding: "0 10px",
-                                                    pb: "30px"
-                                                }}
+                                            :
+                                            <form
+                                                onSubmit={handleSubmit(handleUpdateTrip)}
                                             >
-                                                <span>{errors.description?.message}</span>
-                                                <span>{0}/{DESCRIPTION_LIMIT}</span>
-                                            </FormHelperText>
-                                            <DialogActions>
-                                                <Button
-                                                    type="submit"
-                                                    variant="contained"
-                                                    sx={{ borderRadius: "20px", color: "#FFFFFF", width: "140px" }}
+                                                <TextField
+                                                    sx={{ mt: "30px" }}
+                                                    type='string'
+                                                    autoFocus
+                                                    margin="normal"
+                                                    placeholder='Trip name'
+                                                    name='trip name'
+                                                    label='Trip name'
+                                                    defaultValue={tripData.tripName}
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <EditIcon sx={{ color: "primary.main" }} />
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                    {...register('tripName')}
+                                                    error={!!errors.tripName}
+                                                    helperText={errors.tripName?.message}
+                                                />
+                                                <TextField
+                                                    type='string'
+                                                    margin="normal"
+                                                    placeholder='Starting location'
+                                                    name='startingLocation'
+                                                    defaultValue={tripData.startingLocation}
+                                                    label='Starting location'
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    InputProps={{
+                                                        startAdornment: (
+                                                            <InputAdornment position="start">
+                                                                <LocationOnIcon sx={{ color: "primary.main" }} />
+                                                            </InputAdornment>
+                                                        ),
+                                                    }}
+                                                    {...register('startingLocation')}
+                                                    error={!!errors.startingLocation}
+                                                    helperText={errors.startingLocation?.message}
+                                                />
+                                                <Box sx={{ display: "flex", justifyContent: "space-between", alignContent: "center" }} >
+
+                                                    <Controller
+                                                        name='currency'
+                                                        control={control}
+                                                        render={({ field: { onChange, value } }) => (
+                                                            <TextField
+                                                                sx={{ minWidth: "150px", width: "150px" }}
+                                                                fullWidth
+                                                                select
+                                                                margin='normal'
+                                                                variant='outlined'
+                                                                defaultValue={tripData.currency}
+                                                                label='currency'
+                                                                InputProps={{
+                                                                    startAdornment: (
+                                                                        <InputAdornment position="start">
+                                                                            <CurrencyExchangeIcon sx={{ color: "primary.main", mr: "10px" }} />
+                                                                        </InputAdornment>
+                                                                    ),
+                                                                }}
+                                                                value={value}
+                                                                onChange={onChange}
+                                                                error={!!errors.currency}
+                                                                helperText={errors.currency?.message}
+                                                            >
+                                                                {currencies.map((currency) => (
+                                                                    <MenuItem key={currency.label} value={currency.value}>
+                                                                        {currency.label}
+                                                                    </MenuItem>
+                                                                ))}
+                                                            </TextField>)}
+                                                    />
+                                                    <TextField
+                                                        sx={{ minWidth: "150px", width: "150px" }}
+                                                        type="number"
+                                                        margin="normal"
+                                                        placeholder='Min days'
+                                                        name='minDays'
+                                                        defaultValue={tripData.minDays}
+                                                        label='Min days'
+                                                        variant="outlined"
+                                                        InputProps={{
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <AccessTimeIcon sx={{ color: "primary.main" }} />
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
+                                                        {...register('minDays')}
+                                                        error={!!errors.minDays}
+                                                        helperText={errors.minDays?.message}
+                                                    />
+                                                    <TextField
+                                                        sx={{ minWidth: "150px", width: "150px" }}
+                                                        type="number"
+                                                        margin="normal"
+                                                        placeholder='Min participants'
+                                                        name='minParticipants'
+                                                        defaultValue={tripData.minParticipants}
+                                                        label='Min participants'
+                                                        variant="outlined"
+                                                        InputProps={{
+                                                            startAdornment: (
+                                                                <InputAdornment position="start">
+                                                                    <PeopleAltOutlinedIcon sx={{ color: "primary.main" }} />
+                                                                </InputAdornment>
+                                                            ),
+                                                        }}
+                                                        {...register('minParticipants')}
+                                                        error={!!errors.minParticipants}
+                                                        helperText={errors.minParticipants?.message}
+                                                    />
+                                                </Box>
+                                                <TextField
+                                                    type='string'
+                                                    margin="normal"
+                                                    multiline
+                                                    rows={4}
+                                                    placeholder='Description'
+                                                    name='description'
+                                                    label='Description'
+                                                    defaultValue={tripData.description}
+                                                    fullWidth
+                                                    variant="outlined"
+                                                    {...register('description')}
+                                                    error={!!errors.description}
+                                                />
+                                                <FormHelperText
+                                                    error={!!errors.description}
+                                                    sx={{
+                                                        display: "flex",
+                                                        justifyContent: "space-between",
+                                                        padding: "0 10px",
+                                                        pb: "10px"
+                                                    }}
                                                 >
-                                                    {isUpdating ?
-                                                        <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
-                                                        :
-                                                        "Update data"
-                                                    }
-                                                </Button>
-                                            </DialogActions>
-                                        </form>
+                                                    <span>{errors.description?.message}</span>
+                                                    <span>{0}/{DESCRIPTION_LIMIT}</span>
+                                                </FormHelperText>
+                                                <DialogActions>
+                                                    <Button
+                                                        type="submit"
+                                                        variant="contained"
+                                                        sx={{ borderRadius: "20px", color: "#FFFFFF", width: "140px" }}
+                                                    >
+                                                        {isUpdating ?
+                                                            <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                                            :
+                                                            "Update data"
+                                                        }
+                                                    </Button>
+                                                </DialogActions>
+                                            </form>
+                                        }
                                     </Box>
                                 </Box>
                             </Card>

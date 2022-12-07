@@ -8,7 +8,6 @@ import { Button } from "@mui/material";
 import { Menu } from "@mui/material";
 import { MenuItem } from "@mui/material";
 import { CircularProgress } from "@mui/material";
-import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import IconButton from '@mui/material/IconButton';
@@ -30,7 +29,6 @@ import "./AccommodationCard.css";
 import { doDelete, doPatch, doPost, doGet } from "../../utils/fetch-utils";
 import { PLACEHOLDER_IMAGE } from "../../images/Images";
 import { useEffect } from "react";
-import { AttractionCard } from "../../attraction/AttractionCard";
 
 
 const ExpandMore = styled((props) => {
@@ -181,86 +179,6 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                             overflow: "hidden"
                         }
                     }}
-                // title={accommodationData.name}
-                // titleTypographyProps={{ noWrap: true, fontSize: "20px" }}
-                // action={
-                //     <Box sx={{
-                //         display: "flex",
-                //         flexDirection: "row",
-                //         alignItems: "center"
-                //     }}>
-                //         <Box
-                //             sx={{
-                //                 display: "flex",
-                //                 flexDirection: "column",
-                //                 alignItems: "center"
-                //             }}
-                //         >
-                //             <Button
-                //                 sx={{ color: selected ? "primary.main" : "secondary.main" }}
-                //                 onClick={voteAction}>
-                //                 {userVote ? <ThumbUpIcon sx={{ fontSize: "30px" }} />
-                //                     :
-                //                     <ThumbUpOffIcon sx={{ fontSize: "30px", padding: 0 }} />
-
-                //                 }
-                //             </Button>
-                //             <Typography
-                //                 sx={{
-                //                     color: selected ? "primary.main" : "secondary.main",
-                //                     fontSize: "20px",
-                //                     padding: 0
-                //                 }}
-                //             >
-                //                 {numOfVotes}
-                //             </Typography>
-                //         </Box>
-                //         {canModify && <Box>
-                //             <IconButton
-                //                 aria-label="more"
-                //                 id="long-button"
-                //                 aria-controls={open ? 'long-menu' : undefined}
-                //                 aria-expanded={open ? 'true' : undefined}
-                //                 aria-haspopup="true"
-                //                 onClick={handleClick}
-                //                 sx={{
-                //                     color: selected ? "primary.main" : "secondary.main",
-                //                     padding: 0
-                //                 }}
-                //             >
-                //                 <MoreVertIcon sx={{ fontSize: "30px" }} />
-                //             </IconButton>
-                //             <Menu
-                //                 id="basic-menu"
-                //                 anchorEl={anchorEl}
-                //                 open={open}
-                //                 onClose={handleClose}
-                //                 MenuListProps={{
-                //                     'aria-labelledby': 'basic-button',
-                //                 }}
-                //             >
-                //                 <MenuItem onClick={() => selectAction()}>
-                //                     <DoneIcon sx={{ mr: "20px", color: "primary.main" }} />
-                //                     <Typography sx={{ color: "primary.main" }}>
-                //                         Select
-                //                     </Typography>
-                //                 </MenuItem>
-                //                 <MenuItem onClick={editAction}>
-                //                     <EditIcon sx={{ mr: "20px", color: "primary.main" }} />
-                //                     <Typography sx={{ color: "primary.main" }}>
-                //                         Edit
-                //                     </Typography>
-                //                 </MenuItem>
-                //                 <MenuItem onClick={deleteAction}>
-                //                     <DeleteIcon sx={{ mr: "20px", color: "primary.main" }} />
-                //                     <Typography sx={{ color: "primary.main" }}>
-                //                         Delete
-                //                     </Typography>
-                //                 </MenuItem>
-                //             </Menu>
-                //         </Box>}
-                //     </Box>
-                // }
                 >
                     <Box sx={{
                         width: "80%", display: "flex", flexDirection: "column", minHeight: "30px", maxHeight: "60px", ml: 2, overflow: "hidden"
@@ -449,7 +367,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 <Collapse in={expanded} timeout="auto" unmountOnExit>
                     <CardContent>
                         <Typography paragraph>
-                            {accommodationData.description}
+                            {accommodationData.description ? accommodationData.description : "No description provided."}
                         </Typography>
                     </CardContent>
                 </Collapse>

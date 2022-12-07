@@ -35,9 +35,18 @@ function CustomToolbar() {
 };
 
 export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
+
     const navigate = useNavigate();
     const [usersData, setUsersData] = useState([]);
     const [groupCoordinators, setGroupCoordinators] = useState([]);
+    const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
+    const [promoteDialogOpen, setPromoteDialogOpen] = useState(false);
+    const [participantsAvailabilityDialogOpen, setParticipantsAvailabilityDialogOpen] = useState(false);
+    const [userId, setUserId] = useState("");
+    const [isDeletingHimself, setIsDeletingHimself] = useState(false);
+    const [availabilities, setAvailabilities] = useState([]);
+    const [usersAvailability, setUsersAvailability] = useState([]);
+    const [userFullName, setUserFullName] = useState("");
 
 
     const getUsersData = async () => {
@@ -50,16 +59,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
             .then(response => response.json())
             .then(response => setGroupCoordinators(response))
             .catch(err => console.log('Request Failed', err));
-    }
-
-    const [removeDialogOpen, setRemoveDialogOpen] = useState(false);
-    const [promoteDialogOpen, setPromoteDialogOpen] = useState(false);
-    const [participantsAvailabilityDialogOpen, setParticipantsAvailabilityDialogOpen] = useState(false);
-    const [userId, setUserId] = useState("");
-    const [isDeletingHimself, setIsDeletingHimself] = useState(false);
-    const [availabilities, setAvailabilities] = useState([]);
-    const [usersAvailability, setUsersAvailability] = useState([]);
-    const [userFullName, setUserFullName] = useState("");
+    };
 
     const getAvailabilities = async () => {
         await doGet('/api/v1/availability/group/' + groupId)
@@ -81,7 +81,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
     useEffect(() => {
         getUsersData();
         getAvailabilities();
-    }, [])
+    }, []);
 
 
     const removeAction = (userId) => {

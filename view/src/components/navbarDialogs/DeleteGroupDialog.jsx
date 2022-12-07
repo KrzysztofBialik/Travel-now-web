@@ -9,33 +9,32 @@ import { Dialog } from '@mui/material';
 import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogTitle } from '@mui/material';
-import { DialogContentText } from '@mui/material';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doDelete } from '../utils/fetch-utils';
 
 
-export const ConfirmLeaveGroupDialog = ({ open, onClose, groupId }) => {
+export const ConfirmDeleteGroupDialog = ({ open, onClose, groupId }) => {
 
-    const [isLeaving, setIsLeaving] = useState(false);
+    const [isDeleting, setIsDeleting] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
-    const [leaveError, setLeaveError] = useState("Ups! Something went wrong. Try again.");
+    const [deleteError, setDeleteError] = useState("Ups! Something went wrong. Try again.");
     const navigate = useNavigate();
 
-    const leaveAction = async () => {
-        setIsLeaving(true);
-        await doDelete('/api/v1/trip-group/user?' + new URLSearchParams({ groupId: groupId }).toString())
+    const deleteAction = async () => {
+        setIsDeleting(true);
+        await doDelete('/api/v1/trip-group/group?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => {
-                navigate('/dashboard', { leftGroup: true });
+                navigate('/dashboard');
             })
             .catch(err => {
                 setErrorToastOpen(true);
-                setLeaveError(err.message);
+                setDeleteError(err.message);
             });
-        setIsLeaving(false);
+        setIsDeleting(false);
     };
 
-    const leaveTripGroup = () => {
-        leaveAction();
+    const deleteTripGroup = () => {
+        deleteAction();
         onClose();
     };
 
@@ -44,7 +43,7 @@ export const ConfirmLeaveGroupDialog = ({ open, onClose, groupId }) => {
             <ErrorToast
                 open={errorToastOpen}
                 onClose={() => setErrorToastOpen(false)}
-                message={leaveError}
+                message={deleteError}
             />
             <Dialog
                 open={open}
@@ -57,13 +56,18 @@ export const ConfirmLeaveGroupDialog = ({ open, onClose, groupId }) => {
                     }
                 }}
             >
-                <DialogTitle sx={{ pb: 0 }}>Leave group</DialogTitle>
+                <DialogTitle sx={{ pb: 0 }}>Delete group</DialogTitle>
                 <DialogContent sx={{ pb: 1 }}>
-                    <DialogContentText sx={{ mb: "20px" }}>
-                        If you confirm, you will leave this trip group and it will not be visible for you. Are you sure?
-                    </DialogContentText>
+                    <Box sx={{ display: "flex", flexDirection: "column", mb: "20px", color: "text.secondary" }}>
+                        <Typography>
+                            If you confirm, you will delete this trip group.
+                        </Typography>
+                        <Typography>
+                            Are you sure?
+                        </Typography>
+                    </Box>
                     <DialogActions>
-                        {isLeaving ?
+                        {isDeleting ?
                             <Button
                                 variant="contained"
                                 sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px", minWidth: "90px" }}
@@ -81,7 +85,7 @@ export const ConfirmLeaveGroupDialog = ({ open, onClose, groupId }) => {
                                 </Button>
                                 <Button
                                     variant="contained"
-                                    onClick={leaveTripGroup}
+                                    onClick={deleteTripGroup}
                                     sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px", }}
                                 >
                                     Confirm

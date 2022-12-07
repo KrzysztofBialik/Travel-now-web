@@ -271,66 +271,66 @@ export const NAME = "Finances";
 //         user: "Piterm33",
 //         balance: 10.54
 //     },
-    // {
-    //     id: 11,
-    //     user: "Olisadebe",
-    //     balance: -12.54
-    // },
-    // {
-    //     id: 12,
-    //     user: "Piterm33",
-    //     balance: 10.54
-    // },
-    // {
-    //     id: 11,
-    //     user: "Olisadebe",
-    //     balance: -12.54
-    // },
-    // {
-    //     id: 12,
-    //     user: "Piterm33",
-    //     balance: 10.54
-    // },
-    // {
-    //     id: 11,
-    //     user: "Olisadebe",
-    //     balance: -12.54
-    // },
-    // {
-    //     id: 12,
-    //     user: "Piterm33",
-    //     balance: 10.54
-    // },
-    // {
-    //     id: 11,
-    //     user: "Olisadebe",
-    //     balance: -12.54
-    // },
-    // {
-    //     id: 12,
-    //     user: "Piterm33",
-    //     balance: 10.54
-    // },
-    // {
-    //     id: 11,
-    //     user: "Olisadebe",
-    //     balance: -12.54
-    // },
-    // {
-    //     id: 12,
-    //     user: "Piterm33",
-    //     balance: 10.54
-    // },
-    // {
-    //     id: 11,
-    //     user: "Olisadebe",
-    //     balance: -12.54
-    // },
-    // {
-    //     id: 12,
-    //     user: "Piterm33",
-    //     balance: 10.54
-    // }
+// {
+//     id: 11,
+//     user: "Olisadebe",
+//     balance: -12.54
+// },
+// {
+//     id: 12,
+//     user: "Piterm33",
+//     balance: 10.54
+// },
+// {
+//     id: 11,
+//     user: "Olisadebe",
+//     balance: -12.54
+// },
+// {
+//     id: 12,
+//     user: "Piterm33",
+//     balance: 10.54
+// },
+// {
+//     id: 11,
+//     user: "Olisadebe",
+//     balance: -12.54
+// },
+// {
+//     id: 12,
+//     user: "Piterm33",
+//     balance: 10.54
+// },
+// {
+//     id: 11,
+//     user: "Olisadebe",
+//     balance: -12.54
+// },
+// {
+//     id: 12,
+//     user: "Piterm33",
+//     balance: 10.54
+// },
+// {
+//     id: 11,
+//     user: "Olisadebe",
+//     balance: -12.54
+// },
+// {
+//     id: 12,
+//     user: "Piterm33",
+//     balance: 10.54
+// },
+// {
+//     id: 11,
+//     user: "Olisadebe",
+//     balance: -12.54
+// },
+// {
+//     id: 12,
+//     user: "Piterm33",
+//     balance: 10.54
+// }
 // ]
 
 export const FinancesPage = () => {
@@ -345,6 +345,7 @@ export const FinancesPage = () => {
     const [allExpenses, setAllExpenses] = useState([])
     const [settlementsData, setSettlementsData] = useState([])
     const [balanceData, setBalanceData] = useState([])
+    const [fullBalanceData, setFullBalanceData] = useState([])
 
 
     const getBalanceData = async (userList) => {
@@ -357,89 +358,95 @@ export const FinancesPage = () => {
                     var balanceUser = {}
                     const person = userList.find(user => user.id === parseInt(userId)).fullName;
                     balanceUser['id'] = userId;
-                    balanceUser['user'] = person; 
+                    balanceUser['user'] = person;
                     balanceUser['balance'] = balance;
                     balanceFullData.push(balanceUser);
-                  });
+                });
 
-            console.log("BALANCE DATA");
-            console.log(balanceFullData);
-            setBalanceData(balanceFullData);
+                console.log("BALANCE DATA");
+                console.log(balanceFullData);
+                setBalanceData(balanceFullData);
 
             })
             .catch(err => console.log('Request Failed', err));
-
     }
 
+    useEffect(() => {
+
+    }, [balanceData])
+
     const getAllUsersInGroup = async () => {
-        await doGet('/api/v1/user-group/participants?' + new URLSearchParams({ groupId: groupId}).toString())
-        .then(response => response.json())
-        .then(response => {
-            setCurrentUser(response.find(user => user.userId === parseInt(localStorage.getItem("userId"))))
-            const person = response.map(user => ({id: user.userId, fullName: user.firstName + " " +  user.surname}));
-            setAllUsers(person);
-            getExpensesData(person)
-            getSettlementsData(person);
-            getBalanceData(person);
-        })
-        .catch(err => console.log('Request Failed', err));
+        await doGet('/api/v1/user-group/participants?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                setCurrentUser(response.find(user => user.userId === parseInt(localStorage.getItem("userId"))))
+                const person = response.map(user => ({ id: user.userId, fullName: user.firstName + " " + user.surname }));
+                setAllUsers(person);
+                getExpensesData(person)
+                getSettlementsData(person);
+                getBalanceData(person);
+            })
+            .catch(err => console.log('Request Failed', err));
 
 
     }
 
     const getSettlementsData = async (userList) => {
-        await doGet('/api/v1/finance-request?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId")}).toString())
-        .then(response => response.json())
-        .then(response => {
-            var set = response.map(settlement => {
-                const debtor = userList.find(user => user.id === settlement.debtor).fullName;
-                const debtee = userList.find(user => user.id === settlement.debtee).fullName;
-                const debtorId =  settlement.debtor;
-                const debteeId = settlement.debtee
+        await doGet('/api/v1/finance-request?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+            .then(response => response.json())
+            .then(response => {
+                var set = response.map(settlement => {
+                    const debtor = userList.find(user => user.id === settlement.debtor).fullName;
+                    const debtee = userList.find(user => user.id === settlement.debtee).fullName;
+                    const debtorId = settlement.debtor;
+                    const debteeId = settlement.debtee
 
-                return ({
-                id : settlement.financialRequestId, amount: settlement.amount, debtor: debtor, debtee: debtee, debtorId: debtorId, debteeId : debteeId,  status: settlement.status
-            })});
-        setSettlementsData(set);
-        console.log("125412515151521")
-        console.log(set)
-        setOtherSettlements(set.filter(settlement => 
-            // console.log("12431256364326");
-            // console.log(settlementsData)
-                settlement.debteeId !== parseInt(localStorage.getItem("userId")) && settlement.debtorId !== parseInt(localStorage.getItem("userId"))).map(settlement => {
-                console.log("Settlement 1");
+                    return ({
+                        id: settlement.financialRequestId, amount: settlement.amount, debtor: debtor, debtee: debtee, debtorId: debtorId, debteeId: debteeId, status: settlement.status
+                    })
+                });
+                setSettlementsData(set);
+                console.log("125412515151521")
                 console.log(set)
-                return(  
-                <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
-                    <SettlementCard 
-                    settlementData={settlement} 
-                    canResolve={false}
-                    groupId={groupId}
-                    requestId={settlement.id}
-                    onSuccess={() => getAllUsersInGroup() }
-                    
-                    />
-                </ListItem>
-    
-            )}));
-        setMySettlements(set.filter(settlement =>
-            settlement.debtorId === parseInt(localStorage.getItem("userId")) || settlement.debteeId === parseInt(localStorage.getItem("userId"))).map(settlement => {
-                console.log("My Settlement");
-                console.log(settlement)
-                return(
-                <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
-                    <SettlementCard 
-                    settlementData={settlement} 
-                    canResolve={settlement.debteeId === parseInt(localStorage.getItem("userId")) && settlement.status === "PENDING"}
-                    groupId={groupId}
-                    requestId={settlement.id}
-                    onSuccess={() => getAllUsersInGroup() }
-                     />
-                </ListItem>
-            )}));
-        
-        })
-        .catch(err => console.log('Request Failed', err));
+                setOtherSettlements(set.filter(settlement =>
+                    // console.log("12431256364326");
+                    // console.log(settlementsData)
+                    settlement.debteeId !== parseInt(localStorage.getItem("userId")) && settlement.debtorId !== parseInt(localStorage.getItem("userId"))).map(settlement => {
+                        console.log("Settlement 1");
+                        console.log(set)
+                        return (
+                            <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
+                                <SettlementCard
+                                    settlementData={settlement}
+                                    canResolve={false}
+                                    groupId={groupId}
+                                    requestId={settlement.id}
+                                    onSuccess={() => getAllUsersInGroup()}
+
+                                />
+                            </ListItem>
+
+                        )
+                    }));
+                setMySettlements(set.filter(settlement =>
+                    settlement.debtorId === parseInt(localStorage.getItem("userId")) || settlement.debteeId === parseInt(localStorage.getItem("userId"))).map(settlement => {
+                        console.log("My Settlement");
+                        console.log(settlement)
+                        return (
+                            <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
+                                <SettlementCard
+                                    settlementData={settlement}
+                                    canResolve={settlement.debteeId === parseInt(localStorage.getItem("userId")) && settlement.status === "PENDING"}
+                                    groupId={groupId}
+                                    requestId={settlement.id}
+                                    onSuccess={() => getAllUsersInGroup()}
+                                />
+                            </ListItem>
+                        )
+                    }));
+
+            })
+            .catch(err => console.log('Request Failed', err));
     }
     const getExpensesData = async (userList) => {
         await doGet('/api/v1/finance-optimizer?' + new URLSearchParams({ groupId: groupId }).toString())
@@ -450,11 +457,13 @@ export const FinancesPage = () => {
                     const person = userList.find(user => user.id === expenditure.creatorId).fullName;
                     const isDebtor = expenditure.expenseDebtors.some(debtor => debtor === parseInt(localStorage.getItem("userId")))
                     const contributors = expenditure.expenseDebtors.map(ed => {
-                        return ({name: userList.find(user => user.id === ed).fullName})})
+                        return ({ name: userList.find(user => user.id === ed).fullName })
+                    })
                     return ({
-                    id : expenditure.expenditureId, personId : expenditure.creatorId ,person : person ,
-                    title : expenditure.title, cost: expenditure.price, date: parseISO(expenditure.generationDate) , isDebtor : isDebtor, contributors: contributors
-                })}))
+                        id: expenditure.expenditureId, personId: expenditure.creatorId, person: person,
+                        title: expenditure.title, cost: expenditure.price, date: parseISO(expenditure.generationDate), isDebtor: isDebtor, contributors: contributors
+                    })
+                }))
             })
             .catch(err => console.log('Request Failed', err));
 
@@ -467,10 +476,10 @@ export const FinancesPage = () => {
 
     useEffect(() => {
         setAllExpenses(expensesData.map(expense => (
-        <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-            <ExpenseCard expenseData={expense} />
-        </ListItem>
-    )));
+            <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
+                <ExpenseCard expenseData={expense} />
+            </ListItem>
+        )));
     }, [expensesData])
 
 
@@ -699,7 +708,7 @@ export const FinancesPage = () => {
                                                 overflow: "auto"
                                             }}
                                         >
-                                            {allExpenses.length === 0  ?
+                                            {allExpenses.length === 0 ?
                                                 <Typography sx={{ color: "primary.main", fontSize: "32px" }}>
                                                     Add expenses
                                                 </Typography>
@@ -781,6 +790,15 @@ export const FinancesPage = () => {
                                                 overflowY: "auto"
                                             }}
                                         >
+                                            {/* {balanceData.length === 0 ?
+                                                <Box sx={{ width: "80%", height: '500px', display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                    <Typography sx={{ color: "primary.main", fontSize: "32px" }}>
+                                                        Chart will appear when unresolved settlements appear
+                                                    </Typography>
+                                                </Box>
+                                                :
+                                                <BalanceChart balancesData={balanceData} />
+                                            } */}
                                             <BalanceChart balancesData={balanceData} />
                                         </Box>
                                     </Box>
@@ -862,7 +880,7 @@ export const FinancesPage = () => {
                                                     overflow: "auto"
                                                 }}
                                             >
-                                                {mySettlements.length === 0  ?
+                                                {mySettlements.length === 0 ?
                                                     <Typography sx={{ color: "primary.dark", fontSize: "24px", mt: -10 }}>
                                                         You have no settlements right now.
                                                     </Typography>

@@ -29,6 +29,7 @@ import { doGet } from "../../components/utils/fetch-utils";
 import { doPatch } from "../../components/utils/fetch-utils";
 import { UpdatedUserConfirmationDialog } from './UpdatedUserConfirmationDialog';
 import { ErrorUserConfirmationDialog } from './ErrorUserConfirmationDialog';
+import { ErrorToast } from '../toasts/ErrorToast';
 
 
 
@@ -38,7 +39,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
 
     const [userData, setUserData] = useState([])
     const [confirmUpdatedDialogOpen, setConfirmUpdateDialogOpen] = useState(false);
-    const [confirmErrorDialogOpen, setConfirmErrorDialogOpen] = useState(false);
+    const [confirmErrorToastOpen, setConfirmErrorToastOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
 
@@ -50,10 +51,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
         await doGet('/api/v1/user?' + new URLSearchParams({ userId: localStorage.getItem("userId") }).toString())
             .then(response => response.json())
             .then(response => {
-                console.log("UserData");
-                console.log(response);
                 setNecessaryData(response);
-
             })
             .catch(err => console.log('Request Failed', err));
     }
@@ -108,7 +106,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
 
     const handleChangeData = (values) => {
         editUserAccount(getValues());
-
     };
 
     const handleSuccess = () => {
@@ -128,11 +125,11 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                 handleSuccess();
             })
             .catch(err => {
-                setIsUpdating(false);
-                setConfirmErrorDialogOpen(true);
+                setConfirmErrorToastOpen(true);
                 setErrorMessage(err.message)
                 console.log('Request Failed', err.message)
             });
+        setIsUpdating(false);
     }
 
     const onKeyDown = (e) => {
@@ -145,11 +142,16 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                 open={confirmUpdatedDialogOpen}
                 onClose={() => setConfirmUpdateDialogOpen(false)}
             />
-            <ErrorUserConfirmationDialog
+            <ErrorToast
+                open={confirmErrorToastOpen}
+                onClose={() => setConfirmErrorToastOpen(false)}
+                message="There was an error while updating your account. Sorry for inconvenience. Try again later."
+            />
+            {/* <ErrorUserConfirmationDialog
                 open={confirmErrorDialogOpen}
                 onClose={() => setConfirmErrorDialogOpen(false)}
                 message={errorMessage}
-            />
+            /> */}
             <Dialog
                 fullScreen
                 open={open}
@@ -419,7 +421,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                     sx={{
                                                         mt: 3, mb: 2, borderRadius: "20px", width: "150px", color: "#FFFFFF"
                                                     }}
-
                                                 >
                                                     {isUpdating ?
                                                         <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
