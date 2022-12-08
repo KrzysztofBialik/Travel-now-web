@@ -444,11 +444,12 @@ export const FinancesPage = () => {
         await doGet('/api/v1/finance-optimizer?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(response => {
-
+                console.log("Expenditureeees");
+                console.log(response);
                 setExpendituresData(response.map(expenditure => {
                     const person = userList.find(user => user.id === expenditure.creatorId).fullName;
-                    const isDebtor = expenditure.expenditureDebtors.some(debtor => debtor === parseInt(localStorage.getItem("userId")))
-                    const contributors = expenditure.expenditureDebtors.map(ed => {
+                    const isDebtor = expenditure.expenseDebtors.some(debtor => debtor === parseInt(localStorage.getItem("userId")))
+                    const contributors = expenditure.expenseDebtors.map(ed => {
                         return ({ name: userList.find(user => user.id === ed).fullName })
                     })
                     return ({
