@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Card } from "@mui/material";
 import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -20,9 +22,9 @@ import WaterIcon from '@mui/icons-material/Water';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import DownhillSkiingIcon from '@mui/icons-material/DownhillSkiing';
-
 import { DeleteDayPlanDialog } from "./DeleteDayPlanDialog";
 import { EditDayPlanDialog } from "./EditDayPlanDialog";
+import { doGet } from "../utils/fetch-utils";
 
 
 const icons = [
@@ -73,7 +75,20 @@ const icons = [
     },
 ];
 
-export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan, onSuccess }) => {
+export const DayPlanCard = ({ dayPlanData, groupId, showDetailedPlan, onSuccess }) => {
+
+    const [isCoordinator, setIsCoordinator] = useState(false)
+
+    useEffect(() => {
+        isCorinator();
+    }, []);
+
+    const isCorinator = async () => {
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+            .catch(err => console.log(err.message));
+        var body = await resp.json();
+        setIsCoordinator(body);
+    };
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [expanded, setExpanded] = useState(false);
@@ -187,7 +202,7 @@ export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan, onSucces
                 <Box sx={{
                     display: "flex", flexDirection: "row", alignItems: "center", mr: 1, my: 1
                 }}>
-                    {canModify && <Box >
+                    {isCoordinator && <Box >
                         <IconButton
                             aria-label="more"
                             id="long-button"

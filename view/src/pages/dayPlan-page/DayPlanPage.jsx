@@ -35,7 +35,6 @@ export const NAME = "DayPlan";
 export const DayPlanPage = (props) => {
 
     const { groupId } = useParams();
-
     const [createDayPlanDialogOpen, setCreateDayPlanDialogOpen] = useState(false);
     const [searchAttractionDialogOpen, setSearchAttractionDialogOpen] = useState(false);
     const [dayPlanName, setDayPlanName] = useState("");
@@ -48,25 +47,40 @@ export const DayPlanPage = (props) => {
     const [selectedDayPlanId, setSelectedDayPlanId] = useState(0);
     const [dayPlansRaw, setdayPlansRaw] = useState([]);
     const [isOptimizedDayPlan, setIsOptimizedDayPlan] = useState(false);
+    // const [isCoordinator, setIsCoordinator] = useState(false)
 
-    var isCordinator = false;
+    // var isCordinator = false;
 
-    const isCorinator = async () => {
-        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
-            .catch(err => console.log(err.message));
-        var body = await resp.json();
-        isCordinator = body;
-    };
+    // const isCorinator = async () => {
+    //     var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+    //         .catch(err => console.log(err.message));
+    //     var body = await resp.json();
+    //     isCordinator = body;
+    // };
+
+    // const getIsCoordinator = async () => {
+    //     await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+    //         .then(response => response.json())
+    //         .then(response => setIsCoordinator(response))
+    //         .catch(err => console.log(err.message));
+    // };
+
+    // const isCorinator = async () => {
+    //     var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+    //         .catch(err => console.log(err.message));
+    //     var body = await resp.json();
+    //     setIsCoordinator(body);
+    // };
 
     const getData = async () => {
-        setLodaing(true)
+        setLodaing(true);
         doGet('/api/v1/day-plan?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(json => { setdayPlansRaw(json); return json })
             .then(dayPlans => {
                 setAllDayPlans(dayPlans.map(dayPlan => (
                     <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
-                        <DayPlanCard dayPlanData={dayPlan} canModify={isCordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
+                        <DayPlanCard dayPlanData={dayPlan} groupId={groupId} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
                     </ListItem>
                 )));
             })
@@ -75,7 +89,6 @@ export const DayPlanPage = (props) => {
     };
 
     useEffect(() => {
-        isCorinator();
         getData();
     }, [])
 
@@ -87,7 +100,7 @@ export const DayPlanPage = (props) => {
         setIsOptimizedDayPlan(false);
         setAllAttractions(attractions.map(attraction => (
             <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attractionId}>
-                <AttractionCard attractionData={attraction} canModify={isCordinator} id={dayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                <AttractionCard attractionData={attraction} groupId={groupId} id={dayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
             </ListItem>
         )));
     }
@@ -102,19 +115,19 @@ export const DayPlanPage = (props) => {
         showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId);
         setAllDayPlans(dayPlansRaw.map(dayPlan => (
             <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
-                <DayPlanCard dayPlanData={dayPlan} canModify={isCordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
+                <DayPlanCard dayPlanData={dayPlan} groupId={groupId} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
             </ListItem>
         )));
         setLoadingOptimized(false);
     };
 
     const getOptimized = async () => {
-        setLoadingOptimized(true)
+        setLoadingOptimized(true);
         await doGet('/api/v1/attraction/optimize/' + selectedDayPlanId)
             .then(response => response.json())
             .then(attractions => setOptimizedAttractions(attractions.map(attraction => (
                 <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attraction.attractionId}>
-                    <AttractionCard attractionData={attraction.attraction} canModify={isCordinator} id={selectedDayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                    <AttractionCard attractionData={attraction.attraction} groupId={groupId} id={selectedDayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
                 </ListItem>
             ))))
             .catch(err => console.log('Request Failed', err));
@@ -145,6 +158,7 @@ export const DayPlanPage = (props) => {
                 open={createDayPlanDialogOpen}
                 onClose={() => setCreateDayPlanDialogOpen(false)}
                 onSuccess={() => getData()}
+                groupId={groupId}
             />
             <SearchAttractionDialog
                 open={searchAttractionDialogOpen}

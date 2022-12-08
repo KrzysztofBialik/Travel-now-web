@@ -168,6 +168,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
         await doPatch('/api/v1/day-plan?dayPlanId=' + dayPlanData.dayPlanId, postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
+                setIsEditing(false);
                 close();
                 onSuccess();
             })
