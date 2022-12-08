@@ -28,7 +28,6 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
     const [attractionName, setAttractionName] = useState(attractionData.attractionName);
-    console.log(attractionData)
 
     const DESCRIPTION_LIMIT = 250;
     const [description, setDescription] = useState({ value: "", length: 0 });
@@ -71,22 +70,21 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                 setValues(defaultInputValues);
                 setDescription({ value: "", length: 0 });
                 setSuccessToastOpen(response.ok);
-                onClose();
-                onSuccess(dayPlanId);
-                closeWithSelect();
+                close();
             })
             .catch(err => {
                 setErrorToastOpen(true);
                 setCreationError(err.message)
             });
-
     }
 
     const close = () => {
         reset();
+        onSuccess(dayPlanId);
         setValues(defaultInputValues);
         setDescription({ value: "", length: 0 });
         setSuccessToastOpen(true);
+        closeWithSelect();
         onClose();
     }
 

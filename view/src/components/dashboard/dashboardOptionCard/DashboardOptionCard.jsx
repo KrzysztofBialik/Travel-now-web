@@ -22,19 +22,16 @@ export const DashboardOptionCard = ({ icon, title, description, route, groupId }
                     "&:hover": { transform: "scale3d(1.05, 1.05, 1)", boxShadow: 10 }
                 }}>
                 <Box p={2} textAlign="center">
-                    <Icon fontSize="42px" sx={{ color: "primary.dark" }}>{icon}</Icon>
+                    {icon}
                     <Typography
-                        display="block"
-                        variant="5"
-                        fontWeight="bold"
-                        mt={1}
-                        mb={1}
+                        sx={{ display: "block", fontSize: "24px", fontWeight: "bold", mt: 1, mb: 1 }}
                     >
                         {title}
                     </Typography>
                     <Typography
                         display="block"
                         variant="body2"
+                        sx={{ display: "block", fontSize: "16px" }}
                     >
                         {description}
                     </Typography>

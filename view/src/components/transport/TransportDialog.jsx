@@ -71,16 +71,16 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
     const [directionsResponse, setDirectionsResponse] = useState(null);
     const [distance, setDistance] = useState("");
     const [duration, setDuration] = useState("");
-    const [mapsLink, setMapsLink] = useState(`https://www.google.com/maps/dir/?api=1&origin=${tripPoints.origin}&destination=${tripPoints.destination}`)
-    const [transportDataRaw, setTransportDataRaw] = useState("")
-    const [carTransportData, setCarTransportData] = useState("")
-    const [planeTransportData, setPlaneTransportData] = useState("")
-    const [loading, setLoading] = useState(true)
-    const [planeDataList, setPlaneDataList] = useState([])
-    const [planeDurations, setPlaneDurations] = useState([])
-    const [userTransport, setUserTransport] = useState([])
-    const [source, setSource] = useState([])
-    const [destination, setDestination] = useState([])
+    const [mapsLink, setMapsLink] = useState(`https://www.google.com/maps/dir/?api=1&origin=${tripPoints.origin}&destination=${tripPoints.destination}`);
+    const [transportDataRaw, setTransportDataRaw] = useState("");
+    const [carTransportData, setCarTransportData] = useState("");
+    const [planeTransportData, setPlaneTransportData] = useState("");
+    const [loading, setLoading] = useState(true);
+    const [planeDataList, setPlaneDataList] = useState([]);
+    const [planeDurations, setPlaneDurations] = useState([]);
+    const [userTransport, setUserTransport] = useState([]);
+    const [source, setSource] = useState([]);
+    const [destination, setDestination] = useState([]);
 
     const originRef = useRef();
 
@@ -113,10 +113,10 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                     setPlaneDurations(plane.length !== 0 ? mapPlaneDurations(json.filter(transport => transport.transportTypeJson === 1)[0]) : [])
                     setUserTransport(json.filter(transport => transport.transportTypeJson === 3).map(transport => mapUserTransport(transport)))
                 }
-                setLoading(false);
             }
             )
             .catch(err => console.log('Request Failed', err));
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -293,10 +293,18 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                         minWidth: "1200px"
                     }}>
                         <Box sx={{ mt: "50px", mb: "80px", width: "75%" }} elevation={10}>
-                            {true ?
-                                <Card sx={{ width: "200px", height: "100px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            {loading ?
+                                <Box
+                                    sx={{
+                                        width: "200px",
+                                        height: "100px",
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center"
+                                    }}
+                                >
                                     <CircularProgress sx={{ color: "primary.main" }} />
-                                </Card>
+                                </Box>
                                 :
                                 <Stepper orientation="vertical">
                                     <Step>

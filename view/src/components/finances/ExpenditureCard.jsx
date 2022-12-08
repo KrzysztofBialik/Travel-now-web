@@ -5,32 +5,27 @@ import { Card } from "@mui/material";
 import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
 import { IconButton } from "@mui/material";
-import { Menu } from "@mui/material";
-import { MenuItem } from "@mui/material";
-import { ListItemText } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { Paper } from '@mui/material';
 import { Dialog } from "@mui/material";
 import { DialogTitle } from "@mui/material";
 import { Table } from "@mui/material";
-import { TableHead } from "@mui/material";
 import { TableContainer } from "@mui/material";
 import { TableRow } from "@mui/material";
 import { TableBody } from "@mui/material";
 import { TableCell } from "@mui/material";
 import { ButtonBase } from "@mui/material";
-import { DialogContent } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PaidIcon from '@mui/icons-material/Paid';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import CloseIcon from '@mui/icons-material/Close';
 import format from "date-fns/format";
-import { DeleteExpenseDialog } from "./DeleteExpenseDialog";
-import { EditExpenseDialog } from "./EditExpenseDialog";
+import { DeleteExpenditureDialog } from "./DeleteExpenditureDialog";
+import { EditExpenditureDialog } from "./EditExpenditureDialog";
 import { doGet } from "../utils/fetch-utils";
 
-export const ExpenseCard = ({ expenseData }) => {
+export const ExpenditureCard = ({ expenditureData }) => {
 
     const { groupId } = useParams();
     const [anchorEl, setAnchorEl] = useState(null);
@@ -42,9 +37,7 @@ export const ExpenseCard = ({ expenseData }) => {
     const open = Boolean(anchorEl);
 
 
-    console.log("dsadsadsadsadasdasat")
-    console.log(expenseData)
-    const allContributors = expenseData.contributors.map(ed => (
+    const allContributors = expenditureData.contributors.map(ed => (
         <TableRow>
             <TableCell align="left">{ed.name}</TableCell>
         </TableRow>
@@ -100,15 +93,15 @@ export const ExpenseCard = ({ expenseData }) => {
 
     return (
         <>
-            <DeleteExpenseDialog
+            <DeleteExpenditureDialog
                 open={deleteDialogOpen}
                 onClose={() => setDeleteDialogOpen(false)}
                 closeWithDelete={closeWithDelete}
             />
-            <EditExpenseDialog
+            <EditExpenditureDialog
                 open={editDialogOpen}
                 onClose={() => setEditDialogOpen(false)}
-                expenseData={expenseData}
+                expenditureData={expenditureData}
                 closeWithEdit={closeWithEdit}
             />
             <Dialog
@@ -140,10 +133,10 @@ export const ExpenseCard = ({ expenseData }) => {
                         justifyContent: "space-between"
                     }}>
                         <Typography sx={{ fontSize: "28px" }}>
-                            {expenseData.title}
+                            {expenditureData.title}
                         </Typography>
                         <Box>
-                            {!expenseData.debtors &&
+                            {!expenditureData.debtors &&
                                 <>
                                     <IconButton onClick={() => setEditDialogOpen(true)}>
                                         <EditIcon sx={{ color: "primary.main" }} />
@@ -169,7 +162,10 @@ export const ExpenseCard = ({ expenseData }) => {
                     }}>
                         <AttachMoneyIcon sx={{ color: "primary.main", fontSize: "32px" }} />
                         <Typography sx={{ fontSize: "24px", color: "text.primary" }}>
-                            {expenseData.cost} PLN
+                            {expenditureData.cost}
+                        </Typography>
+                        <Typography sx={{ fontSize: "24px", color: "text.primary" }}>
+                            {currency}
                         </Typography>
                     </Box>
                 </DialogTitle>
@@ -223,9 +219,9 @@ export const ExpenseCard = ({ expenseData }) => {
                     <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                             <Typography sx={{ fontSize: "22px", color: "text.primary", mr: 2 }}>
-                                {expenseData.title}
+                                {expenditureData.title}
                             </Typography>
-                            {expenseData.debtors && <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                            {expenditureData.debtors && <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                                 <Typography sx={{ color: "secondary.main", fontSize: "28px" }}>-</Typography>
                                 <Box sx={{ display: "flex", flexDirection: "row" }}>
                                     <PaidIcon sx={{ color: "secondary.main", fontSize: "28px" }} />
@@ -233,16 +229,16 @@ export const ExpenseCard = ({ expenseData }) => {
                             </Box>}
                         </Box>
                         <Typography sx={{ fontSize: "16px", color: "text.secondary" }}>
-                            {expenseData.person}
+                            {expenditureData.person}
                         </Typography>
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
                         <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", ml: 2 }}>
                             <Typography sx={{ fontSize: "24px", color: "primary.main" }}>
-                                {currencyLoading ? <CircularProgress size="24px" sx={{ ml: 2, mt: 1 }} /> : `${expenseData.cost} ${currency}`}
+                                {currencyLoading ? <CircularProgress size="24px" sx={{ ml: 2, mt: 1 }} /> : `${expenditureData.cost} ${currency}`}
                             </Typography>
                             <Typography sx={{ fontSize: "18px", color: "text.secondary" }}>
-                                {format(expenseData.date, "dd.MM.yyyy")}
+                                {format(expenditureData.date, "dd.MM.yyyy")}
                             </Typography>
                         </Box>
                     </Box>

@@ -48,8 +48,6 @@ export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) =>
     const [mapsLink, setMapsLink] = useState(attractionData.attractionLink);
     const open = Boolean(anchorEl);
 
-    console.log(attractionData.photoLink);
-
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };

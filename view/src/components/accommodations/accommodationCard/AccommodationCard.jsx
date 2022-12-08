@@ -52,7 +52,6 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
     const [currency, setCurrency] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
     const [numOfVotes, setNumOfVotes] = useState(accommodationData.givenVotes);
-    //dodanie tego czy zagłosował dany użytkownik, bo teraz jest zawsze false
     const [userVote, setUserVote] = useState(votes.some(vote => vote['userId'] === parseInt(localStorage.getItem('userId'))));
     const [expanded, setExpanded] = useState(false);
     const [selectDialogOpen, setSelectDialogOpen] = useState(false);
@@ -184,6 +183,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 open={editDialogOpen}
                 onClose={() => { setEditDialogOpen(false) }}
                 accommodationData={accommodationData}
+                currency={currency}
             />
             <DeleteAccommodationDialog
                 open={deleteDialogOpen}
@@ -197,7 +197,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 accommodationId={accommodationData.accommodationId}
             />
             <Card
-                sx={{ height: "100%", borderRadius: "10px", width: "100%" }}
+                sx={{ height: "100%", borderRadius: "10px", width: "100%", minWidth: "300px" }}
                 elevation={10}
             >
                 <Box
@@ -271,7 +271,9 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                                 onClick={handleClick}
                                 sx={{
                                     color: selected ? "primary.main" : "secondary.main",
-                                    padding: 0
+                                    padding: 0,
+                                    mr: 1,
+                                    ml: "-10px"
                                 }}
                             >
                                 <MoreVertIcon sx={{ fontSize: "30px" }} />
@@ -294,9 +296,8 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                                             </Typography>
                                         </MenuItem>
                                         :
-                                        <></>
+                                        <Box></Box>
                                 }
-
                                 <MenuItem onClick={editAction}>
                                     <EditIcon sx={{ mr: "20px", color: "primary.main" }} />
                                     <Typography sx={{ color: "primary.main" }}>
