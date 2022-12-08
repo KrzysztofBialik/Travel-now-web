@@ -178,7 +178,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
         setIsUpdating(false);
     }
 
-    const isPlanningStage = (groupStage === "PLANNING" ? true : false);
+    const isPlanningStage = (groupStage === "PLANNING_STAGE" ? false : true);
 
     // const descriptionWatch = watch("description");
 
@@ -290,7 +290,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                     minHeight: "200px"
                                 }}>
                                     <Box sx={{ height: "100%", width: "100%" }}>
-                                        {false ?
+                                        {isLoading ?
                                             <Box sx={{ minHeight: "485px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                                                 <CircularProgress />
                                             </Box>
@@ -447,6 +447,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     <span>{errors.description?.message}</span>
                                                     <span>{0}/{DESCRIPTION_LIMIT}</span>
                                                 </FormHelperText>
+                                                {!isPlanningStage ?
                                                 <DialogActions>
                                                     <Button
                                                         type="submit"
@@ -460,6 +461,9 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                         }
                                                     </Button>
                                                 </DialogActions>
+                                                :
+                                              <Box></Box>
+                                            }
                                             </form>
                                         }
                                     </Box>

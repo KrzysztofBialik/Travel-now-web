@@ -215,7 +215,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                         open={Boolean(anchorElGroup)}
                                         onClose={handleCloseGroupMenu}
                                     >
-                                        {isCoordinator && isPlanningStage ?
+                                        {isCoordinator ?
                                             [
                                                 <MenuItem
                                                     key={1}
@@ -226,27 +226,6 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                                         Trip group settings
                                                     </Typography>
                                                 </MenuItem>,
-                                                <MenuItem
-                                                    key={2}
-                                                    onClick={handleLeaveGroup}
-                                                >
-                                                    <ExitToAppIcon sx={{ color: "error.main", mr: 1 }} />
-                                                    <Typography sx={{ textAlign: "center", color: "error.main" }}>
-                                                        Leave group
-                                                    </Typography>
-                                                </MenuItem>,
-                                                <MenuItem
-                                                    key={3}
-                                                    onClick={handleDeleteGroup}
-                                                >
-                                                    <DeleteIcon sx={{ color: "error.main", mr: 1 }} />
-                                                    <Typography sx={{ textAlign: "center", color: "error.main" }}>
-                                                        Delete group
-                                                    </Typography>
-                                                </MenuItem>
-                                            ]
-                                            : isCoordinator && !isPlanningStage ?
-                                            [
                                                 <MenuItem
                                                     key={2}
                                                     onClick={handleLeaveGroup}
