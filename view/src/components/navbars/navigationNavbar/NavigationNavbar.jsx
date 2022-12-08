@@ -20,7 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { UserOptionsDialog } from '../../navbarDialogs/UserOptionsDialog';
 import { TripGroupOptionsDialog } from '../../navbarDialogs/TripGroupOptionsDialog';
 import { ConfirmLogoutDialog } from '../../navbarDialogs/ConfirmLogoutDialog';
-import { ConfirmLeaveGroupDialog } from '../../navbarDialogs/LeaveGroupDialogOpen';
+import { ConfirmLeaveGroupDialog } from '../../navbarDialogs/ConfirmLeaveGroupDialog';
 import { ConfirmDeleteGroupDialog } from '../../navbarDialogs/DeleteGroupDialog';
 import { doGet } from '../../utils/fetch-utils';
 import './NavigationNavbar.css';

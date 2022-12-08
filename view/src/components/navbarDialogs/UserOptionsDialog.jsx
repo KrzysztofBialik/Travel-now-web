@@ -36,16 +36,12 @@ import { ErrorToast } from '../toasts/ErrorToast';
 export const UserOptionsDialog = ({ open, onClose }) => {
 
     const today = new Date();
-
     const [userData, setUserData] = useState([])
     const [confirmUpdatedDialogOpen, setConfirmUpdateDialogOpen] = useState(false);
     const [confirmErrorToastOpen, setConfirmErrorToastOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
 
-    const updateData = () => {
-
-    }
 
     const getUserData = async () => {
         await doGet('/api/v1/user?' + new URLSearchParams({ userId: localStorage.getItem("userId") }).toString())
@@ -58,12 +54,10 @@ export const UserOptionsDialog = ({ open, onClose }) => {
 
     useEffect(() => {
         getUserData();
-    }, [])
+    }, []);
 
 
     const setNecessaryData = (response) => {
-        console.log("response")
-        console.log(response)
         const allPhoneNumber = response.phoneNumber.split(" ");
         var code = allPhoneNumber[0].slice();
         code = code.slice(1, code.length)

@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState } from "react";
+import { useEffect } from 'react';
 import { Button } from '@mui/material';
 import { Dialog } from '@mui/material';
 import { DialogActions } from '@mui/material';
@@ -14,10 +15,10 @@ import * as Yup from 'yup';
 import InputAdornment from '@mui/material/InputAdornment';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
-import { doPatch } from "../../components/utils/fetch-utils";
+import { doPatch, doGet } from "../../components/utils/fetch-utils";
 
 
-export const EditAccommodationDialog = ({ open, onClose, accommodationData }) => {
+export const EditAccommodationDialog = ({ open, onClose, accommodationData, currency }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
@@ -27,7 +28,7 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData }) =>
     const [priceError, setPriceError] = useState("Price of accommodation must be a positive number.");
 
     const DESCRIPTION_LIMIT = 250;
-    const descriptionLength = accommodationData.description === null || accommodationData.description === undefined  ? 0 : accommodationData.description.length;
+    const descriptionLength = accommodationData.description === null || accommodationData.description === undefined ? 0 : accommodationData.description.length;
     const [description, setDescription] = useState({ value: accommodationData.description === undefined ? "" : accommodationData.description, length: descriptionLength });
     const [descriptionError, setDescriptionError] = useState(descriptionLength > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null);
 
@@ -69,12 +70,13 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData }) =>
         var updated = accommodationData;
         updated.description = description;
         updated.price = price;
-        await doPatch('/api/v1/accommodation?' + new URLSearchParams({ accommodationId:accommodationData.accommodationId, userId:localStorage.getItem("userId") }).toString(), updated)
+        await doPatch('/api/v1/accommodation?' + new URLSearchParams({ accommodationId: accommodationData.accommodationId, userId: localStorage.getItem("userId") }).toString(), updated)
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 close();
             })
-            .catch(err => {setErrorToastOpen(true); 
+            .catch(err => {
+                setErrorToastOpen(true);
                 setEditionError(err.message)
             });
     }
@@ -115,7 +117,7 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData }) =>
                         onSubmit={handleSubmit(() => handleEditAccommodation(price, description.value))}
                     >
                         <TextField
-                            sx={{ width: "120px" }}
+                            sx={{ minWidth: "150px", width: "150px" }}
                             type="number"
                             autoFocus
                             margin="normal"
@@ -128,7 +130,7 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData }) =>
                             InputProps={{
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        zł
+                                        {currency}
                                     </InputAdornment>
                                 )
                             }}

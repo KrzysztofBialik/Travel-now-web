@@ -40,7 +40,7 @@ import { doPost } from "../../components/utils/fetch-utils";
 const icons = [
     {
         id: 0,
-        value: 1,
+        value: 0,
         icon: <ChurchIcon sx={{ color: "primary.main" }} />
     },
     {
@@ -103,7 +103,7 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
     const defaultInputValues = {
         dayPlanName: dayPlanName,
         date: today,
-        icon: 1,
+        icon: '0',
     };
 
     const [values, setValues] = useState(defaultInputValues);

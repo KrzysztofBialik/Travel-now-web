@@ -42,48 +42,48 @@ import { doPatch } from "../../components/utils/fetch-utils";
 
 const icons = [
     {
+        id: 0,
+        value: 0,
+        icon: <ChurchIcon sx={{ color: "primary.main" }} />
+    },
+    {
         id: 1,
         value: 1,
-        icon: <ChurchIcon sx={{ color: "primary.main" }} />
+        icon: <DirectionsWalkIcon sx={{ color: "primary.main" }} />
     },
     {
         id: 2,
         value: 2,
-        icon: <CastleIcon sx={{ color: "primary.main" }} />
+        icon: <LocationCityIcon sx={{ color: "primary.main" }} />
     },
     {
         id: 3,
         value: 3,
-        icon: <SailingIcon sx={{ color: "primary.main" }} />
+        icon: <LandscapeIcon sx={{ color: "primary.main" }} />
     },
     {
         id: 4,
         value: 4,
-        icon: <LocationCityIcon sx={{ color: "primary.main" }} />
+        icon: <RestaurantIcon sx={{ color: "primary.main" }} />
     },
     {
         id: 5,
         value: 5,
-        icon: <DirectionsWalkIcon sx={{ color: "primary.main" }} />
+        icon: <CastleIcon sx={{ color: "primary.main" }} />
     },
     {
         id: 6,
         value: 6,
-        icon: <WaterIcon sx={{ color: "primary.main" }} />
+        icon: <SailingIcon sx={{ color: "primary.main" }} />
     },
     {
         id: 7,
         value: 7,
-        icon: <LandscapeIcon sx={{ color: "primary.main" }} />
+        icon: <WaterIcon sx={{ color: "primary.main" }} />
     },
     {
         id: 8,
         value: 8,
-        icon: <RestaurantIcon sx={{ color: "primary.main" }} />
-    },
-    {
-        id: 9,
-        value: 9,
         icon: <DownhillSkiingIcon sx={{ color: "primary.main" }} />
     },
 ];

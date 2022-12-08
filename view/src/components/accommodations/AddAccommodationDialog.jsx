@@ -25,7 +25,7 @@ import { ErrorToast } from '../toasts/ErrorToast';
 import { doPost } from '../utils/fetch-utils';
 
 
-export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess }) => {
+export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, currency }) => {
 
     const [isAdding, setIsAdding] = useState(false);
     const [successToastOpen, setSuccessToastOpen] = useState(false);
@@ -163,8 +163,12 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess }) =>
                     </IconButton>
                 </DialogTitle>
                 <DialogContent>
+                    <DialogContentText variant="body1">
+                        Provide link to booking or airbnb, price and description. If you use link
+                        from booking.com make sure it has the following structure:
+                    </DialogContentText>
                     <DialogContentText variant="body1" mb="20px">
-                        Provide link to booking or airbnb, price and description.
+                        "https://www.booking.com/[name of the hotel]{"delete rest"}"
                     </DialogContentText>
                     <form
                         onSubmit={handleSubmit(() => handleAddAccommodation(link.value, price, description.value))}
@@ -194,7 +198,7 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess }) =>
                         />
 
                         <TextField
-                            sx={{ minWidth: "200px", width: "200px" }}
+                            sx={{ minWidth: "150px", width: "150px" }}
                             type="number"
                             autoFocus
                             margin="normal"
@@ -212,7 +216,7 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess }) =>
                                 ),
                                 endAdornment: (
                                     <InputAdornment position="end">
-                                        zł
+                                        {currency}
                                     </InputAdornment>
                                 )
                             }}

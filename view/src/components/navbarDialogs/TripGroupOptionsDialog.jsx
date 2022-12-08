@@ -179,12 +179,13 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
         setIsUpdating(false);
     }
 
-    const isPlanningStage = () => {
-        if(groupStage === "PLANNING_STAGE") {
-            return false;
-        }
-        return true;
-    }
+    // const isPlanningStage = () => {
+    //     if (groupStage === "PLANNING") {
+    //         return false;
+    //     }
+    //     return true;
+    // }
+    const isPlanningStage = (groupStage === "PLANNING" ? false : true);
 
     // const descriptionWatch = watch("description");
 
@@ -326,14 +327,14 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     error={!!errors.tripName}
                                                     helperText={errors.tripName?.message}
                                                 />
-                                                
+
                                                 <TextField
                                                     type='string'
                                                     margin="normal"
                                                     placeholder='Starting location'
                                                     name='startingLocation'
                                                     defaultValue={tripData.startingLocation}
-                                                    disabled={isPlanningStage()}
+                                                    disabled={isPlanningStage}
                                                     label='Starting location'
                                                     fullWidth
                                                     variant="outlined"
