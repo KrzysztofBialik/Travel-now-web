@@ -27,303 +27,6 @@ import { parseISO } from "date-fns/esm";
 export const URL = '/finances/:groupId';
 export const NAME = "Finances";
 
-// const expensesData = [
-//     {
-//         id: 1,
-//         person: "Olisadebe",
-//         title: "Dinner",
-//         cost: 170.40,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 2,
-//         person: "Krzychu77",
-//         title: "Fruits",
-//         cost: 30.00,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-//     {
-//         id: 3,
-//         person: "Piterm33",
-//         title: "Museum tickets",
-//         cost: 200.00,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 4,
-//         person: "BoBa",
-//         title: "Kebab",
-//         cost: 60.89,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 5,
-//         person: "Krzychu77",
-//         title: "Souvenirs",
-//         cost: 50.20,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-//     {
-//         id: 6,
-//         person: "Olisadebe",
-//         title: "Beers",
-//         cost: 78.45,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 7,
-//         person: "Krzychu77",
-//         title: "Museum tickets",
-//         cost: 200.00,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-//     {
-//         id: 8,
-//         person: "BoBa",
-//         title: "Kebab",
-//         cost: 60.89,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 9,
-//         person: "Krzychu77",
-//         title: "Souvenirs",
-//         cost: 50.20,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-//     {
-//         id: 10,
-//         person: "Olisadebe",
-//         title: "Beers",
-//         cost: 78.45,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-// ];
-
-// const settlementsData = [
-//     {
-//         id: 1,
-//         amount: 100.00,
-//         debtor: "Krzychu77",
-//         debtee: "Olisadebe",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 2,
-//         amount: 25.47,
-//         debtor: "Piterm33",
-//         debtee: "Krzychu77",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 3,
-//         amount: 50.55,
-//         debtor: "Olisadebe",
-//         debtee: "BoBa",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 4,
-//         amount: 61.32,
-//         debtor: "Krzychu77",
-//         debtee: "BoBa",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 5,
-//         amount: 25.25,
-//         debtor: "Piterm33",
-//         debtee: "BoBa",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 6,
-//         amount: 40.00,
-//         debtor: "BoBa",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 7,
-//         amount: 250.50,
-//         debtor: "Piterm33",
-//         debtee: "Olisadebe",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 8,
-//         amount: 3.35,
-//         debtor: "BoBa",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 9,
-//         amount: 4.50,
-//         debtor: "Olisadebe",
-//         debtee: "Piterm33",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 10,
-//         amount: 25.68,
-//         debtor: "Piterm33",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 11,
-//         amount: 21.37,
-//         debtor: "BoBa",
-//         debtee: "Piterm33",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 12,
-//         amount: 4.20,
-//         debtor: "Krzychu77",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     }
-// ];
-// const settlementsData = [
-//     {
-//         debtee: "Krzychu77"
-//     }
-// ]
-
-// const balancesData = [
-//     {
-//         id: 1,
-//         user: "Boba",
-//         balance: 125.46
-//     },
-//     {
-//         id: 2,
-//         user: "Krzychu77",
-//         balance: -50.00
-//     },
-//     {
-//         id: 3,
-//         user: "Olisadebe",
-//         balance: 100
-//     },
-//     {
-//         id: 4,
-//         user: "Piterm33",
-//         balance: -125.40
-//     },
-//     {
-//         id: 5,
-//         user: "Boba",
-//         balance: -50.06
-//     },
-//     {
-//         id: 6,
-//         user: "Krzychu77",
-//         balance: 0
-//     },
-//     {
-//         id: 7,
-//         user: "Olisadebe",
-//         balance: 240
-//     },
-//     {
-//         id: 8,
-//         user: "Piterm33",
-//         balance: -150
-//     },
-//     {
-//         id: 9,
-//         user: "Boba",
-//         balance: -300
-//     },
-//     {
-//         id: 10,
-//         user: "Krzychu77",
-//         balance: 202
-//     },
-//     {
-//         id: 11,
-//         user: "Olisadebe",
-//         balance: -12.54
-//     },
-//     {
-//         id: 12,
-//         user: "Piterm33",
-//         balance: 10.54
-//     },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// }
-// ]
 
 export const FinancesPage = () => {
     const { groupId } = useParams();
@@ -345,19 +48,26 @@ export const FinancesPage = () => {
             .then(response => response.json())
             .then(response => {
                 const map = new Map(Object.entries(response));
-                var balanceFullData = []
-                map.forEach((balance, userId) => {
-                    var balanceUser = {}
-                    const person = userList.find(user => user.id === parseInt(userId)).fullName;
-                    balanceUser['id'] = userId;
-                    balanceUser['user'] = person;
-                    balanceUser['balance'] = balance;
-                    balanceFullData.push(balanceUser);
-                });
+                var balanceMaxFullData = [];
 
-                console.log("BALANCE DATA");
-                console.log(balanceFullData);
-                setBalanceData(balanceFullData);
+                for (var i = 0 ; i < userList.length ; i++) {
+                    var balance = map.get((userList[i].id).toString());
+                    if (balance !== undefined) {
+                        var balanceUser = {}
+                        balanceUser['id'] = userList[i].id;
+                        balanceUser['user'] = userList[i].fullName;
+                        balanceUser['balance'] = balance;
+                        balanceMaxFullData.push(balanceUser);
+                    }
+                    else{
+                        var balanceUser = {}
+                        balanceUser['id'] = userList[i].id;
+                        balanceUser['user'] = userList[i].fullName;
+                        balanceUser['balance'] = 0.0;
+                        balanceMaxFullData.push(balanceUser);
+                    }
+                }
+                setBalanceData(balanceMaxFullData);
 
             })
             .catch(err => console.log('Request Failed', err));
@@ -398,14 +108,8 @@ export const FinancesPage = () => {
                     })
                 });
                 setSettlementsData(set);
-                console.log("125412515151521")
-                console.log(set)
                 setOtherSettlements(set.filter(settlement =>
-                    // console.log("12431256364326");
-                    // console.log(settlementsData)
                     settlement.debteeId !== parseInt(localStorage.getItem("userId")) && settlement.debtorId !== parseInt(localStorage.getItem("userId"))).map(settlement => {
-                        console.log("Settlement 1");
-                        console.log(set)
                         return (
                             <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
                                 <SettlementCard
@@ -422,8 +126,6 @@ export const FinancesPage = () => {
                     }));
                 setMySettlements(set.filter(settlement =>
                     settlement.debtorId === parseInt(localStorage.getItem("userId")) || settlement.debteeId === parseInt(localStorage.getItem("userId"))).map(settlement => {
-                        console.log("My Settlement");
-                        console.log(settlement)
                         return (
                             <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
                                 <SettlementCard
@@ -444,8 +146,6 @@ export const FinancesPage = () => {
         await doGet('/api/v1/finance-optimizer?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(response => {
-                console.log("Expenditureeees");
-                console.log(response);
                 setExpendituresData(response.map(expenditure => {
                     const person = userList.find(user => user.id === expenditure.creatorId).fullName;
                     const isDebtor = expenditure.expenseDebtors.some(debtor => debtor === parseInt(localStorage.getItem("userId")))
@@ -503,10 +203,6 @@ export const FinancesPage = () => {
             )));
         }
         else {
-            console.log("here?")
-            console.log(currentUser)
-            console.log(expendituresData)
-
             setAllExpenditures(expendituresData.filter(expenditure => expenditure.personId === currentUser.userId).map(expenditure => (
                 <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
                     <ExpenditureCard expenditureData={expenditure} />
@@ -785,7 +481,10 @@ export const FinancesPage = () => {
                                                 :
                                                 <BalanceChart balancesData={balanceData} />
                                             } */}
-                                            <BalanceChart balancesData={balanceData} />
+                                            <BalanceChart 
+                                            balancesData={balanceData}
+                                            allUsers={allUsers}
+                                            />
                                         </Box>
                                     </Box>
                                 </Card>

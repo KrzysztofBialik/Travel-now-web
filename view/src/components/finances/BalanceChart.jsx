@@ -3,26 +3,18 @@ import { Box } from '@mui/material';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { useEffect } from "react";
+
 
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ChartDataLabels);
 
-export const BalanceChart = ({ balancesData }) => {
+export const BalanceChart = ({ balancesData, allUsers }) => {
 
     const boxHeight = 42 * balancesData.length + 60;
-    console.log(boxHeight);
     console.log("All data");
     console.log(balancesData);
-    // const negativeBalances = balancesData.filter(balance => balance.balance < 0).map(balance => balance);
-    // const positiveBalances = balancesData.filter(balance => balance.balance >= 0).map(balance => balance);
-    // console.log("Negative data");
-    // console.log(negativeBalances);
-    // console.log("Positive data");
-    // console.log(positiveBalances);
-    // const negativeBalancesLabels = negativeBalances.map(balance => balance.user)
-    // const positiveBalancesLabels = positiveBalances.map(balance => balance.user)
-    // balancesData.sort((a, b) => b.balance - a.balance);
-    // console.log(balancesData);
+
     const balancesLabels = balancesData.map(balance => balance.user);
     console.log(balancesLabels);
     const balancesValues = balancesData.map(balance => balance.balance);
