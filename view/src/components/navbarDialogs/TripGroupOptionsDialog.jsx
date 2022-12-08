@@ -180,7 +180,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
     }
 
     const isPlanningStage = () => {
-        if(groupStage === "PLANNING") {
+        if(groupStage === "PLANNING_STAGE") {
             return false;
         }
         return true;
