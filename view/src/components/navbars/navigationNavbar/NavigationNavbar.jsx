@@ -36,11 +36,13 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
     const [userOptionsDialogOpen, setUserOptionsDialogOpen] = useState(false);
     const [userLogoutDialogOpen, setUserLogoutDialogOpen] = useState(false);
     const [isCoordinator, setIsCoordinator] = useState(false)
+    const [isPlanningStage, setIsPlanningStage] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (groupId) {
             getIsCoordinator();
+            getTripData();
         }
     }, []);
 
@@ -49,6 +51,15 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
             .then(response => response.json())
             .then(response => setIsCoordinator(response))
             .catch(err => console.log(err.message));
+    };
+
+    const getTripData = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                setIsPlanningStage(response.groupStage === "PLANNING_STAGE");
+            })
+            .catch(err => console.log('Request Failed', err));
     };
 
     const handleOpenUserMenu = (event) => {
@@ -204,7 +215,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                         open={Boolean(anchorElGroup)}
                                         onClose={handleCloseGroupMenu}
                                     >
-                                        {isCoordinator ?
+                                        {isCoordinator && isPlanningStage ?
                                             [
                                                 <MenuItem
                                                     key={1}
@@ -234,8 +245,29 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                                     </Typography>
                                                 </MenuItem>
                                             ]
+                                            : isCoordinator && !isPlanningStage ?
+                                            [
+                                                <MenuItem
+                                                    key={2}
+                                                    onClick={handleLeaveGroup}
+                                                >
+                                                    <ExitToAppIcon sx={{ color: "error.main", mr: 1 }} />
+                                                    <Typography sx={{ textAlign: "center", color: "error.main" }}>
+                                                        Leave group
+                                                    </Typography>
+                                                </MenuItem>,
+                                                <MenuItem
+                                                    key={3}
+                                                    onClick={handleDeleteGroup}
+                                                >
+                                                    <DeleteIcon sx={{ color: "error.main", mr: 1 }} />
+                                                    <Typography sx={{ textAlign: "center", color: "error.main" }}>
+                                                        Delete group
+                                                    </Typography>
+                                                </MenuItem>
+                                            ]
                                             :
-                                            <MenuItem
+                                            [<MenuItem
                                                 onClick={handleLeaveGroup}
                                             >
                                                 <ExitToAppIcon sx={{ color: "error.main", mr: 1 }} />
@@ -243,6 +275,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                                     Leave group
                                                 </Typography>
                                             </MenuItem>
+                                            ]
                                         }
                                     </Menu>
                                 </Box>

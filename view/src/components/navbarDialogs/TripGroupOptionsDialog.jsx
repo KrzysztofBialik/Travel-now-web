@@ -166,9 +166,8 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
         };
 
         await doPatch('/api/v1/trip-group/group?' + new URLSearchParams({ groupId: groupId }).toString(), postBody)
-            .then(response => response.json())
             .then(response => {
-                setNecessaryData(response);
+                getTripData();
                 handleSuccess();
             })
             .catch(err => {
@@ -310,6 +309,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     autoFocus
                                                     margin="normal"
                                                     placeholder='Trip name'
+                                                    disabled={isPlanningStage()}
                                                     name='trip name'
                                                     label='Trip name'
                                                     defaultValue={tripData.tripName}
@@ -361,6 +361,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                                 margin='normal'
                                                                 variant='outlined'
                                                                 defaultValue={tripData.currency}
+                                                                disabled={isPlanningStage()}
                                                                 label='currency'
                                                                 InputProps={{
                                                                     startAdornment: (
@@ -388,6 +389,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                         placeholder='Min days'
                                                         name='minDays'
                                                         defaultValue={tripData.minDays}
+                                                        disabled={isPlanningStage()}
                                                         label='Min days'
                                                         variant="outlined"
                                                         InputProps={{
@@ -408,6 +410,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                         placeholder='Min participants'
                                                         name='minParticipants'
                                                         defaultValue={tripData.minParticipants}
+                                                        disabled={isPlanningStage()}
                                                         label='Min participants'
                                                         variant="outlined"
                                                         InputProps={{
@@ -431,6 +434,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     name='description'
                                                     label='Description'
                                                     defaultValue={tripData.description}
+                                                    disabled={isPlanningStage()}
                                                     fullWidth
                                                     variant="outlined"
                                                     {...register('description')}
