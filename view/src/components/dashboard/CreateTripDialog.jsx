@@ -143,10 +143,10 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                 }
             })
             .catch(err => {
-                setIsCreating(false);
                 setErrorToastOpen(true);
                 setCreationError(err.message)
             });
+        setIsCreating(false);
     };
 
     return (

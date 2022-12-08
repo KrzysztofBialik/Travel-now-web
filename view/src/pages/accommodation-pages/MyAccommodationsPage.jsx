@@ -1,34 +1,18 @@
-import { Box, CircularProgress } from "@mui/material";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
+import { styled } from '@mui/material/styles';
+import { Box } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
-import { Card } from "@mui/material";
 import { Button } from "@mui/material";
-
+import IconButton from '@mui/material/IconButton';
 import { AccommodationCard } from "../../components/accommodations/accommodationCard/AccommodationCard";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { futureTripButtonsData, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
-
-//------------------------importy do drugiej opcji---------------------------------
-import { useState } from "react";
-import { styled } from '@mui/material/styles';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ThumbUpOffIcon from '@mui/icons-material/ThumbUpOutlined';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import LinkIcon from '@mui/icons-material/Link';
-import EmojiTransportationIcon from '@mui/icons-material/EmojiTransportation';
-
 import { AddAccommodationDialog } from "../../components/accommodations/AddAccommodationDialog";
 import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
 import { doGet } from "../../components/utils/fetch-utils";
 
 export const URL = '/accommodations/myAccommodations/:groupId';
@@ -45,21 +29,32 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-
 export const MyAccommodationsPage = () => {
+
     const { groupId } = useParams();
-    // const [numOfVotes, setNumOfVotes] = useState(accommodationsData.givenVotes)
-    // const [userVote, setUserVote] = useState(false);
-    const [expanded, setExpanded] = useState(false);
     const [addAccommodationDialogOpen, setAddAccommodationDialogOpen] = useState(false);
     const [myAccommodations, setMyAccommodations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [accommodationsRaw, setAccommodationsRaw] = useState([]);
-
+    const [currency, setCurrency] = useState("");
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     });
+
+    useEffect(() => {
+        getCurrency();
+    }, []);
+
+    const getCurrency = async () => {
+        var resp = await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                var currency = response.currency;
+                setCurrency(currency);
+            })
+            .catch(err => console.log('Request Failed', err));
+    };
 
     const getData = async () => {
         setLoading(true);
@@ -120,6 +115,7 @@ export const MyAccommodationsPage = () => {
                 onClose={() => setAddAccommodationDialogOpen(false)}
                 groupId={groupId}
                 onSuccess={() => getData()}
+                currency={currency}
             />
             <Box
                 sx={{

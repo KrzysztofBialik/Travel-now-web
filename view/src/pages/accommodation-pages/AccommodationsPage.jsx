@@ -30,12 +30,24 @@ export const AccommodationsPage = () => {
     const [loadingSelected, setLoadingSelected] = useState(true);
     const [selectedAccommodation, setSelectedAccommodation] = useState(null);
     const [center, setCenter] = useState({ lat: 0, lng: 0 });
+    const [tripGroup, setTripGroup] = useState([]);
+
 
     var isCordinator = false;
+    var tripData = false;
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     });
+
+    const getTripData = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                setTripGroup(response);
+            })
+            .catch(err => console.log('Request Failed', err));
+    };
 
     const isCorinator = async () => {
         var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
@@ -52,7 +64,12 @@ export const AccommodationsPage = () => {
             .then(accommodations => {
                 setAllAccommodations(accommodations.map((accommodation) => (
                     <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
-                        <AccommodationCard accommodationData={accommodation.accommodation} canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={false} votes={accommodation.userVoted} onSuccess={() => {getData(); getChosenAccommodation()}} />
+                        <AccommodationCard
+                            accommodationData={accommodation.accommodation}
+                            canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
+                            selected={false}
+                            votes={accommodation.userVoted}
+                            canOpenTransport={tripGroup.selectedSharedAvailability} />
                     </Grid>)));
             })
             .catch(err => console.log('Request Failed', err));
@@ -79,6 +96,7 @@ export const AccommodationsPage = () => {
     };
 
     useEffect(() => {
+        getTripData();
         isCorinator();
         getData();
         getChosenAccommodation();

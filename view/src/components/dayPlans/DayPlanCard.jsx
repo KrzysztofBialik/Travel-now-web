@@ -27,48 +27,48 @@ import { EditDayPlanDialog } from "./EditDayPlanDialog";
 
 const icons = [
     {
+        id: 0,
+        value: 0,
+        icon: <ChurchIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+    },
+    {
         id: 1,
         value: 1,
-        icon: <ChurchIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <DirectionsWalkIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 2,
         value: 2,
-        icon: <CastleIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <LocationCityIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 3,
         value: 3,
-        icon: <SailingIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <LandscapeIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 4,
         value: 4,
-        icon: <LocationCityIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <RestaurantIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 5,
         value: 5,
-        icon: <DirectionsWalkIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <CastleIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 6,
         value: 6,
-        icon: <WaterIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <SailingIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 7,
         value: 7,
-        icon: <LandscapeIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <WaterIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 8,
         value: 8,
-        icon: <RestaurantIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
-    },
-    {
-        id: 9,
-        value: 9,
         icon: <DownhillSkiingIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
 ];

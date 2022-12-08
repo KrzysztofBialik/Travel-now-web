@@ -35,9 +35,7 @@ const ExpandMore = styled((props) => {
 }));
 
 
-export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailability=[] , userFullName }) => {
-
-    console.log(usersAvailability);
+export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailability = [], userFullName }) => {
 
     const [expanded, setExpanded] = useState(false);
     const [fixedAvailabilities, setFixedAvailabilities] = useState([])

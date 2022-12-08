@@ -1,14 +1,8 @@
 import { useState } from "react";
-import React, { useEffect, useRef } from "react";
-import { Avatar } from "@mui/material";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
-import { Menu } from "@mui/material";
-import { MenuItem } from "@mui/material";
-import { IconButton } from "@mui/material";
 import { List } from "@mui/material";
 import { ListItem } from "@mui/material";
-import { ListItemIcon } from "@mui/material";
-import { ListItemText } from "@mui/material";
 import { Card } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -19,17 +13,15 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import { useParams } from "react-router-dom";
-
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { currentTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { pastTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
-import { ExpenseCard } from "../../components/finances/ExpenseCard";
-import { AddExpenseDialog } from "../../components/finances/AddExpenseDialog";
+import { ExpenditureCard } from "../../components/finances/ExpenditureCard";
+import { AddExpenditureDialog } from "../../components/finances/AddExpenditureDialog";
 import { SettlementCard } from "../../components/finances/SettlementCard";
 import { BalanceChart } from "../../components/finances/BalanceChart";
 import { doGet } from "../../components/utils/fetch-utils";
 import { parseISO } from "date-fns/esm";
-import { format } from "date-fns";
 
 
 export const URL = '/finances/:groupId';
@@ -335,14 +327,14 @@ export const NAME = "Finances";
 
 export const FinancesPage = () => {
     const { groupId } = useParams();
-    const [addExpenseDialogOpen, setAddExpenseDialogOpen] = useState(false);
-    const [myExpensesButtonOn, setMyExpensesButtonOn] = useState(false);
+    const [addExpenditureDialogOpen, setAddExpenditureDialogOpen] = useState(false);
+    const [myExpendituresButtonOn, setMyExpendituresButtonOn] = useState(false);
     const [myContributionsButtonOn, setMyContributionsButtonOn] = useState(false);
-    const [expensesData, setExpensesData] = useState([]);
+    const [expendituresData, setExpendituresData] = useState([]);
     const [allExpenditureCreators, setAllExpenditureCreators] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [currentUser, setCurrentUser] = useState([])
-    const [allExpenses, setAllExpenses] = useState([])
+    const [allExpenditures, setAllExpenditures] = useState([])
     const [settlementsData, setSettlementsData] = useState([])
     const [balanceData, setBalanceData] = useState([])
     const [fullBalanceData, setFullBalanceData] = useState([])
@@ -382,7 +374,7 @@ export const FinancesPage = () => {
                 setCurrentUser(response.find(user => user.userId === parseInt(localStorage.getItem("userId"))))
                 const person = response.map(user => ({ id: user.userId, fullName: user.firstName + " " + user.surname }));
                 setAllUsers(person);
-                getExpensesData(person)
+                getExpendituresData(person)
                 getSettlementsData(person);
                 getBalanceData(person);
             })
@@ -448,15 +440,15 @@ export const FinancesPage = () => {
             })
             .catch(err => console.log('Request Failed', err));
     }
-    const getExpensesData = async (userList) => {
+    const getExpendituresData = async (userList) => {
         await doGet('/api/v1/finance-optimizer?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(response => {
 
-                setExpensesData(response.map(expenditure => {
+                setExpendituresData(response.map(expenditure => {
                     const person = userList.find(user => user.id === expenditure.creatorId).fullName;
-                    const isDebtor = expenditure.expenseDebtors.some(debtor => debtor === parseInt(localStorage.getItem("userId")))
-                    const contributors = expenditure.expenseDebtors.map(ed => {
+                    const isDebtor = expenditure.expenditureDebtors.some(debtor => debtor === parseInt(localStorage.getItem("userId")))
+                    const contributors = expenditure.expenditureDebtors.map(ed => {
                         return ({ name: userList.find(user => user.id === ed).fullName })
                     })
                     return ({
@@ -475,78 +467,71 @@ export const FinancesPage = () => {
     }, [])
 
     useEffect(() => {
-        setAllExpenses(expensesData.map(expense => (
-            <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                <ExpenseCard expenseData={expense} />
+        setAllExpenditures(expendituresData.map(expenditure => (
+            <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                <ExpenditureCard expenditureData={expenditure} />
             </ListItem>
         )));
-    }, [expensesData])
-
-
-
-
+    }, [expendituresData])
 
 
     const [otherSettlements, setOtherSettlements] = useState([]);
-
-
     const [mySettlements, setMySettlements] = useState([]);
 
     const groupStage = 2;
     const isCoordinator = true;
 
     const test = () => {
-        setAllExpenses(expensesData.map(expense => (
-            <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                <ExpenseCard expenseData={expense} />
+        setAllExpenditures(expendituresData.map(expenditure => (
+            <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                <ExpenditureCard expenditureData={expenditure} />
             </ListItem>
         )));
-        // setAllExpenses([]);
     };
 
-    const showUsersExpenses = () => {
+    const showUsersExpenditures = () => {
         if (myContributionsButtonOn) {
             setMyContributionsButtonOn(false);
         }
 
-        if (myExpensesButtonOn) {
-            setAllExpenses(expensesData.map(expense => (
-                <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                    <ExpenseCard expenseData={expense} />
+        if (myExpendituresButtonOn) {
+            setAllExpenditures(expendituresData.map(expenditure => (
+                <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                    <ExpenditureCard expenditureData={expenditure} />
                 </ListItem>
             )));
         }
         else {
             console.log("here?")
             console.log(currentUser)
-            console.log(expensesData)
+            console.log(expendituresData)
 
-            setAllExpenses(expensesData.filter(expense => expense.personId === currentUser.userId).map(expense => (
-                <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                    <ExpenseCard expenseData={expense} />
+            setAllExpenditures(expendituresData.filter(expenditure => expenditure.personId === currentUser.userId).map(expenditure => (
+                <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                    <ExpenditureCard expenditureData={expenditure} />
                 </ListItem>
             )));
         }
 
-        setMyExpensesButtonOn(!myExpensesButtonOn);
+        setMyExpendituresButtonOn(!myExpendituresButtonOn);
     };
 
     const showUsersContributions = () => {
-        if (myExpensesButtonOn) {
-            setMyExpensesButtonOn(false);
+        if (myExpendituresButtonOn) {
+            setMyExpendituresButtonOn(false);
         }
 
         if (myContributionsButtonOn) {
-            setAllExpenses(expensesData.map(expense => (
-                <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                    <ExpenseCard expenseData={expense} />
+            setAllExpenditures(expendituresData.map(expenditure => (
+                <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                    <ExpenditureCard expenditureData={expenditure} />
                 </ListItem>
             )));
         }
         else {
-            setAllExpenses(expensesData.filter(expense => expense.debtors === true).map(expense => (
-                <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                    <ExpenseCard expenseData={expense} />
+            setAllExpenditures(expendituresData.filter(expenditure => expenditure.debtors === true).map(expenditure => (
+                <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                    <ExpenditureCard expenditureData={expenditure} />
                 </ListItem>
             )));
         }
@@ -555,9 +540,9 @@ export const FinancesPage = () => {
 
     return (
         <>
-            <AddExpenseDialog
-                open={addExpenseDialogOpen}
-                onClose={() => setAddExpenseDialogOpen(false)}
+            <AddExpenditureDialog
+                open={addExpenditureDialogOpen}
+                onClose={() => setAddExpenditureDialogOpen(false)}
                 participants={allUsers}
                 groupId={groupId}
                 onSuccess={() => getAllUsersInGroup()}
@@ -596,7 +581,7 @@ export const FinancesPage = () => {
                             display: "flex", justifyContent: "center", alignItems: "center", mb: 10
                         }}>
 
-                            {/* ----------------------------------------------------EXPENSES---------------------------------------------------- */}
+                            {/* ----------------------------------------------------EXPENDITURES---------------------------------------------------- */}
                             <Grid item xs={6} md={6}>
                                 <Card
                                     sx={{
@@ -633,7 +618,7 @@ export const FinancesPage = () => {
                                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
                                             <ReceiptIcon sx={{ color: "#FFFFFF" }} />
                                             <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
-                                                Expenses
+                                                Expenditures
                                             </Typography>
                                         </Box>
                                         <Button
@@ -643,7 +628,7 @@ export const FinancesPage = () => {
                                                 borderRadius: "20px",
                                                 "&:hover": { backgroundColor: "secondary.dark" }
                                             }}
-                                            onClick={() => setAddExpenseDialogOpen(true)}
+                                            onClick={() => setAddExpenditureDialogOpen(true)}
                                         >
                                             <AddIcon />
                                             Add
@@ -671,16 +656,16 @@ export const FinancesPage = () => {
                                                     borderRadius: "20px",
                                                     fontSize: "10px",
                                                     mr: 2,
-                                                    color: myExpensesButtonOn ? "#FFFFFF" : "primary.main",
-                                                    backgroundColor: myExpensesButtonOn ? "primary.main" : "#FFFFFF",
+                                                    color: myExpendituresButtonOn ? "#FFFFFF" : "primary.main",
+                                                    backgroundColor: myExpendituresButtonOn ? "primary.main" : "#FFFFFF",
                                                     "&:hover": {
-                                                        backgroundColor: myExpensesButtonOn ? "primary.main" : "#FFFFFF"
+                                                        backgroundColor: myExpendituresButtonOn ? "primary.main" : "#FFFFFF"
                                                     }
                                                 }}
                                                 variant="outlined"
-                                                onClick={showUsersExpenses}
+                                                onClick={showUsersExpenditures}
                                             >
-                                                My expenses
+                                                My expenditures
                                             </Button>
                                             <Button
                                                 sx={{
@@ -708,9 +693,9 @@ export const FinancesPage = () => {
                                                 overflow: "auto"
                                             }}
                                         >
-                                            {allExpenses.length === 0 ?
+                                            {allExpenditures.length === 0 ?
                                                 <Typography sx={{ color: "primary.main", fontSize: "32px" }}>
-                                                    Add expenses
+                                                    Add expenditures
                                                 </Typography>
                                                 :
                                                 <>
@@ -720,7 +705,7 @@ export const FinancesPage = () => {
                                                             p: 0,
                                                         }}
                                                     >
-                                                        {allExpenses}
+                                                        {allExpenditures}
                                                     </List>
                                                 </>
                                             }

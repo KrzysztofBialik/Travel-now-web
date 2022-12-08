@@ -206,9 +206,9 @@ export const MyAccommodationVotesPage = () => {
                         alignItems: "center",
                         justifyContent: "center"
                     }}>
-                        { myVotes }
+                        {myVotes}
                     </Box>
-                    
+
                 }
             </Box >
         </Box >

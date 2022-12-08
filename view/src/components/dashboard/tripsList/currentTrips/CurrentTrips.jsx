@@ -2,11 +2,13 @@ import { Grid } from '@mui/material';
 import { Container } from '@mui/material';
 import { Box } from '@mui/material';
 import { Typography } from '@mui/material';
-
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import Groups2Icon from '@mui/icons-material/Groups2';
+import FactCheckIcon from '@mui/icons-material/FactCheck';
+import MapIcon from '@mui/icons-material/Map';
 import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
 import { BARCELONAURL } from '../../../images/Images';
-import { Link } from "react-router-dom";
 
 
 export const CurrentTrips = ({ trips }) => {
@@ -21,15 +23,15 @@ export const CurrentTrips = ({ trips }) => {
                     action={{
                         route: "/tripSummary/" + groupId,
                         label: "Trip summary",
-                        description: "check details of this trip",
-                    }} />
+                    }}
+                />
             </Grid>
             <Grid item xs={12} lg={8} sx={{ ml: "auto" }}>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={6}>
                         <DashboardOptionCard
-                            icon="map"
-                            title="Day plan"
+                            icon={<MapIcon sx={{ color: "primary.dark", fontSize: "46px" }} />}
+                            title="Day plans"
                             description="Check what is the plan for a certain day of the trip"
                             route={`/dayPlan/${groupId}`}
                             groupId={groupId}
@@ -37,7 +39,7 @@ export const CurrentTrips = ({ trips }) => {
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <DashboardOptionCard
-                            icon="currency_exchange"
+                            icon={<CurrencyExchangeIcon sx={{ color: "primary.dark", fontSize: "46px" }} />}
                             title="Finances"
                             description="Control finances during the trip"
                             route={`/finances/${groupId}`}
@@ -45,7 +47,7 @@ export const CurrentTrips = ({ trips }) => {
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <DashboardOptionCard
-                            icon="groups_2"
+                            icon={<Groups2Icon sx={{ color: "primary.dark", fontSize: "46px" }} />}
                             title="Participants"
                             description="See other participants of this trip"
                             route={`/participants/${groupId}`}
@@ -55,9 +57,9 @@ export const CurrentTrips = ({ trips }) => {
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <DashboardOptionCard
-                            icon="fact_checked"
+                            icon={<FactCheckIcon sx={{ color: "primary.dark", fontSize: "46px" }} />}
                             title="Trip summary"
-                            description="Check general info about the trip."
+                            description="Check general info about the trip"
                             route={`/tripSummary/${groupId}`}
                         />
                     </Grid>
@@ -77,7 +79,12 @@ export const CurrentTrips = ({ trips }) => {
                             justifyContent: "center",
                             width: "100%"
                         }}>
-                            <Typography variant="h5" sx={{ margin: "50px" }}>No current trips</Typography>
+                            <Typography
+                                variant="h5"
+                                sx={{ margin: "50px", color: "primary.main" }}
+                            >
+                                No current trips
+                            </Typography>
                         </Box>
                         :
                         currentTrips}

@@ -10,7 +10,7 @@ import { DialogTitle } from '@mui/material';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 
-export const DeleteExpenseDialog = ({ open, onClose, closeWithDelete }) => {
+export const DeleteExpenditureDialog = ({ open, onClose, closeWithDelete }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
@@ -27,7 +27,7 @@ export const DeleteExpenseDialog = ({ open, onClose, closeWithDelete }) => {
 
     return (
         <div>
-            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Expense successfully deleted." />
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Expenditure successfully deleted." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
 
             <Dialog
@@ -37,7 +37,7 @@ export const DeleteExpenseDialog = ({ open, onClose, closeWithDelete }) => {
                 <DialogTitle>Delete</DialogTitle>
                 <DialogContent>
                     <DialogContentText sx={{ mb: "10px" }}>
-                        If you confirm, this expense will be deleted.
+                        If you confirm, this expenditure will be deleted
                     </DialogContentText>
                     <DialogActions>
                         <Button

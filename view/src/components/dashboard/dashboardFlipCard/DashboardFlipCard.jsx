@@ -6,7 +6,7 @@ import { Button } from '@mui/material';
 import './DashboardFlipCard.css';
 
 
-export const DashboardFlipCard = ({ frontBg, backBg, title, description, action }) => {
+export const DashboardFlipCard = ({ title, description, action }) => {
 
     return (
         <Card className="flip-card"
@@ -36,13 +36,6 @@ export const DashboardFlipCard = ({ frontBg, backBg, title, description, action 
                         >
                             {title}
                         </Typography>
-                        {/* <Typography variant="h6"
-                            sx={{
-                                color: "white",
-                            }}
-                        >
-                            {description}
-                        </Typography> */}
                     </Box>
                 </Box>
                 <Box className="flip-card-back"
@@ -55,8 +48,13 @@ export const DashboardFlipCard = ({ frontBg, backBg, title, description, action 
                         <Typography variant="h3" color="#FFFFFF" gutterBottom>
                             {title}
                         </Typography>
-                        <Typography variant="h6" color="#FFFFFF" opacity={0.8}>
-                            {action.description}
+                        <Typography
+                            sx={{
+                                color: "secondary.main",
+                                fontSize: "16px"
+                            }}
+                        >
+                            {description}
                         </Typography>
                         {action && (
                             <Box width="50%" mt={4} mb={2} mx="auto">
