@@ -178,13 +178,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
         setIsUpdating(false);
     }
 
-    // const isPlanningStage = () => {
-    //     if (groupStage === "PLANNING") {
-    //         return false;
-    //     }
-    //     return true;
-    // }
-    const isPlanningStage = (groupStage === "PLANNING" ? false : true);
+    const isPlanningStage = (groupStage === "PLANNING" ? true : false);
 
     // const descriptionWatch = watch("description");
 
