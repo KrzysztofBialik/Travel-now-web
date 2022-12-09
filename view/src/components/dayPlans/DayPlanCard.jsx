@@ -75,7 +75,7 @@ const icons = [
     },
 ];
 
-export const DayPlanCard = ({ dayPlanData, groupId, showDetailedPlan, onSuccess }) => {
+export const DayPlanCard = ({ dayPlanData, groupId, showDetailedPlan, onSuccess, onSuccessDelete }) => {
     console.log(dayPlanData);
 
     const [isCoordinator, setIsCoordinator] = useState(false)
@@ -142,7 +142,7 @@ export const DayPlanCard = ({ dayPlanData, groupId, showDetailedPlan, onSuccess 
                 open={deleteDialogOpen}
                 onClose={() => setDeleteDialogOpen(false)}
                 dayPlanId={dayPlanData.dayPlanId}
-                onSuccess={() => onSuccess()}
+                onSuccess={() => onSuccessDelete()}
             />
 
             <Card

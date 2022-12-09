@@ -35,7 +35,8 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 setIsDeleting(false);
-                handleSuccessClose();
+                onClose();
+                onSuccess();
             })
             .catch(err => {
                 setIsDeleting(false);
@@ -47,7 +48,7 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
 
     return (
         <div>
-            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Day plan successfully deleted." />
+            {/* <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Day plan successfully deleted." /> */}
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={deletionError} />
 
             <Dialog

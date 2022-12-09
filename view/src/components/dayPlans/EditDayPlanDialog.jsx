@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useState } from "react";
+import { useParams } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { Typography } from '@mui/material';
 import { IconButton } from '@mui/material';
@@ -89,6 +90,9 @@ const icons = [
 ];
 
 export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => {
+
+    const { groupId } = useParams();
+
     const today = new Date();
     const initialDate = format(parseISO(dayPlanData.date), "MM/dd/yyyy");
     const [isEditing, setIsEditing] = useState(false);
@@ -161,7 +165,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
 
     const handleEditDayPlan = async (dayPlanName, date, icon) => {
         setIsEditing(true);
-        var postBody = { 'groupId': localStorage.getItem('groupId'), 'name': dayPlanName, 'date': format(new Date(Date.parse(date)), "yyyy-MM-dd"), 'iconType': icon };
+        var postBody = { 'groupId': groupId, 'name': dayPlanName, 'date': format(new Date(Date.parse(date)), "yyyy-MM-dd"), 'iconType': icon };
         await doPatch('/api/v1/day-plan?dayPlanId=' + dayPlanData.dayPlanId, postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
@@ -170,7 +174,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                 onSuccess();
             })
             .catch(err => {
-                setIsEditing(true);
+                setIsEditing(false);
                 setErrorToastOpen(true);
                 setEditionError(err.message)
             });
@@ -178,11 +182,11 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
 
     const close = () => {
         reset();
-        setDayPlanName({ value: dayPlanData.name, length: dayPlanNameLength });
-        setDayPlanNameError("You have to provide day plan name.");
+        // setDayPlanName({ value: dayPlanData.name, length: dayPlanNameLength });
+        // setDayPlanNameError("You have to provide day plan name.");
         setDate(initialDate);
-        setDateError("You have to provide a date.");
-        setValues(defaultInputValues);
+        // setDateError("You have to provide a date.");
+        // setValues(defaultInputValues);
         onClose();
     };
 

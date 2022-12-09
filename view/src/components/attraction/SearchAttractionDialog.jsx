@@ -83,9 +83,9 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
         setSelectAttractionDialogOpen(true);
     };
 
-    const closeWithSelect = () => {
-        onClose();
-    }
+    // const closeWithSelect = () => {
+    //     onClose();
+    // }
 
     // const handleEditAttraction = (name, description) => {
     //     // editAccommodation(price, description);
@@ -118,9 +118,9 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
                 open={selectAttractionDialogOpen}
                 onClose={() => setSelectAttractionDialogOpen(false)}
                 attractionData={selectedAttractionData}
-                closeWithSelect={closeWithSelect}
+                // closeWithSelect={closeWithSelect}
                 dayPlanId={dayPlanId}
-                onSuccess={(id) => onSuccess(id)}
+                onSuccess={(dayPlanId) => onSuccess(dayPlanId)}
             />
             <Dialog
                 open={open}
