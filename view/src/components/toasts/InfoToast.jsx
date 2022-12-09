@@ -9,7 +9,7 @@ function Transition(props) {
     return <Slide {...props} direction="up" unmountOnExit />;
 };
 
-export const InfoToast = ({ open, onClose, message }) => {
+export const InfoToast = ({ open, onClose, message, hideTime=1500 }) => {
 
     const state = {
         open: false,
@@ -24,7 +24,7 @@ export const InfoToast = ({ open, onClose, message }) => {
                     horizontal: "left"
                 }}
                 open={open}
-                autoHideDuration={1500}
+                autoHideDuration={hideTime}
                 onClose={onClose}
                 TransitionComponent={state.Transition}
             >

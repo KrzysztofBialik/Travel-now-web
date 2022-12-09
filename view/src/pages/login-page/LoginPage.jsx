@@ -25,6 +25,7 @@ import { SimpleNavbar } from '../../components/navbars/SimpleNavbar';
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
 import { doPost } from '../../components/utils/fetch-utils';
 import { ErrorToast } from '../../components/toasts/ErrorToast';
+import { InfoToast } from '../../components/toasts/InfoToast';
 
 export const URL = '/login';
 export const NAME = "Login";
@@ -38,6 +39,8 @@ export const LoginPage = () => {
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [creationError, setCreationError] = useState("Something gone wrong. Try again");
     const [loginLoading, setLoginLoading] = useState(false);
+    const [infoToastOpen, setInfoToastOpen] = useState(false);
+    
 
     const defaultInputValues = {
         email: "",
@@ -114,8 +117,16 @@ export const LoginPage = () => {
         event.preventDefault();
     };
 
+    const registerRedirect = () => {
+        setInfoToastOpen(true);
+        setTimeout(() => {                     
+                    navigate("/register");
+            }, 3000);
+    }
+
     return (
         <div>
+            <InfoToast open={infoToastOpen} onClose={() => setInfoToastOpen(false)} message="After successful registration use your invitation link again." hideTime={3000}/>
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} />
             <Box sx={{
                 position: "relative",
@@ -277,7 +288,7 @@ export const LoginPage = () => {
                                 </form>
                                 <Grid container justifyContent="center">
                                     <Grid item>
-                                        <Link href={searchParams.get("redirectTo") !== null ? "/register?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("redirectTo")}).toString() : "/register"} variant="body2">
+                                        <Link onClick={registerRedirect} variant="body2">
                                             Don't have an account? Sign Up
                                         </Link>
                                     </Grid>
