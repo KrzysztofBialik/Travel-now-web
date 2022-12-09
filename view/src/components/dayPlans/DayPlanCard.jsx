@@ -76,6 +76,7 @@ const icons = [
 ];
 
 export const DayPlanCard = ({ dayPlanData, groupId, showDetailedPlan, onSuccess }) => {
+    console.log(dayPlanData);
 
     const [isCoordinator, setIsCoordinator] = useState(false)
 
@@ -194,7 +195,7 @@ export const DayPlanCard = ({ dayPlanData, groupId, showDetailedPlan, onSuccess 
                                 padding: 0
                             }}
                         >
-                            {dayPlanData.numberOfAttractions}
+                            {dayPlanData.dayAttractions.length}
                         </Typography>
                         <LocationOnIcon sx={{ color: "secondary.main", fontSize: "28px" }} />
                     </Box>

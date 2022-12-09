@@ -45,8 +45,9 @@ export const MyAccommodationsPage = () => {
     });
 
     useEffect(() => {
-        getIsCoordinator();
-        getCurrency();
+        getIsCoordinator()
+            .then(() => getCurrency())
+            .then(() => getData());
     }, []);
 
 
@@ -122,12 +123,6 @@ export const MyAccommodationsPage = () => {
             .catch(err => console.log('Request Failed', err));
         setLoading(false);
     };
-
-    useEffect(() => {
-
-        getData();
-
-    }, []);
 
     return (
         <>

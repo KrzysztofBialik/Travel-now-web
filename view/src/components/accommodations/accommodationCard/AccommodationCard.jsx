@@ -45,7 +45,7 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const AccommodationCard = ({ accommodationData, canModify, selected, votes, onSuccess }) => {
+export const AccommodationCard = ({ accommodationData, canModify, selected, isCoordinator, votes, onSuccess }) => {
 
     const { groupId } = useParams();
     const [currencyLoading, setCurrencyLoading] = useState(false);
@@ -293,7 +293,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                                 }}
                             >
                                 {
-                                    !selected ?
+                                    (!selected && isCoordinator) ?
                                         <MenuItem onClick={() => selectAction()}>
                                             <DoneIcon sx={{ mr: "20px", color: "primary.main" }} />
                                             <Typography sx={{ color: "primary.main" }}>

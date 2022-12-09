@@ -12,6 +12,7 @@ import { ListItemIcon } from "@mui/material";
 import { ListItemText } from "@mui/material";
 import { Card } from "@mui/material";
 import { Grid } from "@mui/material";
+import { Divider } from "@mui/material";
 import { Switch } from "@mui/material";
 import { FormControlLabel } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -28,7 +29,11 @@ import { AttractionCard } from "../../components/attraction/AttractionCard";
 import { SearchAttractionDialog } from "../../components/attraction/SearchAttractionDialog";
 import { doGet, doGetAwait } from "../../components/utils/fetch-utils";
 import { CircularProgress } from "@mui/material";
+import TripOriginRoundedIcon from '@mui/icons-material/TripOriginRounded';
+import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
+import FmdGoodRoundedIcon from '@mui/icons-material/FmdGoodRounded';
 import { secondsToMilliseconds, set } from "date-fns/esm";
+import { display } from "@mui/system";
 
 export const URL = '/dayPlan/:groupId';
 export const NAME = "DayPlan";
@@ -128,7 +133,26 @@ export const DayPlanPage = (props) => {
             .then(response => response.json())
             .then(attractions => setOptimizedAttractions(attractions.map(attraction => (
                 <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attraction.attractionId}>
-                    <AttractionCard attractionData={attraction.attraction} groupId={groupId} id={selectedDayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                    <Box sx={{ width: "100%", display: "flex", flexDirection: "row" }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: "center", justifyContent: "flex-start", width: "40px", mr: 1 }}>
+                            <TripOriginRoundedIcon size="bold" sx={{ fontSize: "40px", color: "secondary.main" }} />
+                            {attraction.distanceToNextAttraction ?
+                                <Box sx={{ display: "flex", flexDirection: "row", height: "100%", width: "40px" }}>
+                                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "19px", transform: "rotate(180deg)" }}>
+                                        <Typography sx={{ textOrientation: "mixed", writingMode: "vertical-rl", color: "secondary.dark", fontWeight: "bold", mb: -4 }}>
+                                            {(attraction.distanceToNextAttraction / 1000).toString().substring(0, 4)} km
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", justifyContent: "flex-start", width: "21px" }}>
+                                        <Divider orientation="vertical" flexItem sx={{ borderRightWidth: 3, borderColor: "secondary.main", mb: -2 }} />
+                                    </Box>
+                                </Box>
+                                :
+                                <Box></Box>
+                            }
+                        </Box>
+                        <AttractionCard attractionData={attraction.attraction} groupId={groupId} id={selectedDayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                    </Box>
                 </ListItem>
             ))))
             .catch(err => console.log('Request Failed', err));
@@ -138,10 +162,8 @@ export const DayPlanPage = (props) => {
 
     const optimizeDayPlan = () => {
         if (isOptimizedDayPlan) {
-            console.log("Domyślny plan dnia");
         }
         else {
-            console.log("Zoptymalizowany plan dnia")
             getOptimized();
         }
         setIsOptimizedDayPlan(!isOptimizedDayPlan);
