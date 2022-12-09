@@ -73,13 +73,13 @@ export const LoginPage = () => {
         await doPost('/api/v1/auth/login', postBody, false)
             .then(response => {
                 if (response.ok) {
-                    localStorage.setItem("ACCESS_TOKEN", response.headers.get('Authorization'))
+                    sessionStorage.setItem("ACCESS_TOKEN", response.headers.get('Authorization'))
                 }
                 setInvalidData(false);
                 return response.json();
             })
             .then(json => {
-                localStorage.setItem("userId", json.userId)
+                sessionStorage.setItem("userId", json.userId)
                 reset();
                 if(searchParams.get("redirectTo") !== null) {
                     navigate(searchParams.get("redirectTo"))

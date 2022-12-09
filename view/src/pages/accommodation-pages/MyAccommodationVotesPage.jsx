@@ -81,7 +81,7 @@ export const MyAccommodationVotesPage = () => {
     });
 
     const getIsCoordinator = async () => {
-        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
             .catch(err => console.log(err.message));
         var body = await resp.json();
         isCoordinator = body;
@@ -89,7 +89,7 @@ export const MyAccommodationVotesPage = () => {
 
     const getData = async () => {
         setLoading(true);
-        doGet('/api/v1/accommodation/votes/user?' + new URLSearchParams({ groupId: groupId, userId: parseInt(localStorage.getItem('userId')) }).toString())
+        doGet('/api/v1/accommodation/votes/user?' + new URLSearchParams({ groupId: groupId, userId: parseInt(sessionStorage.getItem('userId')) }).toString())
             .then(response => response.json())
             .then(json => { setMyVotesRaw(json); return json })
             .then(accommodations => {
@@ -103,7 +103,7 @@ export const MyAccommodationVotesPage = () => {
                         }}
                     >
                         <Grid item xs={12} md={5}>
-                            <AccommodationCard accommodationData={accommodation.accommodation} canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))} selected={false} votes={accommodation.userVoted} onSuccess={() => getData()} />
+                            <AccommodationCard accommodationData={accommodation.accommodation} canModify={accommodation.accommodation.creator_id === parseInt(sessionStorage.getItem("userId"))} selected={false} votes={accommodation.userVoted} onSuccess={() => getData()} />
                         </Grid>
                         <Grid item xs={12} md={5} >
                             {true ?

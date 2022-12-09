@@ -59,7 +59,7 @@ export const AvailabilityPage = () => {
     };
 
     const getAvailabilities = async () => {
-        await doGet('/api/v1/availability/user?' + new URLSearchParams({ userId: localStorage.getItem("userId"), groupId: groupId }).toString())
+        await doGet('/api/v1/availability/user?' + new URLSearchParams({ userId: sessionStorage.getItem("userId"), groupId: groupId }).toString())
             .then(response => response.json())
             .then(response => {
                 setAvailabilites(response.map(availability => ({

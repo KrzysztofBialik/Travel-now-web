@@ -52,7 +52,7 @@ export const MyAccommodationsPage = () => {
 
 
     const getIsCoordinator = async () => {
-        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
             .catch(err => console.log(err.message));
         var body = await resp.json();
         isCoordinator = body;
@@ -70,11 +70,11 @@ export const MyAccommodationsPage = () => {
 
     const getData = async () => {
         setLoading(true);
-        doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId, userId: parseInt(localStorage.getItem('userId')) }).toString())
+        doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId, userId: parseInt(sessionStorage.getItem('userId')) }).toString())
             .then(response => response.json())
             .then(json => { setAccommodationsRaw(json); return json })
             .then(accommodations => setMyAccommodations(accommodations.map(accommodation => (
-                accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId")) ?
+                accommodation.accommodation.creator_id === parseInt(sessionStorage.getItem("userId")) ?
                     <Grid container item xs={12} spacing={10} key={accommodation.accommodation.accommodationId}
                         sx={{
                             display: "flex",
@@ -86,7 +86,7 @@ export const MyAccommodationsPage = () => {
                         <Grid item xs={12} md={5}>
                             <AccommodationCard
                                 accommodationData={accommodation.accommodation}
-                                canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))}
+                                canModify={accommodation.accommodation.creator_id === parseInt(sessionStorage.getItem("userId"))}
                                 isCoordinator={isCoordinator}
                                 selected={false}
                                 votes={accommodation.userVoted}

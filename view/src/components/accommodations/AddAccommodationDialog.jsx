@@ -90,7 +90,7 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
 
     const handleAddAccommodation = async (link, price, description) => {
         setIsAdding(true);
-        var postBody = { 'groupId': groupId, 'creatorId': parseInt(localStorage.getItem('userId')), 'accommodationLink': link, 'description': description, 'price': parseFloat(price) };
+        var postBody = { 'groupId': groupId, 'creatorId': parseInt(sessionStorage.getItem('userId')), 'accommodationLink': link, 'description': description, 'price': parseFloat(price) };
         await doPost('/api/v1/accommodation', postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);

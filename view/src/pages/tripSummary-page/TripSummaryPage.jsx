@@ -122,7 +122,7 @@ export const TripSummaryPage = () => {
     // }
 
     const isCorinator = async () => {
-        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
             .catch(err => console.log(err.message));
         var body = await resp.json();
         setIsCordinator(body);
@@ -140,7 +140,7 @@ export const TripSummaryPage = () => {
                         <Grid item xs={12} md={4} key={accommodation.accommodationId}>
                             <AccommodationCard
                                 accommodationData={accommodation}
-                                canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
+                                canModify={(accommodation.creator_id === parseInt(sessionStorage.getItem("userId"))) || isCordinator}
                                 selected={true}
                                 votes={[]}
                                 showSelectButton={false} />

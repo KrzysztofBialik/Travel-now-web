@@ -61,21 +61,21 @@ export const DayPlanPage = (props) => {
     // var isCordinator = false;
 
     // const isCorinator = async () => {
-    //     var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+    //     var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
     //         .catch(err => console.log(err.message));
     //     var body = await resp.json();
     //     isCordinator = body;
     // };
 
     // const getIsCoordinator = async () => {
-    //     await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+    //     await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
     //         .then(response => response.json())
     //         .then(response => setIsCoordinator(response))
     //         .catch(err => console.log(err.message));
     // };
 
     // const isCorinator = async () => {
-    //     var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+    //     var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
     //         .catch(err => console.log(err.message));
     //     var body = await resp.json();
     //     setIsCoordinator(body);

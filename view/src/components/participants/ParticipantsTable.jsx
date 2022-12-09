@@ -83,7 +83,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
 
 
     const removeAction = (userId) => {
-        if (userId === parseInt(localStorage.getItem("userId"))) {
+        if (userId === parseInt(sessionStorage.getItem("userId"))) {
             setIsDeletingHimself(true);
         }
         else {
@@ -152,7 +152,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                 const fullName = `${params.row.firstName} ${params.row.surname}`;
                 const userId = params.row.userId;
                 const role = params.row.role;
-                const isSameUser = userId === parseInt(localStorage.getItem("userId"))
+                const isSameUser = userId === parseInt(sessionStorage.getItem("userId"))
                 const userAvailability = availabilities[userId];
                 if (isCoordinator) {
                     if (groupStage === "PLANNING_STAGE") {
