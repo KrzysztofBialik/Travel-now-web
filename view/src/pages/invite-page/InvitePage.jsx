@@ -31,7 +31,10 @@ export const InvitePage = () => {
             })
             .catch(err => {
                 console.log(err);
-                navigate("/register?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("token")}).toString());
+                if(err.message === 'User is already a member of the group') {
+                    navigate("/login?");
+                }
+
             });
         }
         
