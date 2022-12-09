@@ -12,20 +12,25 @@ import { DialogTitle } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doDelete } from '../utils/fetch-utils';
-
+import { SuccessToast } from '../toasts/SuccessToast';
 
 export const ConfirmLeaveGroupDialog = ({ open, onClose, groupId }) => {
 
     const [isLeaving, setIsLeaving] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [leaveError, setLeaveError] = useState("Ups! Something went wrong. Try again.");
+    const [successToastOpen, setSuccessToastOpen] = useState(false);
     const navigate = useNavigate();
 
     const leaveAction = async () => {
         setIsLeaving(true);
         await doDelete('/api/v1/trip-group/user?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => {
-                navigate('/dashboard', { leftGroup: true });
+                setSuccessToastOpen(true);  
+                setTimeout(() => {                                     
+                    navigate('/dashboard', { leftGroup: true });
+                }, 4000);
+                
             })
             .catch(err => {
                 setErrorToastOpen(true);
@@ -41,6 +46,7 @@ export const ConfirmLeaveGroupDialog = ({ open, onClose, groupId }) => {
 
     return (
         <div>
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="You succesfully left group and will be redirected to dashboard." />
             <ErrorToast
                 open={errorToastOpen}
                 onClose={() => setErrorToastOpen(false)}
