@@ -50,7 +50,7 @@ export const FinancesPage = () => {
                 const map = new Map(Object.entries(response));
                 var balanceMaxFullData = [];
 
-                for (var i = 0 ; i < userList.length ; i++) {
+                for (var i = 0; i < userList.length; i++) {
                     var balance = map.get((userList[i].id).toString());
                     if (balance !== undefined) {
                         var balanceUser = {}
@@ -59,7 +59,7 @@ export const FinancesPage = () => {
                         balanceUser['balance'] = balance;
                         balanceMaxFullData.push(balanceUser);
                     }
-                    else{
+                    else {
                         var balanceUser = {}
                         balanceUser['id'] = userList[i].id;
                         balanceUser['user'] = userList[i].fullName;
@@ -89,8 +89,6 @@ export const FinancesPage = () => {
                 getBalanceData(person);
             })
             .catch(err => console.log('Request Failed', err));
-
-
     }
 
     const getSettlementsData = async (userList) => {
@@ -159,7 +157,6 @@ export const FinancesPage = () => {
                 }))
             })
             .catch(err => console.log('Request Failed', err));
-
     }
 
 
@@ -251,6 +248,7 @@ export const FinancesPage = () => {
                 }}>
                 <NavigationNavbar
                     buttonsData={groupStage === 2 ? currentTripButtonsDataWithGroupId(groupId) : pastTripButtonsData}
+                    groupId={groupId}
                 />
                 <Box sx={{
                     pt: 10,
@@ -300,7 +298,7 @@ export const FinancesPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "primary.main",
                                             color: "#000000",
@@ -313,8 +311,8 @@ export const FinancesPage = () => {
                                         }}
                                     >
                                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
-                                            <ReceiptIcon sx={{ color: "#FFFFFF" }} />
-                                            <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
+                                            <ReceiptIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                                                 Expenditures
                                             </Typography>
                                         </Box>
@@ -351,7 +349,7 @@ export const FinancesPage = () => {
                                             <Button
                                                 sx={{
                                                     borderRadius: "20px",
-                                                    fontSize: "10px",
+                                                    fontSize: "15px",
                                                     mr: 2,
                                                     color: myExpendituresButtonOn ? "#FFFFFF" : "primary.main",
                                                     backgroundColor: myExpendituresButtonOn ? "primary.main" : "#FFFFFF",
@@ -367,7 +365,7 @@ export const FinancesPage = () => {
                                             <Button
                                                 sx={{
                                                     borderRadius: "20px",
-                                                    fontSize: "10px",
+                                                    fontSize: "15px",
                                                     color: myContributionsButtonOn ? "#FFFFFF" : "primary.main",
                                                     backgroundColor: myContributionsButtonOn ? "primary.main" : "#FFFFFF",
                                                     "&:hover": {
@@ -391,9 +389,11 @@ export const FinancesPage = () => {
                                             }}
                                         >
                                             {allExpenditures.length === 0 ?
-                                                <Typography sx={{ color: "primary.main", fontSize: "32px" }}>
-                                                    Add expenditures
-                                                </Typography>
+                                                <Box sx={{ width: "100%", minHeight: "400px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                    <Typography sx={{ color: "primary.main", fontSize: "32px" }}>
+                                                        Add expenditures
+                                                    </Typography>
+                                                </Box>
                                                 :
                                                 <>
                                                     <List
@@ -436,7 +436,7 @@ export const FinancesPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "primary.main",
                                             color: "#000000",
@@ -449,8 +449,8 @@ export const FinancesPage = () => {
                                         }}
                                     >
                                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
-                                            <SyncAltIcon sx={{ color: "#FFFFFF" }} />
-                                            <Typography variant="h6" sx={{ color: "#FFFFFF", mr: 5 }}>
+                                            <SyncAltIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                                                 Balances
                                             </Typography>
                                         </Box>
@@ -481,9 +481,8 @@ export const FinancesPage = () => {
                                                 :
                                                 <BalanceChart balancesData={balanceData} />
                                             } */}
-                                            <BalanceChart 
-                                            balancesData={balanceData}
-                                            allUsers={allUsers}
+                                            <BalanceChart
+                                                balancesData={balanceData}
                                             />
                                         </Box>
                                     </Box>
@@ -512,7 +511,7 @@ export const FinancesPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "secondary.main",
                                             color: "#FFFFFF",
@@ -523,8 +522,8 @@ export const FinancesPage = () => {
                                         }}
                                     >
                                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
-                                            <HandshakeIcon sx={{ color: "#000000" }} />
-                                            <Typography variant="h6" sx={{ color: "#000000", mr: 5 }}>
+                                            <HandshakeIcon sx={{ color: "#000000", fontSize: "32px" }} />
+                                            <Typography variant="h6" sx={{ color: "#000000", fontSize: "32px" }}>
                                                 Settlements
                                             </Typography>
                                         </Box>

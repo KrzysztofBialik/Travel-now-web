@@ -28,12 +28,12 @@ export const futureTripButtonsData = [
             },
             {
                 id: 22,
-                name: "My Accommodations",
+                name: "My accommodations",
                 link: "/accommodations/myAccommodations"
             },
             {
                 id: 23,
-                name: "My Votes",
+                name: "My votes",
                 link: "/accommodations/myAccommodationVotes"
             }
         ]
@@ -54,7 +54,7 @@ export const futureTripButtonsData = [
 export const currentTripButtonsData = [
     {
         id: 1,
-        name: "Day Plans",
+        name: "Day plans",
         link: "/dayPlan",
     },
     {
@@ -95,49 +95,49 @@ export const pastTripButtonsData = [
 ];
 
 export const pastTripButtonsDataWithGroupId = (groupId) => {
-return [
-    {
-        id: 1,
-        name: "Finances",
-        link: "/finances/" + groupId,
-    },
-    {
-        id: 1,
-        name: "Summary",
-        link: "/tripSummary/" + groupId,
-    },
+    return [
+        {
+            id: 1,
+            name: "Finances",
+            link: "/finances/" + groupId,
+        },
+        {
+            id: 1,
+            name: "Summary",
+            link: "/tripSummary/" + groupId,
+        },
 
-    {
-        id: 3,
-        name: "Media",
-        link: "/media",
-    }
-];
+        {
+            id: 3,
+            name: "Media",
+            link: "/media",
+        }
+    ];
 }
 
 export const currentTripButtonsDataWithGroupId = (groupId) => {
- return [
-    {
-        id: 1,
-        name: "Day Plans",
-        link: "/dayPlan/" + groupId,
-    },
-    {
-        id: 2,
-        name: "Finances",
-        link: "/finances/" + groupId,
-    },
-    {
-        id: 3,
-        name: "Participants",
-        link: "/participants/" + groupId,
-    },
-    {
-        id: 4,
-        name: "Summary",
-        link: "/tripSummary/" + groupId,
-    }
-];
+    return [
+        {
+            id: 1,
+            name: "Day plans",
+            link: "/dayPlan/" + groupId,
+        },
+        {
+            id: 2,
+            name: "Finances",
+            link: "/finances/" + groupId,
+        },
+        {
+            id: 3,
+            name: "Participants",
+            link: "/participants/" + groupId,
+        },
+        {
+            id: 4,
+            name: "Summary",
+            link: "/tripSummary/" + groupId,
+        }
+    ];
 }
 
 
@@ -149,7 +149,7 @@ export const futureTripButtonsDataWithGroupId = (groupId) => {
         submenu: [
             {
                 id: 11,
-                name: "My Availability",
+                name: "My availability",
                 link: "/availability/" + groupId
             },
             {
@@ -171,12 +171,12 @@ export const futureTripButtonsDataWithGroupId = (groupId) => {
             },
             {
                 id: 22,
-                name: "My Accommodations",
+                name: "My accommodations",
                 link: "/accommodations/myAccommodations/" + groupId
             },
             {
                 id: 23,
-                name: "My Votes",
+                name: "My votes",
                 link: "/accommodations/myAccommodationVotes/" + groupId
             }
         ]
@@ -192,5 +192,5 @@ export const futureTripButtonsDataWithGroupId = (groupId) => {
         link: "/tripSummary/" + groupId,
     }
 
-];
+    ];
 }

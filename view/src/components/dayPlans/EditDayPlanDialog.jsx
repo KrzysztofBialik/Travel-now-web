@@ -16,6 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { Controller } from 'react-hook-form';
 import * as Yup from 'yup';
 import isValid from 'date-fns/isValid';
 import isBefore from 'date-fns/isBefore';
@@ -34,7 +35,6 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import DownhillSkiingIcon from '@mui/icons-material/DownhillSkiing';
 import format from 'date-fns/format';
 import parseISO from 'date-fns/parseISO';
-
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doPatch } from "../../components/utils/fetch-utils";
@@ -89,10 +89,7 @@ const icons = [
 ];
 
 export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => {
-
     const today = new Date();
-
-    // const initialDate = format(new Date(dayPlanData.year, dayPlanData.month, dayPlanData.day), "MM/dd/yyyy");
     const initialDate = format(parseISO(dayPlanData.date), "MM/dd/yyyy");
     const [isEditing, setIsEditing] = useState(false);
     const [successToastOpen, setSuccessToastOpen] = useState(false);
@@ -109,7 +106,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
     const defaultInputValues = {
         dayPlanName: dayPlanName,
         date: initialDate,
-        icon: dayPlanData.iconId,
+        icon: dayPlanData.iconType,
     };
 
     const [values, setValues] = useState(defaultInputValues);
@@ -153,7 +150,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
             .typeError("Invalid date.")
     });
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    const { register, handleSubmit, reset, formState: { errors }, control } = useForm({
         resolver: yupResolver(validationSchema),
     });
 
@@ -168,6 +165,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
         await doPatch('/api/v1/day-plan?dayPlanId=' + dayPlanData.dayPlanId, postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
+                setIsEditing(false);
                 close();
                 onSuccess();
             })
@@ -293,7 +291,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                         </DialogContentText>
                         <Box>
                             <TextField
-                                sx={{ minWidth: "52px", width: "52px" }}
+                                sx={{ minWidth: "60px", width: "60px" }}
                                 select
                                 margin="normal"
                                 name='icon'
@@ -305,7 +303,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                                 {...register('icon')}
                                 error={errors.icon ? true : false}
                                 helperText={errors.icon?.message}
-                                value={dayPlanData.iconType}
+                                defaultValue={dayPlanData.iconType}
                                 onChange={(event) => { handleChange({ ...values, icon: event.target.value }) }}
                             >
                                 {icons.map((icon) => (
@@ -340,7 +338,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                                         variant="contained"
                                         sx={{ borderRadius: "20px", color: "#FFFFFF", width: "100px" }}
                                     >
-                                        Confirm
+                                        Edit
                                     </Button>
                                 </>
                             }

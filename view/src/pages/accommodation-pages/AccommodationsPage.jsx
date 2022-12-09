@@ -57,7 +57,7 @@ export const AccommodationsPage = () => {
     };
 
     const getData = async () => {
-        setLoading(false);
+        setLoading(true);
         doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(json => { setAccommodationsRaw(json); return json })
@@ -69,7 +69,8 @@ export const AccommodationsPage = () => {
                             canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
                             selected={false}
                             votes={accommodation.userVoted}
-                            canOpenTransport={tripGroup.selectedSharedAvailability} />
+                            onSuccess={() => updateData()}
+                        />
                     </Grid>)));
             })
             .catch(err => console.log('Request Failed', err));
@@ -86,7 +87,13 @@ export const AccommodationsPage = () => {
                 } else {
                     setSelectedAccommodation(
                         <Grid item xs={12} key={accommodation.accommodationId}>
-                            <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} onSuccess={() => getData()} />
+                            <AccommodationCard
+                                accommodationData={accommodation}
+                                canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
+                                selected={true}
+                                votes={[]}
+                                onSuccess={() => updateData()}
+                            />
                         </Grid>)
                     setCenter({ lat: accommodation.latitude, lng: accommodation.longitude })
                 }
@@ -100,7 +107,12 @@ export const AccommodationsPage = () => {
         isCorinator();
         getData();
         getChosenAccommodation();
-    }, [])
+    }, []);
+
+    const updateData = () => {
+        getChosenAccommodation();
+        getData();
+    }
 
     return (
         <Box
@@ -220,7 +232,20 @@ export const AccommodationsPage = () => {
                             </Typography>
                         </Grid>
                         {
-                            !loading ?
+                            loading ?
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        minHeight: "400px",
+                                        minWidth: "400px"
+                                    }}
+                                >
+                                    <CircularProgress fontSize="48px" sx={{ color: "primary.main" }} />
+                                </Box>
+                                :
                                 <Grid container item xs={12}
                                     spacing={5}
                                     sx={{
@@ -249,8 +274,6 @@ export const AccommodationsPage = () => {
                                                     alignItems: "center",
                                                     width: "100%",
                                                     minHeight: "400px",
-                                                    width: "100%"
-                                                    // border: "2px solid black"
                                                 }}
                                             >
                                                 <Typography sx={{ fontSize: "32px" }}>
@@ -259,19 +282,6 @@ export const AccommodationsPage = () => {
                                             </Box>
                                     }
                                 </Grid>
-                                :
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        minHeight: "400px"
-                                        // border: "2px solid black"
-                                    }}
-                                >
-                                    <CircularProgress sx={{ color: "primary.main" }} />
-                                </Box>
                         }
                     </Grid>
                 </Box>

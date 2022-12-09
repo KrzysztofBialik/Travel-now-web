@@ -41,7 +41,7 @@ export const DeleteAccommodationDialog = ({ open, onClose, accommodationId, onSu
             })
             .catch(err => {
                 setDeletionError(err.message);
-                setErrorToastOpen(true);               
+                setErrorToastOpen(true);
             });
     };
 
@@ -53,8 +53,13 @@ export const DeleteAccommodationDialog = ({ open, onClose, accommodationId, onSu
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Delete</DialogTitle>
+                <DialogTitle sx={{ pb: 1 }}>Delete</DialogTitle>
                 <DialogContent>
                     <DialogContentText sx={{ mb: "10px" }}>
                         If you confirm, your accommodation will be removed from list.
@@ -62,14 +67,16 @@ export const DeleteAccommodationDialog = ({ open, onClose, accommodationId, onSu
                     <DialogActions>
                         <Button
                             variant="outlined"
-                            onClick={handleClose}
+                            sx={{ borderRadius: "20px" }}
+                            onClick={onClose}
                         >
                             Cancel
                         </Button>
                         <Button
+                            type="submit"
                             variant="contained"
+                            sx={{ borderRadius: "20px", color: "#FFFFFF", width: "100px" }}
                             onClick={handleDeleteAttraction}
-                            sx={{ color: "#FFFFFF" }}
                         >
                             Confirm
                         </Button>

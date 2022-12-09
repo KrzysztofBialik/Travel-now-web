@@ -21,6 +21,7 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
 
     const handleSuccessClose = () => {
         onClose();
+        onSuccess();
     };
 
     const handleErrorClose = () => {
@@ -32,7 +33,8 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
         setIsDeleting(true);
         await doDelete('/api/v1/day-plan?dayPlanId=' + dayPlanId)
             .then(response => {
-                setSuccessToastOpen(response.ok);
+                // setSuccessToastOpen(response.ok);
+                setIsDeleting(false);
                 handleSuccessClose();
             })
             .catch(err => {
@@ -40,6 +42,7 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
                 setErrorToastOpen(true);
                 setDeletionError(err.message)
             });
+        setIsDeleting(false);
     };
 
     return (

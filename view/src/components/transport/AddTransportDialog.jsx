@@ -16,11 +16,8 @@ import * as Yup from 'yup';
 import { Box } from '@mui/material';
 import { FormHelperText } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
-import EditIcon from '@mui/icons-material/Edit';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CloseIcon from '@mui/icons-material/Close';
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
 import CommuteIcon from '@mui/icons-material/Commute';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -34,7 +31,7 @@ import { doPost } from '../utils/fetch-utils';
 import * as durationn from 'duration-fns'
 
 
-export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess }) => {
+export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, currency }) => {
 
     const [isCreating, setIsCreating] = useState(false);
     const [successToastOpen, setSuccessToastOpen] = useState(false);
@@ -318,7 +315,7 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess }
                             value={destination.value}
                             onChange={(event) => onDestinationChange(event.target.value)}
                         />
-                        <DialogContentText variant="body1" mt="20px">
+                        <DialogContentText variant="body1" mt="10px">
                             Duration:
                         </DialogContentText>
                         <Box sx={{ display: "flex", mt: "-10px", mb: "10px" }} >
@@ -399,6 +396,11 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess }
                                             <AttachMoneyIcon sx={{ color: "primary.main" }} />
                                         </InputAdornment>
                                     ),
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            {currency}
+                                        </InputAdornment>
+                                    )
                                     // endAdornment: (
                                     //     <InputAdornment position="end">
                                     //         zł

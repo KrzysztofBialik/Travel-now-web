@@ -29,13 +29,13 @@ export const SelectAccommodationDialog = ({ open, onClose, groupId, accommodatio
     };
 
     const acceptSharedAvailability = async () => {
-        await doPut('/api/v1/trip-group/accommodation?' + new URLSearchParams({ groupId: groupId, accommodationId: accommodationId}).toString())
+        await doPut('/api/v1/trip-group/accommodation?' + new URLSearchParams({ groupId: groupId, accommodationId: accommodationId }).toString())
             .then(response => handleSuccessClose())
             .catch(err => {
-                setErrorToastOpen(true)
+                setErrorToastOpen(true);
                 setApiErrorMessage(err.message);
             });
-        }
+    }
 
     return (
         <div>
@@ -45,14 +45,34 @@ export const SelectAccommodationDialog = ({ open, onClose, groupId, accommodatio
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Select</DialogTitle>
+                <DialogTitle sx={{ pb: 1 }}>Select</DialogTitle>
                 <DialogContent>
                     <DialogContentText sx={{ mb: "10px" }}>
                         If you confirm, this accommodation will be selected as the currently chosen accommodation.
                     </DialogContentText>
                     <DialogActions>
-                        <Button variant="outlined" onClick={onClose}>Cancel</Button>
+                        <Button
+                            variant="outlined"
+                            sx={{ borderRadius: "20px" }}
+                            onClick={onClose}
+                        >
+                            Cancel
+                        </Button>
+                        <Button
+                            type="submit"
+                            variant="contained"
+                            sx={{ borderRadius: "20px", color: "#FFFFFF", width: "100px" }}
+                            onClick={acceptSharedAvailability}
+                        >
+                            Confirm
+                        </Button>
+                        {/* <Button variant="outlined" onClick={onClose}>Cancel</Button>
                         <Button
                             variant="contained"
                             color="primary"
@@ -60,7 +80,7 @@ export const SelectAccommodationDialog = ({ open, onClose, groupId, accommodatio
                             sx={{ color: "#FFFFFF" }}
                         >
                             Confirm
-                        </Button>
+                        </Button> */}
                     </DialogActions>
                 </DialogContent>
             </Dialog>

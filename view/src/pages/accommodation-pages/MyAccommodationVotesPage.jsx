@@ -60,6 +60,7 @@ export const MyAccommodationVotesPage = () => {
     const [myVotesRaw, setMyVotesRaw] = useState([]);
     const [myVotes, setMyVotes] = useState([]);
     const [loading, setLoading] = useState(true);
+    var isCoordinator = false;
 
     // const voteAction = () => {
     //     setUserVote(!userVote)
@@ -78,6 +79,13 @@ export const MyAccommodationVotesPage = () => {
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     });
+
+    const getIsCoordinator = async () => {
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+            .catch(err => console.log(err.message));
+        var body = await resp.json();
+        isCoordinator = body;
+    };
 
     const getData = async () => {
         setLoading(true);
@@ -128,8 +136,8 @@ export const MyAccommodationVotesPage = () => {
     };
 
     useEffect(() => {
+        getIsCoordinator();
         getData();
-
     }, [])
 
     return (
@@ -199,16 +207,7 @@ export const MyAccommodationVotesPage = () => {
                         </Typography>
                     </Box>
                     :
-                    <Box sx={{
-                        minHeight: "400px",
-                        minWidth: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}>
-                        {myVotes}
-                    </Box>
-
+                    myVotes
                 }
             </Box >
         </Box >

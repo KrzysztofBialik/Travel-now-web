@@ -29,6 +29,7 @@ import { ErrorTripConfirmationDialog } from './ErrorTripConfirmationDialog';
 import { doGet } from "../../components/utils/fetch-utils";
 import { doPatch } from "../../components/utils/fetch-utils";
 import { useEffect } from 'react';
+import Rule from '@mui/icons-material/Rule';
 
 const currencies = [
     {
@@ -262,7 +263,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                     sx={{
                                         mx: 2,
                                         mt: -3,
-                                        py: 1,
+                                        py: 2,
                                         px: 2,
                                         // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                         backgroundColor: "primary.main",
@@ -275,10 +276,10 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                         alignItems: "center"
                                     }}
                                 >
-                                    <Typography component="h1" variant="h5" color="#FFFFFF">
+                                    <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                                         Manage trip group data
                                     </Typography>
-                                    <RuleIcon sx={{ color: "secondary.main", fontSize: "42px" }} />
+                                    <Rule sx={{ color: "#FFFFFF", fontSize: "50px" }} />
                                 </Box>
                                 <Box sx={{
                                     display: "flex",
@@ -344,7 +345,6 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     helperText={errors.startingLocation?.message}
                                                 />
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", alignContent: "center" }} >
-
                                                     <Controller
                                                         name='currency'
                                                         control={control}
@@ -448,22 +448,22 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     <span>{0}/{DESCRIPTION_LIMIT}</span>
                                                 </FormHelperText>
                                                 {!isPlanningStage ?
-                                                <DialogActions>
-                                                    <Button
-                                                        type="submit"
-                                                        variant="contained"
-                                                        sx={{ borderRadius: "20px", color: "#FFFFFF", width: "140px" }}
-                                                    >
-                                                        {isUpdating ?
-                                                            <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
-                                                            :
-                                                            "Update data"
-                                                        }
-                                                    </Button>
-                                                </DialogActions>
-                                                :
-                                              <Box></Box>
-                                            }
+                                                    <DialogActions>
+                                                        <Button
+                                                            type="submit"
+                                                            variant="contained"
+                                                            sx={{ borderRadius: "20px", color: "#FFFFFF", width: "140px" }}
+                                                        >
+                                                            {isUpdating ?
+                                                                <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                                                :
+                                                                "Update data"
+                                                            }
+                                                        </Button>
+                                                    </DialogActions>
+                                                    :
+                                                    <Box></Box>
+                                                }
                                             </form>
                                         }
                                     </Box>

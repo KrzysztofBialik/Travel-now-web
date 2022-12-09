@@ -85,7 +85,7 @@ const icons = [
     },
 ];
 
-export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
+export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId }) => {
 
     const today = new Date();
 
@@ -117,12 +117,9 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
             value.length === 0 ? "You have to provide day plan name." : null
         )
         setDayPlanName({ value: value, length: value.length });
-        console.log(date);
-        console.log(dateError);
     };
 
     const onDateChange = (value) => {
-        console.log(value)
         if (!isValid(value)) {
             setDateError("You have to provide valid date.");
             setDate(null);
@@ -130,8 +127,6 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
         }
 
         setDateError(
-            // isValid(value) ? "You have to provide valid date." : null
-            // value === null ? "You have to provide date." : null
             isBefore(value, today) ? "Date cannot be earlier than current day." : null
         )
         setDate(value);
@@ -153,12 +148,11 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
 
     const handleChange = (value) => {
         setValues(value);
-        console.log(values);
     };
 
     const handleCreateDayPlan = async (dayPlanName, date, icon) => {
         setIsCreating(true);
-        var postBody = { 'groupId': localStorage.getItem('groupId'), 'name': dayPlanName, 'date': date, 'iconType': icon };
+        var postBody = { 'groupId': groupId, 'name': dayPlanName, 'date': date, 'iconType': icon };
         await doPost('/api/v1/day-plan', postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
@@ -166,10 +160,10 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
                 onSuccess();
             })
             .catch(err => {
-                setIsCreating(false);
                 setErrorToastOpen(true);
                 setCreationError(err.message)
             });
+        setIsCreating(false);
     };
 
     const close = () => {
@@ -220,14 +214,6 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
                         <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
                     </IconButton>
                 </DialogTitle>
-                {/* <DialogTitle variant="h4" 
-                sx={{
-                     color: "#FFFFFF",
-                      backgroundColor: "primary.main" 
-                      }}
-                      >
-                        Create new day plan
-                        </DialogTitle> */}
                 <DialogContent>
                     <form
                         onSubmit={handleSubmit(() => handleCreateDayPlan(dayPlanName.value, values.date, values.icon))}

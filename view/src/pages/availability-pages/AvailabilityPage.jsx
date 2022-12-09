@@ -11,6 +11,7 @@ import { CardContent } from '@mui/material';
 import { Collapse } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import AddIcon from '@mui/icons-material/Add';
+import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DateRange } from 'react-date-range';
 import { eachDayOfInterval } from "date-fns";
@@ -89,14 +90,10 @@ export const AvailabilityPage = () => {
         )
     }
 
-    console.log(availabilities)
     const restrictedDays = availabilities.flatMap(availability =>
         eachDayOfInterval({ start: availability.startDate, end: availability.endDate })
     );
 
-
-
-    console.log(restrictedDays)
     return (
         <Box sx={{
             position: 'relative',
@@ -113,6 +110,7 @@ export const AvailabilityPage = () => {
                 groupId={groupId}
                 rangeChange={() => { }}
                 onSuccess={() => getAvailabilities()}
+                shared={false}
             />
             <Box sx={{
                 py: 10,
@@ -125,26 +123,45 @@ export const AvailabilityPage = () => {
             >
                 <Card
                     sx={{
-                        height: "100%", width: "80%", minWidth: "1000px", borderRadius: "10px"
+                        minHeight: "500px",
+                        minWidth: "500px",
+                        overflow: "visible",
+                        display: "flex",
+                        flexDirection: "column",
+                        position: "relative",
+                        overflowWrap: "break-word",
+                        backgroundClip: "border-box",
+                        borderRadius: "10px",
+                        boxShadow: "rgb(0 0 0 / 10 %) 0rem 0.25rem 0.375rem - 0.0625rem, rgb(0 0 0 / 6 %) 0rem 0.125rem 0.25rem -0.0625rem"
                     }}
-                    elevation={0}
+                    elevation={16}
                 >
-                    <CardHeader
+                    <Box
                         sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
+                            mx: 2,
+                            mt: -3,
+                            py: 2,
+                            px: 2,
+                            // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                             backgroundColor: "primary.main",
-                            color: "#FFFFFF",
+                            color: "#000000",
+                            borderRadius: "0.5rem",
                             boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
                         }}
-                        title="My Availability"
-                        titleTypographyProps={{ variant: 'h5' }}
-                        action={
+                    >
+                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                            <EventAvailableIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                            <Box sx={{ minWidth: "250px" }}>
+                                <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                                    My availability
+                                </Typography>
+                            </Box>
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
-                                alignItems: "center"
+                                alignItems: "center",
+                                justifyContent: "flex-end",
+                                width: "100%"
                             }}>
                                 <Box>
                                     <Link to={sharedAvailabilitiesPageLink}>
@@ -173,13 +190,11 @@ export const AvailabilityPage = () => {
                                     >
                                         <AddIcon />
                                         Add
-                                        {/* <strong>Add</strong> */}
                                     </Button>
                                 </Box>
                             </Box>
-                        }
-                    >
-                    </CardHeader>
+                        </Box>
+                    </Box>
                     <CardContent sx={{ display: "flex", justifyContent: "center", flexDirection: "row" }}>
                         <Box sx={{
                             display: "flex",

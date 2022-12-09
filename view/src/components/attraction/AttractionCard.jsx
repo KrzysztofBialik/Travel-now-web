@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { styled } from '@mui/material/styles';
 import { Card } from "@mui/material";
 import { Box } from "@mui/material";
@@ -21,11 +23,11 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MapIcon from '@mui/icons-material/Map';
 import CheckIcon from '@mui/icons-material/Check';
-
 import { SelectStartingPointDialog } from "./SelectStartingPointDialog";
 import { EditAttractionDialog } from "./EditAttractionDialog";
 import { DeleteAttractionDialog } from "./DeleteAttractionDialog";
 import { PLACEHOLDER_IMAGE } from "../images/Images";
+import { doGet } from "../utils/fetch-utils";
 
 
 const ExpandMore = styled((props) => {
@@ -39,7 +41,7 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) => {
+export const AttractionCard = ({ attractionData, groupId, id, onDeletion }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [expanded, setExpanded] = useState(false);
     const [selectStartingPointDialogOpen, setSelectStartingPointDialogOpen] = useState(false);
@@ -47,6 +49,19 @@ export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) =>
     const [deleteAttractionDialogOpen, setDeleteAttractionDialogOpen] = useState(false);
     const [mapsLink, setMapsLink] = useState(attractionData.attractionLink);
     const open = Boolean(anchorEl);
+    const [isCoordinator, setIsCoordinator] = useState(false)
+
+    useEffect(() => {
+        isCorinator();
+    }, []);
+
+    const isCorinator = async () => {
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+            .catch(err => console.log(err.message));
+        var body = await resp.json();
+        setIsCoordinator(body);
+    };
+
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -175,7 +190,7 @@ export const AttractionCard = ({ attractionData, canModify, id, onDeletion }) =>
                                         >
                                             {attractionData.name}
                                         </Typography>
-                                        {canModify && <Box sx={{ mr: "-10px" }}>
+                                        {isCoordinator && <Box sx={{ mr: "-10px" }}>
                                             <IconButton
                                                 aria-label="more"
                                                 id="long-button"
