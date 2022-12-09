@@ -28,13 +28,14 @@ export const DeleteTransportDialog = ({ open, onClose, transportId, accommodatio
     // };
 
     const handleDelete = async () => {
-        await doDelete('/api/v1/transport/user-transport?' + new URLSearchParams({ accommodationId:accommodationId, transportId:transportId }).toString())
+        await doDelete('/api/v1/transport/user-transport?' + new URLSearchParams({ accommodationId: accommodationId, transportId: transportId }).toString())
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 handleSuccessClose();
                 onSuccess();
             })
-            .catch(err => {setErrorToastOpen(true); 
+            .catch(err => {
+                setErrorToastOpen(true);
                 setDeletionError(err.message)
             });
     };
@@ -47,9 +48,16 @@ export const DeleteTransportDialog = ({ open, onClose, transportId, accommodatio
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        minWidth: "400px",
+                        maxWidth: "400px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Delete</DialogTitle>
-                <DialogContent>
+                <DialogTitle sx={{ pb: 0 }}>Delete</DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
                     <DialogContentText sx={{ mb: "10px" }}>
                         If you confirm, this transport will be deleted.
                     </DialogContentText>
@@ -57,14 +65,14 @@ export const DeleteTransportDialog = ({ open, onClose, transportId, accommodatio
                         <Button
                             variant="outlined"
                             onClick={onClose}
-                            sx={{ borderRadius: "20px" }}
+                            sx={{ borderRadius: "20px", fontSize: "12px" }}
                         >
                             Cancel
                         </Button>
                         <Button
                             variant="contained"
                             onClick={handleDelete}
-                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
                         >
                             Confirm
                         </Button>

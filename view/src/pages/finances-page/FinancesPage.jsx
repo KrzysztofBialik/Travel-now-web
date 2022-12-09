@@ -1,14 +1,8 @@
 import { useState } from "react";
-import React, { useEffect, useRef } from "react";
-import { Avatar } from "@mui/material";
+import React, { useEffect } from "react";
 import { Box } from "@mui/material";
-import { Menu } from "@mui/material";
-import { MenuItem } from "@mui/material";
-import { IconButton } from "@mui/material";
 import { List } from "@mui/material";
 import { ListItem } from "@mui/material";
-import { ListItemIcon } from "@mui/material";
-import { ListItemText } from "@mui/material";
 import { Card } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -19,330 +13,31 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import { useParams } from "react-router-dom";
-
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { currentTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { pastTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
-import { ExpenseCard } from "../../components/finances/ExpenseCard";
-import { AddExpenseDialog } from "../../components/finances/AddExpenseDialog";
+import { ExpenditureCard } from "../../components/finances/ExpenditureCard";
+import { AddExpenditureDialog } from "../../components/finances/AddExpenditureDialog";
 import { SettlementCard } from "../../components/finances/SettlementCard";
 import { BalanceChart } from "../../components/finances/BalanceChart";
 import { doGet } from "../../components/utils/fetch-utils";
 import { parseISO } from "date-fns/esm";
-import { format } from "date-fns";
 
 
 export const URL = '/finances/:groupId';
 export const NAME = "Finances";
 
-// const expensesData = [
-//     {
-//         id: 1,
-//         person: "Olisadebe",
-//         title: "Dinner",
-//         cost: 170.40,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 2,
-//         person: "Krzychu77",
-//         title: "Fruits",
-//         cost: 30.00,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-//     {
-//         id: 3,
-//         person: "Piterm33",
-//         title: "Museum tickets",
-//         cost: 200.00,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 4,
-//         person: "BoBa",
-//         title: "Kebab",
-//         cost: 60.89,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 5,
-//         person: "Krzychu77",
-//         title: "Souvenirs",
-//         cost: 50.20,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-//     {
-//         id: 6,
-//         person: "Olisadebe",
-//         title: "Beers",
-//         cost: 78.45,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 7,
-//         person: "Krzychu77",
-//         title: "Museum tickets",
-//         cost: 200.00,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-//     {
-//         id: 8,
-//         person: "BoBa",
-//         title: "Kebab",
-//         cost: 60.89,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 9,
-//         person: "Krzychu77",
-//         title: "Souvenirs",
-//         cost: 50.20,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-//     {
-//         id: 10,
-//         person: "Olisadebe",
-//         title: "Beers",
-//         cost: 78.45,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-// ];
-
-// const settlementsData = [
-//     {
-//         id: 1,
-//         amount: 100.00,
-//         debtor: "Krzychu77",
-//         debtee: "Olisadebe",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 2,
-//         amount: 25.47,
-//         debtor: "Piterm33",
-//         debtee: "Krzychu77",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 3,
-//         amount: 50.55,
-//         debtor: "Olisadebe",
-//         debtee: "BoBa",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 4,
-//         amount: 61.32,
-//         debtor: "Krzychu77",
-//         debtee: "BoBa",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 5,
-//         amount: 25.25,
-//         debtor: "Piterm33",
-//         debtee: "BoBa",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 6,
-//         amount: 40.00,
-//         debtor: "BoBa",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 7,
-//         amount: 250.50,
-//         debtor: "Piterm33",
-//         debtee: "Olisadebe",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 8,
-//         amount: 3.35,
-//         debtor: "BoBa",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 9,
-//         amount: 4.50,
-//         debtor: "Olisadebe",
-//         debtee: "Piterm33",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 10,
-//         amount: 25.68,
-//         debtor: "Piterm33",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 11,
-//         amount: 21.37,
-//         debtor: "BoBa",
-//         debtee: "Piterm33",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 12,
-//         amount: 4.20,
-//         debtor: "Krzychu77",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     }
-// ];
-// const settlementsData = [
-//     {
-//         debtee: "Krzychu77"
-//     }
-// ]
-
-// const balancesData = [
-//     {
-//         id: 1,
-//         user: "Boba",
-//         balance: 125.46
-//     },
-//     {
-//         id: 2,
-//         user: "Krzychu77",
-//         balance: -50.00
-//     },
-//     {
-//         id: 3,
-//         user: "Olisadebe",
-//         balance: 100
-//     },
-//     {
-//         id: 4,
-//         user: "Piterm33",
-//         balance: -125.40
-//     },
-//     {
-//         id: 5,
-//         user: "Boba",
-//         balance: -50.06
-//     },
-//     {
-//         id: 6,
-//         user: "Krzychu77",
-//         balance: 0
-//     },
-//     {
-//         id: 7,
-//         user: "Olisadebe",
-//         balance: 240
-//     },
-//     {
-//         id: 8,
-//         user: "Piterm33",
-//         balance: -150
-//     },
-//     {
-//         id: 9,
-//         user: "Boba",
-//         balance: -300
-//     },
-//     {
-//         id: 10,
-//         user: "Krzychu77",
-//         balance: 202
-//     },
-//     {
-//         id: 11,
-//         user: "Olisadebe",
-//         balance: -12.54
-//     },
-//     {
-//         id: 12,
-//         user: "Piterm33",
-//         balance: 10.54
-//     },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// }
-// ]
 
 export const FinancesPage = () => {
     const { groupId } = useParams();
-    const [addExpenseDialogOpen, setAddExpenseDialogOpen] = useState(false);
-    const [myExpensesButtonOn, setMyExpensesButtonOn] = useState(false);
+    const [addExpenditureDialogOpen, setAddExpenditureDialogOpen] = useState(false);
+    const [myExpendituresButtonOn, setMyExpendituresButtonOn] = useState(false);
     const [myContributionsButtonOn, setMyContributionsButtonOn] = useState(false);
-    const [expensesData, setExpensesData] = useState([]);
+    const [expendituresData, setExpendituresData] = useState([]);
     const [allExpenditureCreators, setAllExpenditureCreators] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
     const [currentUser, setCurrentUser] = useState([])
-    const [allExpenses, setAllExpenses] = useState([])
+    const [allExpenditures, setAllExpenditures] = useState([])
     const [settlementsData, setSettlementsData] = useState([])
     const [balanceData, setBalanceData] = useState([])
     const [fullBalanceData, setFullBalanceData] = useState([])
@@ -353,19 +48,26 @@ export const FinancesPage = () => {
             .then(response => response.json())
             .then(response => {
                 const map = new Map(Object.entries(response));
-                var balanceFullData = []
-                map.forEach((balance, userId) => {
-                    var balanceUser = {}
-                    const person = userList.find(user => user.id === parseInt(userId)).fullName;
-                    balanceUser['id'] = userId;
-                    balanceUser['user'] = person;
-                    balanceUser['balance'] = balance;
-                    balanceFullData.push(balanceUser);
-                });
+                var balanceMaxFullData = [];
 
-                console.log("BALANCE DATA");
-                console.log(balanceFullData);
-                setBalanceData(balanceFullData);
+                for (var i = 0; i < userList.length; i++) {
+                    var balance = map.get((userList[i].id).toString());
+                    if (balance !== undefined) {
+                        var balanceUser = {}
+                        balanceUser['id'] = userList[i].id;
+                        balanceUser['user'] = userList[i].fullName;
+                        balanceUser['balance'] = balance;
+                        balanceMaxFullData.push(balanceUser);
+                    }
+                    else {
+                        var balanceUser = {}
+                        balanceUser['id'] = userList[i].id;
+                        balanceUser['user'] = userList[i].fullName;
+                        balanceUser['balance'] = 0.0;
+                        balanceMaxFullData.push(balanceUser);
+                    }
+                }
+                setBalanceData(balanceMaxFullData);
 
             })
             .catch(err => console.log('Request Failed', err));
@@ -382,13 +84,11 @@ export const FinancesPage = () => {
                 setCurrentUser(response.find(user => user.userId === parseInt(localStorage.getItem("userId"))))
                 const person = response.map(user => ({ id: user.userId, fullName: user.firstName + " " + user.surname }));
                 setAllUsers(person);
-                getExpensesData(person)
+                getExpendituresData(person)
                 getSettlementsData(person);
                 getBalanceData(person);
             })
             .catch(err => console.log('Request Failed', err));
-
-
     }
 
     const getSettlementsData = async (userList) => {
@@ -406,14 +106,8 @@ export const FinancesPage = () => {
                     })
                 });
                 setSettlementsData(set);
-                console.log("125412515151521")
-                console.log(set)
                 setOtherSettlements(set.filter(settlement =>
-                    // console.log("12431256364326");
-                    // console.log(settlementsData)
                     settlement.debteeId !== parseInt(localStorage.getItem("userId")) && settlement.debtorId !== parseInt(localStorage.getItem("userId"))).map(settlement => {
-                        console.log("Settlement 1");
-                        console.log(set)
                         return (
                             <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
                                 <SettlementCard
@@ -430,8 +124,6 @@ export const FinancesPage = () => {
                     }));
                 setMySettlements(set.filter(settlement =>
                     settlement.debtorId === parseInt(localStorage.getItem("userId")) || settlement.debteeId === parseInt(localStorage.getItem("userId"))).map(settlement => {
-                        console.log("My Settlement");
-                        console.log(settlement)
                         return (
                             <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
                                 <SettlementCard
@@ -448,12 +140,11 @@ export const FinancesPage = () => {
             })
             .catch(err => console.log('Request Failed', err));
     }
-    const getExpensesData = async (userList) => {
+    const getExpendituresData = async (userList) => {
         await doGet('/api/v1/finance-optimizer?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(response => {
-
-                setExpensesData(response.map(expenditure => {
+                setExpendituresData(response.map(expenditure => {
                     const person = userList.find(user => user.id === expenditure.creatorId).fullName;
                     const isDebtor = expenditure.expenseDebtors.some(debtor => debtor === parseInt(localStorage.getItem("userId")))
                     const contributors = expenditure.expenseDebtors.map(ed => {
@@ -466,7 +157,6 @@ export const FinancesPage = () => {
                 }))
             })
             .catch(err => console.log('Request Failed', err));
-
     }
 
 
@@ -475,78 +165,67 @@ export const FinancesPage = () => {
     }, [])
 
     useEffect(() => {
-        setAllExpenses(expensesData.map(expense => (
-            <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                <ExpenseCard expenseData={expense} />
+        setAllExpenditures(expendituresData.map(expenditure => (
+            <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                <ExpenditureCard expenditureData={expenditure} />
             </ListItem>
         )));
-    }, [expensesData])
-
-
-
-
+    }, [expendituresData])
 
 
     const [otherSettlements, setOtherSettlements] = useState([]);
-
-
     const [mySettlements, setMySettlements] = useState([]);
 
     const groupStage = 2;
     const isCoordinator = true;
 
     const test = () => {
-        setAllExpenses(expensesData.map(expense => (
-            <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                <ExpenseCard expenseData={expense} />
+        setAllExpenditures(expendituresData.map(expenditure => (
+            <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                <ExpenditureCard expenditureData={expenditure} />
             </ListItem>
         )));
-        // setAllExpenses([]);
     };
 
-    const showUsersExpenses = () => {
+    const showUsersExpenditures = () => {
         if (myContributionsButtonOn) {
             setMyContributionsButtonOn(false);
         }
 
-        if (myExpensesButtonOn) {
-            setAllExpenses(expensesData.map(expense => (
-                <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                    <ExpenseCard expenseData={expense} />
+        if (myExpendituresButtonOn) {
+            setAllExpenditures(expendituresData.map(expenditure => (
+                <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                    <ExpenditureCard expenditureData={expenditure} />
                 </ListItem>
             )));
         }
         else {
-            console.log("here?")
-            console.log(currentUser)
-            console.log(expensesData)
-
-            setAllExpenses(expensesData.filter(expense => expense.personId === currentUser.userId).map(expense => (
-                <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                    <ExpenseCard expenseData={expense} />
+            setAllExpenditures(expendituresData.filter(expenditure => expenditure.personId === currentUser.userId).map(expenditure => (
+                <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                    <ExpenditureCard expenditureData={expenditure} />
                 </ListItem>
             )));
         }
 
-        setMyExpensesButtonOn(!myExpensesButtonOn);
+        setMyExpendituresButtonOn(!myExpendituresButtonOn);
     };
 
     const showUsersContributions = () => {
-        if (myExpensesButtonOn) {
-            setMyExpensesButtonOn(false);
+        if (myExpendituresButtonOn) {
+            setMyExpendituresButtonOn(false);
         }
 
         if (myContributionsButtonOn) {
-            setAllExpenses(expensesData.map(expense => (
-                <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                    <ExpenseCard expenseData={expense} />
+            setAllExpenditures(expendituresData.map(expenditure => (
+                <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                    <ExpenditureCard expenditureData={expenditure} />
                 </ListItem>
             )));
         }
         else {
-            setAllExpenses(expensesData.filter(expense => expense.debtors === true).map(expense => (
-                <ListItem sx={{ p: 0, my: "10px" }} key={expense.id}>
-                    <ExpenseCard expenseData={expense} />
+            setAllExpenditures(expendituresData.filter(expenditure => expenditure.debtors === true).map(expenditure => (
+                <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
+                    <ExpenditureCard expenditureData={expenditure} />
                 </ListItem>
             )));
         }
@@ -555,9 +234,9 @@ export const FinancesPage = () => {
 
     return (
         <>
-            <AddExpenseDialog
-                open={addExpenseDialogOpen}
-                onClose={() => setAddExpenseDialogOpen(false)}
+            <AddExpenditureDialog
+                open={addExpenditureDialogOpen}
+                onClose={() => setAddExpenditureDialogOpen(false)}
                 participants={allUsers}
                 groupId={groupId}
                 onSuccess={() => getAllUsersInGroup()}
@@ -569,6 +248,7 @@ export const FinancesPage = () => {
                 }}>
                 <NavigationNavbar
                     buttonsData={groupStage === 2 ? currentTripButtonsDataWithGroupId(groupId) : pastTripButtonsData}
+                    groupId={groupId}
                 />
                 <Box sx={{
                     pt: 10,
@@ -596,7 +276,7 @@ export const FinancesPage = () => {
                             display: "flex", justifyContent: "center", alignItems: "center", mb: 10
                         }}>
 
-                            {/* ----------------------------------------------------EXPENSES---------------------------------------------------- */}
+                            {/* ----------------------------------------------------EXPENDITURES---------------------------------------------------- */}
                             <Grid item xs={6} md={6}>
                                 <Card
                                     sx={{
@@ -618,7 +298,7 @@ export const FinancesPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "primary.main",
                                             color: "#000000",
@@ -631,9 +311,9 @@ export const FinancesPage = () => {
                                         }}
                                     >
                                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
-                                            <ReceiptIcon sx={{ color: "#FFFFFF" }} />
-                                            <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
-                                                Expenses
+                                            <ReceiptIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                                                Expenditures
                                             </Typography>
                                         </Box>
                                         <Button
@@ -643,7 +323,7 @@ export const FinancesPage = () => {
                                                 borderRadius: "20px",
                                                 "&:hover": { backgroundColor: "secondary.dark" }
                                             }}
-                                            onClick={() => setAddExpenseDialogOpen(true)}
+                                            onClick={() => setAddExpenditureDialogOpen(true)}
                                         >
                                             <AddIcon />
                                             Add
@@ -669,23 +349,23 @@ export const FinancesPage = () => {
                                             <Button
                                                 sx={{
                                                     borderRadius: "20px",
-                                                    fontSize: "10px",
+                                                    fontSize: "15px",
                                                     mr: 2,
-                                                    color: myExpensesButtonOn ? "#FFFFFF" : "primary.main",
-                                                    backgroundColor: myExpensesButtonOn ? "primary.main" : "#FFFFFF",
+                                                    color: myExpendituresButtonOn ? "#FFFFFF" : "primary.main",
+                                                    backgroundColor: myExpendituresButtonOn ? "primary.main" : "#FFFFFF",
                                                     "&:hover": {
-                                                        backgroundColor: myExpensesButtonOn ? "primary.main" : "#FFFFFF"
+                                                        backgroundColor: myExpendituresButtonOn ? "primary.main" : "#FFFFFF"
                                                     }
                                                 }}
                                                 variant="outlined"
-                                                onClick={showUsersExpenses}
+                                                onClick={showUsersExpenditures}
                                             >
-                                                My expenses
+                                                My expenditures
                                             </Button>
                                             <Button
                                                 sx={{
                                                     borderRadius: "20px",
-                                                    fontSize: "10px",
+                                                    fontSize: "15px",
                                                     color: myContributionsButtonOn ? "#FFFFFF" : "primary.main",
                                                     backgroundColor: myContributionsButtonOn ? "primary.main" : "#FFFFFF",
                                                     "&:hover": {
@@ -708,10 +388,12 @@ export const FinancesPage = () => {
                                                 overflow: "auto"
                                             }}
                                         >
-                                            {allExpenses.length === 0 ?
-                                                <Typography sx={{ color: "primary.main", fontSize: "32px" }}>
-                                                    Add expenses
-                                                </Typography>
+                                            {allExpenditures.length === 0 ?
+                                                <Box sx={{ width: "100%", minHeight: "400px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                    <Typography sx={{ color: "primary.main", fontSize: "32px" }}>
+                                                        Add expenditures
+                                                    </Typography>
+                                                </Box>
                                                 :
                                                 <>
                                                     <List
@@ -720,7 +402,7 @@ export const FinancesPage = () => {
                                                             p: 0,
                                                         }}
                                                     >
-                                                        {allExpenses}
+                                                        {allExpenditures}
                                                     </List>
                                                 </>
                                             }
@@ -754,7 +436,7 @@ export const FinancesPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "primary.main",
                                             color: "#000000",
@@ -767,8 +449,8 @@ export const FinancesPage = () => {
                                         }}
                                     >
                                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
-                                            <SyncAltIcon sx={{ color: "#FFFFFF" }} />
-                                            <Typography variant="h6" sx={{ color: "#FFFFFF", mr: 5 }}>
+                                            <SyncAltIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                                                 Balances
                                             </Typography>
                                         </Box>
@@ -799,7 +481,9 @@ export const FinancesPage = () => {
                                                 :
                                                 <BalanceChart balancesData={balanceData} />
                                             } */}
-                                            <BalanceChart balancesData={balanceData} />
+                                            <BalanceChart
+                                                balancesData={balanceData}
+                                            />
                                         </Box>
                                     </Box>
                                 </Card>
@@ -827,7 +511,7 @@ export const FinancesPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "secondary.main",
                                             color: "#FFFFFF",
@@ -838,8 +522,8 @@ export const FinancesPage = () => {
                                         }}
                                     >
                                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
-                                            <HandshakeIcon sx={{ color: "#000000" }} />
-                                            <Typography variant="h6" sx={{ color: "#000000", mr: 5 }}>
+                                            <HandshakeIcon sx={{ color: "#000000", fontSize: "32px" }} />
+                                            <Typography variant="h6" sx={{ color: "#000000", fontSize: "32px" }}>
                                                 Settlements
                                             </Typography>
                                         </Box>

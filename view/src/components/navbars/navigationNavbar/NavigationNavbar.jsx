@@ -20,7 +20,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { UserOptionsDialog } from '../../navbarDialogs/UserOptionsDialog';
 import { TripGroupOptionsDialog } from '../../navbarDialogs/TripGroupOptionsDialog';
 import { ConfirmLogoutDialog } from '../../navbarDialogs/ConfirmLogoutDialog';
-import { ConfirmLeaveGroupDialog } from '../../navbarDialogs/LeaveGroupDialogOpen';
+import { ConfirmLeaveGroupDialog } from '../../navbarDialogs/ConfirmLeaveGroupDialog';
 import { ConfirmDeleteGroupDialog } from '../../navbarDialogs/DeleteGroupDialog';
 import { doGet } from '../../utils/fetch-utils';
 import './NavigationNavbar.css';
@@ -36,11 +36,13 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
     const [userOptionsDialogOpen, setUserOptionsDialogOpen] = useState(false);
     const [userLogoutDialogOpen, setUserLogoutDialogOpen] = useState(false);
     const [isCoordinator, setIsCoordinator] = useState(false)
+    const [isPlanningStage, setIsPlanningStage] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
         if (groupId) {
             getIsCoordinator();
+            getTripData();
         }
     }, []);
 
@@ -49,6 +51,15 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
             .then(response => response.json())
             .then(response => setIsCoordinator(response))
             .catch(err => console.log(err.message));
+    };
+
+    const getTripData = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                setIsPlanningStage(response.groupStage === "PLANNING_STAGE");
+            })
+            .catch(err => console.log('Request Failed', err));
     };
 
     const handleOpenUserMenu = (event) => {
@@ -235,7 +246,8 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                                 </MenuItem>
                                             ]
                                             :
-                                            <MenuItem
+                                            [<MenuItem
+                                                key={1}
                                                 onClick={handleLeaveGroup}
                                             >
                                                 <ExitToAppIcon sx={{ color: "error.main", mr: 1 }} />
@@ -243,6 +255,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                                     Leave group
                                                 </Typography>
                                             </MenuItem>
+                                            ]
                                         }
                                     </Menu>
                                 </Box>

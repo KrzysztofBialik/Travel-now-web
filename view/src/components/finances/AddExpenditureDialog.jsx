@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { useState } from "react";
-import { Checkbox } from "@mui/material";
-import { FormControlLabel } from "@mui/material";
-import { Typography } from "@mui/material";
+import { useEffect } from 'react';
+import { Checkbox, FormControlLabel, Typography } from "@mui/material";
 import { Controller } from "react-hook-form";
+import { CircularProgress } from '@mui/material';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -22,121 +22,63 @@ import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import CloseIcon from '@mui/icons-material/Close';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+import { doPost, doGet } from "../utils/fetch-utils";
 
 
-const participants = [
-    {
-        id: 1,
-        name: "BoBa"
-    },
-    {
-        id: 2,
-        name: "Krzychu77"
-    },
-    {
-        id: 3,
-        name: "Olisadebe"
-    },
-    {
-        id: 4,
-        name: "Piterm33"
-    },
-    {
-        id: 5,
-        name: "BoBa"
-    },
-    {
-        id: 6,
-        name: "Krzychu77"
-    },
-    {
-        id: 7,
-        name: "Olisadebe"
-    },
-    {
-        id: 8,
-        name: "Piterm33"
-    },
-    {
-        id: 9,
-        name: "BoBa"
-    },
-    {
-        id: 10,
-        name: "Krzychu77"
-    },
-    {
-        id: 11,
-        name: "Olisadebe"
-    },
-    {
-        id: 12,
-        name: "Piterm33"
-    },
-    {
-        id: 13,
-        name: "BoBa"
-    },
-    {
-        id: 14,
-        name: "Krzychu77"
-    },
-    {
-        id: 15,
-        name: "Olisadebe"
-    },
-    {
-        id: 16,
-        name: "Piterm33"
-    }
-];
-
-const debtors = [
-    {
-        id: 1,
-        name: "BoBa"
-    },
-    {
-        id: 2,
-        name: "Krzychu77"
-    },
-    {
-        id: 7,
-        name: "Olisadebe"
-    },
-    {
-        id: 12,
-        name: "Piterm33"
-    },
-]
-
-export const EditExpenseDialog = ({ open, onClose, expenseData, closeWithEdit }) => {
+export const AddExpenditureDialog = ({ open, onClose, participants, groupId, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
+    const [isAdding, setIsAdding] = useState(false);
+    const [currency, setCurrency] = useState("");
 
-    const selectedParticipants = participants.map((participant) => ({ formName: participant.id, checked: false }));
-
-    const defaultInputValues = {
-        expenseName: expenseData.title,
-        price: expenseData.cost,
-        selectedParticipants: selectedParticipants.map(participant => {
-            const debtor = debtors.find(debtor => debtor.id === participant.formName);
-            return debtor ? ({ ...participant, checked: true }) : participant
-        })
+    const getCurrency = async () => {
+        var resp = await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                var currency = response.currency;
+                setCurrency(currency);
+            })
+            .catch(err => console.log('Request Failed', err));
     };
 
-    console.log(defaultInputValues.expenseName);
-    console.log(defaultInputValues.price);
+    useEffect(() => {
+        getCurrency();
+        console.log(currency)
+    }, [currency]);
 
+    const defaultInputValues = {
+        expenditureName: "",
+        price: "0.00",
+        selectedParticipants: participants.map((participant) => ({ formName: participant.id, checked: false }))
+    };
+
+    const postExpenditure = async (values) => {
+        setIsAdding(true);
+        var postBody = {
+            'creatorId': localStorage.getItem('userId'), title: values.expenditureName, price: values.price,
+            debtorsIds: values.selectedParticipants.map(s => s.formName)
+        };
+        await doPost('/api/v1/finance-optimizer?' + new URLSearchParams({ groupId: groupId }).toString(), postBody)
+            .then(response => {
+                setSuccessToastOpen(response.ok);
+                setIsAdding(false);
+                onSuccess();
+            })
+            .catch(err => {
+                setIsAdding(false);
+                setErrorToastOpen(true);
+                setErrorToastOpen(err.message)
+            });
+    };
 
     const validationSchema = Yup.object().shape({
-        expenseName: Yup
+        expenditureName: Yup
             .string()
-            .required("You have to provide name"),
+            .required("You have to provide expenditure name"),
         price: Yup
             .number()
-            .positive("You have to provide cost of expense"),
+            .positive("You have to provide cost of expenditure"),
         selectedParticipants: Yup
             .array()
             .of(
@@ -146,7 +88,7 @@ export const EditExpenseDialog = ({ open, onClose, expenseData, closeWithEdit })
                 })
             )
             .compact((v) => !v.checked)
-            .min(1, "You have to select min 1 person.")
+            .min(1, "You have to select min 1 person")
     });
 
     const { register, handleSubmit, reset, formState: { errors }, control, setValue, getValues } = useForm({
@@ -154,24 +96,19 @@ export const EditExpenseDialog = ({ open, onClose, expenseData, closeWithEdit })
         defaultValues: defaultInputValues
     });
 
-    const handleEditExpense = (values) => {
-        // console.log(expenseName);
-        // console.log(cost);
-        // console.log(debtors);
-        console.log(values);
-        console.log(getValues());
-        setSuccessToastOpen(true);
+    const handleAddExpenditure = (values) => {
+        postExpenditure(values);
         close();
     };
 
     const close = () => {
         reset();
-        closeWithEdit();
+        onClose();
     };
 
     return (
         <div>
-            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Expense edited." />
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="New expenditure added." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
 
             <Dialog
@@ -179,14 +116,34 @@ export const EditExpenseDialog = ({ open, onClose, expenseData, closeWithEdit })
                 onClose={onClose}
                 PaperProps={{
                     style: {
-                        minHeight: "500px",
                         maxHeight: "700px",
                         minWidth: "400px",
                         maxWidth: "400px",
+                        borderRadius: "20px"
                     },
                 }}
             >
                 <DialogTitle
+                    sx={{
+                        backgroundColor: "primary.main",
+                        display: "flex",
+                        flexDirection: "row",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        color: "#FFFFFF"
+                    }}
+                >
+                    <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                        New expenditure
+                    </Typography>
+                    <IconButton
+                        sx={{ p: 0 }}
+                        onClick={close}
+                    >
+                        <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
+                    </IconButton>
+                </DialogTitle>
+                {/* <DialogTitle
                     sx={{
                         color: "primary.main",
                         display: "flex",
@@ -203,22 +160,19 @@ export const EditExpenseDialog = ({ open, onClose, expenseData, closeWithEdit })
                         justifyContent: "space-between"
                     }}>
                         <Typography sx={{ fontSize: "28px" }}>
-                            Edit expense
+                            New expenditure
                         </Typography>
-                        <IconButton sx={{ mr: -1 }} onClick={onClose}>
+                        <IconButton sx={{ mr: -1 }} onClick={close}>
                             <CloseIcon sx={{ color: "primary.main" }} />
                         </IconButton>
                     </Box>
-                </DialogTitle>
-                <Box sx={{ height: "100%", width: "100%" }}>
+                </DialogTitle> */}
+                <Box sx={{ height: "100%", width: "100%", mt: 2 }}>
                     <form
-                        onSubmit={handleSubmit(handleEditExpense)}
+                        onSubmit={handleSubmit(handleAddExpenditure)}
                     >
                         <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                            <TextField
-                                sx={{
-                                    mx: 2
-                                }}
+                            <TextField sx={{ mx: 2 }}
                                 type='string'
                                 autoFocus
                                 margin="normal"
@@ -233,9 +187,9 @@ export const EditExpenseDialog = ({ open, onClose, expenseData, closeWithEdit })
                                         </InputAdornment>
                                     ),
                                 }}
-                                {...register('expenseName')}
-                                error={!!errors.expenseName}
-                                helperText={errors.expenseName?.message}
+                                {...register('expenditureName')}
+                                error={!!errors.expenditureName}
+                                helperText={errors.expenditureName?.message}
                             />
                             <TextField
                                 sx={{ minWidth: "200px", width: "200px", mx: 2, mb: 0 }}
@@ -253,14 +207,18 @@ export const EditExpenseDialog = ({ open, onClose, expenseData, closeWithEdit })
                                             <AttachMoneyIcon sx={{ color: "primary.main" }} />
                                         </InputAdornment>
                                     ),
-                                    // endAdornment: (
-                                    //     <InputAdornment position="end">
-                                    //         PLN
-                                    //     </InputAdornment>
-                                    // )
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            {currency}
+                                        </InputAdornment>
+                                    )
                                 }}
                                 {...register('price')}
                                 error={!!errors.price}
+                            // error={Boolean(errors.price) ? (Boolean(priceError)) : false}
+                            // helperText={Boolean(errors.price) && priceError}
+                            // value={price}
+                            // onChange={(event) => onPriceChange(event.target.value)}
                             />
                             <FormHelperText
                                 error={!!errors.price}
@@ -275,23 +233,27 @@ export const EditExpenseDialog = ({ open, onClose, expenseData, closeWithEdit })
                             </FormHelperText>
                         </Box>
                         <Box sx={{ display: "flex", flexDirection: "column", overflow: "none" }}>
-                            <FormControlLabel
+                            <Typography
+                                sx={{ backgroundColor: "#dee2e6", pl: 2, py: 1, fontSize: "25px" }}
+
+                            >Contributors</Typography>
+                            {/* <FormControlLabel
                                 sx={{ backgroundColor: "#dee2e6", mx: 0 }}
-                                control={
-                                    <Controller
-                                        name={"selectedParticipants"}
-                                        control={control}
-                                        render={({ field: { onChange, value } }) =>
-                                            <Checkbox
-                                                checked={value.every((v) => v.checked)}
-                                                onChange={() => onChange(value.some((v) => !v.checked) ?
-                                                    value.map((v) => ({ ...v, checked: true })) : value.map((v) => ({ ...v, checked: false })))}
-                                            />
-                                        }
-                                    />
-                                }
+                                // control={
+                                //     <Controller
+                                //         name={"selectedParticipants"}
+                                //         control={control}
+                                //         render={({ field: { onChange, value } }) =>
+                                //             <Checkbox
+                                //                 checked={value.every((v) => v.checked)}
+                                //                 onChange={() => onChange(value.some((v) => !v.checked) ?
+                                //                     value.map((v) => ({ ...v, checked: true })) : value.map((v) => ({ ...v, checked: false })))}
+                                //             />
+                                //         }
+                                //     />
+                                // }
                                 label={"Contributors"}
-                            />
+                            /> */}
                         </Box>
                         <Box sx={{ display: "flex", maxHeight: "240px", flexDirection: "column", ml: 3, mb: 2, overflow: "auto" }}>
                             <FormGroup                            >
@@ -312,7 +274,7 @@ export const EditExpenseDialog = ({ open, onClose, expenseData, closeWithEdit })
                                                     }
                                                 />
                                             }
-                                            label={participant.name}
+                                            label={participant.fullName}
                                             key={participant.id}
                                         />
                                     );
@@ -330,11 +292,40 @@ export const EditExpenseDialog = ({ open, onClose, expenseData, closeWithEdit })
                         >
                             <span>{!!errors.selectedParticipants && errors.selectedParticipants?.message}</span>
                         </FormHelperText>
-                        <DialogActions>
-                            <Button
+                        <DialogActions sx={{ mb: 1, mr: 1 }}>
+                            {isAdding ?
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{ borderRadius: "20px", color: "#FFFFFF", width: "80px" }}
+                                >
+                                    <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                </Button>
+                                :
+                                <>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{ borderRadius: "20px" }}
+                                        onClick={() => close()}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{ borderRadius: "20px", color: "#FFFFFF", width: "80px" }}
+                                    >
+                                        Add
+                                    </Button>
+                                </>
+                            }
+                            {/* <Button
                                 variant="outlined"
                                 sx={{ borderRadius: "20px" }}
-                                onClick={() => { close() }}
+                                onClick={() => {
+                                    setErrorToastOpen(true)
+                                    close()
+                                }}
                             >
                                 Cancel
                             </Button>
@@ -343,9 +334,10 @@ export const EditExpenseDialog = ({ open, onClose, expenseData, closeWithEdit })
                                 variant="contained"
                                 color="primary"
                                 sx={{ borderRadius: "20px" }}
+                            // onClick={() => handleCreateTransport}
                             >
                                 Add
-                            </Button>
+                            </Button> */}
                         </DialogActions>
                     </form>
                 </Box>

@@ -16,7 +16,7 @@ header {
 .nav-area {
     display: flex;
     align-items: center;
-    max-width: 1200px;
+    /* max-width: 1200px; */
     margin: 0 auto;
     padding: 10px 20px;
 }
@@ -40,7 +40,7 @@ header {
     position: relative;
     font-size: 14px;
     flex-wrap: nowrap;
-    /* width: 150px; */
+    min-width: 120px;
 }
 
 .menu-items a {

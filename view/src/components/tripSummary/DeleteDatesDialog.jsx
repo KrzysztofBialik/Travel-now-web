@@ -25,9 +25,9 @@ export const DeleteDatesDialog = ({ open, onClose, deleteDates, groupId, onSucce
     };
 
     const handleDeletion = async () => {
-        await doPut('/api/v1/trip-group/selected-availability?' + new URLSearchParams({ groupId: groupId}).toString())
+        await doPut('/api/v1/trip-group/selected-availability?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => {
-                if(response.ok) {
+                if (response.ok) {
                     handleSuccessClose();
                 }
             })
@@ -45,9 +45,16 @@ export const DeleteDatesDialog = ({ open, onClose, deleteDates, groupId, onSucce
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        minWidth: "400px",
+                        maxWidth: "400px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Delete</DialogTitle>
-                <DialogContent>
+                <DialogTitle sx={{ pb: 0 }}>Delete</DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
                     <DialogContentText sx={{ mb: "10px" }}>
                         If you confirm, dates will no longer be selected.
                     </DialogContentText>
@@ -55,14 +62,14 @@ export const DeleteDatesDialog = ({ open, onClose, deleteDates, groupId, onSucce
                         <Button
                             variant="outlined"
                             onClick={onClose}
-                            sx={{ borderRadius: "20px" }}
+                            sx={{ borderRadius: "20px", fontSize: "12px" }}
                         >
                             Cancel
                         </Button>
                         <Button
                             variant="contained"
                             onClick={handleDeletion}
-                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
                         >
                             Confirm
                         </Button>

@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Card } from "@mui/material";
 import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
@@ -20,60 +22,74 @@ import WaterIcon from '@mui/icons-material/Water';
 import LandscapeIcon from '@mui/icons-material/Landscape';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import DownhillSkiingIcon from '@mui/icons-material/DownhillSkiing';
-
 import { DeleteDayPlanDialog } from "./DeleteDayPlanDialog";
 import { EditDayPlanDialog } from "./EditDayPlanDialog";
+import { doGet } from "../utils/fetch-utils";
 
 
 const icons = [
     {
+        id: 0,
+        value: 0,
+        icon: <ChurchIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+    },
+    {
         id: 1,
         value: 1,
-        icon: <ChurchIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <DirectionsWalkIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 2,
         value: 2,
-        icon: <CastleIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <LocationCityIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 3,
         value: 3,
-        icon: <SailingIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <LandscapeIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 4,
         value: 4,
-        icon: <LocationCityIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <RestaurantIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 5,
         value: 5,
-        icon: <DirectionsWalkIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <CastleIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 6,
         value: 6,
-        icon: <WaterIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <SailingIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 7,
         value: 7,
-        icon: <LandscapeIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
+        icon: <WaterIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
     {
         id: 8,
         value: 8,
-        icon: <RestaurantIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
-    },
-    {
-        id: 9,
-        value: 9,
         icon: <DownhillSkiingIcon sx={{ color: "primary.main", fontSize: "40px", mx: 2, my: 1 }} />
     },
 ];
 
-export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan, onSuccess }) => {
+export const DayPlanCard = ({ dayPlanData, groupId, showDetailedPlan, onSuccess }) => {
+    console.log(dayPlanData);
+
+    const [isCoordinator, setIsCoordinator] = useState(false)
+
+    useEffect(() => {
+        isCorinator();
+    }, []);
+
+    const isCorinator = async () => {
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+            .catch(err => console.log(err.message));
+        var body = await resp.json();
+        setIsCoordinator(body);
+    };
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [expanded, setExpanded] = useState(false);
@@ -179,7 +195,7 @@ export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan, onSucces
                                 padding: 0
                             }}
                         >
-                            {dayPlanData.numberOfAttractions}
+                            {dayPlanData.dayAttractions.length}
                         </Typography>
                         <LocationOnIcon sx={{ color: "secondary.main", fontSize: "28px" }} />
                     </Box>
@@ -187,7 +203,7 @@ export const DayPlanCard = ({ dayPlanData, canModify, showDetailedPlan, onSucces
                 <Box sx={{
                     display: "flex", flexDirection: "row", alignItems: "center", mr: 1, my: 1
                 }}>
-                    {canModify && <Box >
+                    {isCoordinator && <Box >
                         <IconButton
                             aria-label="more"
                             id="long-button"

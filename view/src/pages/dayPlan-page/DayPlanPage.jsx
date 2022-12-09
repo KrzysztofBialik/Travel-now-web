@@ -12,12 +12,14 @@ import { ListItemIcon } from "@mui/material";
 import { ListItemText } from "@mui/material";
 import { Card } from "@mui/material";
 import { Grid } from "@mui/material";
+import { Divider } from "@mui/material";
 import { Switch } from "@mui/material";
 import { FormControlLabel } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import SearchIcon from '@mui/icons-material/Search';
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { currentTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { pastTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
@@ -27,7 +29,11 @@ import { AttractionCard } from "../../components/attraction/AttractionCard";
 import { SearchAttractionDialog } from "../../components/attraction/SearchAttractionDialog";
 import { doGet, doGetAwait } from "../../components/utils/fetch-utils";
 import { CircularProgress } from "@mui/material";
+import TripOriginRoundedIcon from '@mui/icons-material/TripOriginRounded';
+import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
+import FmdGoodRoundedIcon from '@mui/icons-material/FmdGoodRounded';
 import { secondsToMilliseconds, set } from "date-fns/esm";
+import { display } from "@mui/system";
 
 export const URL = '/dayPlan/:groupId';
 export const NAME = "DayPlan";
@@ -35,7 +41,6 @@ export const NAME = "DayPlan";
 export const DayPlanPage = (props) => {
 
     const { groupId } = useParams();
-
     const [createDayPlanDialogOpen, setCreateDayPlanDialogOpen] = useState(false);
     const [searchAttractionDialogOpen, setSearchAttractionDialogOpen] = useState(false);
     const [dayPlanName, setDayPlanName] = useState("");
@@ -48,34 +53,48 @@ export const DayPlanPage = (props) => {
     const [selectedDayPlanId, setSelectedDayPlanId] = useState(0);
     const [dayPlansRaw, setdayPlansRaw] = useState([]);
     const [isOptimizedDayPlan, setIsOptimizedDayPlan] = useState(false);
+    // const [isCoordinator, setIsCoordinator] = useState(false)
 
-    var isCordinator = false;
+    // var isCordinator = false;
 
-    const isCorinator = async () => {
-        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
-            .catch(err => console.log(err.message));
-        var body = await resp.json();
-        isCordinator = body;
-    };
+    // const isCorinator = async () => {
+    //     var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+    //         .catch(err => console.log(err.message));
+    //     var body = await resp.json();
+    //     isCordinator = body;
+    // };
+
+    // const getIsCoordinator = async () => {
+    //     await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+    //         .then(response => response.json())
+    //         .then(response => setIsCoordinator(response))
+    //         .catch(err => console.log(err.message));
+    // };
+
+    // const isCorinator = async () => {
+    //     var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+    //         .catch(err => console.log(err.message));
+    //     var body = await resp.json();
+    //     setIsCoordinator(body);
+    // };
 
     const getData = async () => {
-        setLodaing(true)
+        setLodaing(true);
         doGet('/api/v1/day-plan?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(json => { setdayPlansRaw(json); return json })
             .then(dayPlans => {
                 setAllDayPlans(dayPlans.map(dayPlan => (
                     <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
-                        <DayPlanCard dayPlanData={dayPlan} canModify={isCordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
+                        <DayPlanCard dayPlanData={dayPlan} groupId={groupId} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
                     </ListItem>
                 )));
-                setLodaing(false)
             })
             .catch(err => console.log('Request Failed', err));
+        setLodaing(false);
     };
 
     useEffect(() => {
-        isCorinator();
         getData();
     }, [])
 
@@ -87,34 +106,53 @@ export const DayPlanPage = (props) => {
         setIsOptimizedDayPlan(false);
         setAllAttractions(attractions.map(attraction => (
             <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attractionId}>
-                <AttractionCard attractionData={attraction} canModify={isCordinator} id={dayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                <AttractionCard attractionData={attraction} groupId={groupId} id={dayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
             </ListItem>
         )));
     }
 
     const updateDayplanAttractions = async (id) => {
-        var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: localStorage.getItem("groupId"), userId: localStorage.getItem("userId") }).toString())
+        setLoadingOptimized(true)
+        var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: localStorage.getItem("groupId"), dayPlanId: id }).toString())
             .then(response => response.json());
-
         var dayPlanData = dayPlansRaw.find(dayPlan => dayPlan.dayPlanId === id);
         dayPlanData.dayAttractions = newAttractions;
         setdayPlansRaw(dayPlansRaw.map(dp => dp.dayPlanId === id ? dayPlanData : dp));
-
-        showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId)
+        showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId);
         setAllDayPlans(dayPlansRaw.map(dayPlan => (
             <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
-                <DayPlanCard dayPlanData={dayPlan} canModify={isCordinator} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
+                <DayPlanCard dayPlanData={dayPlan} groupId={groupId} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
             </ListItem>
         )));
+        setLoadingOptimized(false);
     };
 
     const getOptimized = async () => {
-        setLoadingOptimized(true)
+        setLoadingOptimized(true);
         await doGet('/api/v1/attraction/optimize/' + selectedDayPlanId)
             .then(response => response.json())
             .then(attractions => setOptimizedAttractions(attractions.map(attraction => (
                 <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attraction.attractionId}>
-                    <AttractionCard attractionData={attraction.attraction} canModify={isCordinator} id={selectedDayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                    <Box sx={{ width: "100%", display: "flex", flexDirection: "row" }}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: "center", justifyContent: "flex-start", width: "40px", mr: 1 }}>
+                            <TripOriginRoundedIcon size="bold" sx={{ fontSize: "40px", color: "secondary.main" }} />
+                            {attraction.distanceToNextAttraction ?
+                                <Box sx={{ display: "flex", flexDirection: "row", height: "100%", width: "40px" }}>
+                                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", width: "19px", transform: "rotate(180deg)" }}>
+                                        <Typography sx={{ textOrientation: "mixed", writingMode: "vertical-rl", color: "secondary.dark", fontWeight: "bold", mb: -4 }}>
+                                            {(attraction.distanceToNextAttraction / 1000).toString().substring(0, 4)} km
+                                        </Typography>
+                                    </Box>
+                                    <Box sx={{ display: "flex", justifyContent: "flex-start", width: "21px" }}>
+                                        <Divider orientation="vertical" flexItem sx={{ borderRightWidth: 3, borderColor: "secondary.main", mb: -2 }} />
+                                    </Box>
+                                </Box>
+                                :
+                                <Box></Box>
+                            }
+                        </Box>
+                        <AttractionCard attractionData={attraction.attraction} groupId={groupId} id={selectedDayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                    </Box>
                 </ListItem>
             ))))
             .catch(err => console.log('Request Failed', err));
@@ -124,10 +162,8 @@ export const DayPlanPage = (props) => {
 
     const optimizeDayPlan = () => {
         if (isOptimizedDayPlan) {
-            console.log("Domyślny plan dnia");
         }
         else {
-            console.log("Zoptymalizowany plan dnia")
             getOptimized();
         }
         setIsOptimizedDayPlan(!isOptimizedDayPlan);
@@ -144,14 +180,16 @@ export const DayPlanPage = (props) => {
             <CreateDayPlanDialog
                 open={createDayPlanDialogOpen}
                 onClose={() => setCreateDayPlanDialogOpen(false)}
-                onSuccess={() => {isCorinator(); getData();}}
+                onSuccess={() => getData()}
                 groupId={groupId}
             />
             <SearchAttractionDialog
                 open={searchAttractionDialogOpen}
                 onClose={() => setSearchAttractionDialogOpen(false)}
                 dayPlanId={selectedDayPlanId}
-                onSuccess={(id) => updateDayplanAttractions(id)}
+                onSuccess={(id) => {
+                    updateDayplanAttractions(id);
+                }}
             />
             <Box
                 sx={{
@@ -210,7 +248,7 @@ export const DayPlanPage = (props) => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "primary.main",
                                             color: "#000000",
@@ -222,9 +260,12 @@ export const DayPlanPage = (props) => {
                                             alignItems: "center"
                                         }}
                                     >
-                                        <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
-                                            Day plans
-                                        </Typography>
+                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                                            <FormatListBulletedIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                                                Day plans
+                                            </Typography>
+                                        </Box>
                                         <Button
                                             variant="contained"
                                             sx={{
@@ -302,7 +343,7 @@ export const DayPlanPage = (props) => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "primary.main",
                                             color: "#000000",
@@ -314,8 +355,9 @@ export const DayPlanPage = (props) => {
                                             alignItems: "center"
                                         }}
                                     >
-                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                            <Typography variant="h6" sx={{ color: "#FFFFFF", mr: 5 }}>
+                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                                            <SearchIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                                                 Detailed plan
                                             </Typography>
                                         </Box>

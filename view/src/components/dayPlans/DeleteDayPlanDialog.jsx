@@ -20,8 +20,8 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
     const [deletionError, setDeletionError] = useState("Ups! Something went wrong. Try again.");
 
     const handleSuccessClose = () => {
-        setSuccessToastOpen(true);
         onClose();
+        onSuccess();
     };
 
     const handleErrorClose = () => {
@@ -34,14 +34,15 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
         await doDelete('/api/v1/day-plan?dayPlanId=' + dayPlanId)
             .then(response => {
                 setSuccessToastOpen(response.ok);
+                setIsDeleting(false);
                 handleSuccessClose();
-                onSuccess();
             })
             .catch(err => {
                 setIsDeleting(false);
                 setErrorToastOpen(true);
                 setDeletionError(err.message)
             });
+        setIsDeleting(false);
     };
 
     return (
@@ -84,9 +85,9 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
                                     Cancel
                                 </Button>
                                 <Button
-                                    type="submit"
                                     variant="contained"
                                     sx={{ borderRadius: "20px", color: "#FFFFFF", width: "100px" }}
+                                    onClick={() => handleDeleteDayPlan(dayPlanId)}
                                 >
                                     Confirm
                                 </Button>

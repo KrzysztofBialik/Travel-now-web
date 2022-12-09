@@ -25,6 +25,7 @@ import { SelectAccommodationDialog } from "../SelectAccommodationDialog";
 import { EditAccommodationDialog } from "../EditAccommodationDialog";
 import { DeleteAccommodationDialog } from "../DeleteAccommodationDialog";
 import { TransportDialog } from "../../transport/TransportDialog";
+import { NoDatesSelectedDialog } from "../NoDatesSelectedDialog";
 import "./AccommodationCard.css";
 import { doDelete, doPatch, doPost, doGet } from "../../utils/fetch-utils";
 import { PLACEHOLDER_IMAGE } from "../../images/Images";
@@ -44,14 +45,13 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const AccommodationCard = ({ accommodationData, canModify, selected, votes, onSuccess, showSelectButton=true }) => {
+export const AccommodationCard = ({ accommodationData, canModify, selected, isCoordinator, votes, onSuccess }) => {
 
     const { groupId } = useParams();
     const [currencyLoading, setCurrencyLoading] = useState(false);
     const [currency, setCurrency] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
     const [numOfVotes, setNumOfVotes] = useState(accommodationData.givenVotes);
-    //dodanie tego czy zagłosował dany użytkownik, bo teraz jest zawsze false
     const [userVote, setUserVote] = useState(votes.some(vote => vote['userId'] === parseInt(localStorage.getItem('userId'))));
     const [expanded, setExpanded] = useState(false);
     const [selectDialogOpen, setSelectDialogOpen] = useState(false);
@@ -62,21 +62,14 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [apiErrorMessage, setApiErrorMessage] = useState("Ups! Something went wrong. Try again.");
+    const [noDatesSelectedDialogOpen, setNoDatesSelectedDialogOpen] = useState(false);
+    const [selectedSharedAvailability, setSelectedSharedAvailability] = useState(null);
     const open = Boolean(anchorEl);
 
     useEffect(() => {
         getCurrency();
-    }, [])
-
-    const voteAction = () => {
-        setUserVote(!userVote)
-        if (userVote) {
-            handleDeleteVoteAccommodation(() => setNumOfVotes(numOfVotes - 1));
-        }
-        else {
-            handleVoteAccommodation(() => setNumOfVotes(numOfVotes + 1));
-        }
-    };
+        getSelectedSharedAvailability();
+    }, []);
 
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -84,6 +77,13 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
+    };
+
+    const handleOpenTransportDialog = () => {
+        selectedSharedAvailability ?
+            setTransportDialogOpen(true)
+            :
+            setNoDatesSelectedDialogOpen(true);
     };
 
     const handleClose = () => {
@@ -105,6 +105,31 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
         setAnchorEl(null);
     };
 
+    const voteAction = () => {
+        console.log(userVote)
+
+        if (userVote) {
+            handleDeleteVoteAccommodation(() => setNumOfVotes(numOfVotes - 1));
+        }
+        else {
+            handleVoteAccommodation(() => setNumOfVotes(numOfVotes + 1));
+        }
+        setUserVote(!userVote)
+        console.log(userVote)
+        onSuccess();
+    };
+
+    const getSelectedSharedAvailability = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                var selectedSharedAvailability = response.selectedSharedAvailability;
+                setSelectedSharedAvailability(selectedSharedAvailability);
+            }
+            )
+            .catch(err => console.log('Request Failed', err));
+    };
+
     const getCurrency = async () => {
         setCurrencyLoading(true);
         var resp = await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
@@ -113,8 +138,8 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 var currency = response.currency;
                 setCurrency(currency);
             })
-            .then(setCurrencyLoading(false))
             .catch(err => console.log('Request Failed', err));
+        setCurrencyLoading(false);
     };
 
     const handleVoteAccommodation = async (success) => {
@@ -125,11 +150,10 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 }
             })
             .catch(err => {
-                setErrorToastOpen(true); 
+                setErrorToastOpen(true);
                 setApiErrorMessage(err.message)
             });
     };
-
 
     const handleDeleteVoteAccommodation = async (success) => {
         await doPatch('/api/v1/accommodation/vote', { "userId": parseInt(localStorage.getItem("userId")), "accommodationId": accommodationData.accommodationId })
@@ -139,15 +163,19 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 }
             })
             .catch(err => {
-                setErrorToastOpen(true); 
+                setErrorToastOpen(true);
                 setApiErrorMessage(err.message)
             });
-    }
+    };
 
     return (
         <>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully selected." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={apiErrorMessage} />
+            <NoDatesSelectedDialog
+                open={noDatesSelectedDialogOpen}
+                onClose={() => setNoDatesSelectedDialogOpen(false)}
+            />
             <SelectAccommodationDialog
                 open={selectDialogOpen}
                 onClose={() => { setSelectDialogOpen(false) }}
@@ -159,6 +187,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 open={editDialogOpen}
                 onClose={() => { setEditDialogOpen(false) }}
                 accommodationData={accommodationData}
+                currency={currency}
             />
             <DeleteAccommodationDialog
                 open={deleteDialogOpen}
@@ -170,9 +199,10 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 open={transportDialogOpen}
                 onClose={() => { setTransportDialogOpen(false) }}
                 accommodationId={accommodationData.accommodationId}
+                currency={currency}
             />
             <Card
-                sx={{ height: "100%", borderRadius: "10px", width: "100%" }}
+                sx={{ height: "100%", borderRadius: "10px", width: "100%", minWidth: "300px" }}
                 elevation={10}
             >
                 <Box
@@ -246,7 +276,9 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                                 onClick={handleClick}
                                 sx={{
                                     color: selected ? "primary.main" : "secondary.main",
-                                    padding: 0
+                                    padding: 0,
+                                    mr: 1,
+                                    ml: "-10px"
                                 }}
                             >
                                 <MoreVertIcon sx={{ fontSize: "30px" }} />
@@ -261,17 +293,16 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                                 }}
                             >
                                 {
-                                    showSelectButton ? 
-                                    <MenuItem onClick={() => selectAction()}>
-                                        <DoneIcon sx={{ mr: "20px", color: "primary.main" }} />
-                                        <Typography sx={{ color: "primary.main" }}>
-                                            Select
-                                        </Typography>
-                                    </MenuItem>
-                                    :
-                                    <></>
+                                    (!selected && isCoordinator) ?
+                                        <MenuItem onClick={() => selectAction()}>
+                                            <DoneIcon sx={{ mr: "20px", color: "primary.main" }} />
+                                            <Typography sx={{ color: "primary.main" }}>
+                                                Select
+                                            </Typography>
+                                        </MenuItem>
+                                        :
+                                        <Box></Box>
                                 }
-                                
                                 <MenuItem onClick={editAction}>
                                     <EditIcon sx={{ mr: "20px", color: "primary.main" }} />
                                     <Typography sx={{ color: "primary.main" }}>
@@ -279,8 +310,8 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                                     </Typography>
                                 </MenuItem>
                                 <MenuItem onClick={deleteAction}>
-                                    <DeleteIcon sx={{ mr: "20px", color: "primary.main" }} />
-                                    <Typography sx={{ color: "primary.main" }}>
+                                    <DeleteIcon sx={{ mr: "20px", color: "error.main" }} />
+                                    <Typography sx={{ color: "error.main" }}>
                                         Delete
                                     </Typography>
                                 </MenuItem>
@@ -362,7 +393,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                             <EmojiTransportationIcon />
                             <Typography
                                 mx={"5px"}
-                                onClick={() => setTransportDialogOpen(true)}
+                                onClick={handleOpenTransportDialog}
                             >
                                 Transport
                             </Typography>

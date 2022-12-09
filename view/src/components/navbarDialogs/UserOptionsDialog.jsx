@@ -14,6 +14,7 @@ import { InputAdornment } from '@mui/material';
 import { Avatar } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 import { TextField } from '@mui/material';
+import { DialogActions } from '@mui/material';
 import { FormHelperText } from '@mui/material';
 import { Typography } from '@mui/material';
 import { Card } from '@mui/material';
@@ -36,16 +37,12 @@ import { ErrorToast } from '../toasts/ErrorToast';
 export const UserOptionsDialog = ({ open, onClose }) => {
 
     const today = new Date();
-
     const [userData, setUserData] = useState([])
     const [confirmUpdatedDialogOpen, setConfirmUpdateDialogOpen] = useState(false);
     const [confirmErrorToastOpen, setConfirmErrorToastOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
 
-    const updateData = () => {
-
-    }
 
     const getUserData = async () => {
         await doGet('/api/v1/user?' + new URLSearchParams({ userId: localStorage.getItem("userId") }).toString())
@@ -58,12 +55,10 @@ export const UserOptionsDialog = ({ open, onClose }) => {
 
     useEffect(() => {
         getUserData();
-    }, [])
+    }, []);
 
 
     const setNecessaryData = (response) => {
-        console.log("response")
-        console.log(response)
         const allPhoneNumber = response.phoneNumber.split(" ");
         var code = allPhoneNumber[0].slice();
         code = code.slice(1, code.length)
@@ -221,7 +216,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                     sx={{
                                         mx: 2,
                                         mt: -3,
-                                        py: 1,
+                                        py: 2,
                                         px: 2,
                                         // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                         backgroundColor: "primary.main",
@@ -234,11 +229,11 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                         alignItems: "center"
                                     }}
                                 >
-                                    <Typography component="h1" variant="h5" color="#FFFFFF">
+                                    <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                                         Manage profile data
                                     </Typography>
-                                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                                        <PersonIcon sx={{ color: "primary.main" }} />
+                                    <Avatar sx={{ bgcolor: '#FFFFFF' }}>
+                                        <PersonIcon sx={{ fontSize: "32px", color: "primary.main" }} />
                                     </Avatar>
                                 </Box>
                                 <Box sx={{
@@ -414,12 +409,12 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                     }
                                                 />
                                             </LocalizationProvider>
-                                            <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center" }}>
+                                            <DialogActions>
                                                 <Button
                                                     type="submit"
                                                     variant="contained"
                                                     sx={{
-                                                        mt: 3, mb: 2, borderRadius: "20px", width: "150px", color: "#FFFFFF"
+                                                        borderRadius: "20px", width: "150px", color: "#FFFFFF", mr: -2
                                                     }}
                                                 >
                                                     {isUpdating ?
@@ -428,7 +423,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                         "Change data"
                                                     }
                                                 </Button>
-                                            </Box>
+                                            </DialogActions>
                                         </form>
                                     </Box>
                                 </Box>

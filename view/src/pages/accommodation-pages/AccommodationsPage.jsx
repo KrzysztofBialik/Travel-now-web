@@ -30,12 +30,29 @@ export const AccommodationsPage = () => {
     const [loadingSelected, setLoadingSelected] = useState(true);
     const [selectedAccommodation, setSelectedAccommodation] = useState(null);
     const [center, setCenter] = useState({ lat: 0, lng: 0 });
+    const [tripGroup, setTripGroup] = useState([]);
+
 
     var isCordinator = false;
+    var tripData = false;
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     });
+
+    useEffect(() => {
+        isCorinator()
+            .then(() => getTripData())
+            .then(() => getChosenAccommodation())
+            .then(() => getData());
+    }, []);
+
+
+    const updateData = () => {
+        getTripData()
+            .then(() => getChosenAccommodation())
+            .then(() => getData());
+    };
 
     const isCorinator = async () => {
         var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
@@ -44,19 +61,13 @@ export const AccommodationsPage = () => {
         isCordinator = body;
     };
 
-    const getData = async () => {
-        setLoading(false);
-        doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId }).toString())
+    const getTripData = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
-            .then(json => { setAccommodationsRaw(json); return json })
-            .then(accommodations => {
-                setAllAccommodations(accommodations.map((accommodation) => (
-                    <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
-                        <AccommodationCard accommodationData={accommodation.accommodation} canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={false} votes={accommodation.userVoted} onSuccess={() => {getData(); getChosenAccommodation()}} />
-                    </Grid>)));
+            .then(response => {
+                setTripGroup(response);
             })
             .catch(err => console.log('Request Failed', err));
-        setLoading(false);
     };
 
     const getChosenAccommodation = async () => {
@@ -67,9 +78,17 @@ export const AccommodationsPage = () => {
                 if (accommodation.groupId === null) {
                     setSelectedAccommodation(null)
                 } else {
+                    console.log(accommodation)
                     setSelectedAccommodation(
                         <Grid item xs={12} key={accommodation.accommodationId}>
-                            <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} onSuccess={() => getData()} />
+                            <AccommodationCard
+                                accommodationData={accommodation}
+                                canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
+                                selected={true}
+                                isCoordinator={isCordinator}
+                                votes={[]}
+                                onSuccess={() => updateData()}
+                            />
                         </Grid>)
                     setCenter({ lat: accommodation.latitude, lng: accommodation.longitude })
                 }
@@ -78,11 +97,31 @@ export const AccommodationsPage = () => {
             .catch(err => console.log('Request Failed', err));
     };
 
-    useEffect(() => {
-        isCorinator();
-        getData();
-        getChosenAccommodation();
-    }, [])
+    const getData = async () => {
+        setLoading(true);
+        doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(json => { setAccommodationsRaw(json); return json })
+            .then(accommodations => {
+                setAllAccommodations(accommodations.map((accommodation) => (
+                    tripGroup.selectedAccommodationId !== accommodation.accommodation.accommodationId ?
+                        <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
+                            <AccommodationCard
+                                accommodationData={accommodation.accommodation}
+                                canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
+                                selected={false}
+                                isCoordinator={isCordinator}
+                                votes={accommodation.userVoted}
+                                onSuccess={() => updateData()}
+                            />
+                        </Grid>
+                        :
+                        <Box />
+                )));
+            })
+            .catch(err => console.log('Request Failed', err));
+        setLoading(false);
+    };
 
     return (
         <Box
@@ -202,7 +241,20 @@ export const AccommodationsPage = () => {
                             </Typography>
                         </Grid>
                         {
-                            !loading ?
+                            loading ?
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        minHeight: "400px",
+                                        minWidth: "400px"
+                                    }}
+                                >
+                                    <CircularProgress fontSize="48px" sx={{ color: "primary.main" }} />
+                                </Box>
+                                :
                                 <Grid container item xs={12}
                                     spacing={5}
                                     sx={{
@@ -231,8 +283,6 @@ export const AccommodationsPage = () => {
                                                     alignItems: "center",
                                                     width: "100%",
                                                     minHeight: "400px",
-                                                    width: "100%"
-                                                    // border: "2px solid black"
                                                 }}
                                             >
                                                 <Typography sx={{ fontSize: "32px" }}>
@@ -241,19 +291,6 @@ export const AccommodationsPage = () => {
                                             </Box>
                                     }
                                 </Grid>
-                                :
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        minHeight: "400px"
-                                        // border: "2px solid black"
-                                    }}
-                                >
-                                    <CircularProgress sx={{ color: "primary.main" }} />
-                                </Box>
                         }
                     </Grid>
                 </Box>
