@@ -164,7 +164,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
 
     const handleEditDayPlan = async (dayPlanName, date, icon) => {
         setIsEditing(true);
-        var postBody = { 'groupId': localStorage.getItem('groupId'), 'name': dayPlanName, 'date': format(new Date(Date.parse(date)), "yyyy-MM-dd"), 'iconType': icon };
+        var postBody = { 'groupId': dayPlanData.groupId, 'name': dayPlanName, 'date': format(new Date(Date.parse(date)), "yyyy-MM-dd"), 'iconType': icon };
         await doPatch('/api/v1/day-plan?dayPlanId=' + dayPlanData.dayPlanId, postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);

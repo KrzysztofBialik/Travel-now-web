@@ -144,7 +144,8 @@ export const DayPlanPage = (props) => {
             <CreateDayPlanDialog
                 open={createDayPlanDialogOpen}
                 onClose={() => setCreateDayPlanDialogOpen(false)}
-                onSuccess={() => getData()}
+                onSuccess={() => {isCorinator(); getData();}}
+                groupId={groupId}
             />
             <SearchAttractionDialog
                 open={searchAttractionDialogOpen}

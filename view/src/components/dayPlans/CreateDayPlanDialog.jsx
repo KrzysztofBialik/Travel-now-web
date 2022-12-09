@@ -85,7 +85,7 @@ const icons = [
     },
 ];
 
-export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
+export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId }) => {
 
     const today = new Date();
 
@@ -158,17 +158,19 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess }) => {
 
     const handleCreateDayPlan = async (dayPlanName, date, icon) => {
         setIsCreating(true);
-        var postBody = { 'groupId': localStorage.getItem('groupId'), 'name': dayPlanName, 'date': date, 'iconType': icon };
+        var postBody = { 'groupId': groupId, 'name': dayPlanName, 'date': date, 'iconType': icon };
         await doPost('/api/v1/day-plan', postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 close();
                 onSuccess();
+                setIsCreating(false);
             })
             .catch(err => {
                 setIsCreating(false);
                 setErrorToastOpen(true);
-                setCreationError(err.message)
+                setCreationError(err.message);
+                setIsCreating(false);
             });
     };
 
