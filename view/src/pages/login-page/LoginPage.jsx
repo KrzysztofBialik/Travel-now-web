@@ -118,10 +118,16 @@ export const LoginPage = () => {
     };
 
     const registerRedirect = () => {
-        setInfoToastOpen(true);
-        setTimeout(() => {                     
-                    navigate("/register");
-            }, 3000);
+        if(searchParams.get("redirectTo") !== null) {
+            setInfoToastOpen(true);
+            setTimeout(() => {                     
+                navigate("/register");
+        }, 3000);
+        } else {
+            navigate("/register");
+        }
+        
+        
     }
 
     return (
