@@ -181,7 +181,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
 
     const isPlanningStage = (groupStage === "PLANNING_STAGE" ? false : true);
 
-    // const descriptionWatch = watch("description");
+    const descriptionWatch = watch("description");
 
     return (
         <>
@@ -204,7 +204,9 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                         backgroundColor: "primary.main",
                         display: "flex",
                         flexDirection: "row",
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
+                        borderBottomLeftRadius: "20px",
+                        borderBottomRightRadius: "20px"
                     }}
                 >
                     <Box sx={{ color: "#FFFFFF" }}>
@@ -265,7 +267,6 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                         mt: -3,
                                         py: 2,
                                         px: 2,
-                                        // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                         backgroundColor: "primary.main",
                                         color: "#000000",
                                         borderRadius: "0.5rem",
@@ -445,7 +446,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     }}
                                                 >
                                                     <span>{errors.description?.message}</span>
-                                                    <span>{0}/{DESCRIPTION_LIMIT}</span>
+                                                    <span>{descriptionWatch ? descriptionWatch.length : 0}/{DESCRIPTION_LIMIT}</span>
                                                 </FormHelperText>
                                                 {!isPlanningStage ?
                                                     <DialogActions>

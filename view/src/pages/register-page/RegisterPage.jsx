@@ -122,18 +122,18 @@ export const RegisterPage = () => {
             'surname': values.surname,
             'birthday': format(values.birthDate, 'yyyy-MM-dd')
         };
+
         await doPost('/api/v1/auth/register', postBody, false)
             .then(response => {
                 if (response.ok) {
                     setSuccessToastOpen(true);
-                    setTimeout(() => {                     
-                    //     if(searchParams.get("redirectTo") !== null) {
-                    //         navigate("/login?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("redirectTo")}).toString());
-                    //     } else {
-                            navigate("/login");
-                    //     }
+                    setTimeout(() => {
+                        //     if(searchParams.get("redirectTo") !== null) {
+                        //         navigate("/login?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("redirectTo")}).toString());
+                        //     } else {
+                        navigate("/login");
+                        //     }
                     }, 3000);
-
                 }
             })
             .catch(err => {

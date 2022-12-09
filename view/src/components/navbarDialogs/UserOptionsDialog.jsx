@@ -25,11 +25,9 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneIcon from '@mui/icons-material/Phone';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { doGet } from "../../components/utils/fetch-utils";
 import { doPatch } from "../../components/utils/fetch-utils";
 import { UpdatedUserConfirmationDialog } from './UpdatedUserConfirmationDialog';
-import { ErrorUserConfirmationDialog } from './ErrorUserConfirmationDialog';
 import { ErrorToast } from '../toasts/ErrorToast';
 
 
@@ -43,6 +41,9 @@ export const UserOptionsDialog = ({ open, onClose }) => {
     const [errorMessage, setErrorMessage] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
 
+    useEffect(() => {
+        getUserData();
+    }, []);
 
     const getUserData = async () => {
         await doGet('/api/v1/user?' + new URLSearchParams({ userId: localStorage.getItem("userId") }).toString())
@@ -51,11 +52,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                 setNecessaryData(response);
             })
             .catch(err => console.log('Request Failed', err));
-    }
-
-    useEffect(() => {
-        getUserData();
-    }, []);
+    };
 
 
     const setNecessaryData = (response) => {
@@ -67,6 +64,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
             userId: response.userId, email: response.email, firstName: response.firstName, surname: response.surname,
             code: code, phone: phoneNumber, birthDate: response.birthday
         });
+        console.log(response.birthday);
     }
 
 
@@ -142,11 +140,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                 onClose={() => setConfirmErrorToastOpen(false)}
                 message="There was an error while updating your account. Sorry for inconvenience. Try again later."
             />
-            {/* <ErrorUserConfirmationDialog
-                open={confirmErrorDialogOpen}
-                onClose={() => setConfirmErrorDialogOpen(false)}
-                message={errorMessage}
-            /> */}
             <Dialog
                 fullScreen
                 open={open}
@@ -157,7 +150,9 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                         backgroundColor: "primary.main",
                         display: "flex",
                         flexDirection: "row",
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
+                        borderBottomLeftRadius: "20px",
+                        borderBottomRightRadius: "20px"
                     }}
                 >
                     <Box sx={{ color: "#FFFFFF" }}>
@@ -196,7 +191,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                         >
                             <Card
                                 sx={{
-                                    // marginTop: 10,
                                     overflow: "visible",
                                     display: "flex",
                                     flexDirection: "column",
@@ -218,7 +212,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                         mt: -3,
                                         py: 2,
                                         px: 2,
-                                        // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                         backgroundColor: "primary.main",
                                         color: "#000000",
                                         borderRadius: "0.5rem",
@@ -370,16 +363,12 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                     defaultValue={userData.birthDate}
                                                     control={control}
                                                     sx={{ mb: 1 }}
-
                                                     render={({ field: { onChange, value } }) =>
                                                         <DatePicker
                                                             disableFuture
                                                             label="Birth date"
                                                             value={value}
                                                             onChange={onChange}
-                                                            // components={{
-                                                            //     OpenPickerIcon: CakeIcon
-                                                            // }}
                                                             renderInput={(params) =>
                                                                 <TextField
                                                                     {...params}
@@ -390,15 +379,8 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                                         width: "50%",
                                                                         minWidth: "200px"
                                                                     }}
+                                                                    // defaultValue={userData.birthDate}
                                                                     onKeyDown={onKeyDown}
-                                                                    // margin="normal"
-                                                                    // InputProps={{
-                                                                    //     startAdornment: (
-                                                                    //         <InputAdornment position="start">
-                                                                    //             <CakeIcon sx={{ color: "primary.main" }} />
-                                                                    //         </InputAdornment>
-                                                                    //     )
-                                                                    // }}
                                                                     error={!!errors.birthDate}
                                                                     helperText={errors.birthDate?.message}
                                                                 />
