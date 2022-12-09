@@ -53,8 +53,8 @@ export const ParticipantsPage = () => {
         await doGet('/api/v1/invitation?' + new URLSearchParams({ group: groupId }).toString())
             .then(response => {
                 if(response.ok) {
-                    setInviteLink(response.headers.get('Location').replace('http://localhost:8080/api/v1/invitation/', 'http://localhost:3000/invite'))
-                    setCopiedtext(response.headers.get('Location').replace('http://localhost:8080/api/v1/invitation/', 'http://localhost:3000/invite'))
+                    setInviteLink(response.headers.get('Location'))
+                    setCopiedtext(response.headers.get('Location'))
                     setInviteDialogOpen(true);
                 }
                

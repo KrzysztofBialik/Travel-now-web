@@ -125,11 +125,11 @@ export const RegisterPage = () => {
                 if (response.ok) {
                     setSuccessToastOpen(true);
                     setTimeout(() => {                     
-                        if(searchParams.get("redirectTo") !== null) {
-                            navigate("/login?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("redirectTo")}).toString());
-                        } else {
+                    //     if(searchParams.get("redirectTo") !== null) {
+                    //         navigate("/login?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("redirectTo")}).toString());
+                    //     } else {
                             navigate("/login");
-                        }
+                    //     }
                     }, 3000);
 
                 }
