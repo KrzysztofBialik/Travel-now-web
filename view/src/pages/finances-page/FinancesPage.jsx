@@ -1,74 +1,3 @@
-// const expensesData = [
-//     {
-//         id: 1,
-//         person: "Olisadebe",
-//         title: "Dinner",
-//         cost: 170.40,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 2,
-//         person: "Krzychu77",
-//         title: "Fruits",
-//         cost: 30.00,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-// ];
-
-// const settlementsData = [
-//     {
-//         id: 1,
-//         amount: 100.00,
-//         debtor: "Krzychu77",
-//         debtee: "Olisadebe",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 2,
-//         amount: 25.47,
-//         debtor: "Piterm33",
-//         debtee: "Krzychu77",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 3,
-//         amount: 50.55,
-//         debtor: "Olisadebe",
-//         debtee: "BoBa",
-//         status: "RESOLVED"
-//     },
-// ];
-// const settlementsData = [
-//     {
-//         debtee: "Krzychu77"
-//     }
-// ]
-
-// const balancesData = [
-//     {
-//         id: 1,
-//         user: "Boba",
-//         balance: 125.46
-//     },
-//     {
-//         id: 2,
-//         user: "Krzychu77",
-//         balance: -50.00
-//     },
-//     {
-//         id: 3,
-//         user: "Olisadebe",
-//         balance: 100
-//     },
-//     {
-//         id: 4,
-//         user: "Piterm33",
-//         balance: -125.40
-//     },
-// ]
-
 import { useState } from "react";
 import React, { useEffect } from "react";
 import { Box } from "@mui/material";
@@ -98,6 +27,7 @@ import { parseISO } from "date-fns/esm";
 export const URL = '/finances/:groupId';
 export const NAME = "Finances";
 
+
 export const FinancesPage = () => {
     const { groupId } = useParams();
     const [addExpenditureDialogOpen, setAddExpenditureDialogOpen] = useState(false);
@@ -118,16 +48,27 @@ export const FinancesPage = () => {
             .then(response => response.json())
             .then(response => {
                 const map = new Map(Object.entries(response));
-                var balanceFullData = []
-                map.forEach((balance, userId) => {
-                    var balanceUser = {}
-                    const person = userList.find(user => user.id === parseInt(userId)).fullName;
-                    balanceUser['id'] = userId;
-                    balanceUser['user'] = person;
-                    balanceUser['balance'] = balance;
-                    balanceFullData.push(balanceUser);
-                });
-                setBalanceData(balanceFullData);
+                var balanceMaxFullData = [];
+
+                for (var i = 0; i < userList.length; i++) {
+                    var balance = map.get((userList[i].id).toString());
+                    if (balance !== undefined) {
+                        var balanceUser = {}
+                        balanceUser['id'] = userList[i].id;
+                        balanceUser['user'] = userList[i].fullName;
+                        balanceUser['balance'] = balance;
+                        balanceMaxFullData.push(balanceUser);
+                    }
+                    else {
+                        var balanceUser = {}
+                        balanceUser['id'] = userList[i].id;
+                        balanceUser['user'] = userList[i].fullName;
+                        balanceUser['balance'] = 0.0;
+                        balanceMaxFullData.push(balanceUser);
+                    }
+                }
+                setBalanceData(balanceMaxFullData);
+
             })
             .catch(err => console.log('Request Failed', err));
     }
@@ -539,7 +480,10 @@ export const FinancesPage = () => {
                                                 :
                                                 <BalanceChart balancesData={balanceData} />
                                             } */}
-                                            <BalanceChart balancesData={balanceData} allUsers={allUsers} />
+                                            <BalanceChart
+                                                balancesData={balanceData}
+                                                allUsers={allUsers}
+                                            />
                                         </Box>
                                     </Box>
                                 </Card>
