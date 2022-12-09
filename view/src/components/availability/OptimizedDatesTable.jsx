@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Box } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import { Button } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
 import { gridClasses } from '@mui/x-data-grid';
@@ -116,6 +116,13 @@ export const OptimizedDatesTable = ({ optimizedDates, onSuccess, selectedSharedA
             />
 
             <DataGrid
+             components={{
+                NoRowsOverlay: () => (
+                  <Stack height="100%" alignItems="center" justifyContent="center">
+                    Not enough availabilities to satisfy group requirements : minimal number of days or minimal number of participants
+                  </Stack>
+                )
+             }}
                 sx={{
                     mb: "50px",
                     px: 2,
