@@ -37,14 +37,25 @@ export const MyAccommodationsPage = () => {
     const [loading, setLoading] = useState(true);
     const [accommodationsRaw, setAccommodationsRaw] = useState([]);
     const [currency, setCurrency] = useState("");
+    var isCoordinator = false;
+
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     });
 
     useEffect(() => {
+        getIsCoordinator();
         getCurrency();
     }, []);
+
+
+    const getIsCoordinator = async () => {
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+            .catch(err => console.log(err.message));
+        var body = await resp.json();
+        isCoordinator = body;
+    };
 
     const getCurrency = async () => {
         var resp = await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
@@ -62,48 +73,58 @@ export const MyAccommodationsPage = () => {
             .then(response => response.json())
             .then(json => { setAccommodationsRaw(json); return json })
             .then(accommodations => setMyAccommodations(accommodations.map(accommodation => (
-                <Grid container item xs={12} spacing={10} key={accommodation.accommodation.accommodationId}
-                    sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: 'flex-start',
-                        mb: 8,
-                    }}
-                >
-                    <Grid item xs={12} md={5}>
-                        <AccommodationCard accommodationData={accommodation.accommodation} canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))} selected={false} votes={accommodation.userVoted} onSuccess={() => getData()} />
+                accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId")) ?
+                    <Grid container item xs={12} spacing={10} key={accommodation.accommodation.accommodationId}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: 'flex-start',
+                            mb: 8,
+                        }}
+                    >
+                        <Grid item xs={12} md={5}>
+                            <AccommodationCard
+                                accommodationData={accommodation.accommodation}
+                                canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))}
+                                isCoordinator={isCoordinator}
+                                selected={false}
+                                votes={accommodation.userVoted}
+                                onSuccess={() => getData()}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={5} >
+                            {true ?
+                                <GoogleMap
+                                    zoom={14}
+                                    center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
+                                    mapContainerClassName="map-container"
+                                >
+                                    <MarkerF position={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }} />
+                                </GoogleMap>
+                                :
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        minHeight: "400px"
+                                        // border: "2px solid black"
+                                    }}
+                                >
+                                    <CircularProgress />
+                                </Box>}
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} md={5} >
-                        {true ?
-                            <GoogleMap
-                                zoom={14}
-                                center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
-                                mapContainerClassName="map-container"
-                            >
-                                <MarkerF position={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }} />
-                            </GoogleMap>
-                            :
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    minHeight: "400px"
-                                    // border: "2px solid black"
-                                }}
-                            >
-                                <CircularProgress />
-                            </Box>}
-                    </Grid>
-                </Grid>
+                    :
+                    <Box></Box>
             ))))
             .catch(err => console.log('Request Failed', err));
         setLoading(false);
-
     };
 
     useEffect(() => {
+
         getData();
 
     }, []);

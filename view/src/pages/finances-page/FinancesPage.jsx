@@ -248,6 +248,7 @@ export const FinancesPage = () => {
                 }}>
                 <NavigationNavbar
                     buttonsData={groupStage === 2 ? currentTripButtonsDataWithGroupId(groupId) : pastTripButtonsData}
+                    groupId={groupId}
                 />
                 <Box sx={{
                     pt: 10,
@@ -482,7 +483,6 @@ export const FinancesPage = () => {
                                             } */}
                                             <BalanceChart
                                                 balancesData={balanceData}
-                                                allUsers={allUsers}
                                             />
                                         </Box>
                                     </Box>

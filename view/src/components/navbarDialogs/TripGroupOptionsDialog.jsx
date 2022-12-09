@@ -345,7 +345,6 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     helperText={errors.startingLocation?.message}
                                                 />
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", alignContent: "center" }} >
-
                                                     <Controller
                                                         name='currency'
                                                         control={control}

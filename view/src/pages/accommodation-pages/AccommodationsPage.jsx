@@ -69,7 +69,8 @@ export const AccommodationsPage = () => {
                             canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
                             selected={false}
                             votes={accommodation.userVoted}
-                            canOpenTransport={tripGroup.selectedSharedAvailability} />
+                            onSuccess={() => updateData()}
+                        />
                     </Grid>)));
             })
             .catch(err => console.log('Request Failed', err));
@@ -86,7 +87,13 @@ export const AccommodationsPage = () => {
                 } else {
                     setSelectedAccommodation(
                         <Grid item xs={12} key={accommodation.accommodationId}>
-                            <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} onSuccess={() => getData()} />
+                            <AccommodationCard
+                                accommodationData={accommodation}
+                                canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
+                                selected={true}
+                                votes={[]}
+                                onSuccess={() => updateData()}
+                            />
                         </Grid>)
                     setCenter({ lat: accommodation.latitude, lng: accommodation.longitude })
                 }
@@ -100,7 +107,12 @@ export const AccommodationsPage = () => {
         isCorinator();
         getData();
         getChosenAccommodation();
-    }, [])
+    }, []);
+
+    const updateData = () => {
+        getChosenAccommodation();
+        getData();
+    }
 
     return (
         <Box

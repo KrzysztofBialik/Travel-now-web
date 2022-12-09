@@ -44,7 +44,8 @@ export const AddExpenditureDialog = ({ open, onClose, participants, groupId, onS
 
     useEffect(() => {
         getCurrency();
-    }, []);
+        console.log(currency)
+    }, [currency]);
 
     const defaultInputValues = {
         expenditureName: "",

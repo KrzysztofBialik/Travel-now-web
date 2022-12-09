@@ -45,7 +45,7 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const AccommodationCard = ({ accommodationData, canModify, selected, votes, onSuccess, showSelectButton = true }) => {
+export const AccommodationCard = ({ accommodationData, canModify, selected, votes, onSuccess }) => {
 
     const { groupId } = useParams();
     const [currencyLoading, setCurrencyLoading] = useState(false);
@@ -106,13 +106,17 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
     };
 
     const voteAction = () => {
-        setUserVote(!userVote)
+        console.log(userVote)
+
         if (userVote) {
             handleDeleteVoteAccommodation(() => setNumOfVotes(numOfVotes - 1));
         }
         else {
             handleVoteAccommodation(() => setNumOfVotes(numOfVotes + 1));
         }
+        setUserVote(!userVote)
+        console.log(userVote)
+        onSuccess();
     };
 
     const getSelectedSharedAvailability = async () => {
@@ -289,7 +293,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                                 }}
                             >
                                 {
-                                    showSelectButton ?
+                                    !selected ?
                                         <MenuItem onClick={() => selectAction()}>
                                             <DoneIcon sx={{ mr: "20px", color: "primary.main" }} />
                                             <Typography sx={{ color: "primary.main" }}>

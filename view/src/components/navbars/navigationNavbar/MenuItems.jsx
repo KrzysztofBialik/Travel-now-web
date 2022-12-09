@@ -4,7 +4,7 @@ import { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@mui/material';
 import { Box } from '@mui/material';
-
+import './NavigationNavbar.css';
 import { Dropdown } from './Dropdown';
 
 export const MenuItems = ({ items }) => {
@@ -28,11 +28,11 @@ export const MenuItems = ({ items }) => {
     }, [dropdown]);
 
     const onMouseEnter = () => {
-        window.innerWidth > 960 && setDropdown(true);
+        setDropdown(true);
     };
 
     const onMouseLeave = () => {
-        window.innerWidth > 960 && setDropdown(false);
+        setDropdown(false);
     };
 
     const closeDropdown = () => {
@@ -51,8 +51,6 @@ export const MenuItems = ({ items }) => {
                 <>
                     <Link to={items.link} className="nav-link">
                         <Button
-                            variant="outlined"
-                            aria-haspopup="menu"
                             aria-expanded={dropdown ? "true" : "false"}
                             onClick={() => setDropdown((prev) => !prev)}
                         >

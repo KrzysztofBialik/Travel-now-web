@@ -127,8 +127,6 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId }) => {
         }
 
         setDateError(
-            // isValid(value) ? "You have to provide valid date." : null
-            // value === null ? "You have to provide date." : null
             isBefore(value, today) ? "Date cannot be earlier than current day." : null
         )
         setDate(value);
@@ -216,14 +214,6 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId }) => {
                         <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
                     </IconButton>
                 </DialogTitle>
-                {/* <DialogTitle variant="h4" 
-                sx={{
-                     color: "#FFFFFF",
-                      backgroundColor: "primary.main" 
-                      }}
-                      >
-                        Create new day plan
-                        </DialogTitle> */}
                 <DialogContent>
                     <form
                         onSubmit={handleSubmit(() => handleCreateDayPlan(dayPlanName.value, values.date, values.icon))}

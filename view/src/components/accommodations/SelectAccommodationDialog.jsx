@@ -32,7 +32,7 @@ export const SelectAccommodationDialog = ({ open, onClose, groupId, accommodatio
         await doPut('/api/v1/trip-group/accommodation?' + new URLSearchParams({ groupId: groupId, accommodationId: accommodationId }).toString())
             .then(response => handleSuccessClose())
             .catch(err => {
-                setErrorToastOpen(true)
+                setErrorToastOpen(true);
                 setApiErrorMessage(err.message);
             });
     }

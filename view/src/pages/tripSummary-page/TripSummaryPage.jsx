@@ -137,7 +137,12 @@ export const TripSummaryPage = () => {
                 } else {
                     setSeletcedAccommodation(
                         <Grid item xs={12} md={4} key={accommodation.accommodationId}>
-                            <AccommodationCard accommodationData={accommodation} canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator} selected={true} votes={[]} showSelectButton={false} />
+                            <AccommodationCard
+                                accommodationData={accommodation}
+                                canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
+                                selected={true}
+                                votes={[]}
+                                showSelectButton={false} />
                         </Grid>)
                     setCenter({ lat: accommodation.latitude, lng: accommodation.longitude })
                 }
