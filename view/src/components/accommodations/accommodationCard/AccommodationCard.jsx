@@ -151,7 +151,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, isCo
             })
             .catch(err => {
                 setErrorToastOpen(true);
-                setApiErrorMessage(err.message)
+                setApiErrorMessage("There was an error. We could not save your vote")
             });
     };
 
