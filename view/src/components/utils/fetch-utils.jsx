@@ -1,4 +1,4 @@
-export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'http://51.132.58.149:8080' : '';
+export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'https://51.132.58.149:8443' : '';
 // export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : '';
 
 

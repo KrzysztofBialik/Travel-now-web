@@ -20,6 +20,9 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import ForkRightIcon from '@mui/icons-material/ForkRight';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import MapIcon from '@mui/icons-material/Map';
+import TimeToLeaveIcon from '@mui/icons-material/TimeToLeave';
+import FlightIcon from '@mui/icons-material/Flight';
+import CommuteIcon from '@mui/icons-material/Commute';
 import AirplanemodeActiveIcon from '@mui/icons-material/AirplanemodeActive';
 import "./TransportDialog.css";
 import { useEffect } from 'react';
@@ -30,6 +33,7 @@ import { LUFTHANSA_LOGO } from '../images/Images';
 import { doGet, doPost } from "../../components/utils/fetch-utils";
 import * as durationn from 'duration-fns'
 import { parseISO } from 'date-fns';
+import Flight from '@mui/icons-material/Flight';
 
 
 const center = { lat: 51.11006414847989, lng: 17.057531914047086 }
@@ -54,7 +58,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     // return <Zoom style={{ transitionDelay: "200ms" }} direction="up" ref={ref} {...props} />;
 });
 
-export const TransportDialog = ({ open, onClose, accommodationId }) => {
+export const TransportDialog = ({ open, onClose, accommodationId, currency }) => {
     const [activeStep, setActiveStep] = useState(0);
 
     const handleNext = () => {
@@ -181,10 +185,10 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
 
     const mapPlaneDurations = (travel) => {
         return ([
-            <ListItem sx={{ py: 0 }}>{parseTime(travel.flight[0].travelToAirportDuration)}</ListItem>,
-            <ListItem sx={{ py: 0 }}>{constructString(subtractDurations(subtractDurations(durationn.parse(travel.duration), durationn.parse(travel.flight[0].travelToAirportDuration)), durationn.parse(travel.flight[travel.flight.length - 1].travelToAccommodationDuration)))}</ListItem>,
-            <ListItem sx={{ py: 0 }}>{parseTime(travel.flight[travel.flight.length - 1].travelToAccommodationDuration)}</ListItem>,
-            <ListItem sx={{ py: 0 }}>{parseTime(travel.duration)}</ListItem>
+            <ListItem key={1} sx={{ py: 0 }}>{parseTime(travel.flight[0].travelToAirportDuration)}</ListItem>,
+            <ListItem key={2} sx={{ py: 0 }}>{constructString(subtractDurations(subtractDurations(durationn.parse(travel.duration), durationn.parse(travel.flight[0].travelToAirportDuration)), durationn.parse(travel.flight[travel.flight.length - 1].travelToAccommodationDuration)))}</ListItem>,
+            <ListItem key={3} sx={{ py: 0 }}>{parseTime(travel.flight[travel.flight.length - 1].travelToAccommodationDuration)}</ListItem>,
+            <ListItem key={4} sx={{ py: 0 }}>{parseTime(travel.duration)}</ListItem>
         ]
         )
     };
@@ -250,6 +254,7 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                 onClose={() => setAddTransportDialogOpen(false)}
                 accommodationId={accommodationId}
                 onSuccess={() => getData()}
+                currency={currency}
             />
             <Dialog
                 fullScreen
@@ -348,7 +353,7 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "primary.main",
                                             color: "#000000",
@@ -356,9 +361,12 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                             boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
                                         }}
                                     >
-                                        <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
-                                            Car
-                                        </Typography>
+                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                                            <TimeToLeaveIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                                                Car
+                                            </Typography>
+                                        </Box>
                                     </Box>
                                     <Box sx={{
                                         display: "flex",
@@ -423,11 +431,11 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                                                     }}
                                                                 >
                                                                     <List sx={{ width: '100%', maxWidth: 360 }}>
-                                                                        <ListItem>
+                                                                        <ListItem key={1}>
                                                                             <ForkRightIcon sx={{ color: "primary.main", backgroundColor: "#FFFFFF", fontSize: "48px", mr: "10px" }} />
                                                                             <ListItemText primary="Distance" secondary={Math.round(carTransportData[0].distanceInKm / 1000 * 100) / 100 + 'km'} />
                                                                         </ListItem>
-                                                                        <ListItem>
+                                                                        <ListItem key={2}>
                                                                             <AccessTimeIcon sx={{ color: "primary.main", backgroundColor: "#FFFFFF", fontSize: "48px", mr: "10px" }} />
                                                                             <ListItemText primary="Duration" secondary={parseTime(carTransportData[0].duration)} />
                                                                         </ListItem>
@@ -503,7 +511,7 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                             backgroundColor: "primary.main",
@@ -512,9 +520,12 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                             boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
                                         }}
                                     >
-                                        <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
-                                            Plane
-                                        </Typography>
+                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                                            <Flight sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                                                Plane
+                                            </Typography>
+                                        </Box>
                                     </Box>
                                     <Box sx={{
                                         display: "flex",
@@ -576,21 +587,21 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                                         </Box>
                                                         <Box sx={{ width: "100%", height: "200px", minHeight: "200px" }}>
                                                             <List>
-                                                                <ListItem>
+                                                                <ListItem key={1}>
                                                                     <ConnectingAirportsIcon sx={{ color: "primary.main" }} />
                                                                     <ListItemText
                                                                         sx={{ ml: "10px" }}
                                                                         primary={"2"}
                                                                     />
                                                                 </ListItem>
-                                                                <ListItem sx={{ mt: "-10px", display: "flex", alignItems: "flex-start" }}>
+                                                                <ListItem key={2} sx={{ mt: "-10px", display: "flex", alignItems: "flex-start" }}>
                                                                     <AccessTimeIcon sx={{ color: "primary.main" }} />
                                                                     <Box sx={{ display: "flex", flexDirection: "row", width: "90%", m: 0 }}>
                                                                         <List sx={{ width: "50%", p: 0 }}>
-                                                                            <ListItem sx={{ py: 0 }}>To the airport:</ListItem>
-                                                                            <ListItem sx={{ py: 0 }}>Flight with transfers:</ListItem>
-                                                                            <ListItem sx={{ py: 0 }}>From the airport:</ListItem>
-                                                                            <ListItem sx={{ py: 0 }}>Total:</ListItem>
+                                                                            <ListItem key={3} sx={{ py: 0 }}>To the airport:</ListItem>
+                                                                            <ListItem key={4} sx={{ py: 0 }}>Flight with transfers:</ListItem>
+                                                                            <ListItem key={5} sx={{ py: 0 }}>From the airport:</ListItem>
+                                                                            <ListItem key={6} sx={{ py: 0 }}>Total:</ListItem>
                                                                         </List>
                                                                         <List sx={{ width: "50%", p: 0 }}>
                                                                             {planeDurations}
@@ -638,7 +649,7 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                             backgroundColor: "primary.main",
@@ -651,9 +662,12 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                             alignItems: "center"
                                         }}
                                     >
-                                        <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
-                                            Other
-                                        </Typography>
+                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                                            <CommuteIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                                                Other
+                                            </Typography>
+                                        </Box>
                                         <Button
                                             variant="contained"
                                             sx={{
@@ -666,7 +680,6 @@ export const TransportDialog = ({ open, onClose, accommodationId }) => {
                                         >
                                             <AddIcon />
                                             Add
-                                            {/* <strong>Add</strong> */}
                                         </Button>
                                     </Box>
                                     <Box sx={{

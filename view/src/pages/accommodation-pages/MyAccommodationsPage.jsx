@@ -185,20 +185,25 @@ export const MyAccommodationsPage = () => {
                             </Grid>
                         </Grid>
                     </Box>
-                    {myAccommodations.length === 0 ?
-                        <Box sx={{
-                            minHeight: "400px",
-                            minWidth: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center"
-                        }}>
-                            <Typography sx={{ fontSize: "32px", color: "primary.main" }}>
-                                No accommodations added yet
-                            </Typography>
+                    {loading ?
+                        <Box sx={{ width: "400px", height: "400px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <CircularProgress size="60px" sx={{ color: "primary.main" }} />
                         </Box>
                         :
-                        myAccommodations
+                        myAccommodations.length === 0 ?
+                            <Box sx={{
+                                minHeight: "400px",
+                                minWidth: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}>
+                                <Typography sx={{ fontSize: "32px", color: "primary.main" }}>
+                                    No accommodations added yet
+                                </Typography>
+                            </Box>
+                            :
+                            myAccommodations
                     }
                 </Box >
             </Box >

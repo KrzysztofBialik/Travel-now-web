@@ -57,7 +57,7 @@ export const AccommodationsPage = () => {
     };
 
     const getData = async () => {
-        setLoading(false);
+        setLoading(true);
         doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(json => { setAccommodationsRaw(json); return json })
@@ -220,7 +220,20 @@ export const AccommodationsPage = () => {
                             </Typography>
                         </Grid>
                         {
-                            !loading ?
+                            loading ?
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        minHeight: "400px",
+                                        minWidth: "400px"
+                                    }}
+                                >
+                                    <CircularProgress fontSize="48px" sx={{ color: "primary.main" }} />
+                                </Box>
+                                :
                                 <Grid container item xs={12}
                                     spacing={5}
                                     sx={{
@@ -249,8 +262,6 @@ export const AccommodationsPage = () => {
                                                     alignItems: "center",
                                                     width: "100%",
                                                     minHeight: "400px",
-                                                    width: "100%"
-                                                    // border: "2px solid black"
                                                 }}
                                             >
                                                 <Typography sx={{ fontSize: "32px" }}>
@@ -259,19 +270,6 @@ export const AccommodationsPage = () => {
                                             </Box>
                                     }
                                 </Grid>
-                                :
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        minHeight: "400px"
-                                        // border: "2px solid black"
-                                    }}
-                                >
-                                    <CircularProgress sx={{ color: "primary.main" }} />
-                                </Box>
                         }
                     </Grid>
                 </Box>

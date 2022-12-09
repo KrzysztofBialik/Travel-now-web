@@ -17,7 +17,8 @@ import { FormControlLabel } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
-
+import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
+import SearchIcon from '@mui/icons-material/Search';
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { currentTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { pastTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
@@ -225,7 +226,7 @@ export const DayPlanPage = (props) => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "primary.main",
                                             color: "#000000",
@@ -237,9 +238,12 @@ export const DayPlanPage = (props) => {
                                             alignItems: "center"
                                         }}
                                     >
-                                        <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
-                                            Day plans
-                                        </Typography>
+                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                                            <FormatListBulletedIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                                                Day plans
+                                            </Typography>
+                                        </Box>
                                         <Button
                                             variant="contained"
                                             sx={{
@@ -317,7 +321,7 @@ export const DayPlanPage = (props) => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "primary.main",
                                             color: "#000000",
@@ -329,8 +333,9 @@ export const DayPlanPage = (props) => {
                                             alignItems: "center"
                                         }}
                                     >
-                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                            <Typography variant="h6" sx={{ color: "#FFFFFF", mr: 5 }}>
+                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                                            <SearchIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                                                 Detailed plan
                                             </Typography>
                                         </Box>

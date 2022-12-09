@@ -18,7 +18,7 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { OptimizedDatesTable } from "../../components/availability/OptimizedDatesTable";
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
-import { currentTripButtonsDataWithGroupId, futureTripButtonsDataWithGroupId} from "../../components/navbars/navigationNavbar/NavbarNavigationData";
+import { currentTripButtonsDataWithGroupId, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { doGet } from "../../components/utils/fetch-utils";
 import { useEffect } from 'react';
 import { useParams } from "react-router-dom";
@@ -40,7 +40,7 @@ const ExpandMore = styled((props) => {
 
 
 export const OptimizedDatesPage = () => {
-    const {groupId} = useParams();
+    const { groupId } = useParams();
     const [expanded, setExpanded] = useState(false);
     const [optimizedDates, setOptimizedDates] = useState([])
     const [selectedSharedAvailability, setSelectedSharedAvailability] = useState([]);
@@ -49,34 +49,36 @@ export const OptimizedDatesPage = () => {
     };
 
     const optimizeDates = async () => {
-        await doGet('/api/v1/availability/triggerAvailabilityGeneration?' + new URLSearchParams({groupId: groupId }).toString())
-        .catch(err => console.log('Request Failed', err));
+        await doGet('/api/v1/availability/triggerAvailabilityGeneration?' + new URLSearchParams({ groupId: groupId }).toString())
+            .catch(err => console.log('Request Failed', err));
         console.log("Im here")
         window.location.reload();
     }
 
 
     const getOptimizedDates = async () => {
-        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(response => setSelectedSharedAvailability(response.selectedSharedAvailability))
-        .catch(err => console.log('Request Failed', err));
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => setSelectedSharedAvailability(response.selectedSharedAvailability))
+            .catch(err => console.log('Request Failed', err));
 
-        await doGet('/api/v1/shared-availability/list?' + new URLSearchParams({groupId: groupId }).toString())
-        .then(response => response.json())
-        .then(response => {
-            setOptimizedDates(response.map(optimizedAvailability => ({sharedGroupAvailability: optimizedAvailability.sharedGroupAvailabilityId, startDate: parseISO(optimizedAvailability.dateFrom),
-                 endDate: parseISO(optimizedAvailability.dateTo), days: optimizedAvailability.numberOfDays ,participants: optimizedAvailability.usersList.length})));
-        })
-        .catch(err => console.log('Request Failed', err));
-        
+        await doGet('/api/v1/shared-availability/list?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                setOptimizedDates(response.map(optimizedAvailability => ({
+                    sharedGroupAvailability: optimizedAvailability.sharedGroupAvailabilityId, startDate: parseISO(optimizedAvailability.dateFrom),
+                    endDate: parseISO(optimizedAvailability.dateTo), days: optimizedAvailability.numberOfDays, participants: optimizedAvailability.usersList.length
+                })));
+            })
+            .catch(err => console.log('Request Failed', err));
+
     }
 
     useEffect(() => {
         getOptimizedDates();
-      }, [])
+    }, [])
 
-    
+
     function customDayContent(day) {
         var fontWeight = 100;
         var color = "#000000";
@@ -97,9 +99,9 @@ export const OptimizedDatesPage = () => {
             position: 'relative',
             minHeight: '100%'
         }}>
-            <NavigationNavbar 
-            buttonsData={futureTripButtonsDataWithGroupId(groupId)}
-            groupId={groupId}
+            <NavigationNavbar
+                buttonsData={futureTripButtonsDataWithGroupId(groupId)}
+                groupId={groupId}
             />
             <Box sx={{
                 py: 10,
@@ -110,7 +112,7 @@ export const OptimizedDatesPage = () => {
                 minWidth: "1000px"
             }}
             >
-                <Card
+                {/* <Card
                     sx={{
                         height: "100%", width: "80%", minWidth: "1000px", borderRadius: "10px"
                     }}
@@ -152,7 +154,65 @@ export const OptimizedDatesPage = () => {
                             </Box>
                         }
                     >
-                    </CardHeader>
+                    </CardHeader> */}
+                <Card
+                    sx={{
+                        minHeight: "500px",
+                        minWidth: "500px",
+                        overflow: "visible",
+                        display: "flex",
+                        flexDirection: "column",
+                        position: "relative",
+                        overflowWrap: "break-word",
+                        backgroundClip: "border-box",
+                        borderRadius: "10px",
+                        boxShadow: "rgb(0 0 0 / 10 %) 0rem 0.25rem 0.375rem - 0.0625rem, rgb(0 0 0 / 6 %) 0rem 0.125rem 0.25rem -0.0625rem"
+                    }}
+                    elevation={16}
+                >
+                    <Box
+                        sx={{
+                            mx: 2,
+                            mt: -3,
+                            py: 2,
+                            px: 2,
+                            // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
+                            backgroundColor: "secondary.main",
+                            color: "#000000",
+                            borderRadius: "0.5rem",
+                            boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
+                        }}
+                    >
+                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                            <TipsAndUpdatesOutlinedIcon sx={{ fontSize: "32px" }} />
+                            <Box sx={{ minWidth: "250px" }}>
+                                <Typography sx={{ fontSize: "32px" }}>
+                                    Optimized dates
+                                </Typography>
+                            </Box>
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                width: "100%",
+                                justifyContent: "flex-end"
+                            }}>
+                                <Box>
+                                    <Button variant="contained"
+                                        sx={{
+                                            backgroundColor: "primary.main",
+                                            color: "#FFFFFF",
+                                            borderRadius: "20px",
+                                            mr: "20px"
+                                        }}
+                                        onClick={optimizeDates}
+                                    >
+                                        Optimize dates
+                                    </Button>
+                                </Box>
+                            </Box>
+                        </Box>
+                    </Box>
                     <CardContent sx={{ display: "flex", justifyContent: "center", flexDirection: "row" }}>
                         <Box sx={{
                             display: "flex",
@@ -218,10 +278,10 @@ export const OptimizedDatesPage = () => {
                     </CardActions>
                     <Collapse in={expanded} timeout="auto" unmountOnExit>
                         <CardContent>
-                            <OptimizedDatesTable 
-                            optimizedDates={optimizedDates} 
-                            selectedSharedAvailability={selectedSharedAvailability}
-                            onSuccess={() => getOptimizedDates()}
+                            <OptimizedDatesTable
+                                optimizedDates={optimizedDates}
+                                selectedSharedAvailability={selectedSharedAvailability}
+                                onSuccess={() => getOptimizedDates()}
                             />
                         </CardContent>
                     </Collapse>

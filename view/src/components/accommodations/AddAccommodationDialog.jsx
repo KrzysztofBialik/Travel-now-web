@@ -198,7 +198,7 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
                         />
 
                         <TextField
-                            sx={{ minWidth: "150px", width: "150px" }}
+                            sx={{ minWidth: "180px", width: "180px" }}
                             type="number"
                             autoFocus
                             margin="normal"

@@ -160,13 +160,12 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId }) => {
                 setSuccessToastOpen(response.ok);
                 close();
                 onSuccess();
-                setIsCreating(false);
             })
             .catch(err => {
-                setIsCreating(false);
                 setErrorToastOpen(true);
                 setCreationError(err.message)
             });
+        setIsCreating(false);
     };
 
     const close = () => {

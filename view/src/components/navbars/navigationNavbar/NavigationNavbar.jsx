@@ -247,6 +247,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                                             ]
                                             :
                                             [<MenuItem
+                                                key={1}
                                                 onClick={handleLeaveGroup}
                                             >
                                                 <ExitToAppIcon sx={{ color: "error.main", mr: 1 }} />

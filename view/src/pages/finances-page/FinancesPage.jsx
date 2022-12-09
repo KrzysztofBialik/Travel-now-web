@@ -1,32 +1,3 @@
-import { useState } from "react";
-import React, { useEffect } from "react";
-import { Box } from "@mui/material";
-import { List } from "@mui/material";
-import { ListItem } from "@mui/material";
-import { Card } from "@mui/material";
-import { Grid } from "@mui/material";
-import { Typography } from "@mui/material";
-import { Divider } from "@mui/material";
-import { Button } from "@mui/material";
-import AddIcon from '@mui/icons-material/Add';
-import ReceiptIcon from '@mui/icons-material/Receipt';
-import SyncAltIcon from '@mui/icons-material/SyncAlt';
-import HandshakeIcon from '@mui/icons-material/Handshake';
-import { useParams } from "react-router-dom";
-import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
-import { currentTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
-import { pastTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
-import { ExpenditureCard } from "../../components/finances/ExpenditureCard";
-import { AddExpenditureDialog } from "../../components/finances/AddExpenditureDialog";
-import { SettlementCard } from "../../components/finances/SettlementCard";
-import { BalanceChart } from "../../components/finances/BalanceChart";
-import { doGet } from "../../components/utils/fetch-utils";
-import { parseISO } from "date-fns/esm";
-
-
-export const URL = '/finances/:groupId';
-export const NAME = "Finances";
-
 // const expensesData = [
 //     {
 //         id: 1,
@@ -43,70 +14,6 @@ export const NAME = "Finances";
 //         cost: 30.00,
 //         date: new Date(2022, 11, 21),
 //         debtors: false
-//     },
-//     {
-//         id: 3,
-//         person: "Piterm33",
-//         title: "Museum tickets",
-//         cost: 200.00,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 4,
-//         person: "BoBa",
-//         title: "Kebab",
-//         cost: 60.89,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 5,
-//         person: "Krzychu77",
-//         title: "Souvenirs",
-//         cost: 50.20,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-//     {
-//         id: 6,
-//         person: "Olisadebe",
-//         title: "Beers",
-//         cost: 78.45,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 7,
-//         person: "Krzychu77",
-//         title: "Museum tickets",
-//         cost: 200.00,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-//     {
-//         id: 8,
-//         person: "BoBa",
-//         title: "Kebab",
-//         cost: 60.89,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
-//     },
-//     {
-//         id: 9,
-//         person: "Krzychu77",
-//         title: "Souvenirs",
-//         cost: 50.20,
-//         date: new Date(2022, 11, 21),
-//         debtors: false
-//     },
-//     {
-//         id: 10,
-//         person: "Olisadebe",
-//         title: "Beers",
-//         cost: 78.45,
-//         date: new Date(2022, 11, 21),
-//         debtors: true
 //     },
 // ];
 
@@ -132,69 +39,6 @@ export const NAME = "Finances";
 //         debtee: "BoBa",
 //         status: "RESOLVED"
 //     },
-//     {
-//         id: 4,
-//         amount: 61.32,
-//         debtor: "Krzychu77",
-//         debtee: "BoBa",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 5,
-//         amount: 25.25,
-//         debtor: "Piterm33",
-//         debtee: "BoBa",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 6,
-//         amount: 40.00,
-//         debtor: "BoBa",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 7,
-//         amount: 250.50,
-//         debtor: "Piterm33",
-//         debtee: "Olisadebe",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 8,
-//         amount: 3.35,
-//         debtor: "BoBa",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 9,
-//         amount: 4.50,
-//         debtor: "Olisadebe",
-//         debtee: "Piterm33",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 10,
-//         amount: 25.68,
-//         debtor: "Piterm33",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     },
-//     {
-//         id: 11,
-//         amount: 21.37,
-//         debtor: "BoBa",
-//         debtee: "Piterm33",
-//         status: "PENDING"
-//     },
-//     {
-//         id: 12,
-//         amount: 4.20,
-//         debtor: "Krzychu77",
-//         debtee: "Olisadebe",
-//         status: "RESOLVED"
-//     }
 // ];
 // const settlementsData = [
 //     {
@@ -223,107 +67,36 @@ export const NAME = "Finances";
 //         user: "Piterm33",
 //         balance: -125.40
 //     },
-//     {
-//         id: 5,
-//         user: "Boba",
-//         balance: -50.06
-//     },
-//     {
-//         id: 6,
-//         user: "Krzychu77",
-//         balance: 0
-//     },
-//     {
-//         id: 7,
-//         user: "Olisadebe",
-//         balance: 240
-//     },
-//     {
-//         id: 8,
-//         user: "Piterm33",
-//         balance: -150
-//     },
-//     {
-//         id: 9,
-//         user: "Boba",
-//         balance: -300
-//     },
-//     {
-//         id: 10,
-//         user: "Krzychu77",
-//         balance: 202
-//     },
-//     {
-//         id: 11,
-//         user: "Olisadebe",
-//         balance: -12.54
-//     },
-//     {
-//         id: 12,
-//         user: "Piterm33",
-//         balance: 10.54
-//     },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// },
-// {
-//     id: 11,
-//     user: "Olisadebe",
-//     balance: -12.54
-// },
-// {
-//     id: 12,
-//     user: "Piterm33",
-//     balance: 10.54
-// }
 // ]
+
+import { useState } from "react";
+import React, { useEffect } from "react";
+import { Box } from "@mui/material";
+import { List } from "@mui/material";
+import { ListItem } from "@mui/material";
+import { Card } from "@mui/material";
+import { Grid } from "@mui/material";
+import { Typography } from "@mui/material";
+import { Divider } from "@mui/material";
+import { Button } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import SyncAltIcon from '@mui/icons-material/SyncAlt';
+import HandshakeIcon from '@mui/icons-material/Handshake';
+import { useParams } from "react-router-dom";
+import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
+import { currentTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
+import { pastTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
+import { ExpenditureCard } from "../../components/finances/ExpenditureCard";
+import { AddExpenditureDialog } from "../../components/finances/AddExpenditureDialog";
+import { SettlementCard } from "../../components/finances/SettlementCard";
+import { BalanceChart } from "../../components/finances/BalanceChart";
+import { doGet } from "../../components/utils/fetch-utils";
+import { parseISO } from "date-fns/esm";
+
+
+export const URL = '/finances/:groupId';
+export const NAME = "Finances";
 
 export const FinancesPage = () => {
     const { groupId } = useParams();
@@ -354,11 +127,7 @@ export const FinancesPage = () => {
                     balanceUser['balance'] = balance;
                     balanceFullData.push(balanceUser);
                 });
-
-                console.log("BALANCE DATA");
-                console.log(balanceFullData);
                 setBalanceData(balanceFullData);
-
             })
             .catch(err => console.log('Request Failed', err));
     }
@@ -379,8 +148,6 @@ export const FinancesPage = () => {
                 getBalanceData(person);
             })
             .catch(err => console.log('Request Failed', err));
-
-
     }
 
     const getSettlementsData = async (userList) => {
@@ -398,14 +165,8 @@ export const FinancesPage = () => {
                     })
                 });
                 setSettlementsData(set);
-                console.log("125412515151521")
-                console.log(set)
                 setOtherSettlements(set.filter(settlement =>
-                    // console.log("12431256364326");
-                    // console.log(settlementsData)
                     settlement.debteeId !== parseInt(localStorage.getItem("userId")) && settlement.debtorId !== parseInt(localStorage.getItem("userId"))).map(settlement => {
-                        console.log("Settlement 1");
-                        console.log(set)
                         return (
                             <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
                                 <SettlementCard
@@ -422,8 +183,6 @@ export const FinancesPage = () => {
                     }));
                 setMySettlements(set.filter(settlement =>
                     settlement.debtorId === parseInt(localStorage.getItem("userId")) || settlement.debteeId === parseInt(localStorage.getItem("userId"))).map(settlement => {
-                        console.log("My Settlement");
-                        console.log(settlement)
                         return (
                             <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
                                 <SettlementCard
@@ -444,8 +203,6 @@ export const FinancesPage = () => {
         await doGet('/api/v1/finance-optimizer?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(response => {
-                console.log("Expenditureeees");
-                console.log(response);
                 setExpendituresData(response.map(expenditure => {
                     const person = userList.find(user => user.id === expenditure.creatorId).fullName;
                     const isDebtor = expenditure.expenseDebtors.some(debtor => debtor === parseInt(localStorage.getItem("userId")))
@@ -459,7 +216,6 @@ export const FinancesPage = () => {
                 }))
             })
             .catch(err => console.log('Request Failed', err));
-
     }
 
 
@@ -503,10 +259,6 @@ export const FinancesPage = () => {
             )));
         }
         else {
-            console.log("here?")
-            console.log(currentUser)
-            console.log(expendituresData)
-
             setAllExpenditures(expendituresData.filter(expenditure => expenditure.personId === currentUser.userId).map(expenditure => (
                 <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
                     <ExpenditureCard expenditureData={expenditure} />
@@ -604,7 +356,7 @@ export const FinancesPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "primary.main",
                                             color: "#000000",
@@ -617,8 +369,8 @@ export const FinancesPage = () => {
                                         }}
                                     >
                                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
-                                            <ReceiptIcon sx={{ color: "#FFFFFF" }} />
-                                            <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
+                                            <ReceiptIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                                                 Expenditures
                                             </Typography>
                                         </Box>
@@ -655,7 +407,7 @@ export const FinancesPage = () => {
                                             <Button
                                                 sx={{
                                                     borderRadius: "20px",
-                                                    fontSize: "10px",
+                                                    fontSize: "15px",
                                                     mr: 2,
                                                     color: myExpendituresButtonOn ? "#FFFFFF" : "primary.main",
                                                     backgroundColor: myExpendituresButtonOn ? "primary.main" : "#FFFFFF",
@@ -671,7 +423,7 @@ export const FinancesPage = () => {
                                             <Button
                                                 sx={{
                                                     borderRadius: "20px",
-                                                    fontSize: "10px",
+                                                    fontSize: "15px",
                                                     color: myContributionsButtonOn ? "#FFFFFF" : "primary.main",
                                                     backgroundColor: myContributionsButtonOn ? "primary.main" : "#FFFFFF",
                                                     "&:hover": {
@@ -695,9 +447,11 @@ export const FinancesPage = () => {
                                             }}
                                         >
                                             {allExpenditures.length === 0 ?
-                                                <Typography sx={{ color: "primary.main", fontSize: "32px" }}>
-                                                    Add expenditures
-                                                </Typography>
+                                                <Box sx={{ width: "100%", minHeight: "400px", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                                    <Typography sx={{ color: "primary.main", fontSize: "32px" }}>
+                                                        Add expenditures
+                                                    </Typography>
+                                                </Box>
                                                 :
                                                 <>
                                                     <List
@@ -740,7 +494,7 @@ export const FinancesPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "primary.main",
                                             color: "#000000",
@@ -753,8 +507,8 @@ export const FinancesPage = () => {
                                         }}
                                     >
                                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
-                                            <SyncAltIcon sx={{ color: "#FFFFFF" }} />
-                                            <Typography variant="h6" sx={{ color: "#FFFFFF", mr: 5 }}>
+                                            <SyncAltIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                                                 Balances
                                             </Typography>
                                         </Box>
@@ -785,7 +539,7 @@ export const FinancesPage = () => {
                                                 :
                                                 <BalanceChart balancesData={balanceData} />
                                             } */}
-                                            <BalanceChart balancesData={balanceData} />
+                                            <BalanceChart balancesData={balanceData} allUsers={allUsers} />
                                         </Box>
                                     </Box>
                                 </Card>
@@ -813,7 +567,7 @@ export const FinancesPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             backgroundColor: "secondary.main",
                                             color: "#FFFFFF",
@@ -824,8 +578,8 @@ export const FinancesPage = () => {
                                         }}
                                     >
                                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
-                                            <HandshakeIcon sx={{ color: "#000000" }} />
-                                            <Typography variant="h6" sx={{ color: "#000000", mr: 5 }}>
+                                            <HandshakeIcon sx={{ color: "#000000", fontSize: "32px" }} />
+                                            <Typography variant="h6" sx={{ color: "#000000", fontSize: "32px" }}>
                                                 Settlements
                                             </Typography>
                                         </Box>

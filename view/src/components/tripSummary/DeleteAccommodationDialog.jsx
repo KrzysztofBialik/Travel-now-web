@@ -44,9 +44,16 @@ export const DeleteAccommodationDialog = ({ open, onClose, groupId, onSuccess })
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        minWidth: "400px",
+                        maxWidth: "400px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Delete</DialogTitle>
-                <DialogContent>
+                <DialogTitle sx={{ pb: 0 }}>Delete</DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
                     <DialogContentText sx={{ mb: "10px" }}>
                         If you confirm, this accommodation will no longer be selected.
                     </DialogContentText>
@@ -54,14 +61,14 @@ export const DeleteAccommodationDialog = ({ open, onClose, groupId, onSuccess })
                         <Button
                             variant="outlined"
                             onClick={onClose}
-                            sx={{ borderRadius: "20px" }}
+                            sx={{ borderRadius: "20px", fontSize: "12px" }}
                         >
                             Cancel
                         </Button>
                         <Button
                             variant="contained"
                             onClick={handleDeletion}
-                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
                         >
                             Confirm
                         </Button>

@@ -13,7 +13,11 @@ import 'react-date-range/dist/theme/default.css';
 import { InputAdornment } from '@mui/material';
 import CalendarMonthOutlinedIcon from '@mui/icons-material/CalendarMonthOutlined';
 import format from 'date-fns/format';
-
+import HomeIcon from '@mui/icons-material/Home';
+import EventIcon from '@mui/icons-material/Event';
+import FlagIcon from '@mui/icons-material/Flag';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import Groups2Icon from '@mui/icons-material/Groups2';
 import { AccommodationCard } from '../../components/accommodations/accommodationCard/AccommodationCard';
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
 import { ParticipantsTable } from '../../components/tripSummary/ParticipantsTable';
@@ -40,6 +44,7 @@ import { parseISO } from 'date-fns/esm';
 import { formatISO, parse, parseJSON } from 'date-fns';
 import { SuccessToast } from '../../components/toasts/SuccessToast';
 import { ErrorToast } from '../../components/toasts/ErrorToast';
+import Groups2 from '@mui/icons-material/Groups2';
 
 export const URL = '/tripSummary/:groupId';
 export const NAME = "TripSummary";
@@ -296,7 +301,7 @@ export const TripSummaryPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                             backgroundColor: "primary.main",
@@ -309,9 +314,12 @@ export const TripSummaryPage = () => {
                                             alignItems: "center"
                                         }}
                                     >
-                                        <Typography variant="h6" sx={{ color: "#FFFFFF" }} >
-                                            Dates of the trip
-                                        </Typography>
+                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                                            <EventIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                                                Dates of the trip
+                                            </Typography>
+                                        </Box>
                                         {(isPlanningStage && isCordinator) ?
                                             <IconButton sx={{ p: 0 }} onClick={deleteDatesAction}>
                                                 <DeleteIcon
@@ -414,7 +422,7 @@ export const TripSummaryPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                             backgroundColor: "primary.main",
@@ -423,9 +431,12 @@ export const TripSummaryPage = () => {
                                             boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
                                         }}
                                     >
-                                        <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
-                                            Starting location
-                                        </Typography>
+                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                                            <FlagIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                                                Starting location
+                                            </Typography>
+                                        </Box>
                                     </Box>
                                     <Box sx={{
                                         display: "flex",
@@ -477,7 +488,7 @@ export const TripSummaryPage = () => {
                                         sx={{
                                             mx: 2,
                                             mt: -3,
-                                            py: 3,
+                                            py: 2,
                                             px: 2,
                                             // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                             backgroundColor: "primary.main",
@@ -490,9 +501,12 @@ export const TripSummaryPage = () => {
                                             alignItems: "center"
                                         }}
                                     >
-                                        <Typography variant="h6" sx={{ color: "#FFFFFF" }} >
-                                            Accommodation
-                                        </Typography>
+                                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                                            <HomeIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                            <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                                                Accommodation
+                                            </Typography>
+                                        </Box>
                                         {(isPlanningStage && isCordinator) ?
                                             <IconButton sx={{ p: 0 }} onClick={deleteAccommodationAction}>
                                                 <DeleteIcon sx={{ color: "error.main", fontSize: "32px" }}></DeleteIcon>
@@ -603,7 +617,7 @@ export const TripSummaryPage = () => {
                                     sx={{
                                         mx: 2,
                                         mt: -3,
-                                        py: 3,
+                                        py: 2,
                                         px: 2,
                                         // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                         backgroundColor: "primary.main",
@@ -612,9 +626,12 @@ export const TripSummaryPage = () => {
                                         boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
                                     }}
                                 >
-                                    <Typography variant="h6" sx={{ color: "#FFFFFF" }}>
-                                        Participants
-                                    </Typography>
+                                    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
+                                        <Groups2 sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                                        <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                                            Participants
+                                        </Typography>
+                                    </Box>
                                 </Box>
                                 <Box sx={{
                                     display: "flex",
@@ -676,7 +693,7 @@ export const TripSummaryPage = () => {
                                             fontSize: "28px",
                                             color: "#FFFFFF",
                                             backgroundColor: "primary.main",
-                                            borderRadius: "20px",
+                                            borderRadius: "40px",
                                             '&:hover': { backgroundColor: "primary.light" }
                                         }}
                                         onClick={startTrip}>

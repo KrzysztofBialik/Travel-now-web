@@ -199,16 +199,7 @@ export const MyAccommodationVotesPage = () => {
                         </Typography>
                     </Box>
                     :
-                    <Box sx={{
-                        minHeight: "400px",
-                        minWidth: "100%",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center"
-                    }}>
-                        {myVotes}
-                    </Box>
-
+                    myVotes
                 }
             </Box >
         </Box >

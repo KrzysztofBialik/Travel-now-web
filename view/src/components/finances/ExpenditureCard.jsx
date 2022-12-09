@@ -29,7 +29,7 @@ export const ExpenditureCard = ({ expenditureData }) => {
     const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
 
     const allContributors = expenditureData.contributors.map(ed => (
-        <TableRow>
+        <TableRow key={ed.name}>
             <TableCell align="left" sx={{ fontSize: "18px" }}>{ed.name}</TableCell>
         </TableRow>
     )
@@ -42,7 +42,6 @@ export const ExpenditureCard = ({ expenditureData }) => {
             .then(response => {
                 var currency = response.currency;
                 setCurrency(currency);
-                console.log(currency);
             })
             .then(setCurrencyLoading(false))
             .catch(err => console.log('Request Failed', err));
@@ -126,8 +125,8 @@ export const ExpenditureCard = ({ expenditureData }) => {
                         {currency}
                     </Typography>
                 </Box>
-                <Box sx={{ width: "100%", backgroundColor: "primary.main", mt: 2 }}>
-                    <Typography sx={{ fontSize: "24px", mx: 1, color: "#FFFFFF" }}>
+                <Box sx={{ width: "100%", backgroundColor: "#dee2e6", mt: 2 }}>
+                    <Typography sx={{ fontSize: "24px", mx: 1, color: "#000000" }}>
                         Contributors
                     </Typography>
                 </Box>

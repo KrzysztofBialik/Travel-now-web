@@ -21,23 +21,17 @@ export const DeleteAvailabilityDialog = ({ open, onClose, groupId, availabilityI
     const handleSuccessClose = async () => {
         await deleteAvailability();
         onClose();
+        handleSuccessDeletion();
     };
 
     const handleSuccessDeletion = async () => {
         setSuccessToastOpen(true);
         onSuccess();
-    }
-
-    const handleErrorClose = () => {
-        setErrorToastOpen(true);
-        onClose();
     };
 
     const deleteAvailability = async () => {
-            await doDelete('/api/v1/availability/user?' + new URLSearchParams({availabilityId: availabilityId, groupId: groupId}).toString())
-            .then(response => handleSuccessDeletion())
+        await doDelete('/api/v1/availability/user?' + new URLSearchParams({ availabilityId: availabilityId, groupId: groupId }).toString())
             .catch(err => {
-                setApiErrorToastOpen(true)
                 setApiErrorMessage(err.message);
             });
     }
@@ -54,32 +48,39 @@ export const DeleteAvailabilityDialog = ({ open, onClose, groupId, availabilityI
                 onClose={() => setErrorToastOpen(false)}
                 message="Ups! Something went wrong. Try again."
             />
-             <DeletingPermissionApiErrorToast 
-             open={apiErrorToastOpen} 
-             onClose={() => {setApiErrorToastOpen(false)}} 
-             message={apiErrorMessage} />
+            <DeletingPermissionApiErrorToast
+                open={apiErrorToastOpen}
+                onClose={() => { setApiErrorToastOpen(false) }}
+                message={apiErrorMessage} />
 
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        minWidth: "400px",
+                        maxWidth: "400px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Delete</DialogTitle>
-                <DialogContent>
+                <DialogTitle sx={{ pb: 0 }}>Delete</DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
                     <DialogContentText sx={{ mb: "10px" }}>
                         If you confirm, dates will no longer be selected.
                     </DialogContentText>
                     <DialogActions>
                         <Button
                             variant="outlined"
-                            onClick={handleErrorClose}
-                            sx={{ borderRadius: "20px" }}
+                            onClick={onClose}
+                            sx={{ borderRadius: "20px", fontSize: "12px" }}
                         >
                             Cancel
                         </Button>
                         <Button
                             variant="contained"
                             onClick={handleSuccessClose}
-                            sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
                         >
                             Confirm
                         </Button>

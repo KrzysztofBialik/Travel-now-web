@@ -134,8 +134,8 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 var currency = response.currency;
                 setCurrency(currency);
             })
-            .then(setCurrencyLoading(false))
             .catch(err => console.log('Request Failed', err));
+        setCurrencyLoading(false);
     };
 
     const handleVoteAccommodation = async (success) => {
@@ -195,6 +195,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, vote
                 open={transportDialogOpen}
                 onClose={() => { setTransportDialogOpen(false) }}
                 accommodationId={accommodationData.accommodationId}
+                currency={currency}
             />
             <Card
                 sx={{ height: "100%", borderRadius: "10px", width: "100%", minWidth: "300px" }}
