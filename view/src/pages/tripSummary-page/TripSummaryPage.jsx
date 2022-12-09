@@ -57,6 +57,7 @@ export const TripSummaryPage = () => {
     const { groupId } = useParams();
     const [isCordinator, setIsCordinator] = useState(false);;
     const [isPlanningStage, setIsPlanningStage] = useState(false);
+    const [isTripStage, setIsTripStage] = useState(false);
     const [usersData, setUsersData] = useState([]);
     const [groupCoordinators, setGroupCoordinators] = useState([]);
     const [deleteDatesDialogOpen, setDeleteDatesDialogOpen] = useState(false);
@@ -169,6 +170,7 @@ export const TripSummaryPage = () => {
             .then(response => {
                 setTripGroup(response);
                 setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
+                setIsTripStage(response.groupStage === 'TRIP_STAGE');
             })
             .catch(err => console.log('Request Failed', err));
     };
@@ -179,6 +181,7 @@ export const TripSummaryPage = () => {
             .then(response => {
                 setSharedAvailability(response);
                 setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
+                setIsTripStage(response.groupStage === 'TRIP_STAGE');
             })
             .catch(err => console.log('Request Failed', err));
     };
@@ -692,7 +695,7 @@ export const TripSummaryPage = () => {
                                 alignItems: "center",
                                 justifyContent: "space-around"
                             }}>
-                                {(isPlanningStage && isCordinator) ?
+                                {((isPlanningStage || isTripStage) && isCordinator) ?
                                     <Button variant="contained"
                                         sx={{
                                             fontSize: "28px",
@@ -702,7 +705,7 @@ export const TripSummaryPage = () => {
                                             '&:hover': { backgroundColor: "primary.light" }
                                         }}
                                         onClick={startTrip}>
-                                        Begin trip
+                                        {isPlanningStage ? 'Begin trip' : 'End trip'}
 
                                     </Button>
                                     :
