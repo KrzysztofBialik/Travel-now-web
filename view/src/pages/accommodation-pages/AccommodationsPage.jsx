@@ -41,17 +41,16 @@ export const AccommodationsPage = () => {
     });
 
     useEffect(() => {
-        isCorinator()
-            .then(() => getTripData())
-            .then(() => getChosenAccommodation())
-            .then(() => getData());
+        isCorinator();
+        getTripData();
+        getChosenAccommodation();
     }, []);
 
 
     const updateData = () => {
-        getTripData()
-            .then(() => getChosenAccommodation())
-            .then(() => getData());
+        isCorinator();
+        getTripData();
+        getChosenAccommodation();
     };
 
     const isCorinator = async () => {
@@ -66,6 +65,8 @@ export const AccommodationsPage = () => {
             .then(response => response.json())
             .then(response => {
                 setTripGroup(response);
+                getData(response);
+                return response;
             })
             .catch(err => console.log('Request Failed', err));
     };
@@ -97,14 +98,18 @@ export const AccommodationsPage = () => {
             .catch(err => console.log('Request Failed', err));
     };
 
-    const getData = async () => {
+    const getData = async (res) => {
         setLoading(true);
         doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(json => { setAccommodationsRaw(json); return json })
             .then(accommodations => {
-                setAllAccommodations(accommodations.map((accommodation) => (
-                    tripGroup.selectedAccommodationId !== accommodation.accommodation.accommodationId ?
+                console.log("Selected accommodation id")
+                console.log(res.selectedAccommodationId)
+                console.log(accommodations)
+                setAllAccommodations(accommodations.map((accommodation) => 
+                    (
+                     res.selectedAccommodationId !== accommodation.accommodation.accommodationId ?
                         <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
                             <AccommodationCard
                                 accommodationData={accommodation.accommodation}
@@ -117,7 +122,7 @@ export const AccommodationsPage = () => {
                         </Grid>
                         :
                         <Box />
-                )));
+            )));
             })
             .catch(err => console.log('Request Failed', err));
         setLoading(false);
