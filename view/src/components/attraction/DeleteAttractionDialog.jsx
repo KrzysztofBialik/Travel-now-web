@@ -18,7 +18,7 @@ export const DeleteAttractionDialog = ({ open, onClose, dayPlanId, attractionId,
     const [deletionError, setDeletionError] = useState("Ups! Something went wrong. Try again.");
 
     const handleDeleteAttraction = async () => {
-        await doDelete('/api/v1/attraction?' + new URLSearchParams({ dayPlanId: dayPlanId, attractionId: attractionId }).toString())
+        await doDelete('/api/v1/attraction?' + new URLSearchParams({ attractionId: attractionId, dayPlanId: dayPlanId }).toString())
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 setErrorToastOpen(!response.ok);

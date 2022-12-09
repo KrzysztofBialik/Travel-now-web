@@ -34,6 +34,7 @@ import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
 import FmdGoodRoundedIcon from '@mui/icons-material/FmdGoodRounded';
 import { secondsToMilliseconds, set } from "date-fns/esm";
 import { display } from "@mui/system";
+import { SuccessToast } from "../../components/toasts/SuccessToast";
 
 export const URL = '/dayPlan/:groupId';
 export const NAME = "DayPlan";
@@ -48,11 +49,13 @@ export const DayPlanPage = (props) => {
     const [allAttractions, setAllAttractions] = useState([]);
     const [optimizedAttractions, setOptimizedAttractions] = useState([]);
     const [allDayPlans, setAllDayPlans] = useState([]);
-    const [loading, setLodaing] = useState(true);
+    const [loading, setLoading] = useState(true);
     const [loadingOptimized, setLoadingOptimized] = useState(false);
     const [selectedDayPlanId, setSelectedDayPlanId] = useState(0);
     const [dayPlansRaw, setdayPlansRaw] = useState([]);
     const [isOptimizedDayPlan, setIsOptimizedDayPlan] = useState(false);
+    const [deleteDayPlanConfirmToastOpen, setDeleteDayPlanConfirmToastOpen] = useState(false);
+    const [deleteAttractionConfirmToastOpen, setDeleteAttractionConfirmToastOpen] = useState(false);
     // const [isCoordinator, setIsCoordinator] = useState(false)
 
     // var isCordinator = false;
@@ -78,20 +81,44 @@ export const DayPlanPage = (props) => {
     //     setIsCoordinator(body);
     // };
 
+    const getDataAfterDeleteDayPlan = () => {
+        setDeleteDayPlanConfirmToastOpen(true);
+        getData();
+    };
+
+    const getDataAfterDeleteAttraction = (dayPlanId) => {
+        setDeleteAttractionConfirmToastOpen(true);
+        if (!isOptimizedDayPlan) {
+            getOptimized();
+        }
+        else {
+            updateDayplanAttractions(dayPlanId)
+        }
+    }
+
     const getData = async () => {
-        setLodaing(true);
+        setLoading(true);
         doGet('/api/v1/day-plan?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(json => { setdayPlansRaw(json); return json })
             .then(dayPlans => {
                 setAllDayPlans(dayPlans.map(dayPlan => (
                     <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
-                        <DayPlanCard dayPlanData={dayPlan} groupId={groupId} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
+                        <DayPlanCard
+                            dayPlanData={dayPlan}
+                            groupId={groupId}
+                            showDetailedPlan={showDetailedPlan}
+                            onSuccess={() => getData()}
+                            onSuccessDelete={() => getDataAfterDeleteDayPlan()}
+                        />
                     </ListItem>
                 )));
             })
-            .catch(err => console.log('Request Failed', err));
-        setLodaing(false);
+            .catch(err => {
+                setLoading(false);
+                console.log('Request Failed', err)
+            });
+        setLoading(false);
     };
 
     useEffect(() => {
@@ -106,14 +133,19 @@ export const DayPlanPage = (props) => {
         setIsOptimizedDayPlan(false);
         setAllAttractions(attractions.map(attraction => (
             <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attractionId}>
-                <AttractionCard attractionData={attraction} groupId={groupId} id={dayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                <AttractionCard
+                    attractionData={attraction}
+                    groupId={groupId}
+                    id={dayPlanId}
+                    onDeletion={(dayPlanId) => getDataAfterDeleteAttraction(dayPlanId)}
+                />
             </ListItem>
         )));
     }
 
     const updateDayplanAttractions = async (id) => {
-        setLoadingOptimized(true)
-        var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: localStorage.getItem("groupId"), dayPlanId: id }).toString())
+        setLoadingOptimized(true);
+        var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: groupId, dayPlanId: id }).toString())
             .then(response => response.json());
         var dayPlanData = dayPlansRaw.find(dayPlan => dayPlan.dayPlanId === id);
         dayPlanData.dayAttractions = newAttractions;
@@ -121,7 +153,12 @@ export const DayPlanPage = (props) => {
         showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId);
         setAllDayPlans(dayPlansRaw.map(dayPlan => (
             <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
-                <DayPlanCard dayPlanData={dayPlan} groupId={groupId} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} />
+                <DayPlanCard
+                    dayPlanData={dayPlan}
+                    groupId={groupId}
+                    showDetailedPlan={showDetailedPlan}
+                    onSuccess={() => getData()}
+                    onSuccessDelete={() => getDataAfterDeleteDayPlan()} />
             </ListItem>
         )));
         setLoadingOptimized(false);
@@ -151,7 +188,12 @@ export const DayPlanPage = (props) => {
                                 <Box></Box>
                             }
                         </Box>
-                        <AttractionCard attractionData={attraction.attraction} groupId={groupId} id={selectedDayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                        <AttractionCard
+                            attractionData={attraction.attraction}
+                            groupId={groupId}
+                            id={selectedDayPlanId}
+                            onDeletion={(dayPlanId) => getDataAfterDeleteAttraction(dayPlanId)}
+                        />
                     </Box>
                 </ListItem>
             ))))
@@ -177,6 +219,16 @@ export const DayPlanPage = (props) => {
 
     return (
         <>
+            <SuccessToast
+                open={deleteDayPlanConfirmToastOpen}
+                onClose={() => setDeleteDayPlanConfirmToastOpen(false)}
+                message={"Day plan deleted successfully"}
+            />
+            <SuccessToast
+                open={deleteAttractionConfirmToastOpen}
+                onClose={() => setDeleteAttractionConfirmToastOpen(false)}
+                message={"Attraction deleted successfully"}
+            />
             <CreateDayPlanDialog
                 open={createDayPlanDialogOpen}
                 onClose={() => setCreateDayPlanDialogOpen(false)}
@@ -187,9 +239,7 @@ export const DayPlanPage = (props) => {
                 open={searchAttractionDialogOpen}
                 onClose={() => setSearchAttractionDialogOpen(false)}
                 dayPlanId={selectedDayPlanId}
-                onSuccess={(id) => {
-                    updateDayplanAttractions(id);
-                }}
+                onSuccess={(id) => updateDayplanAttractions(id)}
             />
             <Box
                 sx={{
@@ -289,34 +339,34 @@ export const DayPlanPage = (props) => {
                                         minHeight: "200px"
                                     }}>
                                         {
-                                            loading ?
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                        justifyContent: "center",
-                                                        alignItems: "center",
-                                                        minHeight: "400px"
-                                                        // border: "2px solid black"
-                                                    }}
-                                                >
-                                                    <CircularProgress />
-                                                </Box>
-                                                :
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        flexDirection: "column",
-                                                        justifyContent: "flex-start",
-                                                        minHeight: "400px"
-                                                        // border: "2px solid black"
-                                                    }}
-                                                >
-                                                    {/* No day plans created */}
-                                                    <List sx={{ p: 0 }}>
-                                                        {allDayPlans}
-                                                    </List>
-                                                </Box>
+                                            // loading ?
+                                            //     <Box
+                                            //         sx={{
+                                            //             display: "flex",
+                                            //             flexDirection: "column",
+                                            //             justifyContent: "center",
+                                            //             alignItems: "center",
+                                            //             minHeight: "400px"
+                                            //             // border: "2px solid black"
+                                            //         }}
+                                            //     >
+                                            //         <CircularProgress />
+                                            //     </Box>
+                                            //     :
+                                            <Box
+                                                sx={{
+                                                    display: "flex",
+                                                    flexDirection: "column",
+                                                    justifyContent: "flex-start",
+                                                    minHeight: "400px"
+                                                    // border: "2px solid black"
+                                                }}
+                                            >
+                                                {/* No day plans created */}
+                                                <List sx={{ p: 0 }}>
+                                                    {allDayPlans}
+                                                </List>
+                                            </Box>
                                         }
                                     </Box>
                                 </Card>
@@ -435,29 +485,29 @@ export const DayPlanPage = (props) => {
                                             </Box>
                                             {/* Add attractions to see the detailed plan */}
                                             {allAttractions.length > 0 ?
-                                                loadingOptimized ?
-                                                    <Box
-                                                        sx={{
-                                                            display: "flex",
-                                                            flexDirection: "column",
-                                                            justifyContent: "center",
-                                                            alignItems: "center",
-                                                            minHeight: "400px",
-                                                            width: '100%'
-                                                            // border: "2px solid black"
-                                                        }}
-                                                    >
-                                                        <CircularProgress />
-                                                    </Box>
-                                                    :
-                                                    <Box sx={{ height: "100%", width: "100%", display: "flex", justifyContent: "center" }}>
-                                                        <List sx={{
-                                                            // height: "100%", 
-                                                            px: 0, minWidth: "700px", maxWidth: "700px"
-                                                        }}>
-                                                            {isOptimizedDayPlan ? optimizedAttractions : allAttractions}
-                                                        </List>
-                                                    </Box>
+                                                // loadingOptimized ?
+                                                //     <Box
+                                                //         sx={{
+                                                //             display: "flex",
+                                                //             flexDirection: "column",
+                                                //             justifyContent: "center",
+                                                //             alignItems: "center",
+                                                //             minHeight: "400px",
+                                                //             width: '100%'
+                                                //             // border: "2px solid black"
+                                                //         }}
+                                                //     >
+                                                //         <CircularProgress />
+                                                //     </Box>
+                                                //     :
+                                                <Box sx={{ height: "100%", width: "100%", display: "flex", justifyContent: "center" }}>
+                                                    <List sx={{
+                                                        // height: "100%", 
+                                                        px: 0, minWidth: "700px", maxWidth: "700px"
+                                                    }}>
+                                                        {isOptimizedDayPlan ? optimizedAttractions : allAttractions}
+                                                    </List>
+                                                </Box>
                                                 :
                                                 dayPlanName === "" ?
                                                     <Box sx={{ height: "100%", width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
