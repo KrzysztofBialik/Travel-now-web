@@ -47,7 +47,7 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
     }, []);
 
     const getIsCoordinator = async () => {
-        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
             .then(response => response.json())
             .then(response => setIsCoordinator(response))
             .catch(err => console.log(err.message));
@@ -104,8 +104,8 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
     };
 
     const logoutAction = () => {
-        localStorage.removeItem("ACCESS_TOKEN");
-        localStorage.removeItem("userId");
+        sessionStorage.removeItem("ACCESS_TOKEN");
+        sessionStorage.removeItem("userId");
         navigate('/');
     };
 

@@ -107,11 +107,11 @@ export const pastTripButtonsDataWithGroupId = (groupId) => {
             link: "/tripSummary/" + groupId,
         },
 
-        {
-            id: 3,
-            name: "Media",
-            link: "/media",
-        }
+        // {
+        //     id: 3,
+        //     name: "Media",
+        //     link: "/media",
+        // }
     ];
 }
 

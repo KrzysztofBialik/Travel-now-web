@@ -52,7 +52,7 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, isCo
     const [currency, setCurrency] = useState("");
     const [anchorEl, setAnchorEl] = useState(null);
     const [numOfVotes, setNumOfVotes] = useState(accommodationData.givenVotes);
-    const [userVote, setUserVote] = useState(votes.some(vote => vote['userId'] === parseInt(localStorage.getItem('userId'))));
+    const [userVote, setUserVote] = useState(votes.some(vote => vote['userId'] === parseInt(sessionStorage.getItem('userId'))));
     const [expanded, setExpanded] = useState(false);
     const [selectDialogOpen, setSelectDialogOpen] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -151,12 +151,12 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, isCo
             })
             .catch(err => {
                 setErrorToastOpen(true);
-                setApiErrorMessage(err.message)
+                setApiErrorMessage("There was an error. We could not save your vote")
             });
     };
 
     const handleDeleteVoteAccommodation = async (success) => {
-        await doPatch('/api/v1/accommodation/vote', { "userId": parseInt(localStorage.getItem("userId")), "accommodationId": accommodationData.accommodationId })
+        await doPatch('/api/v1/accommodation/vote', { "userId": parseInt(sessionStorage.getItem("userId")), "accommodationId": accommodationData.accommodationId })
             .then(response => {
                 if (response.ok) {
                     success();

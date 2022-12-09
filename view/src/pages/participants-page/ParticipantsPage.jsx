@@ -36,7 +36,7 @@ export const ParticipantsPage = () => {
             .then(response => setGroupStage(response.groupStage))
             .catch(err => console.log('Request Failed', err));
 
-        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
             .then(response => response.json())
             .then(response => setIsCoordinator(response))
             .catch(err => console.log('Request Failed', err));

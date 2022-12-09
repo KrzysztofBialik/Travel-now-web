@@ -27,7 +27,7 @@ export const DashboardPage = () => {
 
     const getTrips = async () => {
         setIsLoading(true);
-        await doGet('/api/v1/trip-group/groups/' + localStorage.getItem("userId"))
+        await doGet('/api/v1/trip-group/groups/' + sessionStorage.getItem("userId"))
             .then(response => response.json())
             .then(response => setTripsList(response))
             .then(setIsLoading(false))

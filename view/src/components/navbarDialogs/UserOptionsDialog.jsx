@@ -45,7 +45,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
 
 
     const getUserData = async () => {
-        await doGet('/api/v1/user?' + new URLSearchParams({ userId: localStorage.getItem("userId") }).toString())
+        await doGet('/api/v1/user?' + new URLSearchParams({ userId: sessionStorage.getItem("userId") }).toString())
             .then(response => response.json())
             .then(response => {
                 setNecessaryData(response);
@@ -112,7 +112,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
         setIsUpdating(true);
         console.log("hello there")
         console.log(values)
-        var postBody = { 'userId': localStorage.getItem('userId'), 'phoneNumber': '+' + values.code + ' ' + values.phone, 'firstName': values.firstName, 'surname': values.surname, 'brithday': values.birthDate };
+        var postBody = { 'userId': sessionStorage.getItem('userId'), 'phoneNumber': '+' + values.code + ' ' + values.phone, 'firstName': values.firstName, 'surname': values.surname, 'brithday': values.birthDate };
         await doPatch('/api/v1/user', postBody)
             .then(response => response.json())
             .then(response => {

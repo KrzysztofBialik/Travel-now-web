@@ -78,7 +78,7 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData, curr
         var updated = accommodationData;
         updated.description = description;
         updated.price = price;
-        await doPatch('/api/v1/accommodation?' + new URLSearchParams({ accommodationId: accommodationData.accommodationId, userId: localStorage.getItem("userId") }).toString(), updated)
+        await doPatch('/api/v1/accommodation?' + new URLSearchParams({ accommodationId: accommodationData.accommodationId, userId: sessionStorage.getItem("userId") }).toString(), updated)
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 setIsEditing(false);
