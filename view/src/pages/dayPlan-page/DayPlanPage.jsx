@@ -55,6 +55,7 @@ export const DayPlanPage = (props) => {
     const [dayPlansRaw, setdayPlansRaw] = useState([]);
     const [isOptimizedDayPlan, setIsOptimizedDayPlan] = useState(false);
     const [deleteDayPlanConfirmToastOpen, setDeleteDayPlanConfirmToastOpen] = useState(false);
+    const [deleteAttractionConfirmToastOpen, setDeleteAttractionConfirmToastOpen] = useState(false);
     // const [isCoordinator, setIsCoordinator] = useState(false)
 
     // var isCordinator = false;
@@ -84,6 +85,16 @@ export const DayPlanPage = (props) => {
         setDeleteDayPlanConfirmToastOpen(true);
         getData();
     };
+
+    const getDataAfterDeleteAttraction = (dayPlanId) => {
+        setDeleteAttractionConfirmToastOpen(true);
+        if (!isOptimizedDayPlan) {
+            getOptimized();
+        }
+        else {
+            updateDayplanAttractions(dayPlanId)
+        }
+    }
 
     const getData = async () => {
         setLoading(true);
@@ -122,15 +133,18 @@ export const DayPlanPage = (props) => {
         setIsOptimizedDayPlan(false);
         setAllAttractions(attractions.map(attraction => (
             <ListItem sx={{ p: 0, my: 3, width: "100%" }} key={attraction.attractionId}>
-                <AttractionCard attractionData={attraction} groupId={groupId} id={dayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                <AttractionCard
+                    attractionData={attraction}
+                    groupId={groupId}
+                    id={dayPlanId}
+                    onDeletion={(dayPlanId) => getDataAfterDeleteAttraction(dayPlanId)}
+                />
             </ListItem>
         )));
     }
 
     const updateDayplanAttractions = async (id) => {
         setLoadingOptimized(true);
-        console.log("dodawanie atrakcji");
-        console.log(id)
         var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: groupId, dayPlanId: id }).toString())
             .then(response => response.json());
         var dayPlanData = dayPlansRaw.find(dayPlan => dayPlan.dayPlanId === id);
@@ -139,10 +153,14 @@ export const DayPlanPage = (props) => {
         showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId);
         setAllDayPlans(dayPlansRaw.map(dayPlan => (
             <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
-                <DayPlanCard dayPlanData={dayPlan} groupId={groupId} showDetailedPlan={showDetailedPlan} onSuccess={() => getData()} onSuccessDelete={() => getDataAfterDeleteDayPlan()} />
+                <DayPlanCard
+                    dayPlanData={dayPlan}
+                    groupId={groupId}
+                    showDetailedPlan={showDetailedPlan}
+                    onSuccess={() => getData()}
+                    onSuccessDelete={() => getDataAfterDeleteDayPlan()} />
             </ListItem>
         )));
-        console.log("zaktualizowane atrakcje");
         setLoadingOptimized(false);
     };
 
@@ -170,7 +188,12 @@ export const DayPlanPage = (props) => {
                                 <Box></Box>
                             }
                         </Box>
-                        <AttractionCard attractionData={attraction.attraction} groupId={groupId} id={selectedDayPlanId} onDeletion={(id) => updateDayplanAttractions(id)} />
+                        <AttractionCard
+                            attractionData={attraction.attraction}
+                            groupId={groupId}
+                            id={selectedDayPlanId}
+                            onDeletion={(dayPlanId) => getDataAfterDeleteAttraction(dayPlanId)}
+                        />
                     </Box>
                 </ListItem>
             ))))
@@ -201,6 +224,11 @@ export const DayPlanPage = (props) => {
                 onClose={() => setDeleteDayPlanConfirmToastOpen(false)}
                 message={"Day plan deleted successfully"}
             />
+            <SuccessToast
+                open={deleteAttractionConfirmToastOpen}
+                onClose={() => setDeleteAttractionConfirmToastOpen(false)}
+                message={"Attraction deleted successfully"}
+            />
             <CreateDayPlanDialog
                 open={createDayPlanDialogOpen}
                 onClose={() => setCreateDayPlanDialogOpen(false)}
@@ -211,9 +239,7 @@ export const DayPlanPage = (props) => {
                 open={searchAttractionDialogOpen}
                 onClose={() => setSearchAttractionDialogOpen(false)}
                 dayPlanId={selectedDayPlanId}
-                onSuccess={(id) => {
-                    updateDayplanAttractions(id);
-                }}
+                onSuccess={(id) => updateDayplanAttractions(id)}
             />
             <Box
                 sx={{

@@ -76,7 +76,6 @@ const icons = [
 ];
 
 export const DayPlanCard = ({ dayPlanData, groupId, showDetailedPlan, onSuccess, onSuccessDelete }) => {
-    console.log(dayPlanData);
 
     const [isCoordinator, setIsCoordinator] = useState(false)
 

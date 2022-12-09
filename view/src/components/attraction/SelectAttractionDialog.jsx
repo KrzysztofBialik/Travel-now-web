@@ -22,7 +22,7 @@ import { doPost } from "../../components/utils/fetch-utils";
 import { PLACEHOLDER_IMAGE } from '../images/Images';
 
 
-export const SelectAttractionDialog = ({ open, onClose, attractionData, dayPlanId, onSuccess }) => {
+export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWithSelect, dayPlanId }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
@@ -80,19 +80,13 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, dayPlanI
 
     const close = () => {
         reset();
-        onSuccess(dayPlanId);
+        closeWithSelect();
         // setValues(defaultInputValues);
         // setDescription({ value: "", length: 0 });
         // setSuccessToastOpen(true);
         // closeWithSelect();
         onClose();
     }
-
-    const handleErrorClose = () => {
-        setDescription({ value: "", length: 0 });
-        setErrorToastOpen(true);
-        onClose();
-    };
 
     return (
         <div>
@@ -206,7 +200,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, dayPlanI
                         <DialogActions>
                             <Button
                                 variant="outlined"
-                                onClick={handleErrorClose}
+                                onClick={onClose}
                                 sx={{
                                     borderRadius: "20px"
                                 }}

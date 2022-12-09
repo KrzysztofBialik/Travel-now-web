@@ -78,38 +78,18 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
         onClose();
     };
 
+
     const handleSelectAction = (candidate) => {
         setSelectedAttractionData(candidate);
         setSelectAttractionDialogOpen(true);
     };
 
-    // const closeWithSelect = () => {
-    //     onClose();
-    // }
+    const closeWithSelect = () => {
+        setSearchValue("");
+        onSuccess(dayPlanId);
+        onClose();
+    };
 
-    // const handleEditAttraction = (name, description) => {
-    //     // editAccommodation(price, description);
-    //     // setSuccessToastOpen(true);
-    //     // // setTripName('');
-    //     // // setStartingLocation('');
-    //     // // setCurrency("PLN");
-    //     // // setDescription('');
-    //     close();
-    // }
-
-    // const close = () => {
-    //     reset();
-    //     setValues(defaultInputValues);
-    //     setDescription({ value: attractionData.description, length: descriptionLength });
-    //     setSuccessToastOpen(true);
-    //     onClose();
-    // }
-
-    // const handleErrorClose = () => {
-    //     setDescription({ value: attractionData.description, length: descriptionLength });
-    //     setErrorToastOpen(true);
-    //     onClose();
-    // };
 
     return (
         <div>
@@ -118,9 +98,9 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
                 open={selectAttractionDialogOpen}
                 onClose={() => setSelectAttractionDialogOpen(false)}
                 attractionData={selectedAttractionData}
-                // closeWithSelect={closeWithSelect}
+                closeWithSelect={() => closeWithSelect()}
                 dayPlanId={dayPlanId}
-                onSuccess={(dayPlanId) => onSuccess(dayPlanId)}
+            // onSuccess={(dayPlanId) => onSuccess(dayPlanId)}
             />
             <Dialog
                 open={open}
