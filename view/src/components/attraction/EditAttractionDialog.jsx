@@ -2,6 +2,8 @@ import * as React from 'react';
 import { useState } from "react";
 import { Button } from '@mui/material';
 import { Dialog } from '@mui/material';
+import { Box } from '@mui/material';
+import { CircularProgress } from '@mui/material';
 import { Typography } from '@mui/material';
 import { IconButton } from '@mui/material';
 import { DialogActions } from '@mui/material';
@@ -14,7 +16,6 @@ import { FormHelperText } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import InputAdornment from '@mui/material/InputAdornment';
 import CloseIcon from '@mui/icons-material/Close';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
@@ -26,7 +27,7 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
-
+    const [isEditing, setIsEditing] = useState(false);
     const [attractionName, setAttractionName] = useState(attractionData.name);
 
     const DESCRIPTION_LIMIT = 250;
@@ -187,20 +188,32 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
                             <span>{`${description.length}/${DESCRIPTION_LIMIT}`}</span>
                         </FormHelperText>
                         <DialogActions>
-                            <Button
-                                variant="outlined"
-                                sx={{ borderColor: "primary.main", borderRadius: "20px" }}
-                                onClick={handleErrorClose}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                sx={{ color: "#FFFFFF", borderRadius: "20px" }}
-                            >
-                                Edit
-                            </Button>
+                            {isEditing ?
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    sx={{ color: "#FFFFFF", borderRadius: "20px", minWidth: "80px" }}
+                                >
+                                    <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                </Button>
+                                :
+                                <Box>
+                                    <Button
+                                        variant="outlined"
+                                        sx={{ borderColor: "primary.main", borderRadius: "20px" }}
+                                        onClick={onClose}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        variant="contained"
+                                        sx={{ color: "#FFFFFF", borderRadius: "20px", minWidth: "80px", ml: 2 }}
+                                    >
+                                        Edit
+                                    </Button>
+                                </Box>
+                            }
                         </DialogActions>
                     </form>
                 </DialogContent>

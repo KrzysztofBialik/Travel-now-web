@@ -29,6 +29,7 @@ import { ErrorTripConfirmationDialog } from './ErrorTripConfirmationDialog';
 import { doGet } from "../../components/utils/fetch-utils";
 import { doPatch } from "../../components/utils/fetch-utils";
 import { useEffect } from 'react';
+import Rule from '@mui/icons-material/Rule';
 
 const currencies = [
     {
@@ -83,6 +84,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
     const [isUpdating, setIsUpdating] = useState(false);
     const [descriptionLength, setDescriptionLength] = useState(0);
     const [tripData, setTripData] = useState({});
+    const [groupStage, setGroupStage] = useState([])
     const DESCRIPTION_LIMIT = 250;
 
     useEffect(() => {
@@ -140,6 +142,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
             tripName: response.name, startingLocation: response.startLocation, currency: response.currency, minDays: response.minimalNumberOfDays,
             minParticipants: response.minimalNumberOfParticipants, description: response.description
         })
+        setGroupStage(response.groupStage)
     }
     const handleUpdateTrip = () => {
         editUserAccount(getValues());
@@ -164,9 +167,8 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
         };
 
         await doPatch('/api/v1/trip-group/group?' + new URLSearchParams({ groupId: groupId }).toString(), postBody)
-            .then(response => response.json())
             .then(response => {
-                setNecessaryData(response);
+                getTripData();
                 handleSuccess();
             })
             .catch(err => {
@@ -176,6 +178,8 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
             });
         setIsUpdating(false);
     }
+
+    const isPlanningStage = (groupStage === "PLANNING_STAGE" ? false : true);
 
     // const descriptionWatch = watch("description");
 
@@ -259,7 +263,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                     sx={{
                                         mx: 2,
                                         mt: -3,
-                                        py: 1,
+                                        py: 2,
                                         px: 2,
                                         // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                         backgroundColor: "primary.main",
@@ -272,10 +276,10 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                         alignItems: "center"
                                     }}
                                 >
-                                    <Typography component="h1" variant="h5" color="#FFFFFF">
+                                    <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
                                         Manage trip group data
                                     </Typography>
-                                    <RuleIcon sx={{ color: "secondary.main", fontSize: "42px" }} />
+                                    <Rule sx={{ color: "#FFFFFF", fontSize: "50px" }} />
                                 </Box>
                                 <Box sx={{
                                     display: "flex",
@@ -287,7 +291,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                     minHeight: "200px"
                                 }}>
                                     <Box sx={{ height: "100%", width: "100%" }}>
-                                        {false ?
+                                        {isLoading ?
                                             <Box sx={{ minHeight: "485px", display: "flex", alignItems: "center", justifyContent: "center" }}>
                                                 <CircularProgress />
                                             </Box>
@@ -301,6 +305,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     autoFocus
                                                     margin="normal"
                                                     placeholder='Trip name'
+                                                    disabled={isPlanningStage}
                                                     name='trip name'
                                                     label='Trip name'
                                                     defaultValue={tripData.tripName}
@@ -317,12 +322,14 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     error={!!errors.tripName}
                                                     helperText={errors.tripName?.message}
                                                 />
+
                                                 <TextField
                                                     type='string'
                                                     margin="normal"
                                                     placeholder='Starting location'
                                                     name='startingLocation'
                                                     defaultValue={tripData.startingLocation}
+                                                    disabled={isPlanningStage}
                                                     label='Starting location'
                                                     fullWidth
                                                     variant="outlined"
@@ -338,7 +345,6 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     helperText={errors.startingLocation?.message}
                                                 />
                                                 <Box sx={{ display: "flex", justifyContent: "space-between", alignContent: "center" }} >
-
                                                     <Controller
                                                         name='currency'
                                                         control={control}
@@ -350,6 +356,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                                 margin='normal'
                                                                 variant='outlined'
                                                                 defaultValue={tripData.currency}
+                                                                disabled={isPlanningStage}
                                                                 label='currency'
                                                                 InputProps={{
                                                                     startAdornment: (
@@ -377,6 +384,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                         placeholder='Min days'
                                                         name='minDays'
                                                         defaultValue={tripData.minDays}
+                                                        disabled={isPlanningStage}
                                                         label='Min days'
                                                         variant="outlined"
                                                         InputProps={{
@@ -397,6 +405,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                         placeholder='Min participants'
                                                         name='minParticipants'
                                                         defaultValue={tripData.minParticipants}
+                                                        disabled={isPlanningStage}
                                                         label='Min participants'
                                                         variant="outlined"
                                                         InputProps={{
@@ -420,6 +429,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     name='description'
                                                     label='Description'
                                                     defaultValue={tripData.description}
+                                                    disabled={isPlanningStage}
                                                     fullWidth
                                                     variant="outlined"
                                                     {...register('description')}
@@ -437,19 +447,23 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     <span>{errors.description?.message}</span>
                                                     <span>{0}/{DESCRIPTION_LIMIT}</span>
                                                 </FormHelperText>
-                                                <DialogActions>
-                                                    <Button
-                                                        type="submit"
-                                                        variant="contained"
-                                                        sx={{ borderRadius: "20px", color: "#FFFFFF", width: "140px" }}
-                                                    >
-                                                        {isUpdating ?
-                                                            <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
-                                                            :
-                                                            "Update data"
-                                                        }
-                                                    </Button>
-                                                </DialogActions>
+                                                {!isPlanningStage ?
+                                                    <DialogActions>
+                                                        <Button
+                                                            type="submit"
+                                                            variant="contained"
+                                                            sx={{ borderRadius: "20px", color: "#FFFFFF", width: "140px" }}
+                                                        >
+                                                            {isUpdating ?
+                                                                <CircularProgress size="24px" sx={{ color: "#FFFFFF" }} />
+                                                                :
+                                                                "Update data"
+                                                            }
+                                                        </Button>
+                                                    </DialogActions>
+                                                    :
+                                                    <Box></Box>
+                                                }
                                             </form>
                                         }
                                     </Box>

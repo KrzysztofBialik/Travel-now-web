@@ -1,34 +1,18 @@
-import { Box, CircularProgress } from "@mui/material";
+import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useState } from "react";
+import { styled } from '@mui/material/styles';
+import { Box } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
-import { Card } from "@mui/material";
 import { Button } from "@mui/material";
-
+import IconButton from '@mui/material/IconButton';
 import { AccommodationCard } from "../../components/accommodations/accommodationCard/AccommodationCard";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { futureTripButtonsData, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
-
-//------------------------importy do drugiej opcji---------------------------------
-import { useState } from "react";
-import { styled } from '@mui/material/styles';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import ShareIcon from '@mui/icons-material/Share';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import ThumbUpOffIcon from '@mui/icons-material/ThumbUpOutlined';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import LinkIcon from '@mui/icons-material/Link';
-import EmojiTransportationIcon from '@mui/icons-material/EmojiTransportation';
-
 import { AddAccommodationDialog } from "../../components/accommodations/AddAccommodationDialog";
 import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
 import { doGet } from "../../components/utils/fetch-utils";
 
 export const URL = '/accommodations/myAccommodations/:groupId';
@@ -45,21 +29,44 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-
 export const MyAccommodationsPage = () => {
+
     const { groupId } = useParams();
-    // const [numOfVotes, setNumOfVotes] = useState(accommodationsData.givenVotes)
-    // const [userVote, setUserVote] = useState(false);
-    const [expanded, setExpanded] = useState(false);
     const [addAccommodationDialogOpen, setAddAccommodationDialogOpen] = useState(false);
     const [myAccommodations, setMyAccommodations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [accommodationsRaw, setAccommodationsRaw] = useState([]);
+    const [currency, setCurrency] = useState("");
+    var isCoordinator = false;
 
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     });
+
+    useEffect(() => {
+        getIsCoordinator()
+            .then(() => getCurrency())
+            .then(() => getData());
+    }, []);
+
+
+    const getIsCoordinator = async () => {
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+            .catch(err => console.log(err.message));
+        var body = await resp.json();
+        isCoordinator = body;
+    };
+
+    const getCurrency = async () => {
+        var resp = await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                var currency = response.currency;
+                setCurrency(currency);
+            })
+            .catch(err => console.log('Request Failed', err));
+    };
 
     const getData = async () => {
         setLoading(true);
@@ -67,51 +74,55 @@ export const MyAccommodationsPage = () => {
             .then(response => response.json())
             .then(json => { setAccommodationsRaw(json); return json })
             .then(accommodations => setMyAccommodations(accommodations.map(accommodation => (
-                <Grid container item xs={12} spacing={10} key={accommodation.accommodation.accommodationId}
-                    sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: 'flex-start',
-                        mb: 8,
-                    }}
-                >
-                    <Grid item xs={12} md={5}>
-                        <AccommodationCard accommodationData={accommodation.accommodation} canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))} selected={false} votes={accommodation.userVoted} onSuccess={() => getData()} />
+                accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId")) ?
+                    <Grid container item xs={12} spacing={10} key={accommodation.accommodation.accommodationId}
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: 'flex-start',
+                            mb: 8,
+                        }}
+                    >
+                        <Grid item xs={12} md={5}>
+                            <AccommodationCard
+                                accommodationData={accommodation.accommodation}
+                                canModify={accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))}
+                                isCoordinator={isCoordinator}
+                                selected={false}
+                                votes={accommodation.userVoted}
+                                onSuccess={() => getData()}
+                            />
+                        </Grid>
+                        <Grid item xs={12} md={5} >
+                            {true ?
+                                <GoogleMap
+                                    zoom={14}
+                                    center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
+                                    mapContainerClassName="map-container"
+                                >
+                                    <MarkerF position={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }} />
+                                </GoogleMap>
+                                :
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        minHeight: "400px"
+                                        // border: "2px solid black"
+                                    }}
+                                >
+                                    <CircularProgress />
+                                </Box>}
+                        </Grid>
                     </Grid>
-                    <Grid item xs={12} md={5} >
-                        {isLoaded ?
-                            <GoogleMap
-                                zoom={14}
-                                center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
-                                mapContainerClassName="map-container"
-                            >
-                                <MarkerF position={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }} />
-                            </GoogleMap>
-                            :
-                            <Box
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                    minHeight: "400px"
-                                    // border: "2px solid black"
-                                }}
-                            >
-                                <CircularProgress />
-                            </Box>}
-                    </Grid>
-                </Grid>
+                    :
+                    <Box></Box>
             ))))
             .catch(err => console.log('Request Failed', err));
         setLoading(false);
-
     };
-
-    useEffect(() => {
-        getData();
-
-    }, []);
 
     return (
         <>
@@ -120,6 +131,7 @@ export const MyAccommodationsPage = () => {
                 onClose={() => setAddAccommodationDialogOpen(false)}
                 groupId={groupId}
                 onSuccess={() => getData()}
+                currency={currency}
             />
             <Box
                 sx={{
@@ -189,20 +201,25 @@ export const MyAccommodationsPage = () => {
                             </Grid>
                         </Grid>
                     </Box>
-                    {myAccommodations.length === 0 ?
-                        <Box sx={{
-                            minHeight: "400px",
-                            minWidth: "100%",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center"
-                        }}>
-                            <Typography sx={{ fontSize: "32px", color: "primary.main" }}>
-                                No accommodations added yet
-                            </Typography>
+                    {loading ?
+                        <Box sx={{ width: "400px", height: "400px", display: "flex", justifyContent: "center", alignItems: "center" }}>
+                            <CircularProgress size="60px" sx={{ color: "primary.main" }} />
                         </Box>
                         :
-                        myAccommodations
+                        myAccommodations.length === 0 ?
+                            <Box sx={{
+                                minHeight: "400px",
+                                minWidth: "100%",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center"
+                            }}>
+                                <Typography sx={{ fontSize: "32px", color: "primary.main" }}>
+                                    No accommodations added yet
+                                </Typography>
+                            </Box>
+                            :
+                            myAccommodations
                     }
                 </Box >
             </Box >

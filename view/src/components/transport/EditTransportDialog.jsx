@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { useState } from "react";
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -7,16 +9,16 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
+import { Typography } from '@mui/material';
+import { IconButton } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import { Box } from '@mui/material';
 import { FormHelperText } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
-import EditIcon from '@mui/icons-material/Edit';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
+import CloseIcon from '@mui/icons-material/Close';
 import CommuteIcon from '@mui/icons-material/Commute';
 import EditLocationAltIcon from '@mui/icons-material/EditLocationAlt';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
@@ -27,7 +29,7 @@ import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import * as durationn from 'duration-fns'
-import { doPatch } from '../utils/fetch-utils';
+import { doPatch, doGet } from '../utils/fetch-utils';
 
 
 export const EditTransportDialog = ({ open, onClose, transportData, onSuccess }) => {
@@ -36,7 +38,7 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
     const meetingLocationLength = transportData.source.length;
     const destinationLength = transportData.destination.length;
     const descriptionLength = transportData.description.length;
-
+    const [currency, setCurrency] = useState("");
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [editionError, setEditionError] = useState("Ups! Something went wrong. Try again.");
@@ -67,6 +69,23 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
     const DESCRIPTION_LIMIT = 250;
     const [description, setDescription] = useState({ value: transportData.description, length: descriptionLength });
     const [descriptionError, setDescriptionError] = useState(null);
+
+    const { groupId } = useParams();
+
+
+    const getCurrency = async () => {
+        var resp = await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                var currency = response.currency;
+                setCurrency(currency);
+            })
+            .catch(err => console.log('Request Failed', err));
+    };
+
+    useEffect(() => {
+        getCurrency();
+    }, []);
 
     const defaultInputValues = {
         transportOption,
@@ -162,24 +181,26 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
     });
 
     const handleEditTransport = async (tripName, meetingLocation, destination, minDays, hours, minutes, meetingDate, meetingTime, price, description) => {
-        var postBody = {'duration':durationn.toString({ hours: parseInt(hours), minutes: parseInt(minutes) }),
-                        'price':price,
-                        'source':meetingLocation,
-                        'destination':destination,
-                        'startDate':meetingDate,
-                        'endDate':meetingDate,
-                        'meanOfTransport':tripName,
-                        'description':description,
-                        'meetingTime':meetingTime,
-                        'link':null
+        var postBody = {
+            'duration': durationn.toString({ hours: parseInt(hours), minutes: parseInt(minutes) }),
+            'price': price,
+            'source': meetingLocation,
+            'destination': destination,
+            'startDate': meetingDate,
+            'endDate': meetingDate,
+            'meanOfTransport': tripName,
+            'description': description,
+            'meetingTime': meetingTime,
+            'link': null
         };
-        await doPatch('/api/v1/transport/user-transport?' + new URLSearchParams({ transportId:transportData.transportId }).toString(), postBody)
+        await doPatch('/api/v1/transport/user-transport?' + new URLSearchParams({ transportId: transportData.transportId }).toString(), postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
                 close();
                 onSuccess();
             })
-            .catch(err => {setErrorToastOpen(true); 
+            .catch(err => {
+                setErrorToastOpen(true);
                 setEditionError(err.message)
             });
     };
@@ -214,13 +235,31 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
             <Dialog
                 open={open}
                 onClose={onClose}
-                aria-labelledby="responsive-dialog-title"
-            >
-                <DialogTitle
-                    variant="h4"
-                    sx={{ backgroundColor: "primary.main" }}
+                PaperProps={{
+                    style: {
+                        minHeight: "640px",
+                        borderRadius: "20px"
+                    }
+                }}            >
+                <DialogTitle sx={{
+                    backgroundColor: "primary.main",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    color: "#FFFFFF",
+                    mb: 2
+                }}
                 >
-                    Edit transport option
+                    <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
+                        Edit transport option
+                    </Typography>
+                    <IconButton
+                        sx={{ p: 0 }}
+                        onClick={close}
+                    >
+                        <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
+                    </IconButton>
                 </DialogTitle>
                 <DialogContent>
                     <form
@@ -291,7 +330,7 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
                             value={destination.value}
                             onChange={(event) => onDestinationChange(event.target.value)}
                         />
-                        <DialogContentText variant="body1" mt="20px">
+                        <DialogContentText variant="body1" mt="10px">
                             Duration:
                         </DialogContentText>
 
@@ -373,11 +412,11 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
                                             <AttachMoneyIcon sx={{ color: "primary.main" }} />
                                         </InputAdornment>
                                     ),
-                                    // endAdornment: (
-                                    //     <InputAdornment position="end">
-                                    //         zł
-                                    //     </InputAdornment>
-                                    // )
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            {currency}
+                                        </InputAdornment>
+                                    )
                                 }}
                                 {...register('price')}
                                 error={Boolean(errors.price) ? (Boolean(priceError)) : false}
@@ -420,17 +459,14 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
                             <Button
                                 variant="outlined"
                                 sx={{ borderRadius: "20px" }}
-                                onClick={() => {
-                                    close()
-                                }}
+                                onClick={() => close()}
                             >
                                 Cancel
                             </Button>
                             <Button
                                 type="submit"
                                 variant="contained"
-                                color="primary"
-                                sx={{ borderRadius: "20px" }}
+                                sx={{ borderRadius: "20px", color: "#FFFFFF", width: "90px" }}
                             >
                                 Edit
                             </Button>

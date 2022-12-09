@@ -2,15 +2,17 @@ import { Grid } from '@mui/material';
 import { Typography } from '@mui/material';
 import { Container } from '@mui/material';
 import { Box } from '@mui/material';
-
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import Groups2Icon from '@mui/icons-material/Groups2';
+import FactCheckIcon from '@mui/icons-material/FactCheck';
+import HomeIcon from '@mui/icons-material/Home';
 import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
 import { LONDONURL } from '../../../images/Images';
-import { Link } from "react-router-dom";
 
 export const FutureTrips = ({ trips }) => {
 
-    console.log(trips)
     const tripsPlanningStage = trips.filter(trip => trip.groupStage === 'PLANNING_STAGE')
     const futureTrips = tripsPlanningStage.map(({ groupId, name, description, groupStage }) => (
         <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
@@ -22,14 +24,13 @@ export const FutureTrips = ({ trips }) => {
                     action={{
                         route: "/tripSummary/" + groupId,
                         label: "Trip summary",
-                        description: "Possible description of the trip"
                     }} />
             </Grid>
             <Grid item xs={12} lg={8} sx={{ ml: "auto" }}>
                 <Grid container spacing={3}>
                     <Grid item xs={12} md={6}>
                         <DashboardOptionCard
-                            icon="calendar_month"
+                            icon={<CalendarMonthIcon sx={{ color: "primary.dark", fontSize: "46px" }} />}
                             title="Availability"
                             description="Set your availability and check when other participants are available."
                             route={`/availability/${groupId}`}
@@ -37,7 +38,7 @@ export const FutureTrips = ({ trips }) => {
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <DashboardOptionCard
-                            icon="home"
+                            icon={<HomeIcon sx={{ color: "primary.dark", fontSize: "46px" }} />}
                             title="Accommodations"
                             description="Check details of possible accomodations for this trip"
                             route={`/accommodations/${groupId}`}
@@ -46,7 +47,7 @@ export const FutureTrips = ({ trips }) => {
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <DashboardOptionCard
-                            icon="groups_2"
+                            icon={<Groups2Icon sx={{ color: "primary.dark", fontSize: "46px" }} />}
                             title="Participants"
                             description="See other participants of this trip"
                             route={`/participants/${groupId}`}
@@ -55,7 +56,7 @@ export const FutureTrips = ({ trips }) => {
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <DashboardOptionCard
-                            icon="fact_checked"
+                            icon={<FactCheckIcon sx={{ color: "primary.dark", fontSize: "46px" }} />}
                             title="Trip summary"
                             description="Check general info about the trip"
                             route={`/tripSummary/${groupId}`}
@@ -77,7 +78,12 @@ export const FutureTrips = ({ trips }) => {
                             justifyContent: "center",
                             width: "100%"
                         }}>
-                            <Typography variant="h5" sx={{ margin: "50px" }}>No upcoming trips</Typography>
+                            <Typography
+                                variant="h5"
+                                sx={{ margin: "50px", color: "primary.main" }}
+                            >
+                                No upcoming trips
+                            </Typography>
                         </Box>
                         :
                         futureTrips}

@@ -37,6 +37,7 @@ import { CalendarPicker } from '@mui/x-date-pickers/CalendarPicker';
 import { doPost } from "../../components/utils/fetch-utils";
 import { SuccessToast } from '../../components/toasts/SuccessToast';
 import { ErrorToast } from '../../components/toasts/ErrorToast';
+import { format } from 'date-fns';
 
 
 export const URL = '/register';
@@ -111,6 +112,7 @@ export const RegisterPage = () => {
     });
 
     const handleRegister = async (values) => {
+        console.log(values);
         setRegisterProcess(true);
         var postBody = {
             'email': values.email,
@@ -118,18 +120,18 @@ export const RegisterPage = () => {
             'password': values.confirmPassword,
             'firstName': values.firstName,
             'surname': values.surname,
-            'birthday': '2022-01-01'
+            'birthday': format(values.birthDate, 'yyyy-MM-dd')
         };
         await doPost('/api/v1/auth/register', postBody, false)
             .then(response => {
                 if (response.ok) {
                     setSuccessToastOpen(true);
                     setTimeout(() => {                     
-                        if(searchParams.get("redirectTo") !== null) {
-                            navigate("/login?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("redirectTo")}).toString());
-                        } else {
+                    //     if(searchParams.get("redirectTo") !== null) {
+                    //         navigate("/login?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("redirectTo")}).toString());
+                    //     } else {
                             navigate("/login");
-                        }
+                    //     }
                     }, 3000);
 
                 }

@@ -35,24 +35,31 @@ export const DeleteAccommodationDialog = ({ open, onClose, accommodationId, onSu
     const handleDeleteAttraction = async () => {
         await doDelete('/api/v1/accommodation?' + new URLSearchParams({ accommodationId: accommodationId }).toString())
             .then(response => {
-                setSuccessToastOpen(response.ok);
-                setErrorToastOpen(!response.ok);
+                handleSuccessClose()
                 onSuccess();
                 onClose();
             })
             .catch(err => {
-                setErrorToastOpen(true);
                 setDeletionError(err.message);
+                setErrorToastOpen(true);
             });
     };
 
     return (
         <div>
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully uselected." />
+            <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={deletionError} />
+
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Delete</DialogTitle>
+                <DialogTitle sx={{ pb: 1 }}>Delete</DialogTitle>
                 <DialogContent>
                     <DialogContentText sx={{ mb: "10px" }}>
                         If you confirm, your accommodation will be removed from list.
@@ -60,14 +67,16 @@ export const DeleteAccommodationDialog = ({ open, onClose, accommodationId, onSu
                     <DialogActions>
                         <Button
                             variant="outlined"
-                            onClick={handleClose}
+                            sx={{ borderRadius: "20px" }}
+                            onClick={onClose}
                         >
                             Cancel
                         </Button>
                         <Button
+                            type="submit"
                             variant="contained"
+                            sx={{ borderRadius: "20px", color: "#FFFFFF", width: "100px" }}
                             onClick={handleDeleteAttraction}
-                            sx={{ color: "#FFFFFF" }}
                         >
                             Confirm
                         </Button>

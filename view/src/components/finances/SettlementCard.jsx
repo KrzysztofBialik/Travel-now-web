@@ -55,7 +55,6 @@ export const SettlementCard = ({ settlementData, canResolve, requestId, onSucces
             .then(response => {
                 var currency = response.currency;
                 setCurrency(currency);
-                console.log(currency);
             })
             .then(setCurrencyLoading(false))
             .catch(err => console.log('Request Failed', err));

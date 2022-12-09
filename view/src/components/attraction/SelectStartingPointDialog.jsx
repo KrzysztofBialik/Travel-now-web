@@ -6,9 +6,6 @@ import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
-import { Typography } from '@mui/material';
-import { IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
@@ -19,15 +16,6 @@ export const SelectStartingPointDialog = ({ open, onClose, dayPlanId, attraction
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
-
-    const handleSuccessClose = () => {
-        setSuccessToastOpen(true);
-        onClose();
-    };
-
-    const handleErrorClose = () => {
-        onClose();
-    };
 
     const handleSelection = async () => {
         await doPatch('/api/v1/day-plan/start?' + new URLSearchParams({ dayPlanId: dayPlanId, attractionId: attractionId }).toString())
@@ -69,7 +57,7 @@ export const SelectStartingPointDialog = ({ open, onClose, dayPlanId, attraction
                         <Button
                             sx={{ borderRadius: "20px", fontSize: "12px" }}
                             variant="outlined"
-                            onClick={handleErrorClose}
+                            onClick={onClose}
                         >
                             Cancel
                         </Button>

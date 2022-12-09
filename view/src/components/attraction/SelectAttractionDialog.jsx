@@ -22,13 +22,12 @@ import { doPost } from "../../components/utils/fetch-utils";
 import { PLACEHOLDER_IMAGE } from '../images/Images';
 
 
-export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWithSelect, dayPlanId, onSuccess }) => {
+export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWithSelect, dayPlanId }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
     const [attractionName, setAttractionName] = useState(attractionData.attractionName);
-    console.log(attractionData)
 
     const DESCRIPTION_LIMIT = 250;
     const [description, setDescription] = useState({ value: "", length: 0 });
@@ -71,30 +70,23 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                 setValues(defaultInputValues);
                 setDescription({ value: "", length: 0 });
                 setSuccessToastOpen(response.ok);
-                onClose();
-                onSuccess(dayPlanId);
-                closeWithSelect();
+                close();
             })
             .catch(err => {
                 setErrorToastOpen(true);
                 setCreationError(err.message)
             });
-
     }
 
     const close = () => {
         reset();
-        setValues(defaultInputValues);
-        setDescription({ value: "", length: 0 });
-        setSuccessToastOpen(true);
+        closeWithSelect();
+        // setValues(defaultInputValues);
+        // setDescription({ value: "", length: 0 });
+        // setSuccessToastOpen(true);
+        // closeWithSelect();
         onClose();
     }
-
-    const handleErrorClose = () => {
-        setDescription({ value: "", length: 0 });
-        setErrorToastOpen(true);
-        onClose();
-    };
 
     return (
         <div>
@@ -208,7 +200,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                         <DialogActions>
                             <Button
                                 variant="outlined"
-                                onClick={handleErrorClose}
+                                onClick={onClose}
                                 sx={{
                                     borderRadius: "20px"
                                 }}

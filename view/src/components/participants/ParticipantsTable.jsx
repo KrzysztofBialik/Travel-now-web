@@ -65,8 +65,6 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
         await doGet('/api/v1/availability/group/' + groupId)
             .then(response => response.json())
             .then(response => {
-                console.log("please")
-                console.log(response)
                 setAvailabilities(response);
             })
             //     .then(response => {
@@ -156,8 +154,6 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                 const role = params.row.role;
                 const isSameUser = userId === parseInt(localStorage.getItem("userId"))
                 const userAvailability = availabilities[userId];
-                // console.log(userId);
-                // console.log(userAvailability);
                 if (isCoordinator) {
                     if (groupStage === "PLANNING_STAGE") {
                         if (role === "PARTICIPANT") {

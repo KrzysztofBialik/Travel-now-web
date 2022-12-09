@@ -20,8 +20,8 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
     const [deletionError, setDeletionError] = useState("Ups! Something went wrong. Try again.");
 
     const handleSuccessClose = () => {
-        setSuccessToastOpen(true);
         onClose();
+        onSuccess();
     };
 
     const handleErrorClose = () => {
@@ -34,7 +34,8 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
         await doDelete('/api/v1/day-plan?dayPlanId=' + dayPlanId)
             .then(response => {
                 setSuccessToastOpen(response.ok);
-                handleSuccessClose();
+                setIsDeleting(false);
+                onClose();
                 onSuccess();
             })
             .catch(err => {
@@ -42,11 +43,12 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
                 setErrorToastOpen(true);
                 setDeletionError(err.message)
             });
+        setIsDeleting(false);
     };
 
     return (
         <div>
-            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Day plan successfully deleted." />
+            {/* <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Day plan successfully deleted." /> */}
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={deletionError} />
 
             <Dialog
@@ -84,9 +86,9 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
                                     Cancel
                                 </Button>
                                 <Button
-                                    type="submit"
                                     variant="contained"
                                     sx={{ borderRadius: "20px", color: "#FFFFFF", width: "100px" }}
+                                    onClick={() => handleDeleteDayPlan(dayPlanId)}
                                 >
                                     Confirm
                                 </Button>
