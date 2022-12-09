@@ -40,13 +40,18 @@ export const AccommodationsPage = () => {
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     });
 
-    const getTripData = async () => {
-        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
-            .then(response => response.json())
-            .then(response => {
-                setTripGroup(response);
-            })
-            .catch(err => console.log('Request Failed', err));
+    useEffect(() => {
+        isCorinator()
+            .then(() => getTripData())
+            .then(() => getChosenAccommodation())
+            .then(() => getData());
+    }, []);
+
+
+    const updateData = () => {
+        getTripData()
+            .then(() => getChosenAccommodation())
+            .then(() => getData());
     };
 
     const isCorinator = async () => {
@@ -56,25 +61,13 @@ export const AccommodationsPage = () => {
         isCordinator = body;
     };
 
-    const getData = async () => {
-        setLoading(true);
-        doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId }).toString())
+    const getTripData = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
-            .then(json => { setAccommodationsRaw(json); return json })
-            .then(accommodations => {
-                setAllAccommodations(accommodations.map((accommodation) => (
-                    <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
-                        <AccommodationCard
-                            accommodationData={accommodation.accommodation}
-                            canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
-                            selected={false}
-                            votes={accommodation.userVoted}
-                            onSuccess={() => updateData()}
-                        />
-                    </Grid>)));
+            .then(response => {
+                setTripGroup(response);
             })
             .catch(err => console.log('Request Failed', err));
-        setLoading(false);
     };
 
     const getChosenAccommodation = async () => {
@@ -85,12 +78,14 @@ export const AccommodationsPage = () => {
                 if (accommodation.groupId === null) {
                     setSelectedAccommodation(null)
                 } else {
+                    console.log(accommodation)
                     setSelectedAccommodation(
                         <Grid item xs={12} key={accommodation.accommodationId}>
                             <AccommodationCard
                                 accommodationData={accommodation}
                                 canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
                                 selected={true}
+                                isCoordinator={isCordinator}
                                 votes={[]}
                                 onSuccess={() => updateData()}
                             />
@@ -102,17 +97,31 @@ export const AccommodationsPage = () => {
             .catch(err => console.log('Request Failed', err));
     };
 
-    useEffect(() => {
-        getTripData();
-        isCorinator();
-        getData();
-        getChosenAccommodation();
-    }, []);
-
-    const updateData = () => {
-        getChosenAccommodation();
-        getData();
-    }
+    const getData = async () => {
+        setLoading(true);
+        doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(json => { setAccommodationsRaw(json); return json })
+            .then(accommodations => {
+                setAllAccommodations(accommodations.map((accommodation) => (
+                    tripGroup.selectedAccommodationId !== accommodation.accommodation.accommodationId ?
+                        <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
+                            <AccommodationCard
+                                accommodationData={accommodation.accommodation}
+                                canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
+                                selected={false}
+                                isCoordinator={isCordinator}
+                                votes={accommodation.userVoted}
+                                onSuccess={() => updateData()}
+                            />
+                        </Grid>
+                        :
+                        <Box />
+                )));
+            })
+            .catch(err => console.log('Request Failed', err));
+        setLoading(false);
+    };
 
     return (
         <Box

@@ -33,7 +33,7 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
         setIsDeleting(true);
         await doDelete('/api/v1/day-plan?dayPlanId=' + dayPlanId)
             .then(response => {
-                // setSuccessToastOpen(response.ok);
+                setSuccessToastOpen(response.ok);
                 setIsDeleting(false);
                 handleSuccessClose();
             })
