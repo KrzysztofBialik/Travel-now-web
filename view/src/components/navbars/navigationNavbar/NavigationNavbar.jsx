@@ -35,8 +35,9 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
     const [tripGroupOptionsDialogOpen, setTripGroupOptionsDialogOpen] = useState(false);
     const [userOptionsDialogOpen, setUserOptionsDialogOpen] = useState(false);
     const [userLogoutDialogOpen, setUserLogoutDialogOpen] = useState(false);
-    const [isCoordinator, setIsCoordinator] = useState(false)
+    const [isCoordinator, setIsCoordinator] = useState(false);
     const [isPlanningStage, setIsPlanningStage] = useState(false);
+    const [userData, setUserData] = useState([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -44,7 +45,28 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
             getIsCoordinator();
             getTripData();
         }
+        getUserData();
     }, []);
+
+    const getUserData = async () => {
+        await doGet('/api/v1/user?' + new URLSearchParams({ userId: sessionStorage.getItem("userId") }).toString())
+            .then(response => response.json())
+            .then(response => {
+                setNecessaryData(response);
+            })
+            .catch(err => console.log('Request Failed', err));
+    };
+
+    const setNecessaryData = (response) => {
+        const allPhoneNumber = response.phoneNumber.split(" ");
+        var code = allPhoneNumber[0].slice();
+        code = code.slice(1, code.length)
+        const phoneNumber = allPhoneNumber[1];
+        setUserData({
+            userId: response.userId, email: response.email, firstName: response.firstName, surname: response.surname,
+            code: code, phone: phoneNumber, birthDate: response.birthday
+        });
+    };
 
     const getIsCoordinator = async () => {
         await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
@@ -141,7 +163,9 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
             {userOptionsDialogOpen && <UserOptionsDialog
                 open
                 onClose={() => setUserOptionsDialogOpen(false)}
-            />}
+                userData={userData}
+            />
+            }
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar
                     sx={{

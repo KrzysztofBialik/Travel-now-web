@@ -107,7 +107,7 @@ export const RegisterPage = () => {
     });
 
     const handleRegister = async (values) => {
-        console.log(values);
+        console.log(values.birthDate);
         setRegisterProcess(true);
         var postBody = {
             'email': values.email,
@@ -115,7 +115,7 @@ export const RegisterPage = () => {
             'password': values.confirmPassword,
             'firstName': values.firstName,
             'surname': values.surname,
-            'birthday': format(values.birthDate, 'yyyy-MM-dd')
+            'birthday': values.birthDate
         };
         await doPost('/api/v1/auth/register', postBody, false)
             .then(response => {
@@ -133,6 +133,7 @@ export const RegisterPage = () => {
                 }
                 setErrorToastOpen(true);
             });
+        setRegisterProcess(false);
     };
 
     const onKeyDown = (e) => {

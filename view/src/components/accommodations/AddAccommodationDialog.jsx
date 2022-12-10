@@ -41,8 +41,7 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
         link: Yup
             .string()
             .url("This is not a valid url")
-            .required("You have to provide url to accommodation")
-            .max(250, "Too long url, maximum is 250 characters"),
+            .required("You have to provide url to accommodation"),
         price: Yup
             .number()
             .positive("Price must be a positive number")

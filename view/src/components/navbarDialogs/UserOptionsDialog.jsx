@@ -32,39 +32,43 @@ import { UpdatedUserConfirmationDialog } from './UpdatedUserConfirmationDialog';
 import { ErrorToast } from '../toasts/ErrorToast';
 
 
-export const UserOptionsDialog = ({ open, onClose }) => {
+export const UserOptionsDialog = ({ open, onClose, userData }) => {
 
     const today = new Date();
-    const [userData, setUserData] = useState([])
+    // const [userData, setUserData] = useState([])
     const [confirmUpdatedDialogOpen, setConfirmUpdateDialogOpen] = useState(false);
     const [confirmErrorToastOpen, setConfirmErrorToastOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
 
-    useEffect(() => {
-        getUserData();
-    }, []);
+    // useEffect(() => {
+    //     getUserData();
+    // }, []);
 
-    const getUserData = async () => {
-        await doGet('/api/v1/user?' + new URLSearchParams({ userId: sessionStorage.getItem("userId") }).toString())
-            .then(response => response.json())
-            .then(response => {
-                setNecessaryData(response);
-            })
-            .catch(err => console.log('Request Failed', err));
-    };
+    // useEffect(() => {
+    //     getUserData();
+    // }, [open]);
 
-    const setNecessaryData = (response) => {
-        const allPhoneNumber = response.phoneNumber.split(" ");
-        var code = allPhoneNumber[0].slice();
-        code = code.slice(1, code.length)
-        const phoneNumber = allPhoneNumber[1];
-        setUserData({
-            userId: response.userId, email: response.email, firstName: response.firstName, surname: response.surname,
-            code: code, phone: phoneNumber, birthDate: response.birthday
-        });
-        console.log(response.birthday);
-    };
+    // const getUserData = async () => {
+    //     await doGet('/api/v1/user?' + new URLSearchParams({ userId: sessionStorage.getItem("userId") }).toString())
+    //         .then(response => response.json())
+    //         .then(response => {
+    //             setNecessaryData(response);
+    //         })
+    //         .catch(err => console.log('Request Failed', err));
+    // };
+
+    // const setNecessaryData = (response) => {
+    //     const allPhoneNumber = response.phoneNumber.split(" ");
+    //     var code = allPhoneNumber[0].slice();
+    //     code = code.slice(1, code.length)
+    //     const phoneNumber = allPhoneNumber[1];
+    //     setUserData({
+    //         userId: response.userId, email: response.email, firstName: response.firstName, surname: response.surname,
+    //         code: code, phone: phoneNumber, birthDate: response.birthday
+    //     });
+    //     console.log(response.birthday);
+    // };
 
     const validationSchema = Yup.object().shape({
         firstName: Yup
@@ -93,10 +97,19 @@ export const UserOptionsDialog = ({ open, onClose }) => {
             .required("You have to provide your birth date"),
     });
 
-    const defaultInputValues = userData;
+    const defaultInputValues = {
+        email: userData.email,
+        firstName: userData.firstName,
+        surname: userData.surname,
+        code: userData.code,
+        phone: userData.phone,
+        birthDate: userData.birthDate,
+    };
+
 
     const { register, handleSubmit, reset, formState: { errors }, control, setValue, getValues } = useForm({
-        resolver: yupResolver(validationSchema)
+        resolver: yupResolver(validationSchema),
+        defaultValues: defaultInputValues
     });
 
     const handleChangeData = (values) => {
@@ -111,16 +124,24 @@ export const UserOptionsDialog = ({ open, onClose }) => {
         setIsUpdating(true);
         console.log("hello there")
         console.log(values)
-        var postBody = { 'userId': sessionStorage.getItem('userId'), 'phoneNumber': '+' + values.code + ' ' + values.phone, 'firstName': values.firstName, 'surname': values.surname, 'brithday': values.birthDate };
+        console.log(values.birthDate)
+        var postBody = {
+            'userId': sessionStorage.getItem('userId'),
+            'phoneNumber': '+' + values.code + ' ' + values.phone,
+            'firstName': values.firstName,
+            'surname': values.surname,
+            'birthday': values.birthDate
+        };
         await doPatch('/api/v1/user', postBody)
             .then(response => response.json())
             .then(response => {
-                setNecessaryData(response);
+                // setNecessaryData(response);
                 handleSuccess();
             })
             .catch(err => {
                 setConfirmErrorToastOpen(true);
-                setErrorMessage(err.message)
+                setErrorMessage(err.message);
+                setIsUpdating(false);
                 console.log('Request Failed', err.message)
             });
         setIsUpdating(false);
@@ -264,7 +285,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                 margin="normal"
                                                 placeholder='First name'
                                                 name='First name'
-                                                defaultValue={userData.firstName}
                                                 label='First name'
                                                 fullWidth
                                                 variant="outlined"
@@ -284,7 +304,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                 margin="normal"
                                                 placeholder='Surname'
                                                 name='surname'
-                                                defaultValue={userData.surname}
                                                 label='Surname'
                                                 fullWidth
                                                 variant="outlined"
@@ -310,7 +329,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                         margin="normal"
                                                         placeholder='Code'
                                                         name='code'
-                                                        defaultValue={userData.code}
                                                         label='Code'
                                                         variant="outlined"
                                                         InputProps={{
@@ -342,7 +360,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                     margin="normal"
                                                     placeholder='Phone'
                                                     name='phone'
-                                                    defaultValue={userData.phone}
                                                     label='Phone'
                                                     variant="outlined"
                                                     InputProps={{
