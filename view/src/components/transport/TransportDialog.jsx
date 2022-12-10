@@ -106,7 +106,9 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                 if (json.length !== 0) {
                     var car = json.filter(transport => transport.transportTypeJson === 2);
                     setCarTransportData(car.length !== 0 ? car : [])
-                    setMapsLink(`https://www.google.com/maps/dir/?api=1&origin=${car[0].source}&destination=${car[0].destination}`)
+                    if(car.length !== 0){
+                        setMapsLink(`https://www.google.com/maps/dir/?api=1&origin=${car[0].source}&destination=${car[0].destination}`)
+                    }
 
                     var plane = json.filter(transport => transport.transportTypeJson === 1);
                     setPlaneTransportData(plane.length !== 0 ? plane : [])
