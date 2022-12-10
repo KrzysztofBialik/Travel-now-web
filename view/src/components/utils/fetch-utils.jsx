@@ -1,5 +1,3 @@
-// import { useNavigate } from "react-router-dom";
-
 export const URL_PREFIX = 'https://51.132.58.149:8443';
 
 export const doGet = (endpoint) => {
@@ -84,17 +82,11 @@ const addAuthorizationHeader = (headers) => {
     return headers
 }
 
-// function app() {
-//     const navigate = useNavigate();
-//     navigate('/login');
-// }
-
-
 const checkForError = async (response) => {
     if (!response.ok) {
 
         if (response.status === 401 && response.url !=='https://51.132.58.149:8443/api/v1/auth/login') {   
-            // RootNavigation.navigate('/login');
+            window.location.replace('https://travelnow.vercel.app/login');
         }
 
         if (response.status === 401 && response.url ==='https://51.132.58.149:8443/api/v1/auth/login') {   
