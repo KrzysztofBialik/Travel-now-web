@@ -1,7 +1,6 @@
-// export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'http://51.132.58.149:8080' : '';
-// export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : '';
-export const URL_PREFIX = 'https://51.132.58.149:8443';
+// import { useNavigate } from "react-router-dom";
 
+export const URL_PREFIX = 'https://51.132.58.149:8443';
 
 export const doGet = (endpoint) => {
     const headers = addAuthorizationHeader({
@@ -85,16 +84,30 @@ const addAuthorizationHeader = (headers) => {
     return headers
 }
 
+// function app() {
+//     const navigate = useNavigate();
+//     navigate('/login');
+// }
+
+
 const checkForError = async (response) => {
     if (!response.ok) {
+
+        if (response.status === 401 && response.url !=='https://51.132.58.149:8443/api/v1/auth/login') {   
+            // RootNavigation.navigate('/login');
+        }
+
+        if (response.status === 401 && response.url ==='https://51.132.58.149:8443/api/v1/auth/login') {   
+            throw new Error("401")
+        }
+
         if (response.headers.get('content-type') === 'application/json') {
             const json = await response.json()
             throw new Error(json.message)
         }
 
-        if (response.status === 401) {
-            throw new Error("401")
-        }
+        
+
         throw new Error("Something went wrong")
     }
     return response

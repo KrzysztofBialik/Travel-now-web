@@ -92,8 +92,10 @@ export const LoginPage = () => {
                 setLoginLoading(false);
                 if (err.message === '401') {
                     setInvalidData(true);
+                } else {
+                    setErrorToastOpen(true);
                 }
-                setErrorToastOpen(true);
+                
             });
         // reset();
     };
