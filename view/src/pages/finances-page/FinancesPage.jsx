@@ -148,7 +148,7 @@ export const FinancesPage = () => {
                     const person = userList.find(user => user.id === expenditure.creatorId).fullName;
                     const isDebtor = expenditure.expenseDebtors.some(debtor => debtor === parseInt(sessionStorage.getItem("userId")))
                     const contributors = expenditure.expenseDebtors.map(ed => {
-                        return ({ name: userList.find(user => user.id === ed).fullName })
+                        return ({id: userList.find(user => user.id === ed).id ,name: userList.find(user => user.id === ed).fullName })
                     })
                     return ({
                         id: expenditure.expenditureId, personId: expenditure.creatorId, person: person,
@@ -223,7 +223,7 @@ export const FinancesPage = () => {
             )));
         }
         else {
-            setAllExpenditures(expendituresData.filter(expenditure => expenditure.debtors === true).map(expenditure => (
+            setAllExpenditures(expendituresData.filter(expenditure => expenditure.contributors.some(debtor => debtor.id === currentUser.userId)).map(expenditure => (
                 <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
                     <ExpenditureCard expenditureData={expenditure} />
                 </ListItem>
