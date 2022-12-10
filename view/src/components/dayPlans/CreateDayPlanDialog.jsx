@@ -85,7 +85,7 @@ const icons = [
     },
 ];
 
-export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId }) => {
+export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId, startDate, endDate }) => {
 
     const today = new Date();
 
@@ -102,7 +102,6 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId }) => {
 
     const defaultInputValues = {
         dayPlanName: dayPlanName,
-        date: today,
         icon: '0',
     };
 
@@ -255,7 +254,9 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId }) => {
                                         handleChange({ ...values, date: newDate });
                                         // onDateChange(newDate)
                                     }}
-                                    value={values.date}
+                                    value={startDate}
+                                    minDate={startDate}
+                                    maxDate={endDate}
                                     renderInput={(params) =>
                                         <TextField
                                             {...params}
@@ -267,7 +268,7 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId }) => {
                                             label="Date"
                                             type="date"
                                             margin="normal"
-                                            value={values.date}
+                                            // value={values.date}
                                             {...register('date')}
                                             error={Boolean(errors.date) ? (Boolean(dateError)) : false}
                                             helperText={Boolean(errors.date) && dateError}

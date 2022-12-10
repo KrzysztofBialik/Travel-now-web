@@ -56,6 +56,7 @@ export const DayPlanPage = (props) => {
     const [isOptimizedDayPlan, setIsOptimizedDayPlan] = useState(false);
     const [deleteDayPlanConfirmToastOpen, setDeleteDayPlanConfirmToastOpen] = useState(false);
     const [deleteAttractionConfirmToastOpen, setDeleteAttractionConfirmToastOpen] = useState(false);
+    const [tripGroup, setTripGroup] = useState([])
     // const [isCoordinator, setIsCoordinator] = useState(false)
 
     // var isCordinator = false;
@@ -118,6 +119,7 @@ export const DayPlanPage = (props) => {
 
     useEffect(() => {
         getData();
+        getTripData();
     }, [])
 
     const showDetailedPlan = (name, date, attractions, dayPlanId) => {
@@ -159,6 +161,16 @@ export const DayPlanPage = (props) => {
         )));
         console.log("end of update")
         setLoadingOptimized(false);
+    };
+
+    const getTripData = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => {
+                setTripGroup(response);
+                return response;
+            })
+            .catch(err => console.log('Request Failed', err));
     };
 
     const getOptimized = async () => {
@@ -232,6 +244,8 @@ export const DayPlanPage = (props) => {
                 onClose={() => setCreateDayPlanDialogOpen(false)}
                 onSuccess={() => getData()}
                 groupId={groupId}
+                startDate={tripGroup.startDate}
+                endDate={tripGroup.endDate}
             />
             <SearchAttractionDialog
                 open={searchAttractionDialogOpen}
