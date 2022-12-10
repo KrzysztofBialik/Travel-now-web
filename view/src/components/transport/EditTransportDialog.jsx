@@ -101,14 +101,20 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
 
     const onTransportOptionChange = (value) => {
         setTransportOptionError(
-            value.length === 0 ? "You have to provide transport option." : null
+            value.length === 0 ? "You have to provide transport option" : null
+        )
+        setTransportOptionError(
+            value.length > 99 ? "Transport option name too long, max. 100 characters" : null
         )
         setTransportOption({ value: value, length: value.length });
     };
 
     const onMeetingLocationChange = (value) => {
         setMeetingLocationError(
-            value.length === 0 ? "You have to provide meeting location." : null
+            value.length === 0 ? "You have to provide meeting location" : null
+        )
+        setMeetingLocationError(
+            value.length > 99 ? "Meeting location too long, max. 100 characters" : null
         )
         setMeetingLocation({ value: value, length: value.length });
     };
@@ -151,10 +157,12 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
     const validationSchema = Yup.object().shape({
         transportOption: Yup
             .string()
-            .required(),
+            .required()
+            .max(100),
         meetingLocation: Yup
             .string()
-            .required(),
+            .required()
+            .max(100),
         destination: Yup
             .string()
             .required(),
@@ -177,7 +185,7 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
     });
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
-        resolver: yupResolver(validationSchema),
+        // resolver: yupResolver(validationSchema),
     });
 
     const handleEditTransport = async (tripName, meetingLocation, destination, minDays, hours, minutes, meetingDate, meetingTime, price, description) => {
@@ -195,7 +203,6 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
         };
         await doPatch('/api/v1/transport/user-transport?' + new URLSearchParams({ transportId: transportData.transportId }).toString(), postBody)
             .then(response => {
-                setSuccessToastOpen(response.ok);
                 close();
                 onSuccess();
             })
@@ -207,6 +214,8 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
 
     const close = () => {
         reset();
+        console.log("close")
+        setSuccessToastOpen(true);
         // setTransportOption({ value: "", length: 0 });
         // setTransportOptionError("You have to provide trip name.");
         // setMeetingLocation({ value: "", length: 0 });
@@ -229,9 +238,8 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
 
     return (
         <div>
-            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Transport option successfully edited." />
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Transport option successfully edited" />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={editionError} />
-
             <Dialog
                 open={open}
                 onClose={onClose}
@@ -370,6 +378,7 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
                                     label="Meeting date"
                                     value={meetingDate}
                                     margin="normal"
+                                    required
                                     onChange={(newDate) => {
                                         setMeetingDate(newDate);
                                     }}
@@ -387,6 +396,7 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
                                     onChange={(newTime) => {
                                         setMeetingTime(newTime);
                                     }}
+                                    required
                                     renderInput={(params) => <TextField {...params}
                                         sx={{
                                             svg: { color: "#2ab7ca" },
@@ -459,7 +469,7 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
                             <Button
                                 variant="outlined"
                                 sx={{ borderRadius: "20px" }}
-                                onClick={() => close()}
+                                onClick={onClose}
                             >
                                 Cancel
                             </Button>

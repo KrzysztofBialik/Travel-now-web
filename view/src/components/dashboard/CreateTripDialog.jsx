@@ -78,7 +78,7 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
     const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
-    const DESCRIPTION_LIMIT = 250;
+    const DESCRIPTION_LIMIT = 120;
 
     const defaultInputValues = {
         tripName: "",
@@ -92,19 +92,23 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
     const validationSchema = Yup.object().shape({
         tripName: Yup
             .string()
-            .required("You have to provide trip name"),
+            .required("You have to provide trip name")
+            .max(50, "Too long name, max. 50 characters"),
         startingLocation: Yup
             .string()
-            .required("You have to provide starting location"),
+            .required("You have to provide starting location")
+            .max(100, "Too long starting location, max. 100 characters"),
         currency: Yup
             .string()
             .required("You have to provide currency for trip group"),
         minDays: Yup
             .number()
-            .min(1, "Number of days must be equal or higher than 1"),
+            .min(1, "Number of days must be equal or higher than 1")
+            .required("You have to provide min number of days"),
         minParticipants: Yup
             .number()
-            .min(1, "Number of participants must be equal or higher than 1"),
+            .min(1, "Number of participants must be equal or higher than 1")
+            .required("You have to provide min number of participants"),
         description: Yup
             .string()
             .max(DESCRIPTION_LIMIT, "You have exceeded characters limit for description")
@@ -218,7 +222,6 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                         />
                         <TextField
                             type='string'
-                            autoFocus
                             margin="normal"
                             placeholder='Starting location'
                             name='startingLocation'
@@ -270,7 +273,6 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                             <TextField
                                 sx={{ minWidth: "150px", width: "150px" }}
                                 type="number"
-                                autoFocus
                                 margin="normal"
                                 placeholder='Min days'
                                 name='minDays'
@@ -290,7 +292,6 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                             <TextField
                                 sx={{ minWidth: "150px", width: "150px" }}
                                 type="number"
-                                autoFocus
                                 margin="normal"
                                 placeholder='Min participants'
                                 name='minParticipants'
@@ -310,7 +311,6 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                         </Box>
                         <TextField
                             type='string'
-                            autoFocus
                             margin="normal"
                             multiline
                             rows={4}
@@ -334,29 +334,6 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                             <span>{errors.description?.message}</span>
                             <span>{`${descriptionWatch.length}/${DESCRIPTION_LIMIT}`}</span>
                         </FormHelperText>
-
-                        {/* {isCreating ?
-                            <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "flex-end", pr: 7 }}>
-                                <CircularProgress />
-                            </Box>
-                            :
-                            <DialogActions>
-                                <Button
-                                    variant="outlined"
-                                    sx={{ borderRadius: "20px" }}
-                                    onClick={() => close()}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    sx={{ borderRadius: "20px", color: "#FFFFFF" }}
-                                >
-                                    Create trip
-                                </Button>
-                            </DialogActions>
-                        } */}
                         <DialogActions>
                             {isCreating ?
                                 <Button

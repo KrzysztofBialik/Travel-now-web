@@ -14,25 +14,23 @@ export const UpdatedUserConfirmationDialog = ({ open, onClose }) => {
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        minWidth: "400px",
+                        maxWidth: "400px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Congratulations!</DialogTitle>
-                <DialogContent>
+                <DialogTitle sx={{ pb: 0 }}>Congratulations!</DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
                     <DialogContentText>
-                        You have updated your user account details.
+                        You have updated your user account details
                     </DialogContentText>
                     <DialogActions>
                         <Button
-                            variant="outlined"
-                            sx={{
-                                borderRadius: "10px",
-                                mt: "20px",
-                                backgroundColor: "primary.main",
-                                color: "#FFFFFF",
-                                "&:hover": {
-                                    backgroundColor: "primary.dark",
-                                    borderColor: "primary.dark"
-                                }
-                            }}
+                            sx={{ borderRadius: "20px", fontSize: "12px", color: "#FFFFFF" }}
+                            variant="contained"
                             onClick={onClose}
                         >
                             Close
@@ -42,4 +40,4 @@ export const UpdatedUserConfirmationDialog = ({ open, onClose }) => {
             </Dialog>
         </div>
     );
-}
+};

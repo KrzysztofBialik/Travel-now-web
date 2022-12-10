@@ -40,4 +40,4 @@ export const NoDatesSelectedDialog = ({ open, onClose }) => {
             </Dialog>
         </div>
     );
-}
+};

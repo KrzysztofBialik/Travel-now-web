@@ -88,12 +88,7 @@ export const DayPlanPage = (props) => {
 
     const getDataAfterDeleteAttraction = (dayPlanId) => {
         setDeleteAttractionConfirmToastOpen(true);
-        if (!isOptimizedDayPlan) {
-            getOptimized();
-        }
-        else {
-            updateDayplanAttractions(dayPlanId)
-        }
+        updateDayplanAttractions();
     }
 
     const getData = async () => {
@@ -141,15 +136,16 @@ export const DayPlanPage = (props) => {
                 />
             </ListItem>
         )));
-    }
+    };
 
-    const updateDayplanAttractions = async (id) => {
+    const updateDayplanAttractions = async () => {
         setLoadingOptimized(true);
-        var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: groupId, dayPlanId: id }).toString())
+        console.log("update")
+        var newAttractions = await doGet('/api/v1/attraction?' + new URLSearchParams({ groupId: groupId, dayPlanId: selectedDayPlanId }).toString())
             .then(response => response.json());
-        var dayPlanData = dayPlansRaw.find(dayPlan => dayPlan.dayPlanId === id);
+        var dayPlanData = dayPlansRaw.find(dayPlan => dayPlan.dayPlanId === selectedDayPlanId);
         dayPlanData.dayAttractions = newAttractions;
-        setdayPlansRaw(dayPlansRaw.map(dp => dp.dayPlanId === id ? dayPlanData : dp));
+        setdayPlansRaw(dayPlansRaw.map(dp => dp.dayPlanId === selectedDayPlanId ? dayPlanData : dp));
         showDetailedPlan(dayPlanData.name, dayPlanData.date, dayPlanData.dayAttractions, dayPlanData.dayPlanId);
         setAllDayPlans(dayPlansRaw.map(dayPlan => (
             <ListItem sx={{ p: 0, my: 1 }} key={dayPlan.dayPlanId}>
@@ -161,6 +157,7 @@ export const DayPlanPage = (props) => {
                     onSuccessDelete={() => getDataAfterDeleteDayPlan()} />
             </ListItem>
         )));
+        console.log("end of update")
         setLoadingOptimized(false);
     };
 
@@ -192,7 +189,7 @@ export const DayPlanPage = (props) => {
                             attractionData={attraction.attraction}
                             groupId={groupId}
                             id={selectedDayPlanId}
-                            onDeletion={(dayPlanId) => getDataAfterDeleteAttraction(dayPlanId)}
+                            onDeletion={(selectedDayPlanId) => getDataAfterDeleteAttraction(selectedDayPlanId)}
                         />
                     </Box>
                 </ListItem>

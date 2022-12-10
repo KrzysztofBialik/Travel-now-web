@@ -10,9 +10,6 @@ import { IconButton } from '@mui/material';
 import { Typography } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { InfoToast } from '../toasts/InfoToast';
-import { useEffect } from 'react';
-import { doGet } from '../utils/fetch-utils';
-import { ErrorToast } from '../toasts/ErrorToast';
 
 
 export const InviteDialog = ({ open, onClose, groupId, inviteLink, copiedText, errorToast }) => {

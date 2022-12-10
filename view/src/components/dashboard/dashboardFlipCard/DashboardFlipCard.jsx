@@ -2,7 +2,6 @@ import React from 'react';
 import { Box, Card } from '@mui/material';
 import { Typography } from '@mui/material';
 import { Button } from '@mui/material';
-
 import './DashboardFlipCard.css';
 
 
@@ -20,11 +19,6 @@ export const DashboardFlipCard = ({ title, description, action }) => {
             <Box className="flip-card-inner">
                 <Box className="flip-card-front"
                     sx={{
-                        // backgroundColor: "primary.main"
-                        // backgroundImage: `url(${frontBg})`,
-                        // backgroundSize: "cover",
-                        // backgroundPosition: "center",
-                        // backgroundImage: "linear-gradient(to bottom right, #24939e, #55ccd9)",
                         backgroundImage: "linear-gradient(to bottom right, #55ccd9, #24939e)"
                     }}
                 >
@@ -40,8 +34,6 @@ export const DashboardFlipCard = ({ title, description, action }) => {
                 </Box>
                 <Box className="flip-card-back"
                     sx={{
-                        // backgroundColor: "primary.main"
-                        // backgroundImage: "linear-gradient(to bottom right, #24939e, #55ccd9)",
                         backgroundImage: "linear-gradient(to bottom right, #55ccd9, #24939e)"
                     }}>
                     <Box pt={12} pb={2} px={2} textAlign="center" lineHeight={1}>

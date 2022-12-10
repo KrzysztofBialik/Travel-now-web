@@ -54,11 +54,11 @@ export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailabilit
             availabilityId: availability.availabilityId, userId: availability.userId, groupId: availability.groupId,
             startDate: parseISO(availability.dateFrom), endDate: parseISO(availability.dateTo), disabled: true
         })))
-    }
+    };
 
     useEffect(() => {
         fixAvailabilities();
-    }, [usersAvailability])
+    }, [usersAvailability]);
 
     return (
         <>

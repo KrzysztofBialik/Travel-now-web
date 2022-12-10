@@ -1,30 +1,20 @@
 import * as React from 'react';
 import { useState } from "react";
-import { styled, alpha, ButtonBase } from '@mui/material';
 import { Box } from '@mui/material';
 import { Typography } from '@mui/material';
 import { Button } from '@mui/material';
 import { IconButton } from '@mui/material';
-import { FormControl } from '@mui/material';
 import { Dialog } from '@mui/material';
-import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
-import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
 import { List } from '@mui/material';
 import { ListItem } from '@mui/material';
-import InputBase from '@mui/material/InputBase';
 import { TextField } from '@mui/material';
-import { FormHelperText } from '@mui/material';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as Yup from 'yup';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from '@mui/icons-material/Search';
 import ClearIcon from '@mui/icons-material/Clear';
 import CloseIcon from '@mui/icons-material/Close';
 import { ErrorToast } from '../toasts/ErrorToast';
-import { AttractionCard } from './AttractionCard';
 import { AttractionCandidateCard } from './AttractionCandidateCard';
 import { SelectAttractionDialog } from './SelectAttractionDialog';
 import { doGet } from "../../components/utils/fetch-utils";
@@ -34,7 +24,6 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
 
     const [selectAttractionDialogOpen, setSelectAttractionDialogOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
-    // const [candidateData, setCandidateData] = useState("");
     const [showClearIcon, setShowClearIcon] = useState("none");
     const [searchValue, setSearchValue] = useState("");
     const [searchResult, setSearchResult] = useState("");
@@ -58,7 +47,6 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
             setErrorToastOpen(true);
             return;
         }
-        ///wyszukiwanie na podstawie value
         handleSearch(value);
         setSearchResult(value);
         setShowClearIcon("none");
@@ -78,7 +66,6 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
         onClose();
     };
 
-
     const handleSelectAction = (candidate) => {
         setSelectedAttractionData(candidate);
         setSelectAttractionDialogOpen(true);
@@ -90,7 +77,6 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
         onClose();
     };
 
-
     return (
         <div>
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Unable to search for no attraction!" />
@@ -100,7 +86,6 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
                 attractionData={selectedAttractionData}
                 closeWithSelect={() => closeWithSelect()}
                 dayPlanId={dayPlanId}
-            // onSuccess={(dayPlanId) => onSuccess(dayPlanId)}
             />
             <Dialog
                 open={open}
@@ -172,9 +157,6 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
                             }}
                             onKeyDown={(event) => {
                                 if (event.key === 'Enter') {
-                                    // Prevent's default 'Enter' behavior.
-                                    // event.defaultMuiPrevented = true;
-                                    // your handler code
                                     searchAction(searchValue);
                                 }
                             }}
@@ -195,7 +177,6 @@ export const SearchAttractionDialog = ({ open, onClose, dayPlanId, onSuccess }) 
                                 justifyContent: "center",
                                 alignItems: "center",
                                 height: "90%"
-                                // border: "2px solid black"
                             }}
                         >
                             <CircularProgress />

@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box } from '@mui/material';
 import { Button } from '@mui/material';
-import { Typography } from '@mui/material';
 import { CircularProgress } from '@mui/material';
 import { Dialog } from '@mui/material';
 import { DialogActions } from '@mui/material';
@@ -13,6 +11,7 @@ import { DialogContentText } from '@mui/material';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doDelete } from '../utils/fetch-utils';
 import { SuccessToast } from '../toasts/SuccessToast';
+
 
 export const ConfirmLeaveGroupDialog = ({ open, onClose, groupId }) => {
 
@@ -26,11 +25,11 @@ export const ConfirmLeaveGroupDialog = ({ open, onClose, groupId }) => {
         setIsLeaving(true);
         await doDelete('/api/v1/trip-group/user?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => {
-                setSuccessToastOpen(true);  
-                setTimeout(() => {                                     
+                setSuccessToastOpen(true);
+                setTimeout(() => {
                     navigate('/dashboard', { leftGroup: true });
                 }, 4000);
-                
+
             })
             .catch(err => {
                 setErrorToastOpen(true);

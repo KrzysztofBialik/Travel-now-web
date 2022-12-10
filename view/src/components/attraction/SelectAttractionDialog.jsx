@@ -14,7 +14,6 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CardMedia } from '@mui/material';
 import * as Yup from 'yup';
-import InputAdornment from '@mui/material/InputAdornment';
 import CloseIcon from '@mui/icons-material/Close';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
@@ -29,7 +28,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
 
     const [attractionName, setAttractionName] = useState(attractionData.attractionName);
 
-    const DESCRIPTION_LIMIT = 250;
+    const DESCRIPTION_LIMIT = 200;
     const [description, setDescription] = useState({ value: "", length: 0 });
     const [descriptionError, setDescriptionError] = useState(description.length > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null);
     const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
@@ -55,7 +54,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
     const validationSchema = Yup.object().shape({
         description: Yup
             .string()
-            .max(250)
+            .max(200, "Description is too long")
     });
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
@@ -76,17 +75,13 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                 setErrorToastOpen(true);
                 setCreationError(err.message)
             });
-    }
+    };
 
     const close = () => {
         reset();
         closeWithSelect();
-        // setValues(defaultInputValues);
-        // setDescription({ value: "", length: 0 });
-        // setSuccessToastOpen(true);
-        // closeWithSelect();
         onClose();
-    }
+    };
 
     return (
         <div>
@@ -107,8 +102,6 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                         backgroundColor: "primary.main",
                         color: "#FFFFFF",
                         mb: "10px",
-                        // pt: 2,
-                        // pb: 1,
                         py: 2
                     }}
                 >
