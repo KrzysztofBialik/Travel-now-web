@@ -52,36 +52,32 @@ export const SelectOptimizedDatesDialog = ({ open, onClose, sharedGroupAvailabil
             <Dialog
                 open={open}
                 onClose={onClose}
+                PaperProps={{
+                    style: {
+                        minWidth: "400px",
+                        maxWidth: "400px",
+                        borderRadius: "20px"
+                    }
+                }}
             >
-                <DialogTitle>Select</DialogTitle>
-                <DialogContent>
+                <DialogTitle sx={{ pb: 0 }}>Select</DialogTitle>
+                <DialogContent sx={{ pb: 1 }}>
                     <DialogContentText>
                         If you confirm, this dates will be currently selected for the trip.
                     </DialogContentText>
                     <DialogActions>
-                        <Button variant="outlined" onClick={handleErrorClose}
-                            sx={{
-                                color: "secondary.main",
-                                borderColor: "secondary.main",
-                                borderRadius: "20px",
-                                "&:hover": {
-                                    color: "secondary.dark",
-                                    borderColor: "secondary.dark",
-                                }
-                            }}
+                        <Button
+                            variant="outlined"
+                            onClick={onClose}
+                            sx={{ borderRadius: "20px", fontSize: "12px" }}
                         >
                             Cancel
                         </Button>
                         <Button
                             variant="contained"
                             onClick={handleSuccessClose}
-                            sx={{
-                                backgroundColor: "secondary.main",
-                                borderRadius: "20px",
-                                "&:hover": {
-                                    backgroundColor: "secondary.dark"
-                                }
-                            }}
+                            sx={{ color: "#FFFFFF", borderRadius: "20px", fontSize: "12px" }}
+
                         >
                             Confirm
                         </Button>
