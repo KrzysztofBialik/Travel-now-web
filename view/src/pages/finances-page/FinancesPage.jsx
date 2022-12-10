@@ -81,7 +81,7 @@ export const FinancesPage = () => {
         await doGet('/api/v1/user-group/participants?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(response => {
-                setCurrentUser(response.find(user => user.userId === parseInt(localStorage.getItem("userId"))))
+                setCurrentUser(response.find(user => user.userId === parseInt(sessionStorage.getItem("userId"))))
                 const person = response.map(user => ({ id: user.userId, fullName: user.firstName + " " + user.surname }));
                 setAllUsers(person);
                 getExpendituresData(person)
@@ -92,7 +92,7 @@ export const FinancesPage = () => {
     }
 
     const getSettlementsData = async (userList) => {
-        await doGet('/api/v1/finance-request?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+        await doGet('/api/v1/finance-request?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
             .then(response => response.json())
             .then(response => {
                 var set = response.map(settlement => {
@@ -107,7 +107,7 @@ export const FinancesPage = () => {
                 });
                 setSettlementsData(set);
                 setOtherSettlements(set.filter(settlement =>
-                    settlement.debteeId !== parseInt(localStorage.getItem("userId")) && settlement.debtorId !== parseInt(localStorage.getItem("userId"))).map(settlement => {
+                    settlement.debteeId !== parseInt(sessionStorage.getItem("userId")) && settlement.debtorId !== parseInt(sessionStorage.getItem("userId"))).map(settlement => {
                         return (
                             <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
                                 <SettlementCard
@@ -123,12 +123,12 @@ export const FinancesPage = () => {
                         )
                     }));
                 setMySettlements(set.filter(settlement =>
-                    settlement.debtorId === parseInt(localStorage.getItem("userId")) || settlement.debteeId === parseInt(localStorage.getItem("userId"))).map(settlement => {
+                    settlement.debtorId === parseInt(sessionStorage.getItem("userId")) || settlement.debteeId === parseInt(sessionStorage.getItem("userId"))).map(settlement => {
                         return (
                             <ListItem sx={{ p: 0, my: "10px" }} key={settlement.id}>
                                 <SettlementCard
                                     settlementData={settlement}
-                                    canResolve={settlement.debteeId === parseInt(localStorage.getItem("userId")) && settlement.status === "PENDING"}
+                                    canResolve={settlement.debteeId === parseInt(sessionStorage.getItem("userId")) && settlement.status === "PENDING"}
                                     groupId={groupId}
                                     requestId={settlement.id}
                                     onSuccess={() => getAllUsersInGroup()}
@@ -146,7 +146,7 @@ export const FinancesPage = () => {
             .then(response => {
                 setExpendituresData(response.map(expenditure => {
                     const person = userList.find(user => user.id === expenditure.creatorId).fullName;
-                    const isDebtor = expenditure.expenseDebtors.some(debtor => debtor === parseInt(localStorage.getItem("userId")))
+                    const isDebtor = expenditure.expenseDebtors.some(debtor => debtor === parseInt(sessionStorage.getItem("userId")))
                     const contributors = expenditure.expenseDebtors.map(ed => {
                         return ({ name: userList.find(user => user.id === ed).fullName })
                     })

@@ -54,7 +54,7 @@ export const AccommodationsPage = () => {
     };
 
     const isCorinator = async () => {
-        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
             .catch(err => console.log(err.message));
         var body = await resp.json();
         isCordinator = body;
@@ -83,7 +83,7 @@ export const AccommodationsPage = () => {
                         <Grid item xs={12} key={accommodation.accommodationId}>
                             <AccommodationCard
                                 accommodationData={accommodation}
-                                canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
+                                canModify={(accommodation.creator_id === parseInt(sessionStorage.getItem("userId"))) || isCordinator}
                                 selected={true}
                                 isCoordinator={isCordinator}
                                 votes={[]}
@@ -109,7 +109,7 @@ export const AccommodationsPage = () => {
                         <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
                             <AccommodationCard
                                 accommodationData={accommodation.accommodation}
-                                canModify={(accommodation.accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
+                                canModify={(accommodation.accommodation.creator_id === parseInt(sessionStorage.getItem("userId"))) || isCordinator}
                                 selected={false}
                                 isCoordinator={isCordinator}
                                 votes={accommodation.userVoted}

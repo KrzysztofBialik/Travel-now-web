@@ -1,6 +1,6 @@
 // export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'http://51.132.58.149:8080' : '';
 // export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : '';
-export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'https://51.132.58.149:8443' : '';
+export const URL_PREFIX = 'https://51.132.58.149:8443';
 
 
 export const doGet = (endpoint) => {
@@ -73,7 +73,7 @@ export const doPut = (endpoint) => {
         .then(response => checkForError(response))
 }
 const addAuthorizationHeader = (headers) => {
-    const jwt = localStorage.getItem("ACCESS_TOKEN")
+    const jwt = sessionStorage.getItem("ACCESS_TOKEN")
 
     if (jwt) {
         return {

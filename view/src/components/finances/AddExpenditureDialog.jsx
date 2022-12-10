@@ -55,7 +55,7 @@ export const AddExpenditureDialog = ({ open, onClose, participants, groupId, onS
     const postExpenditure = async (values) => {
         setIsAdding(true);
         var postBody = {
-            'creatorId': localStorage.getItem('userId'), title: values.expenditureName, price: values.price,
+            'creatorId': sessionStorage.getItem('userId'), title: values.expenditureName, price: values.price,
             debtorsIds: values.selectedParticipants.map(s => s.formName)
         };
         await doPost('/api/v1/finance-optimizer?' + new URLSearchParams({ groupId: groupId }).toString(), postBody)

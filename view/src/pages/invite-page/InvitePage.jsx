@@ -19,11 +19,11 @@ export const InvitePage = () => {
 
     const handleAcceptInvitation = async () => {
         console.log(searchParams.get("token"))
-        if(localStorage.getItem("userId") === null) {
-            localStorage.setItem('token', searchParams.get("token"))
+        if(sessionStorage.getItem("userId") === null) {
+            sessionStorage.setItem('token', searchParams.get("token"))
             navigate("/login?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("token")}).toString());
         } else {
-            await doPut('/api/v1/invitation?' + new URLSearchParams({ token: searchParams.get("token"), user:localStorage.getItem("userId")}).toString())
+            await doPut('/api/v1/invitation?' + new URLSearchParams({ token: searchParams.get("token"), user:sessionStorage.getItem("userId")}).toString())
             .then(response => {
                 if(response.ok) {
                     navigate('/dashboard')

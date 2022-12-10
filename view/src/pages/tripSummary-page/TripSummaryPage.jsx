@@ -24,6 +24,8 @@ import { ParticipantsTable } from '../../components/tripSummary/ParticipantsTabl
 import { futureTripButtonsDataWithGroupId } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { pastTripButtonsDataWithGroupId } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { currentTripButtonsDataWithGroupId } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
+import { BeginTripDialog } from '../../components/tripSummary/BeginTripDialog';
+import { EndTripDialog } from '../../components/tripSummary/EndTripDialog';
 
 import { futureTripButtonsData2 } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { currentTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
@@ -57,10 +59,13 @@ export const TripSummaryPage = () => {
     const { groupId } = useParams();
     const [isCordinator, setIsCordinator] = useState(false);;
     const [isPlanningStage, setIsPlanningStage] = useState(false);
+    const [isTripStage, setIsTripStage] = useState(false);
     const [usersData, setUsersData] = useState([]);
     const [groupCoordinators, setGroupCoordinators] = useState([]);
     const [deleteDatesDialogOpen, setDeleteDatesDialogOpen] = useState(false);
     const [deleteAccommodationDialogOpen, setDeleteAccommodationDialogOpen] = useState(false);
+    const [startTripDialogOpen, setStartTripDialogOpen] = useState(false);
+    const [endTripDialogOpen, setEndTripDialogOpen] = useState(false);
     const [dateRangePickerDialogOpen, setDateRangePickerDialogOpen] = useState(false);
     const [loadingSelected, setLoadingSelected] = useState(true);
     const [seletcedAccommodation, setSeletcedAccommodation] = useState(null);
@@ -93,6 +98,12 @@ export const TripSummaryPage = () => {
         setDeleteAccommodationDialogOpen(true);
     };
 
+    const confirmStartingTripAction = (isPlanningStage) => {
+
+     setStartTripDialogOpen(true)
+  
+    }
+
     const selectNavbar = () => {
         if (tripGroup.groupStage === 'PLANNING_STAGE') {
             return futureTripButtonsDataWithGroupId(groupId);
@@ -121,7 +132,7 @@ export const TripSummaryPage = () => {
     // }
 
     const isCorinator = async () => {
-        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: localStorage.getItem("userId") }).toString())
+        var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
             .catch(err => console.log(err.message));
         var body = await resp.json();
         setIsCordinator(body);
@@ -139,7 +150,7 @@ export const TripSummaryPage = () => {
                         <Grid item xs={12} md={4} key={accommodation.accommodationId}>
                             <AccommodationCard
                                 accommodationData={accommodation}
-                                canModify={(accommodation.creator_id === parseInt(localStorage.getItem("userId"))) || isCordinator}
+                                canModify={(accommodation.creator_id === parseInt(sessionStorage.getItem("userId"))) || isCordinator}
                                 selected={true}
                                 votes={[]}
                                 showSelectButton={false} />
@@ -169,6 +180,7 @@ export const TripSummaryPage = () => {
             .then(response => {
                 setTripGroup(response);
                 setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
+                setIsTripStage(response.groupStage === 'TRIP_STAGE');
             })
             .catch(err => console.log('Request Failed', err));
     };
@@ -179,17 +191,16 @@ export const TripSummaryPage = () => {
             .then(response => {
                 setSharedAvailability(response);
                 setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
+                setIsTripStage(response.groupStage === 'TRIP_STAGE');
             })
-            .catch(err => console.log('Request Failed', err));
+            .catch(err => 
+                {
+                setSharedAvailability(null)
+                console.log('Request Failed', err)
+    });
     };
 
-    const startTrip = async () => {
-        await doPut('/api/v1/trip-group?' + new URLSearchParams({ groupId: groupId }).toString())
-            .then(response => {
-                window.location.reload(false);
-            })
-            .catch(err => console.log('Request Failed', err));
-    };
+
 
 
     var tempData = [];
@@ -228,6 +239,13 @@ export const TripSummaryPage = () => {
         getChosenAccommodation();
         getTripData();
     }, [])
+
+    const updateData = () => {
+        isCorinator();
+        getUsersData();
+        getChosenAccommodation();
+        getTripData();
+    }
 
     return (
         <Box sx={{
@@ -685,6 +703,7 @@ export const TripSummaryPage = () => {
                                 </Box>
                             </Card>
                         </Grid>
+                        <BeginTripDialog open={startTripDialogOpen} onClose={() => setStartTripDialogOpen(false)} groupId={groupId} onSuccess={() => updateData()} usersData={usersData} tripGroup={tripGroup} isPlanning={isPlanningStage}/>
                         <Grid item xs={12}>
                             <Box sx={{
                                 width: "100%",
@@ -692,7 +711,7 @@ export const TripSummaryPage = () => {
                                 alignItems: "center",
                                 justifyContent: "space-around"
                             }}>
-                                {(isPlanningStage && isCordinator) ?
+                                {((isPlanningStage || isTripStage) && isCordinator) ?
                                     <Button variant="contained"
                                         sx={{
                                             fontSize: "28px",
@@ -701,8 +720,10 @@ export const TripSummaryPage = () => {
                                             borderRadius: "40px",
                                             '&:hover': { backgroundColor: "primary.light" }
                                         }}
-                                        onClick={startTrip}>
-                                        Begin trip
+
+                                        onClick={confirmStartingTripAction}>
+                                        {isPlanningStage ? 'Begin trip' : 'End trip'}
+
 
                                     </Button>
                                     :
