@@ -115,7 +115,7 @@ export const OptimizedDatesTable = ({ optimizedDates, onSuccess, selectedSharedA
              components={{
                 NoRowsOverlay: () => (
                   <Stack height="100%" alignItems="center" justifyContent="center">
-                    Not enough availabilities to satisfy group requirements : minimal number of days or minimal number of participants
+                    Not enough availabilities to satisfy group requirements: minimal number of days or minimal number of participants
                   </Stack>
                 )
              }}

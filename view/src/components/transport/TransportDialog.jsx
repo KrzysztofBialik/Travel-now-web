@@ -79,6 +79,17 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
     });
 
+    useEffect(() => {
+        if (open) {
+            getData();
+            calculateRoute();
+        }
+    }, [open]);
+
+    useEffect(() => {
+        calculateRoute();
+    }, [carTransportData]);
+
     const getData = async () => {
         setLoading(true);
         await doPost('/api/v1/transport?' + new URLSearchParams({ accommodationId: accommodationId }).toString())
@@ -95,7 +106,9 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                 if (json.length !== 0) {
                     var car = json.filter(transport => transport.transportTypeJson === 2);
                     setCarTransportData(car.length !== 0 ? car : [])
-                    setMapsLink(`https://www.google.com/maps/dir/?api=1&origin=${car[0].source}&destination=${car[0].destination}`)
+                    if(car.length !== 0){
+                        setMapsLink(`https://www.google.com/maps/dir/?api=1&origin=${car[0].source}&destination=${car[0].destination}`)
+                    }
 
                     var plane = json.filter(transport => transport.transportTypeJson === 1);
                     setPlaneTransportData(plane.length !== 0 ? plane : [])
@@ -109,9 +122,6 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
         setLoading(false);
     };
 
-    useEffect(() => {
-        calculateRoute();
-    }, [carTransportData]);
 
     const mapPlaneData = (plane) => {
         return (
@@ -192,13 +202,6 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
         return { 'days': Math.floor(differnce / 24), 'hours': (differnce - (Math.floor(differnce / 24) * 24) - (differnce - Math.floor(differnce))), 'minutes': Math.floor((differnce - Math.floor(differnce)) * 60) }
 
     };
-
-    useEffect(() => {
-        if (open) {
-            getData();
-            calculateRoute();
-        }
-    }, [open]);
 
     const parseTime = (duration) => {
         var time = durationn.parse(duration);
