@@ -378,6 +378,7 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
                                     label="Meeting date"
                                     value={meetingDate}
                                     margin="normal"
+                                    required
                                     onChange={(newDate) => {
                                         setMeetingDate(newDate);
                                     }}
@@ -395,6 +396,7 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
                                     onChange={(newTime) => {
                                         setMeetingTime(newTime);
                                     }}
+                                    required
                                     renderInput={(params) => <TextField {...params}
                                         sx={{
                                             svg: { color: "#2ab7ca" },

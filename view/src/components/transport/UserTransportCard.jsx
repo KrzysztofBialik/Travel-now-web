@@ -87,7 +87,7 @@ export const UserTransportCard = ({ transportData, onSuccess, accommodationId })
                 onClose={() => setDeleteTransportDialogOpen(false)}
                 transportId={transportData.transportId}
                 accommodationId={accommodationId}
-            // onSuccess={() => onSuccess()}
+                onSuccess={() => onSuccess()}
             />
             <Card
                 sx={{

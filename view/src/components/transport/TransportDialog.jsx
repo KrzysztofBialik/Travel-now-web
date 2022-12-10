@@ -180,7 +180,7 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
 
     const mapUserTransport = (transport) => {
         return (<Grid item xs={12} md={4}>
-            <UserTransportCard transportData={transport} accommodationId={accommodationId} />
+            <UserTransportCard transportData={transport} onSuccess={() => getData()} accommodationId={accommodationId} />
         </Grid>)
     };
 
