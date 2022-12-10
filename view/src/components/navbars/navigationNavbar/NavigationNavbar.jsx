@@ -138,10 +138,10 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
                 onClose={() => setTripGroupOptionsDialogOpen(false)}
                 groupId={groupId}
             />
-            <UserOptionsDialog
-                open={userOptionsDialogOpen}
+            {userOptionsDialogOpen && <UserOptionsDialog
+                open
                 onClose={() => setUserOptionsDialogOpen(false)}
-            />
+            />}
             <Box sx={{ flexGrow: 1 }}>
                 <AppBar
                     sx={{

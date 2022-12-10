@@ -201,6 +201,7 @@ export const DayPlanPage = (props) => {
 
     const optimizeDayPlan = () => {
         if (isOptimizedDayPlan) {
+            updateDayplanAttractions();
         }
         else {
             getOptimized();
