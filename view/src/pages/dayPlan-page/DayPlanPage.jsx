@@ -57,23 +57,30 @@ export const DayPlanPage = (props) => {
     const [deleteDayPlanConfirmToastOpen, setDeleteDayPlanConfirmToastOpen] = useState(false);
     const [deleteAttractionConfirmToastOpen, setDeleteAttractionConfirmToastOpen] = useState(false);
     const [tripGroup, setTripGroup] = useState([])
-    // const [isCoordinator, setIsCoordinator] = useState(false)
+    const [isCoordinator, setIsCoordinator] = useState(false);
 
-    // var isCordinator = false;
+    var isCordinator = false;
+
+    useEffect(() => {
+        getIsCoordinator();
+        getData();
+        getTripData();
+    }, [])
 
     // const isCorinator = async () => {
     //     var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
     //         .catch(err => console.log(err.message));
     //     var body = await resp.json();
     //     isCordinator = body;
+    //     console.log(isCordinator)
     // };
 
-    // const getIsCoordinator = async () => {
-    //     await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
-    //         .then(response => response.json())
-    //         .then(response => setIsCoordinator(response))
-    //         .catch(err => console.log(err.message));
-    // };
+    const getIsCoordinator = async () => {
+        await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
+            .then(response => response.json())
+            .then(response => setIsCoordinator(response))
+            .catch(err => console.log(err.message));
+    };
 
     // const isCorinator = async () => {
     //     var resp = await doGet('/api/v1/user-group/role?' + new URLSearchParams({ groupId: groupId, userId: sessionStorage.getItem("userId") }).toString())
@@ -116,11 +123,6 @@ export const DayPlanPage = (props) => {
             });
         setLoading(false);
     };
-
-    useEffect(() => {
-        getData();
-        getTripData();
-    }, [])
 
     const showDetailedPlan = (name, date, attractions, dayPlanId) => {
         setAllAttractions([]);
@@ -328,18 +330,20 @@ export const DayPlanPage = (props) => {
                                                 Day plans
                                             </Typography>
                                         </Box>
-                                        <Button
-                                            variant="contained"
-                                            sx={{
-                                                backgroundColor: "secondary.main",
-                                                borderRadius: "20px",
-                                                "&:hover": { backgroundColor: "secondary.dark" }
-                                            }}
-                                            onClick={() => setCreateDayPlanDialogOpen(true)}
-                                        >
-                                            <AddIcon />
-                                            Add
-                                        </Button>
+                                        {isCoordinator &&
+                                            <Button
+                                                variant="contained"
+                                                sx={{
+                                                    backgroundColor: "secondary.main",
+                                                    borderRadius: "20px",
+                                                    "&:hover": { backgroundColor: "secondary.dark" }
+                                                }}
+                                                onClick={() => setCreateDayPlanDialogOpen(true)}
+                                            >
+                                                <AddIcon />
+                                                Add
+                                            </Button>
+                                        }
                                     </Box>
                                     <Box sx={{
                                         display: "flex",
@@ -396,7 +400,6 @@ export const DayPlanPage = (props) => {
                                         backgroundClip: "border-box",
                                         minHeight: "300px",
                                         minWidth: "700px",
-                                        // maxWidth: "700px",
                                         borderRadius: "10px"
                                     }}
                                     elevation={16}
@@ -424,38 +427,31 @@ export const DayPlanPage = (props) => {
                                             </Typography>
                                         </Box>
                                         <Box>
-                                            <FormControlLabel
-                                                value="Optimize day plan"
-                                                control={<Switch color="secondary" onChange={optimizeDayPlan} checked={isOptimizedDayPlan} />}
-                                                label="Optimize day plan"
-                                                labelPlacement="start"
-                                                sx={{ mr: 4, color: "#FFFFFF" }}
-                                            />
-                                            {/* <Button
-                                                variant="contained"
-                                                sx={{
-                                                    backgroundColor: "secondary.main",
-                                                    borderRadius: "20px",
-                                                    mr: "20px",
-                                                    "&:hover": { backgroundColor: "secondary.dark" }
-                                                }}
-                                                onClick={() => setSearchAttractionDialogOpen(true)}
-                                            >
-                                                Optimize
-                                            </Button> */}
-                                            <Button
-                                                variant="contained"
-                                                sx={{
-                                                    backgroundColor: "secondary.main",
-                                                    borderRadius: "20px",
-                                                    mr: "20px",
-                                                    "&:hover": { backgroundColor: "secondary.dark" }
-                                                }}
-                                                onClick={() => setSearchAttractionDialogOpen(true)}
-                                            >
-                                                <AddIcon />
-                                                Add
-                                            </Button>
+                                            {selectedDayPlanId > 0 &&
+                                                <FormControlLabel
+                                                    value="Optimize day plan"
+                                                    control={<Switch color="secondary" onChange={optimizeDayPlan} checked={isOptimizedDayPlan} />}
+                                                    label="Optimize day plan"
+                                                    labelPlacement="start"
+                                                    sx={{ mr: 4, color: "#FFFFFF" }}
+                                                />
+                                            }
+                                            {(isCoordinator && selectedDayPlanId > 0) &&
+                                                <Button
+                                                    variant="contained"
+                                                    sx={{
+                                                        backgroundColor: "secondary.main",
+                                                        borderRadius: "20px",
+                                                        mr: "20px",
+                                                        "&:hover": { backgroundColor: "secondary.dark" }
+                                                    }}
+                                                    onClick={() => setSearchAttractionDialogOpen(true)}
+                                                >
+                                                    <AddIcon />
+                                                    Add
+                                                </Button>
+
+                                            }
                                         </Box>
                                     </Box>
                                     <Box sx={{

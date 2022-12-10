@@ -103,6 +103,7 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId, startDa
     const defaultInputValues = {
         dayPlanName: dayPlanName,
         icon: '0',
+        // date: startDate
     };
 
     const [values, setValues] = useState(defaultInputValues);
@@ -137,7 +138,7 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId, startDa
     const validationSchema = Yup.object().shape({
         dayPlanName: Yup
             .string()
-            .required("You have to provide day pllan name")
+            .required("You have to provide day plan name")
             .max(100, "Day plan name too long, max. 100 characters"),
         date: Yup
             .date()
@@ -172,9 +173,9 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId, startDa
     const close = () => {
         reset();
         setDayPlanName({ value: "", length: 0 });
-        setDayPlanNameError("You have to provide day plan name.");
+        setDayPlanNameError("You have to provide day plan name");
         setDate(today);
-        setDateError("You have to provide a date.");
+        setDateError("You have to provide day plan date");
         setValues(defaultInputValues);
         onClose();
     };
@@ -242,7 +243,6 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId, startDa
                             helperText={Boolean(errors.dayPlanName) && dayPlanNameError}
                             value={dayPlanName.value}
                             onChange={(event) =>
-                                // handleChange({ ...values, dayPlanName: event.target.value });
                                 onDayPlanNameChange(event.target.value)
                             }
                         />
@@ -252,9 +252,8 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId, startDa
                                     disablePast
                                     onChange={(newDate) => {
                                         handleChange({ ...values, date: newDate });
-                                        // onDateChange(newDate)
                                     }}
-                                    value={startDate}
+                                    value={values.date}
                                     minDate={startDate}
                                     maxDate={endDate}
                                     renderInput={(params) =>
@@ -268,13 +267,12 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId, startDa
                                             label="Date"
                                             type="date"
                                             margin="normal"
-                                            // value={values.date}
+                                            value={values.date}
                                             {...register('date')}
                                             error={Boolean(errors.date) ? (Boolean(dateError)) : false}
                                             helperText={Boolean(errors.date) && dateError}
                                             onChange={(event) => {
                                                 handleChange({ ...values, date: event.target.value });
-                                                // onDateChange(newDate)
                                             }}
                                         />
                                     }
