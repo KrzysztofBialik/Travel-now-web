@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Card } from "@mui/material";
 import { CardActions } from "@mui/material";
-import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import { List } from "@mui/material";
 import { ListItem } from "@mui/material";
@@ -73,7 +72,7 @@ export const UserTransportCard = ({ transportData, onSuccess, accommodationId })
             result = result + time.minutes + "m "
         }
         return result;
-    }
+    };
 
     return (
         <>

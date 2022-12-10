@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Box } from "@mui/material";
-import { Button } from "@mui/material";
 import { DataGrid } from '@mui/x-data-grid';
 import { gridClasses } from '@mui/x-data-grid';
 import { GridActionsCellItem } from "@mui/x-data-grid";
@@ -18,7 +17,6 @@ export const AvailabilityTable = ({ availabilities, groupId, onSuccess }) => {
         setAvailabilityId(availabilityId);
         setDeleteAvailabilityDialogOpen(true);
     };
-
 
     const availabilityColumns = [
         {
@@ -44,34 +42,15 @@ export const AvailabilityTable = ({ availabilities, groupId, onSuccess }) => {
             getActions: (params) => {
                 const availabilityId = params.row.availabilityId;
                 return [
-                <GridActionsCellItem
-                    icon={<DeleteIcon sx={{ color: "error.main" }} />}
-                    label="Remove from group"
-                    onClick={() => deleteAvailabilityAction(availabilityId)}
-                />
-            ];
-        }
-        
-        
-            // getActions: () => [
-            //     <Button
-            //         variant="contained"
-            //         sx={{
-            //             backgroundColor: "primary.main",
-            //             borderRadius: "20px",
-            //             "&:hover": {
-            //                 backgroundColor: "primary.dark"
-            //             }
-            //         }}
-            //         onClick={deleteAvailabilityAction}
-            //     >
-            //         <DeleteIcon sx={{ color: "error.main" }} />
-            //         Delete
-            //     </Button>
-            // ]
+                    <GridActionsCellItem
+                        icon={<DeleteIcon sx={{ color: "error.main" }} />}
+                        label="Remove from group"
+                        onClick={() => deleteAvailabilityAction(availabilityId)}
+                    />
+                ];
+            }
         },
     ];
-
 
     return (
         <Box

@@ -21,17 +21,15 @@ import { Card } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import format from 'date-fns/format';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneIcon from '@mui/icons-material/Phone';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { doGet } from "../../components/utils/fetch-utils";
 import { doPatch } from "../../components/utils/fetch-utils";
 import { UpdatedUserConfirmationDialog } from './UpdatedUserConfirmationDialog';
-import { ErrorUserConfirmationDialog } from './ErrorUserConfirmationDialog';
 import { ErrorToast } from '../toasts/ErrorToast';
-
 
 
 export const UserOptionsDialog = ({ open, onClose }) => {
@@ -43,6 +41,9 @@ export const UserOptionsDialog = ({ open, onClose }) => {
     const [errorMessage, setErrorMessage] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
 
+    useEffect(() => {
+        getUserData();
+    }, []);
 
     const getUserData = async () => {
         await doGet('/api/v1/user?' + new URLSearchParams({ userId: sessionStorage.getItem("userId") }).toString())
@@ -51,12 +52,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                 setNecessaryData(response);
             })
             .catch(err => console.log('Request Failed', err));
-    }
-
-    useEffect(() => {
-        getUserData();
-    }, []);
-
+    };
 
     const setNecessaryData = (response) => {
         const allPhoneNumber = response.phoneNumber.split(" ");
@@ -67,16 +63,18 @@ export const UserOptionsDialog = ({ open, onClose }) => {
             userId: response.userId, email: response.email, firstName: response.firstName, surname: response.surname,
             code: code, phone: phoneNumber, birthDate: response.birthday
         });
-    }
-
+        console.log(response.birthday);
+    };
 
     const validationSchema = Yup.object().shape({
         firstName: Yup
             .string()
-            .required("You have to provide first name"),
+            .required("You have to provide first name")
+            .max(50, "Too long first name, max. 50 characters"),
         surname: Yup
             .string()
-            .required("You have to provide surname"),
+            .required("You have to provide surname")
+            .max(50, "Too long surname, max. 50 characters"),
         code: Yup
             .string()
             .required("You have to provide country code")
@@ -95,8 +93,10 @@ export const UserOptionsDialog = ({ open, onClose }) => {
             .required("You have to provide your birth date"),
     });
 
+    const defaultInputValues = userData;
+
     const { register, handleSubmit, reset, formState: { errors }, control, setValue, getValues } = useForm({
-        resolver: yupResolver(validationSchema),
+        resolver: yupResolver(validationSchema)
     });
 
     const handleChangeData = (values) => {
@@ -105,8 +105,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
 
     const handleSuccess = () => {
         setConfirmUpdateDialogOpen(true);
-    }
-
+    };
 
     const editUserAccount = async (values) => {
         setIsUpdating(true);
@@ -125,7 +124,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                 console.log('Request Failed', err.message)
             });
         setIsUpdating(false);
-    }
+    };
 
     const onKeyDown = (e) => {
         e.preventDefault();
@@ -142,11 +141,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                 onClose={() => setConfirmErrorToastOpen(false)}
                 message="There was an error while updating your account. Sorry for inconvenience. Try again later."
             />
-            {/* <ErrorUserConfirmationDialog
-                open={confirmErrorDialogOpen}
-                onClose={() => setConfirmErrorDialogOpen(false)}
-                message={errorMessage}
-            /> */}
             <Dialog
                 fullScreen
                 open={open}
@@ -157,7 +151,9 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                         backgroundColor: "primary.main",
                         display: "flex",
                         flexDirection: "row",
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
+                        borderBottomLeftRadius: "20px",
+                        borderBottomRightRadius: "20px"
                     }}
                 >
                     <Box sx={{ color: "#FFFFFF" }}>
@@ -196,7 +192,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                         >
                             <Card
                                 sx={{
-                                    // marginTop: 10,
                                     overflow: "visible",
                                     display: "flex",
                                     flexDirection: "column",
@@ -218,7 +213,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                         mt: -3,
                                         py: 2,
                                         px: 2,
-                                        // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                         backgroundColor: "primary.main",
                                         color: "#000000",
                                         borderRadius: "0.5rem",
@@ -330,7 +324,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                         }}
                                                         {...register('code')}
                                                         error={!!errors.code}
-                                                    // helperText={errors.code?.message}
                                                     />
                                                     <FormHelperText
                                                         error={!!errors.code}
@@ -366,20 +359,13 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                             </Box>
                                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                                 <Controller
-                                                    name={"birthDate"}
-                                                    defaultValue={userData.birthDate}
+                                                    name="birthDate"
                                                     control={control}
                                                     sx={{ mb: 1 }}
-
                                                     render={({ field: { onChange, value } }) =>
                                                         <DatePicker
                                                             disableFuture
                                                             label="Birth date"
-                                                            value={value}
-                                                            onChange={onChange}
-                                                            // components={{
-                                                            //     OpenPickerIcon: CakeIcon
-                                                            // }}
                                                             renderInput={(params) =>
                                                                 <TextField
                                                                     {...params}
@@ -391,19 +377,12 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                                         minWidth: "200px"
                                                                     }}
                                                                     onKeyDown={onKeyDown}
-                                                                    // margin="normal"
-                                                                    // InputProps={{
-                                                                    //     startAdornment: (
-                                                                    //         <InputAdornment position="start">
-                                                                    //             <CakeIcon sx={{ color: "primary.main" }} />
-                                                                    //         </InputAdornment>
-                                                                    //     )
-                                                                    // }}
                                                                     error={!!errors.birthDate}
                                                                     helperText={errors.birthDate?.message}
                                                                 />
                                                             }
-
+                                                            value={value}
+                                                            onChange={onChange}
                                                             inputFormat="yyyy-MM-dd"
                                                         />
                                                     }

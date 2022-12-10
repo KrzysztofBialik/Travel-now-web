@@ -45,4 +45,4 @@ export const CreatedTripConfirmationDialog = ({ open, onClose, onSuccess }) => {
             </Dialog>
         </div>
     );
-}
+};

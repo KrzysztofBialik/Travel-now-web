@@ -36,11 +36,6 @@ export const BalanceChart = ({ balancesData }) => {
     const balancesLabels = balancesData.map(balance => balance.user);
     const balancesValues = balancesData.map(balance => balance.balance);
     const backgroundColors = balancesData.map(balance => (balance.balance >= 0) ? "#8EEC44" : "#FF5151");
-    // --------------------------------------WERSJA 1--------------------------------------
-    // const labelAnchors = balancesData.map(balance => (balance.balance >= 0) ? "start" : "end");
-    // const labelAligns = balancesData.map(balance => (balance.balance >= 0) ? "left" : "right");
-    // --------------------------------------WERSJA 2--------------------------------------
-    // const labelAnchors = balancesData.map(balance => (balance.balance >= 0) ? "start" : "end");
     const labelAnchors = balancesData.map(balance => (balance.balance < minBalance / 2) ? "center" : balance.balance < 0 ? "start" : balance.balance > maxBalance / 2 ? "center" : "end");
     const labelAligns = balancesData.map(balance => (balance.balance < minBalance / 2) ? "center" : balance.balance < 0 ? "left" : balance.balance > maxBalance / 2 ? "center" : "right");
 

@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { useState } from "react";
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box } from '@mui/material';
-import { Typography } from '@mui/material';
-import { DataGrid, useGridApiRef } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import { GridActionsCellItem } from '@mui/x-data-grid';
 import { gridClasses } from '@mui/x-data-grid';
-import DeleteIcon from '@mui/icons-material/Delete';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
@@ -20,9 +19,6 @@ import { RemoveParticipantDialog } from './RemoveParticipantDialog';
 import { PromoteParticipantDialog } from './PromoteParticipantDialog';
 import { ParticipantsAvailabilityDialog } from '../availability/ParticipantsAvailabilityDialog';
 import { doGet } from "../../components/utils/fetch-utils";
-import { parseISO } from "date-fns/esm";
-import { get } from 'react-hook-form';
-import { useEffect } from 'react';
 
 function CustomToolbar() {
     return (
@@ -48,7 +44,6 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
     const [usersAvailability, setUsersAvailability] = useState([]);
     const [userFullName, setUserFullName] = useState("");
 
-
     const getUsersData = async () => {
         await doGet('/api/v1/user-group/participants?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
@@ -67,20 +62,13 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
             .then(response => {
                 setAvailabilities(response);
             })
-            //     .then(response => {
-            //         setAvailabilities(
-            //   response.map(availability => ({availabilityId: availability.availabilityId, userId: availability.userId, groupId: availability.groupId,
-            //              startDate: parseISO(availability.dateFrom), endDate: parseISO(availability.dateTo), disabled: true})));
-            //     })
             .catch(err => console.log('Request Failed', err));
-    }
-
+    };
 
     useEffect(() => {
         getUsersData();
         getAvailabilities();
     }, []);
-
 
     const removeAction = (userId) => {
         if (userId === parseInt(sessionStorage.getItem("userId"))) {
@@ -98,12 +86,11 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
         setPromoteDialogOpen(true);
     };
 
-
     const checkParticipantsAvailability = (userAvailability, userFullName) => {
         setUserFullName(userFullName);
         setUsersAvailability(userAvailability);
         setParticipantsAvailabilityDialogOpen(true);
-    }
+    };
 
     const participantColumn = [
         {
@@ -306,7 +293,7 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
             user['role'] = role;
             userFullData.push(user);
         }
-    }
+    };
 
     userWithRoles();
     return (
@@ -342,8 +329,6 @@ export const ParticipantsTable = ({ groupStage, isCoordinator, groupId }) => {
                     sx={{
                         mb: "100px",
                         boxShadow: 5,
-                        // border: 2,
-                        // borderColor: 'primary.main',
                         px: 2,
                         '& .MuiDataGrid-cell:hover': {
                             color: 'primary.main',

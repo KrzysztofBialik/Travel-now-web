@@ -38,32 +38,32 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, 
     const [errorToastOpen, setErrorToastOpen] = useState(false);
 
     const [transportOption, setTransportOption] = useState({ value: "", length: 0 });
-    const [transportOptionError, setTransportOptionError] = useState("You have to provide transport option.");
+    const [transportOptionError, setTransportOptionError] = useState("You have to provide transport option");
 
     const [meetingLocation, setMeetingLocation] = useState({ value: "", length: 0 });
-    const [meetingLocationError, setMeetingLocationError] = useState("You have to provide meeting location.");
+    const [meetingLocationError, setMeetingLocationError] = useState("You have to provide meeting location");
 
     const [destination, setDestination] = useState({ value: "", length: 0 });
-    const [destinationError, setDestinationError] = useState("You have to provide destination.");
+    const [destinationError, setDestinationError] = useState("You have to provide destination");
 
     //ewentualnie podmienić, że domyślna to 1
     const [hours, setHours] = useState("");
-    const [hoursError, setHoursError] = useState("Must be a valid hour(0 - 23).");
+    const [hoursError, setHoursError] = useState("Must be a valid hour(0 - 23)");
 
     const [minutes, setMinutes] = useState("");
-    const [minutesError, setMinutesError] = useState("Must be a valid minute(0 - 59).");
+    const [minutesError, setMinutesError] = useState("Must be a valid minute(0 - 59)");
 
     const [meetingDate, setMeetingDate] = useState(null);
 
     const [meetingTime, setMeetingTime] = useState(null);
 
     const [price, setPrice] = useState("");
-    const [priceError, setPriceError] = useState("You have to provide a price that is not a negative number.");
+    const [priceError, setPriceError] = useState("You have to provide a price that is not a negative number");
 
     const DESCRIPTION_LIMIT = 250;
     const [description, setDescription] = useState({ value: "", length: 0 });
     const [descriptionError, setDescriptionError] = useState(null);
-    const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
+    const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again");
 
     const defaultInputValues = {
         transportOption,
@@ -81,42 +81,48 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, 
 
     const onTransportOptionChange = (value) => {
         setTransportOptionError(
-            value.length === 0 ? "You have to provide transport option." : null
+            value.length === 0 ? "You have to provide transport option" : null
+        )
+        setTransportOptionError(
+            value.length > 99 ? "Transport option name too long, max. 100 characters" : null
         )
         setTransportOption({ value: value, length: value.length });
     };
 
     const onMeetingLocationChange = (value) => {
         setMeetingLocationError(
-            value.length === 0 ? "You have to provide meeting location." : null
+            value.length === 0 ? "You have to provide meeting location" : null
+        )
+        setMeetingLocationError(
+            value.length > 99 ? "Meeting location too long, max. 100 characters" : null
         )
         setMeetingLocation({ value: value, length: value.length });
     };
 
     const onDestinationChange = (value) => {
         setDestinationError(
-            value.length === 0 ? "You have to provide destination." : null
+            value.length === 0 ? "You have to provide destination" : null
         )
         setDestination({ value: value, length: value.length });
     };
 
     const onHoursChange = (value) => {
         setHoursError(
-            (value < 0 || value > 23) ? "Must be a valid hour(0 - 23)." : null
+            (value < 0 || value > 23) ? "Must be a valid hour(0 - 23)" : null
         );
         setHours(value);
     };
 
     const onMinutesChange = (value) => {
         setMinutesError(
-            (value < 0 || value > 59) ? "Must be a valid minute(0 - 59)." : null
+            (value < 0 || value > 59) ? "Must be a valid minute(0 - 59)" : null
         );
         setMinutes(value);
     };
 
     const onPriceChange = (value) => {
         setPriceError(
-            value < 0 ? "You have to provide a price that is not a negative number." : null
+            value < 0 ? "You have to provide a price that is not a negative number" : null
         );
         setPrice(value);
     };
@@ -150,7 +156,7 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, 
             .required(),
         price: Yup
             .number()
-            .positive(),
+            .min(0),
         description: Yup
             .string()
             .max(250)
@@ -357,7 +363,6 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, 
                                     onChange={(newDate) => {
                                         setMeetingDate(newDate);
                                     }}
-                                    // InputAdornmentProps={{ position: 'start' }}
                                     renderInput={(params) => <TextField  {...params}
                                         sx={{
                                             svg: { color: "#2ab7ca" },

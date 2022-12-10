@@ -8,7 +8,6 @@ import FactCheckIcon from '@mui/icons-material/FactCheck';
 import MapIcon from '@mui/icons-material/Map';
 import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
-import { BARCELONAURL } from '../../../images/Images';
 
 
 export const CurrentTrips = ({ trips }) => {
@@ -17,7 +16,6 @@ export const CurrentTrips = ({ trips }) => {
         <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
             <Grid item xs={12} lg={4} sx={{ mx: "auto" }}>
                 <DashboardFlipCard
-                    frontBg={BARCELONAURL}
                     title={name}
                     description={description}
                     action={{
@@ -32,7 +30,7 @@ export const CurrentTrips = ({ trips }) => {
                         <DashboardOptionCard
                             icon={<MapIcon sx={{ color: "primary.dark", fontSize: "46px" }} />}
                             title="Day plans"
-                            description="Check what is the plan for a certain day of the trip"
+                            description="Check what is the plan for every day of the trip"
                             route={`/dayPlan/${groupId}`}
                             groupId={groupId}
                         />
@@ -49,7 +47,7 @@ export const CurrentTrips = ({ trips }) => {
                         <DashboardOptionCard
                             icon={<Groups2Icon sx={{ color: "primary.dark", fontSize: "46px" }} />}
                             title="Participants"
-                            description="See other participants of this trip"
+                            description="See other participants of the trip"
                             route={`/participants/${groupId}`}
                             groupId={groupId}
 
@@ -87,7 +85,8 @@ export const CurrentTrips = ({ trips }) => {
                             </Typography>
                         </Box>
                         :
-                        currentTrips}
+                        currentTrips
+                    }
                 </Grid>
             </Container>
         </Box>

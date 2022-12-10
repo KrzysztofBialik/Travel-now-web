@@ -1,33 +1,21 @@
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
-import { styled } from '@mui/material/styles';
 import { Box } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
-import IconButton from '@mui/material/IconButton';
 import { AccommodationCard } from "../../components/accommodations/accommodationCard/AccommodationCard";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
-import { futureTripButtonsData, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
+import { futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { AddAccommodationDialog } from "../../components/accommodations/AddAccommodationDialog";
 import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
 import { doGet } from "../../components/utils/fetch-utils";
 
+
 export const URL = '/accommodations/myAccommodations/:groupId';
 export const NAME = "MyAccommodations";
-
-const ExpandMore = styled((props) => {
-    const { expand, ...other } = props;
-    return <IconButton {...other} />;
-})(({ theme, expand }) => ({
-    transform: !expand ? 'rotate(0deg)' : 'rotate(180deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-        duration: theme.transitions.duration.shortest,
-    }),
-}));
 
 export const MyAccommodationsPage = () => {
 
@@ -38,7 +26,6 @@ export const MyAccommodationsPage = () => {
     const [accommodationsRaw, setAccommodationsRaw] = useState([]);
     const [currency, setCurrency] = useState("");
     var isCoordinator = false;
-
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -110,7 +97,6 @@ export const MyAccommodationsPage = () => {
                                         justifyContent: "center",
                                         alignItems: "center",
                                         minHeight: "400px"
-                                        // border: "2px solid black"
                                     }}
                                 >
                                     <CircularProgress />
@@ -144,8 +130,6 @@ export const MyAccommodationsPage = () => {
                 />
                 <Box sx={{
                     p: 10,
-                    // margin: 10,
-                    // mx: { xs: 2, lg: 3 },
                     display: "flex",
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -153,7 +137,6 @@ export const MyAccommodationsPage = () => {
                     minWidth: "1200px",
                     minHeight: '400px'
                 }}
-                // elevation={4}
                 >
                     <Box
                         sx={{
@@ -161,9 +144,7 @@ export const MyAccommodationsPage = () => {
                             display: "flex",
                             justifyContent: "center",
                             alignItems: "center",
-                            // minWidth: "1200px"
                             maxWidth: "1200px",
-                            // width: "1200px"
                         }}
                     >
                         <Grid container

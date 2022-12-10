@@ -17,11 +17,9 @@ export const OptimizedDatesTable = ({ optimizedDates, onSuccess, selectedSharedA
     const selectDatesAction = (sharedGroupAvailability) => {
         setSelectOptimizedDatesDialogOpen(true);
         setSharedGroupAvailability(sharedGroupAvailability);
-
     };
 
     const availabilityColumns = [
-
         {
             field: 'startDate', headerName: 'StartDate', renderHeader: () => (
                 <strong>
@@ -56,48 +54,47 @@ export const OptimizedDatesTable = ({ optimizedDates, onSuccess, selectedSharedA
                     Action
                 </strong>
             ), type: 'actions', flex: 3, hideable: true, headerAlign: 'center', minWidth: 100,
-            getActions: (params) =>{ 
+            getActions: (params) => {
                 const sharedGroupAvailability = params.row.sharedGroupAvailability;
 
-                if(sharedGroupAvailability === selectedSharedAvailability) {
-                return [
-                <Button
-                    variant="contained"
-                    disabled={true}
-                    sx={{
-                        backgroundColor: "secondary.main",
-                        borderRadius: "20px",
-                        "&:hover": {
-                            backgroundColor: "secondary.dark"
-                        }
-                    }}
-                    onClick={() => selectDatesAction(sharedGroupAvailability)}
-                >
-                    <CheckOutlinedIcon />
-                    Accepted
-                </Button>
-            ]
-        }
-        else {
-            return [
-                <Button
-                    variant="contained"
-                    sx={{
-                        backgroundColor: "secondary.main",
-                        borderRadius: "20px",
-                        "&:hover": {
-                            backgroundColor: "secondary.dark"
-                        }
-                    }}
-                    onClick={() => selectDatesAction(sharedGroupAvailability)}
-                >
-                    <CheckOutlinedIcon />
-                    Accept
-                </Button>
-            ]
-        }
-
-        }
+                if (sharedGroupAvailability === selectedSharedAvailability) {
+                    return [
+                        <Button
+                            variant="contained"
+                            disabled={true}
+                            sx={{
+                                backgroundColor: "secondary.main",
+                                borderRadius: "20px",
+                                "&:hover": {
+                                    backgroundColor: "secondary.dark"
+                                }
+                            }}
+                            onClick={() => selectDatesAction(sharedGroupAvailability)}
+                        >
+                            <CheckOutlinedIcon />
+                            Accepted
+                        </Button>
+                    ]
+                }
+                else {
+                    return [
+                        <Button
+                            variant="contained"
+                            sx={{
+                                backgroundColor: "secondary.main",
+                                borderRadius: "20px",
+                                "&:hover": {
+                                    backgroundColor: "secondary.dark"
+                                }
+                            }}
+                            onClick={() => selectDatesAction(sharedGroupAvailability)}
+                        >
+                            <CheckOutlinedIcon />
+                            Accept
+                        </Button>
+                    ]
+                }
+            }
         },
     ];
 
@@ -112,9 +109,8 @@ export const OptimizedDatesTable = ({ optimizedDates, onSuccess, selectedSharedA
                 open={selectOptimizedDatesDialogOpen}
                 onClose={() => setSelectOptimizedDatesDialogOpen(false)}
                 sharedGroupAvailability={sharedGroupAvailability}
-                onSuccess={() => onSuccess()}   
+                onSuccess={() => onSuccess()}
             />
-
             <DataGrid
              components={{
                 NoRowsOverlay: () => (

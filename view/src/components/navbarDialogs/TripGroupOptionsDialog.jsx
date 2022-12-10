@@ -23,7 +23,6 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
-import RuleIcon from '@mui/icons-material/Rule';
 import { UpdatedTripConfirmationDialog } from './UpdatedTripConfirmationDialog';
 import { ErrorTripConfirmationDialog } from './ErrorTripConfirmationDialog';
 import { doGet } from "../../components/utils/fetch-utils";
@@ -85,7 +84,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
     const [descriptionLength, setDescriptionLength] = useState(0);
     const [tripData, setTripData] = useState({});
     const [groupStage, setGroupStage] = useState([])
-    const DESCRIPTION_LIMIT = 250;
+    const DESCRIPTION_LIMIT = 120;
 
     useEffect(() => {
         if (groupId) {
@@ -106,24 +105,28 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
 
     useEffect(() => {
         reset(tripData);
-    }, [tripData])
+    }, [tripData]);
 
     const validationSchema = Yup.object().shape({
         tripName: Yup
             .string()
-            .required("You have to provide trip name"),
+            .required("You have to provide trip name")
+            .max(50, "Too long name, max. 50 characters"),
         startingLocation: Yup
             .string()
-            .required("You have to provide starting location"),
+            .required("You have to provide starting location")
+            .max(100, "Too long starting location, max. 100 characters"),
         currency: Yup
             .string()
             .required("You have to provide currency for trip group"),
         minDays: Yup
             .number()
-            .min(1, "Number of days must be equal or higher than 1"),
+            .min(1, "Number of days must be equal or higher than 1")
+            .required("You have to provide min number of days"),
         minParticipants: Yup
             .number()
-            .min(1, "Number of participants must be equal or higher than 1"),
+            .min(1, "Number of participants must be equal or higher than 1")
+            .required("You have to provide min number of participants"),
         description: Yup
             .string()
             .max(DESCRIPTION_LIMIT, "You have exceeded characters limit for description")
@@ -180,8 +183,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
     }
 
     const isPlanningStage = (groupStage === "PLANNING_STAGE" ? false : true);
-
-    // const descriptionWatch = watch("description");
+    const descriptionWatch = watch("description");
 
     return (
         <>
@@ -204,7 +206,9 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                         backgroundColor: "primary.main",
                         display: "flex",
                         flexDirection: "row",
-                        justifyContent: "space-between"
+                        justifyContent: "space-between",
+                        borderBottomLeftRadius: "20px",
+                        borderBottomRightRadius: "20px"
                     }}
                 >
                     <Box sx={{ color: "#FFFFFF" }}>
@@ -265,7 +269,6 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                         mt: -3,
                                         py: 2,
                                         px: 2,
-                                        // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                         backgroundColor: "primary.main",
                                         color: "#000000",
                                         borderRadius: "0.5rem",
@@ -445,7 +448,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                     }}
                                                 >
                                                     <span>{errors.description?.message}</span>
-                                                    <span>{0}/{DESCRIPTION_LIMIT}</span>
+                                                    <span>{descriptionWatch ? descriptionWatch.length : 0}/{DESCRIPTION_LIMIT}</span>
                                                 </FormHelperText>
                                                 {!isPlanningStage ?
                                                     <DialogActions>

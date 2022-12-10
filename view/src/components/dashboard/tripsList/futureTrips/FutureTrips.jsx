@@ -3,13 +3,11 @@ import { Typography } from '@mui/material';
 import { Container } from '@mui/material';
 import { Box } from '@mui/material';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import Groups2Icon from '@mui/icons-material/Groups2';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import HomeIcon from '@mui/icons-material/Home';
 import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
-import { LONDONURL } from '../../../images/Images';
 
 export const FutureTrips = ({ trips }) => {
 
@@ -18,7 +16,6 @@ export const FutureTrips = ({ trips }) => {
         <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
             <Grid item xs={12} lg={4} sx={{ mx: "auto" }}>
                 <DashboardFlipCard
-                    frontBg={LONDONURL}
                     title={name}
                     description={description}
                     action={{
@@ -86,7 +83,8 @@ export const FutureTrips = ({ trips }) => {
                             </Typography>
                         </Box>
                         :
-                        futureTrips}
+                        futureTrips
+                    }
                 </Grid>
             </Container>
         </Box>

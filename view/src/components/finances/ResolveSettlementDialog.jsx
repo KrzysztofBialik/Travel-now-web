@@ -7,9 +7,9 @@ import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
 import { doPatch } from "../../components/utils/fetch-utils";
-
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
+
 
 export const ResolveSettlementDialog = ({ open, onClose, handleResolve, requestId, groupId, onSuccess }) => {
 
@@ -35,7 +35,7 @@ export const ResolveSettlementDialog = ({ open, onClose, handleResolve, requestI
             .catch(err => {
                 setErrorToastOpen(true);
             });
-    }
+    };
 
     return (
         <div>

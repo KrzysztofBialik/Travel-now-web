@@ -16,7 +16,7 @@ import 'react-date-range/dist/theme/default.css';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doPost } from "../../components/utils/fetch-utils";
-import { format, addHours } from "date-fns";
+import { format } from "date-fns";
 
 
 export const DateRangePickerDialog = ({ open, onClose, initialRange, restrictedDays, groupId, rangeChange, onSuccess, shared = false }) => {
@@ -45,7 +45,6 @@ export const DateRangePickerDialog = ({ open, onClose, initialRange, restrictedD
         if (shared) {
             var postBody = { 'dateFrom': format(range[0].startDate, 'yyyy-MM-dd'), 'dateTo': format(range[0].endDate, 'yyyy-MM-dd') };
             await doPost('/api/v1/shared-availability/dto?' + new URLSearchParams({ groupId: groupId }), postBody)
-                // await doPost('/api/v1/shared-availability?' + new URLSearchParams({ groupId: groupId, dateFrom: format(range[0].startDate, 'yyyy-MM-dd'), dateTo: format(range[0].endDate, 'yyyy-MM-dd') }).toString())
                 .then(response => {
                     setSuccessToastOpen(response.ok);
                     onSuccess();
@@ -78,11 +77,6 @@ export const DateRangePickerDialog = ({ open, onClose, initialRange, restrictedD
     };
 
     const closeAction = () => {
-        // console.log(initialRange);
-        // if (initialRange[0].startDate === null) {
-        //     range[0].startDate = null;
-        //     range[0].endDate = null;
-        // }
         onClose();
     }
 
@@ -183,22 +177,8 @@ export const DateRangePickerDialog = ({ open, onClose, initialRange, restrictedD
                             </Button>
                         </Box>
                     }
-                    {/* <Button
-                        variant="outlined"
-                        sx={{ borderRadius: "10px", mx: "10px", mb: "10px" }}
-                        onClick={closeAction}
-                    >
-                        Cancel
-                    </Button>
-                    <Button variant="contained"
-                        sx={{ color: "#FFFFFF", borderRadius: "10px", ml: "10px", mr: "20px", mb: "10px" }}
-                        onClick={handleSelectRange}
-                    >
-                        Add
-                    </Button> */}
                 </DialogActions>
             </Dialog >
         </>
-
-    )
-}
+    );
+};

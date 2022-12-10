@@ -6,7 +6,6 @@ import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
-
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doPut } from '../utils/fetch-utils';
@@ -23,11 +22,6 @@ export const SelectAccommodationDialog = ({ open, onClose, groupId, accommodatio
         onClose();
     };
 
-    const handleErrorClose = () => {
-        setErrorToastOpen(true);
-        onClose();
-    };
-
     const acceptSharedAvailability = async () => {
         await doPut('/api/v1/trip-group/accommodation?' + new URLSearchParams({ groupId: groupId, accommodationId: accommodationId }).toString())
             .then(response => handleSuccessClose())
@@ -41,7 +35,6 @@ export const SelectAccommodationDialog = ({ open, onClose, groupId, accommodatio
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully selected." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={apiErrorMessage} />
-
             <Dialog
                 open={open}
                 onClose={onClose}
@@ -72,18 +65,9 @@ export const SelectAccommodationDialog = ({ open, onClose, groupId, accommodatio
                         >
                             Confirm
                         </Button>
-                        {/* <Button variant="outlined" onClick={onClose}>Cancel</Button>
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            onClick={acceptSharedAvailability}
-                            sx={{ color: "#FFFFFF" }}
-                        >
-                            Confirm
-                        </Button> */}
                     </DialogActions>
                 </DialogContent>
             </Dialog>
         </div>
     );
-}
+};

@@ -6,10 +6,10 @@ import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
-
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doPut } from '../utils/fetch-utils';
+
 
 export const DeleteDatesDialog = ({ open, onClose, deleteDates, groupId, onSuccess }) => {
 
@@ -35,13 +35,12 @@ export const DeleteDatesDialog = ({ open, onClose, deleteDates, groupId, onSucce
                 setErrorToastOpen(true)
                 setApiErrorMessage(err.message);
             });
-    }
+    };
 
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Dates successfully deleted." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={apiErrorMessage} />
-
             <Dialog
                 open={open}
                 onClose={onClose}

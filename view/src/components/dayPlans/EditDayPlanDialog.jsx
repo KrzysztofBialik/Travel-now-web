@@ -17,7 +17,6 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { Controller } from 'react-hook-form';
 import * as Yup from 'yup';
 import isValid from 'date-fns/isValid';
 import isBefore from 'date-fns/isBefore';
@@ -123,9 +122,10 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
         setDayPlanNameError(
             value.length === 0 ? "You have to provide day plan name." : null
         )
+        setDayPlanNameError(
+            value.length > 99 ? "Day plan name too long, max. 100 characters" : null
+        )
         setDayPlanName({ value: value, length: value.length });
-        console.log(date);
-        console.log(dateError);
     };
 
     const onDateChange = (value) => {
@@ -137,8 +137,6 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
         }
 
         setDateError(
-            // isValid(value) ? "You have to provide valid date." : null
-            // value === null ? "You have to provide date." : null
             isBefore(value, today) ? "Date cannot be earlier than current day." : null
         )
         setDate(value);
@@ -147,10 +145,11 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
     const validationSchema = Yup.object().shape({
         dayPlanName: Yup
             .string()
-            .required(),
+            .required("You have to provide day pllan name")
+            .max(100, "Day plan name too long, max. 100 characters"),
         date: Yup
             .date()
-            .required()
+            .required("You have to provide date")
             .typeError("Invalid date.")
     });
 
@@ -182,11 +181,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
 
     const close = () => {
         reset();
-        // setDayPlanName({ value: dayPlanData.name, length: dayPlanNameLength });
-        // setDayPlanNameError("You have to provide day plan name.");
         setDate(initialDate);
-        // setDateError("You have to provide a date.");
-        // setValues(defaultInputValues);
         onClose();
     };
 
@@ -253,7 +248,6 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                             helperText={Boolean(errors.dayPlanName) && dayPlanNameError}
                             value={dayPlanName.value}
                             onChange={(event) =>
-                                // handleChange({ ...values, dayPlanName: event.target.value });
                                 onDayPlanNameChange(event.target.value)
                             }
                         />
@@ -263,7 +257,6 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                                     disablePast
                                     onChange={(newDate) => {
                                         handleChange({ ...values, date: newDate });
-                                        // onDateChange(newDate)
                                     }}
                                     value={values.date}
                                     renderInput={(params) =>
@@ -283,7 +276,6 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                                             helperText={Boolean(errors.date) && dateError}
                                             onChange={(event) => {
                                                 handleChange({ ...values, date: event.target.value });
-                                                // onDateChange(newDate)
                                             }}
                                         />
                                     }
@@ -346,20 +338,7 @@ export const EditDayPlanDialog = ({ open, onClose, dayPlanData, onSuccess }) => 
                                     </Button>
                                 </>
                             }
-                            {/* <Button
-                                variant="outlined"
-                                sx={{ borderRadius: "20px" }}
-                                onClick={() => close()}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                sx={{ borderRadius: "20px", color: "#FFFFFF" }}
-                            >
-                                Edit
-                            </Button> */}
+
                         </DialogActions>
                     </form>
                 </DialogContent>
