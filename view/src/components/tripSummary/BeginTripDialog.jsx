@@ -29,10 +29,11 @@ export const BeginTripDialog = ({ open, onClose, groupId, onSuccess, usersData, 
             console.log(startDate);
             console.log(endDate);
             var difference_In_Time = endDate.getTime() - startDate.getTime();
-            var difference_In_Days = difference_In_Time / (1000 * 3600 * 24);        
+            var difference_In_Days = difference_In_Time / (1000 * 3600 * 24);  
+                  
             const groupMinNumOfDays = tripGroup.minimalNumberOfDays;
             const groupMinPart = tripGroup.minimalNumberOfParticipants;
-            if(difference_In_Days >= groupMinNumOfDays && participantsNumber >= groupMinPart) {
+            if(difference_In_Days + 1 >= groupMinNumOfDays && participantsNumber >= groupMinPart) {
                 return true;
             }
             else {
