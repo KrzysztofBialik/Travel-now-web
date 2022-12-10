@@ -34,7 +34,7 @@ export const DeleteAvailabilityDialog = ({ open, onClose, groupId, availabilityI
             .catch(err => {
                 setApiErrorMessage(err.message);
             });
-    }
+    };
 
     return (
         <div>

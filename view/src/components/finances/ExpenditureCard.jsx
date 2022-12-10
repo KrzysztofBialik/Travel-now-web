@@ -62,7 +62,6 @@ export const ExpenditureCard = ({ expenditureData }) => {
                         minWidth: "500px",
                         maxWidth: "600px",
                         overflow: "hidden"
-                        // minWidth: "700px"
                     }
                 }}
                 open={detailsDialogOpen}

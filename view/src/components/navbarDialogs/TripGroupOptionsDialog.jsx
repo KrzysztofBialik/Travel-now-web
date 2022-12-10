@@ -23,7 +23,6 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
-import RuleIcon from '@mui/icons-material/Rule';
 import { UpdatedTripConfirmationDialog } from './UpdatedTripConfirmationDialog';
 import { ErrorTripConfirmationDialog } from './ErrorTripConfirmationDialog';
 import { doGet } from "../../components/utils/fetch-utils";
@@ -85,7 +84,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
     const [descriptionLength, setDescriptionLength] = useState(0);
     const [tripData, setTripData] = useState({});
     const [groupStage, setGroupStage] = useState([])
-    const DESCRIPTION_LIMIT = 250;
+    const DESCRIPTION_LIMIT = 120;
 
     useEffect(() => {
         if (groupId) {
@@ -106,24 +105,28 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
 
     useEffect(() => {
         reset(tripData);
-    }, [tripData])
+    }, [tripData]);
 
     const validationSchema = Yup.object().shape({
         tripName: Yup
             .string()
-            .required("You have to provide trip name"),
+            .required("You have to provide trip name")
+            .max(50, "Too long name, max. 50 characters"),
         startingLocation: Yup
             .string()
-            .required("You have to provide starting location"),
+            .required("You have to provide starting location")
+            .max(100, "Too long starting location, max. 100 characters"),
         currency: Yup
             .string()
             .required("You have to provide currency for trip group"),
         minDays: Yup
             .number()
-            .min(1, "Number of days must be equal or higher than 1"),
+            .min(1, "Number of days must be equal or higher than 1")
+            .required("You have to provide min number of days"),
         minParticipants: Yup
             .number()
-            .min(1, "Number of participants must be equal or higher than 1"),
+            .min(1, "Number of participants must be equal or higher than 1")
+            .required("You have to provide min number of participants"),
         description: Yup
             .string()
             .max(DESCRIPTION_LIMIT, "You have exceeded characters limit for description")
@@ -180,7 +183,6 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
     }
 
     const isPlanningStage = (groupStage === "PLANNING_STAGE" ? false : true);
-
     const descriptionWatch = watch("description");
 
     return (

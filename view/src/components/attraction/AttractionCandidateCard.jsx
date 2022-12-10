@@ -1,25 +1,11 @@
 import { useState } from "react";
-import { styled } from '@mui/material/styles';
 import { Card } from "@mui/material";
 import { Box } from "@mui/material";
-import { Grid } from "@mui/material";
 import { Button } from "@mui/material";
 import { Typography } from "@mui/material";
-import { IconButton } from "@mui/material";
 import { ButtonBase } from "@mui/material";
-import { Menu } from "@mui/material";
-import { MenuItem } from "@mui/material";
-import { ListItemText } from "@mui/material";
-import CardHeader from '@mui/material/CardHeader';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import { Collapse } from "@mui/material";
-import { CardActions } from "@mui/material";
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MapIcon from '@mui/icons-material/Map';
 import { PLACEHOLDER_IMAGE } from "../images/Images";
 
@@ -30,7 +16,7 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
 
     var getPhotoUrl = (photoReference) => {
         return 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=' + photoReference + '&key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
-    }
+    };
 
     return (
         <>
@@ -82,10 +68,7 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                                     display: "flex",
                                     flexDirection: "column",
                                     justifyContent: "flex-start",
-                                    alignItems: "flex-start",
-                                    // textOverflow: "ellipsis",
-                                    // overflow: "hidden",
-                                    // WebkitLineClamp: "2"
+                                    alignItems: "flex-start"
                                 }}
                             >
                                 <Box sx={{
@@ -143,13 +126,6 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                             target="_blank"
                             rel="noreferrer"
                             href={mapsLink}
-                            // sx={{
-                            //     color: "secondary.main",
-                            //     borderColor: "secondary.main",
-                            //     borderRadius: "20px",
-                            //     width: "180px",
-                            //     '&:hover': { color: "#000000", backgroundColor: "secondary.main", borderColor: "secondary.main" }
-                            // }}
                             sx={{
                                 color: "primary.main",
                                 borderColor: "primary.main",

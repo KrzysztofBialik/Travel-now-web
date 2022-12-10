@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { Card } from "@mui/material";
 import { Box } from "@mui/material";
 import { Typography } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Menu } from "@mui/material";
 import { MenuItem } from "@mui/material";
-import { ListItemText } from "@mui/material";
 import { ButtonBase } from "@mui/material";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -91,14 +89,9 @@ export const DayPlanCard = ({ dayPlanData, groupId, showDetailedPlan, onSuccess,
     };
 
     const [anchorEl, setAnchorEl] = useState(null);
-    const [expanded, setExpanded] = useState(false);
     const [editDialogOpen, setEditDialogOpen] = useState(false);
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
     const open = Boolean(anchorEl);
-
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);

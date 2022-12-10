@@ -114,7 +114,10 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId }) => {
 
     const onDayPlanNameChange = (value) => {
         setDayPlanNameError(
-            value.length === 0 ? "You have to provide day plan name." : null
+            value.length === 0 ? "You have to provide day plan name" : null
+        )
+        setDayPlanNameError(
+            value.length > 99 ? "Day plan name too long, max. 100 characters" : null
         )
         setDayPlanName({ value: value, length: value.length });
     };
@@ -135,10 +138,11 @@ export const CreateDayPlanDialog = ({ open, onClose, onSuccess, groupId }) => {
     const validationSchema = Yup.object().shape({
         dayPlanName: Yup
             .string()
-            .required(),
+            .required("You have to provide day pllan name")
+            .max(100, "Day plan name too long, max. 100 characters"),
         date: Yup
             .date()
-            .required()
+            .required("You have to provide date")
             .typeError("Invalid date.")
     });
 

@@ -53,15 +53,6 @@
 }
 
 .nav-button {
-    /* background-color: transparent;
-    color: black;
-    padding: 6px 12px;
-    border-radius: 20px;
-    border: 2px solid black;
-    min-width: 100px;
-    max-width: 100px;
-    min-height: 40px;
-    max-height: 40px; */
     padding-inline: 20px;
     color: white;
     font-size: inherit;
@@ -72,8 +63,6 @@
 }
 
 .nav-button:hover {
-    /* background-color: black;
-    color: white; */
     background-color: #55ccd9;
     color: white;
 }

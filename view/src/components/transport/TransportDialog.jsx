@@ -59,22 +59,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 });
 
 export const TransportDialog = ({ open, onClose, accommodationId, currency }) => {
-    const [activeStep, setActiveStep] = useState(0);
 
-    const handleNext = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    };
-
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    };
-
-    const [isCarTransport, setIsCarTransport] = useState(false);
-    const [isPlaneTransport, setIsPlaneTransport] = useState(false);
     const [addTransportDialogOpen, setAddTransportDialogOpen] = useState(false);
-    const [directionsResponse, setDirectionsResponse] = useState(null);
-    const [distance, setDistance] = useState("");
-    const [duration, setDuration] = useState("");
+    const [directionsResponse, setDirectionsResponse] = useState(null)
     const [mapsLink, setMapsLink] = useState(`https://www.google.com/maps/dir/?api=1&origin=${tripPoints.origin}&destination=${tripPoints.destination}`);
     const [transportDataRaw, setTransportDataRaw] = useState("");
     const [carTransportData, setCarTransportData] = useState("");
@@ -85,9 +72,7 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
     const [userTransport, setUserTransport] = useState([]);
     const [source, setSource] = useState([]);
     const [destination, setDestination] = useState([]);
-
     const originRef = useRef();
-
     const destinationRef = useRef();
 
     const { isLoaded } = useLoadScript({
@@ -195,7 +180,7 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
 
     const mapUserTransport = (transport) => {
         return (<Grid item xs={12} md={4}>
-            <UserTransportCard transportData={transport} onSuccess={() => getData()} accommodationId={accommodationId} />
+            <UserTransportCard transportData={transport} accommodationId={accommodationId} />
         </Grid>)
     };
 
@@ -277,7 +262,6 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                         sx={{
                             borderRadius: "20px",
                             backgroundColor: "secondary.main",
-                            // borderColor: "#FFFFFF",
                             color: "#000000",
                             "&:hover": {
                                 backgroundColor: "secondary.dark"
@@ -480,7 +464,6 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                                                         justifyContent: "center",
                                                         alignItems: "center",
                                                         minHeight: "400px"
-                                                        // border: "2px solid black"
                                                     }}
                                                 >
                                                     <CircularProgress />
@@ -513,7 +496,6 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                                             mt: -3,
                                             py: 2,
                                             px: 2,
-                                            // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                             backgroundColor: "primary.main",
                                             color: "#000000",
                                             borderRadius: "0.5rem",
@@ -573,11 +555,8 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                                                         sx={{
                                                             display: "flex",
                                                             flexDirection: "column",
-                                                            // justifyItems: "center",
                                                             alignItems: "center",
-                                                            // justifyContent: "space-around",
                                                             minHeight: "400px"
-                                                            // border: "2px solid black"
                                                         }}
                                                     >
                                                         <Box sx={{ width: "100%" }}>
@@ -619,13 +598,11 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                                                         justifyContent: "center",
                                                         alignItems: "center",
                                                         minHeight: "400px"
-                                                        // border: "2px solid black"
                                                     }}
                                                 >
                                                     <CircularProgress />
                                                 </Box>
                                         }
-
                                     </Box>
                                 </Card>
                             </Grid>
@@ -651,7 +628,6 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                                             mt: -3,
                                             py: 2,
                                             px: 2,
-                                            // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                             backgroundColor: "primary.main",
                                             color: "#000000",
                                             borderRadius: "0.5rem",
@@ -732,7 +708,6 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                                                             alignItems: "center",
                                                             justifyContent: "space-around",
                                                             minHeight: "400px"
-                                                            // border: "2px solid black"
                                                         }}
                                                     >
                                                         <Grid container item xs={12}
@@ -742,10 +717,6 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                                                                 justifyContent: "flex-start",
                                                                 alignItems: 'flex-start',
                                                                 my: "0px",
-                                                                // gridAutoRows: "1fr"
-                                                                // gap: "50px"
-                                                                // rowGap: "50px",
-                                                                // columnGap: "50px"
                                                             }}
                                                         >
                                                             {userTransport}
@@ -759,7 +730,6 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                                                         justifyContent: "center",
                                                         alignItems: "center",
                                                         minHeight: "400px"
-                                                        // border: "2px solid black"
                                                     }}
                                                 >
                                                     <CircularProgress />

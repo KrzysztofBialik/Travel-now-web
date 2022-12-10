@@ -106,8 +106,6 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, isCo
     };
 
     const voteAction = () => {
-        console.log(userVote)
-
         if (userVote) {
             handleDeleteVoteAccommodation(() => setNumOfVotes(numOfVotes - 1));
         }
@@ -362,7 +360,6 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, isCo
                         justifyContent: "space-between",
                         alignContent: "center",
                         flexWrap: "wrap",
-                        // flexDirection: "column"
                     }}
                 >
                     <Box
@@ -419,7 +416,6 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, isCo
                     </CardContent>
                 </Collapse>
             </Card >
-            {/* </Grid> */}
         </>
     );
 };

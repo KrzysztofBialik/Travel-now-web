@@ -8,17 +8,16 @@ import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
 import { doPut } from "../../components/utils/fetch-utils";
 import { DeletingPermissionApiErrorToast } from '../toasts/DeletingPermissionApiErrorToast';
-
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 
-export const SelectOptimizedDatesDialog = ({ open, onClose, sharedGroupAvailability ,onSuccess }) => {
+export const SelectOptimizedDatesDialog = ({ open, onClose, sharedGroupAvailability, onSuccess }) => {
 
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [apiErrorToastOpen, setApiErrorToastOpen] = useState(false);
     const [apiErrorMessage, setApiErrorMessage] = useState("")
-    
+
     const handleSuccessClose = async () => {
         await acceptSharedAvailability();
         onClose();
@@ -32,25 +31,24 @@ export const SelectOptimizedDatesDialog = ({ open, onClose, sharedGroupAvailabil
     const handleSuccessfulAccept = async () => {
         setSuccessToastOpen(true);
         onSuccess();
-    }
-
+    };
 
     const acceptSharedAvailability = async () => {
-        await doPut('/api/v1/shared-availability/accept?' + new URLSearchParams({ sharedGroupAvailabilityId: sharedGroupAvailability}).toString())
+        await doPut('/api/v1/shared-availability/accept?' + new URLSearchParams({ sharedGroupAvailabilityId: sharedGroupAvailability }).toString())
             .then(response => handleSuccessfulAccept())
             .catch(err => {
                 setApiErrorToastOpen(true)
                 setApiErrorMessage(err.message);
             });
-        }
-
+    };
 
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Dates selected successfully." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message="Ups! Something went wrong. Try again." />
-            <DeletingPermissionApiErrorToast open={apiErrorToastOpen} onClose={() => {setApiErrorToastOpen(false)
-                                                                                     }} message={apiErrorMessage} />
+            <DeletingPermissionApiErrorToast open={apiErrorToastOpen} onClose={() => {
+                setApiErrorToastOpen(false)
+            }} message={apiErrorMessage} />
             <Dialog
                 open={open}
                 onClose={onClose}

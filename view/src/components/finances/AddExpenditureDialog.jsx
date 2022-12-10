@@ -44,7 +44,6 @@ export const AddExpenditureDialog = ({ open, onClose, participants, groupId, onS
 
     useEffect(() => {
         getCurrency();
-        console.log(currency)
     }, [currency]);
 
     const defaultInputValues = {
@@ -75,7 +74,8 @@ export const AddExpenditureDialog = ({ open, onClose, participants, groupId, onS
     const validationSchema = Yup.object().shape({
         expenditureName: Yup
             .string()
-            .required("You have to provide expenditure name"),
+            .required("You have to provide expenditure name")
+            .max(100, "Too long expenditure name, max 100 characters"),
         price: Yup
             .number()
             .positive("You have to provide cost of expenditure"),
@@ -143,34 +143,8 @@ export const AddExpenditureDialog = ({ open, onClose, participants, groupId, onS
                         <CloseIcon sx={{ color: "secondary.main", fontSize: "32px" }} />
                     </IconButton>
                 </DialogTitle>
-                {/* <DialogTitle
-                    sx={{
-                        color: "primary.main",
-                        display: "flex",
-                        flexDirection: "column",
-                        pb: 0
-                    }}
-                >
-                    <Box sx={{
-                        width: "100%",
-                        color: "primary.main",
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between"
-                    }}>
-                        <Typography sx={{ fontSize: "28px" }}>
-                            New expenditure
-                        </Typography>
-                        <IconButton sx={{ mr: -1 }} onClick={close}>
-                            <CloseIcon sx={{ color: "primary.main" }} />
-                        </IconButton>
-                    </Box>
-                </DialogTitle> */}
                 <Box sx={{ height: "100%", width: "100%", mt: 2 }}>
-                    <form
-                        onSubmit={handleSubmit(handleAddExpenditure)}
-                    >
+                    <form onSubmit={handleSubmit(handleAddExpenditure)}>
                         <Box sx={{ display: "flex", flexDirection: "column", width: "100%" }}>
                             <TextField sx={{ mx: 2 }}
                                 type='string'
@@ -215,10 +189,6 @@ export const AddExpenditureDialog = ({ open, onClose, participants, groupId, onS
                                 }}
                                 {...register('price')}
                                 error={!!errors.price}
-                            // error={Boolean(errors.price) ? (Boolean(priceError)) : false}
-                            // helperText={Boolean(errors.price) && priceError}
-                            // value={price}
-                            // onChange={(event) => onPriceChange(event.target.value)}
                             />
                             <FormHelperText
                                 error={!!errors.price}
@@ -235,32 +205,15 @@ export const AddExpenditureDialog = ({ open, onClose, participants, groupId, onS
                         <Box sx={{ display: "flex", flexDirection: "column", overflow: "none" }}>
                             <Typography
                                 sx={{ backgroundColor: "#dee2e6", pl: 2, py: 1, fontSize: "25px" }}
-
-                            >Contributors</Typography>
-                            {/* <FormControlLabel
-                                sx={{ backgroundColor: "#dee2e6", mx: 0 }}
-                                // control={
-                                //     <Controller
-                                //         name={"selectedParticipants"}
-                                //         control={control}
-                                //         render={({ field: { onChange, value } }) =>
-                                //             <Checkbox
-                                //                 checked={value.every((v) => v.checked)}
-                                //                 onChange={() => onChange(value.some((v) => !v.checked) ?
-                                //                     value.map((v) => ({ ...v, checked: true })) : value.map((v) => ({ ...v, checked: false })))}
-                                //             />
-                                //         }
-                                //     />
-                                // }
-                                label={"Contributors"}
-                            /> */}
+                            >
+                                Contributors
+                            </Typography>
                         </Box>
                         <Box sx={{ display: "flex", maxHeight: "240px", flexDirection: "column", ml: 3, mb: 2, overflow: "auto" }}>
                             <FormGroup                            >
                                 {participants.map((participant) => {
                                     return (
                                         <FormControlLabel
-                                            // sx={{ m: 0 }}
                                             control={
                                                 <Controller
                                                     name={"selectedParticipants"}
@@ -319,25 +272,6 @@ export const AddExpenditureDialog = ({ open, onClose, participants, groupId, onS
                                     </Button>
                                 </>
                             }
-                            {/* <Button
-                                variant="outlined"
-                                sx={{ borderRadius: "20px" }}
-                                onClick={() => {
-                                    setErrorToastOpen(true)
-                                    close()
-                                }}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                                sx={{ borderRadius: "20px" }}
-                            // onClick={() => handleCreateTransport}
-                            >
-                                Add
-                            </Button> */}
                         </DialogActions>
                     </form>
                 </Box>

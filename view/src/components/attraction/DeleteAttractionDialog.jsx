@@ -6,7 +6,6 @@ import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
-
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doDelete } from "../../components/utils/fetch-utils";
@@ -29,13 +28,12 @@ export const DeleteAttractionDialog = ({ open, onClose, dayPlanId, attractionId,
                 setErrorToastOpen(true);
                 setDeletionError(err.message);
             });
-    }
+    };
 
     return (
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Attraction successfully deleted." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={deletionError} />
-
             <Dialog
                 open={open}
                 onClose={onClose}

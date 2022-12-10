@@ -24,16 +24,11 @@ import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import PersonIcon from '@mui/icons-material/Person';
 import PhoneIcon from '@mui/icons-material/Phone';
-import CakeIcon from '@mui/icons-material/Cake';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import InsertInvitationIcon from '@mui/icons-material/InsertInvitation';
 import LockIcon from '@mui/icons-material/Lock';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-
-
 import { SimpleNavbar } from '../../components/navbars/SimpleNavbar';
-import { CalendarPicker } from '@mui/x-date-pickers/CalendarPicker';
 import { doPost } from "../../components/utils/fetch-utils";
 import { SuccessToast } from '../../components/toasts/SuccessToast';
 import { ErrorToast } from '../../components/toasts/ErrorToast';
@@ -42,7 +37,6 @@ import { format } from 'date-fns';
 
 export const URL = '/register';
 export const NAME = "Register";
-
 
 export const RegisterPage = () => {
 
@@ -54,8 +48,6 @@ export const RegisterPage = () => {
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [creationError, setCreationError] = useState("Something gone wrong. Try again");
     const [registerProcess, setRegisterProcess] = useState(false);
-    const [searchParams, setSearchParams] = useSearchParams();
-
 
     const defaultInputValues = {
         email: "",
@@ -72,13 +64,16 @@ export const RegisterPage = () => {
         email: Yup
             .string()
             .email("Email is not valid")
-            .required("You have to provide email"),
+            .required("You have to provide email")
+            .max(150, "Too long email, max. 150 characters"),
         firstName: Yup
             .string()
-            .required("You have to provide first name"),
+            .required("You have to provide first name")
+            .max(50, "Too long first name, max. 50 characters"),
         surname: Yup
             .string()
-            .required("You have to provide surname"),
+            .required("You have to provide surname")
+            .max(50, "Too long surname, max. 50 characters"),
         code: Yup
             .string()
             .required("You have to provide country code")
@@ -122,17 +117,12 @@ export const RegisterPage = () => {
             'surname': values.surname,
             'birthday': format(values.birthDate, 'yyyy-MM-dd')
         };
-
         await doPost('/api/v1/auth/register', postBody, false)
             .then(response => {
                 if (response.ok) {
                     setSuccessToastOpen(true);
                     setTimeout(() => {
-                        //     if(searchParams.get("redirectTo") !== null) {
-                        //         navigate("/login?" + new URLSearchParams({ redirectTo: '/invite?token=' + searchParams.get("redirectTo")}).toString());
-                        //     } else {
                         navigate("/login");
-                        //     }
                     }, 3000);
                 }
             })
@@ -143,7 +133,6 @@ export const RegisterPage = () => {
                 }
                 setErrorToastOpen(true);
             });
-        // reset();
     };
 
     const onKeyDown = (e) => {
@@ -207,7 +196,6 @@ export const RegisterPage = () => {
                                 mt: -3,
                                 py: 1,
                                 px: 2,
-                                // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
                                 backgroundColor: "primary.main",
                                 color: "#000000",
                                 borderRadius: "0.5rem",
@@ -319,7 +307,6 @@ export const RegisterPage = () => {
                                                 }}
                                                 {...register('code')}
                                                 error={!!errors.code}
-                                            // helperText={errors.code?.message}
                                             />
                                             <FormHelperText
                                                 error={!!errors.code}
@@ -361,9 +348,6 @@ export const RegisterPage = () => {
                                                 <DatePicker
                                                     disableFuture
                                                     label="Birth date"
-                                                    // components={{
-                                                    //     OpenPickerIcon: CakeIcon
-                                                    // }}
                                                     renderInput={(params) =>
                                                         <TextField
                                                             {...params}
@@ -375,14 +359,6 @@ export const RegisterPage = () => {
                                                                 minWidth: "200px"
                                                             }}
                                                             onKeyDown={onKeyDown}
-                                                            // margin="normal"
-                                                            // InputProps={{
-                                                            //     startAdornment: (
-                                                            //         <InputAdornment position="start">
-                                                            //             <CakeIcon sx={{ color: "primary.main" }} />
-                                                            //         </InputAdornment>
-                                                            //     )
-                                                            // }}
                                                             error={!!errors.birthDate}
                                                             helperText={errors.birthDate?.message}
                                                         />
@@ -457,21 +433,6 @@ export const RegisterPage = () => {
                                         helperText={errors.confirmPassword?.message}
                                     />
                                     <Box sx={{ width: "100%", display: "flex", flexDirection: "row", justifyContent: "center" }}>
-                                        {/* {registerProcess ?
-                                            <Box sx={{ my: 2 }}>
-                                                <CircularProgress />
-                                            </Box>
-                                            :
-                                            <Button
-                                                type="submit"
-                                                variant="contained"
-                                                sx={{
-                                                    mt: 3, mb: 2, borderRadius: "10px", width: "150px", color: "#FFFFFF"
-                                                }}
-                                            >
-                                                Sign Up
-                                            </Button>
-                                        } */}
                                         <Button
                                             type="submit"
                                             variant="contained"
@@ -501,4 +462,4 @@ export const RegisterPage = () => {
             </Box >
         </div>
     );
-}
+};

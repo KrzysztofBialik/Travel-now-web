@@ -21,6 +21,7 @@ import { Card } from '@mui/material';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import format from 'date-fns/format';
 import EmailOutlinedIcon from '@mui/icons-material/EmailOutlined';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import PersonIcon from '@mui/icons-material/Person';
@@ -29,7 +30,6 @@ import { doGet } from "../../components/utils/fetch-utils";
 import { doPatch } from "../../components/utils/fetch-utils";
 import { UpdatedUserConfirmationDialog } from './UpdatedUserConfirmationDialog';
 import { ErrorToast } from '../toasts/ErrorToast';
-
 
 
 export const UserOptionsDialog = ({ open, onClose }) => {
@@ -54,7 +54,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
             .catch(err => console.log('Request Failed', err));
     };
 
-
     const setNecessaryData = (response) => {
         const allPhoneNumber = response.phoneNumber.split(" ");
         var code = allPhoneNumber[0].slice();
@@ -65,16 +64,17 @@ export const UserOptionsDialog = ({ open, onClose }) => {
             code: code, phone: phoneNumber, birthDate: response.birthday
         });
         console.log(response.birthday);
-    }
-
+    };
 
     const validationSchema = Yup.object().shape({
         firstName: Yup
             .string()
-            .required("You have to provide first name"),
+            .required("You have to provide first name")
+            .max(50, "Too long first name, max. 50 characters"),
         surname: Yup
             .string()
-            .required("You have to provide surname"),
+            .required("You have to provide surname")
+            .max(50, "Too long surname, max. 50 characters"),
         code: Yup
             .string()
             .required("You have to provide country code")
@@ -93,8 +93,10 @@ export const UserOptionsDialog = ({ open, onClose }) => {
             .required("You have to provide your birth date"),
     });
 
+    const defaultInputValues = userData;
+
     const { register, handleSubmit, reset, formState: { errors }, control, setValue, getValues } = useForm({
-        resolver: yupResolver(validationSchema),
+        resolver: yupResolver(validationSchema)
     });
 
     const handleChangeData = (values) => {
@@ -103,14 +105,18 @@ export const UserOptionsDialog = ({ open, onClose }) => {
 
     const handleSuccess = () => {
         setConfirmUpdateDialogOpen(true);
-    }
-
+    };
 
     const editUserAccount = async (values) => {
         setIsUpdating(true);
-        console.log("hello there")
-        console.log(values)
-        var postBody = { 'userId': localStorage.getItem('userId'), 'phoneNumber': '+' + values.code + ' ' + values.phone, 'firstName': values.firstName, 'surname': values.surname, 'brithday': values.birthDate };
+        console.log(values);
+        var postBody = {
+            'userId': localStorage.getItem('userId'),
+            'phoneNumber': '+' + values.code + ' ' + values.phone,
+            'firstName': values.firstName,
+            'surname': values.surname,
+            'brithday': format(values.birthDate, 'yyyy-MM-dd')
+        };
         await doPatch('/api/v1/user', postBody)
             .then(response => response.json())
             .then(response => {
@@ -123,7 +129,7 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                 console.log('Request Failed', err.message)
             });
         setIsUpdating(false);
-    }
+    };
 
     const onKeyDown = (e) => {
         e.preventDefault();
@@ -323,7 +329,6 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                         }}
                                                         {...register('code')}
                                                         error={!!errors.code}
-                                                    // helperText={errors.code?.message}
                                                     />
                                                     <FormHelperText
                                                         error={!!errors.code}
@@ -359,16 +364,13 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                             </Box>
                                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                                 <Controller
-                                                    name={"birthDate"}
-                                                    defaultValue={userData.birthDate}
+                                                    name="birthDate"
                                                     control={control}
                                                     sx={{ mb: 1 }}
                                                     render={({ field: { onChange, value } }) =>
                                                         <DatePicker
                                                             disableFuture
                                                             label="Birth date"
-                                                            value={value}
-                                                            onChange={onChange}
                                                             renderInput={(params) =>
                                                                 <TextField
                                                                     {...params}
@@ -379,13 +381,13 @@ export const UserOptionsDialog = ({ open, onClose }) => {
                                                                         width: "50%",
                                                                         minWidth: "200px"
                                                                     }}
-                                                                    // defaultValue={userData.birthDate}
                                                                     onKeyDown={onKeyDown}
                                                                     error={!!errors.birthDate}
                                                                     helperText={errors.birthDate?.message}
                                                                 />
                                                             }
-
+                                                            value={value}
+                                                            onChange={onChange}
                                                             inputFormat="yyyy-MM-dd"
                                                         />
                                                     }

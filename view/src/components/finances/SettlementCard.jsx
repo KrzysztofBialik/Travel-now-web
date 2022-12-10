@@ -7,29 +7,10 @@ import { Typography } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { Menu } from "@mui/material";
 import { MenuItem } from "@mui/material";
-import { ListItemText } from "@mui/material";
-import { Paper } from '@mui/material';
 import { CircularProgress } from "@mui/material";
-import { Dialog } from "@mui/material";
-import { DialogTitle } from "@mui/material";
-import { Table } from "@mui/material";
-import { TableHead } from "@mui/material";
-import { TableContainer } from "@mui/material";
-import { TableRow } from "@mui/material";
-import { TableBody } from "@mui/material";
-import { TableCell } from "@mui/material";
-import { ButtonBase } from "@mui/material";
-import { DialogContent } from "@mui/material";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PaidIcon from '@mui/icons-material/Paid';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
-import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import CloseIcon from '@mui/icons-material/Close';
 import HandshakeIcon from '@mui/icons-material/Handshake';
-import format from "date-fns/format";
 import { doGet } from "../utils/fetch-utils";
-
 import { ResolveSettlementDialog } from "./ResolveSettlementDialog";
 
 
@@ -68,7 +49,6 @@ export const SettlementCard = ({ settlementData, canResolve, requestId, onSucces
         setAnchorEl(null);
     };
 
-
     const handleResolve = () => {
         setResolveSettlementDialogOpen(false);
         setIsResolved(true);
@@ -79,8 +59,6 @@ export const SettlementCard = ({ settlementData, canResolve, requestId, onSucces
         setAnchorEl(null);
         setResolveSettlementDialogOpen(true);
     };
-
-    // PaperProps = {{ sx: { mt: "50px", verticalAlign: "top" } }
 
     return (
         <>
@@ -173,46 +151,6 @@ export const SettlementCard = ({ settlementData, canResolve, requestId, onSucces
                             {updatedData.status}
                         </Typography>
                     </Box>
-                    {/* <Box sx={{ height: "100px", my: 1, display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: canResolve ? "space-between" : "flex-end" }}>
-                        {canResolve && <Box sx={{ mr: -1 }}>
-                            <IconButton
-                                aria-label="more"
-                                id="long-button"
-                                aria-controls={open ? 'long-menu' : undefined}
-                                aria-expanded={open ? 'true' : undefined}
-                                aria-haspopup="true"
-                                onClick={handleClick}
-                                sx={{
-                                    color: "secondary.main",
-                                    padding: 0,
-                                }}
-                            >
-                                <MoreVertIcon sx={{ fontSize: "30px" }} />
-                            </IconButton>
-                            <Menu
-                                id="basic-menu"
-                                anchorEl={anchorEl}
-                                open={open}
-                                onClose={handleClose}
-                                MenuListProps={{
-                                    'aria-labelledby': 'basic-button',
-                                }}
-                            >
-                                <MenuItem >
-                                    <HandshakeIcon sx={{ mr: "20px", color: "primary.main" }} />
-                                    <Typography sx={{ color: "primary.main" }}>
-                                        Resolve
-                                    </Typography>
-                                </MenuItem>
-                            </Menu>
-                        </Box>}
-                        <Typography sx={{ fontSize: "24px", color: "primary.main", mb: 1 }}>
-                            {settlementData.amount} PLN
-                        </Typography>
-                        <Typography sx={{ fontSize: "14px", color: "secondary.main" }}>
-                            {settlementData.status}
-                        </Typography>
-                    </Box> */}
                 </Box>
             </Card>
         </>

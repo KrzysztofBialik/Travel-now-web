@@ -28,12 +28,12 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
-    const [attractionName, setAttractionName] = useState(attractionData.name);
+    // const [attractionName, setAttractionName] = useState(attractionData.name);
 
     const DESCRIPTION_LIMIT = 250;
-    const descriptionLength = attractionData.description === null ? 0 : attractionData.description.length;
-    const [description, setDescription] = useState({ value: attractionData.description, length: descriptionLength });
-    const [descriptionError, setDescriptionError] = useState(descriptionLength > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null);
+    // const descriptionLength = attractionData.description === null ? 0 : attractionData.description.length;
+    // const [description, setDescription] = useState({ value: attractionData.description, length: descriptionLength });
+    // const [descriptionError, setDescriptionError] = useState(descriptionLength > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null);
     const [editionError, setEditionError] = useState("Ups! Something went wrong. Try again.");
 
     var getPhotoUrl = (photoReference) => {
@@ -41,32 +41,34 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
     };
 
     const defaultInputValues = {
-        attractionName,
-        description
+        attractionName: attractionData.name,
+        description: attractionData.description,
     };
 
     const [values, setValues] = useState(defaultInputValues);
 
-    const onDescriptionChange = (value) => {
-        setDescriptionError(
-            value.length > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null
-        );
-        setDescription({ value: value, length: value.length });
-    };
+    // const onDescriptionChange = (value) => {
+    //     setDescriptionError(
+    //         value.length > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null
+    //     );
+    //     setDescription({ value: value, length: value.length });
+    // };
 
     const validationSchema = Yup.object().shape({
         description: Yup
             .string()
-            .max(250)
+            .max(250, "Description is too long")
     });
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    const { register, handleSubmit, reset, watch, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema),
+        defaultValues: defaultInputValues,
     });
 
+    const descriptionWatch = watch("description");
 
-    const handleEditAttraction = async (name, description) => {
-        attractionData.description = description;
+    const handleEditAttraction = async (values) => {
+        attractionData.description = values.description;
         await doPatch('/api/v1/attraction', attractionData)
             .then(response => {
                 setSuccessToastOpen(response.ok);
@@ -78,28 +80,19 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
                 setEditionError(err.message)
             });
 
-    }
-
-    const close = () => {
-        reset();
-        setValues(defaultInputValues);
-        setDescription({ value: attractionData.description, length: descriptionLength });
-        setSuccessToastOpen(true);
-        onClose();
-    }
-
-    const handleErrorClose = () => {
-        setDescription({ value: attractionData.description, length: descriptionLength });
-        onClose();
     };
 
-    const handleEdit = async (description) => {
-
+    const close = () => {
+        // reset();
+        // setValues(defaultInputValues);
+        // setDescription({ value: attractionData.description, length: descriptionLength });
+        setSuccessToastOpen(true);
+        onClose();
     };
 
     return (
         <div>
-            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Attraction successfully edited." />
+            <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Attraction successfully edited" />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={editionError} />
             <Dialog
                 open={open}
@@ -144,7 +137,7 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
                         image={attractionData.photoLink !== null ? getPhotoUrl(attractionData.photoLink) : PLACEHOLDER_IMAGE}
                     />
                     <form
-                        onSubmit={handleSubmit(() => handleEditAttraction(attractionName, description.value))}
+                        onSubmit={handleSubmit(handleEditAttraction)}
                     >
                         <TextField
                             type="string"
@@ -157,7 +150,7 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
                             fullWidth
                             variant="outlined"
                             {...register('price')}
-                            value={attractionName}
+                            value={values.attractionName}
                         />
                         <TextField
                             type='string'
@@ -170,13 +163,15 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
                             label='Description'
                             fullWidth
                             variant="outlined"
+                            defaultValue={attractionData.description}
                             {...register('description')}
-                            error={Boolean(descriptionError)}
-                            value={description.value}
-                            onChange={(event) => onDescriptionChange(event.target.value)}
+                            error={!!errors.description}
+                        // error={Boolean(descriptionError)}
+                        // value={description.value}
+                        // onChange={(event) => onDescriptionChange(event.target.value)}
                         />
                         <FormHelperText
-                            error={Boolean(descriptionError)}
+                            error={!!errors.description}
                             sx={{
                                 display: "flex",
                                 justifyContent: "space-between",
@@ -184,8 +179,8 @@ export const EditAttractionDialog = ({ open, onClose, attractionData }) => {
                                 pb: "30px"
                             }}
                         >
-                            <span>{descriptionError}</span>
-                            <span>{`${description.length}/${DESCRIPTION_LIMIT}`}</span>
+                            <span>{errors.description?.message}</span>
+                            <span>{`${descriptionWatch ? descriptionWatch.length : 0}/${DESCRIPTION_LIMIT}`}</span>
                         </FormHelperText>
                         <DialogActions>
                             {isEditing ?

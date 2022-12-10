@@ -7,33 +7,19 @@ import { DialogActions } from '@mui/material';
 import { DialogContent } from '@mui/material';
 import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
-
-import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doDelete } from "../../components/utils/fetch-utils";
 
 export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => {
 
     const [isDeleting, setIsDeleting] = useState(false);
-    const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [deletionError, setDeletionError] = useState("Ups! Something went wrong. Try again.");
-
-    const handleSuccessClose = () => {
-        onClose();
-        onSuccess();
-    };
-
-    const handleErrorClose = () => {
-        setErrorToastOpen(true);
-        onClose();
-    };
 
     const handleDeleteDayPlan = async (dayPlanId) => {
         setIsDeleting(true);
         await doDelete('/api/v1/day-plan?dayPlanId=' + dayPlanId)
             .then(response => {
-                setSuccessToastOpen(response.ok);
                 setIsDeleting(false);
                 onClose();
                 onSuccess();
@@ -48,9 +34,7 @@ export const DeleteDayPlanDialog = ({ open, onClose, dayPlanId, onSuccess }) => 
 
     return (
         <div>
-            {/* <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Day plan successfully deleted." /> */}
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={deletionError} />
-
             <Dialog
                 open={open}
                 onClose={onClose}

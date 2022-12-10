@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useState } from "react";
-import { useEffect } from 'react';
 import { CircularProgress } from '@mui/material';
 import { Box } from '@mui/material';
 import { Typography } from '@mui/material';
@@ -63,10 +62,11 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData, curr
     const validationSchema = Yup.object().shape({
         price: Yup
             .number()
-            .positive(),
+            .positive("Price must be a positive number")
+            .required("You have to provide price for accommodation"),
         description: Yup
             .string()
-            .max(250)
+            .max(250, "Description is too long")
     });
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
@@ -89,28 +89,15 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData, curr
                 setErrorToastOpen(true);
                 setEditionError(err.message)
             });
-    }
+    };
 
     const close = () => {
-        reset();
         setValues(defaultInputValues);
         setPrice(accommodationData.price);
         setPriceError("Price of accommodation must be a positive number.");
         setDescription({ value: accommodationData.description, length: descriptionLength });
         setSuccessToastOpen(true);
         onClose();
-    }
-
-    const handleErrorClose = () => {
-        setPrice(accommodationData.price);
-        setPriceError("Price of accommodation must be a positive number.");
-        setDescription({ value: accommodationData.description, length: descriptionLength });
-        setErrorToastOpen(true);
-        onClose();
-    };
-
-    var getPhotoUrl = (photoReference) => {
-        return 'https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photo_reference=' + photoReference + '&key=' + process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
     };
 
     return (
@@ -196,7 +183,8 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData, curr
                             sx={{
                                 display: "flex",
                                 justifyContent: "space-between",
-                                padding: "0 10px",
+                                pl: "10px",
+                                mt: "-5px"
                             }}
                         >
                             <span>{Boolean(errors.price) && priceError}</span>

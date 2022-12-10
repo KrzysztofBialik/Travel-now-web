@@ -1,7 +1,6 @@
 import { Grid } from "@mui/material";
 import { Card } from "@mui/material";
 import { Box } from "@mui/material";
-
 import "./DestinationCard.css";
 
 
@@ -33,5 +32,5 @@ export const DestinationCard = ({ size, content, text }) => {
                 </Box>
             </Card>
         </Grid >
-    )
-}
+    );
+};

@@ -6,7 +6,6 @@ import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
 import Groups2Icon from '@mui/icons-material/Groups2';
 import { DashboardFlipCard } from '../../dashboardFlipCard/DashboardFlipCard';
 import { DashboardOptionCard } from '../../dashboardOptionCard/DashboardOptionCard';
-import { ROMEURL } from '../../../images/Images';
 
 export const PastTrips = ({ trips }) => {
     const tripAfterTripStage = trips.filter(trip => trip.groupStage === 'AFTER_TRIP_STAGE')
@@ -14,7 +13,6 @@ export const PastTrips = ({ trips }) => {
         <Grid container item spacing={3} sx={{ mx: "auto", mb: "50px" }} key={groupId}>
             <Grid item xs={12} lg={4} sx={{ mx: "auto" }}>
                 <DashboardFlipCard
-                    frontBg={ROMEURL}
                     title={name}
                     description={description}
                     action={{
@@ -65,7 +63,8 @@ export const PastTrips = ({ trips }) => {
                             </Typography>
                         </Box>
                         :
-                        completedTrips}
+                        completedTrips
+                    }
                 </Grid>
             </Container>
         </Box>

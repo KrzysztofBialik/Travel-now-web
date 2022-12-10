@@ -79,7 +79,6 @@ export const AccommodationsPage = () => {
                 if (accommodation.groupId === null) {
                     setSelectedAccommodation(null)
                 } else {
-                    console.log(accommodation)
                     setSelectedAccommodation(
                         <Grid item xs={12} key={accommodation.accommodationId}>
                             <AccommodationCard
@@ -104,12 +103,9 @@ export const AccommodationsPage = () => {
             .then(response => response.json())
             .then(json => { setAccommodationsRaw(json); return json })
             .then(accommodations => {
-                console.log("Selected accommodation id")
-                console.log(res.selectedAccommodationId)
-                console.log(accommodations)
-                setAllAccommodations(accommodations.map((accommodation) => 
-                    (
-                     res.selectedAccommodationId !== accommodation.accommodation.accommodationId ?
+                setAllAccommodations(accommodations.map((accommodation) =>
+                (
+                    res.selectedAccommodationId !== accommodation.accommodation.accommodationId ?
                         <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
                             <AccommodationCard
                                 accommodationData={accommodation.accommodation}
@@ -122,7 +118,7 @@ export const AccommodationsPage = () => {
                         </Grid>
                         :
                         <Box />
-            )));
+                )));
             })
             .catch(err => console.log('Request Failed', err));
         setLoading(false);
@@ -157,9 +153,7 @@ export const AccommodationsPage = () => {
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
-                                // minWidth: "1200px"
                                 maxWidth: "1200px",
-                                // width: "1200px"
                                 mb: "20px"
                             }}
                         >
@@ -176,7 +170,7 @@ export const AccommodationsPage = () => {
                                             display: "flex",
                                             justifyContent: "center",
                                             alignItems: 'center',
-                                            mb: "30px"
+                                            mb: "80px"
                                         }}
                                     >
                                         Currently chosen accommodation

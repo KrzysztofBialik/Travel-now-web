@@ -7,6 +7,7 @@ import { Box } from '@mui/material';
 import './NavigationNavbar.css';
 import { Dropdown } from './Dropdown';
 
+
 export const MenuItems = ({ items }) => {
     const [dropdown, setDropdown] = useState(false);
 

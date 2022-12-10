@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -13,13 +13,11 @@ import { CircularProgress } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
-import { MenuItem } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import { FormHelperText } from '@mui/material';
 import LinkIcon from '@mui/icons-material/Link';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import CloseIcon from '@mui/icons-material/Close';
-
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doPost } from '../utils/fetch-utils';
@@ -31,66 +29,32 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
     const [successToastOpen, setSuccessToastOpen] = useState(false);
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [creationError, setCreationError] = useState("Ups! Something went wrong. Try again.");
-
-    const [link, setLink] = useState({ value: "", length: 0 });
-    const [linkError, setLinkError] = useState("You have to provide a valid url.");
-
-    const [price, setPrice] = useState("0");
-    const [priceError, setPriceError] = useState("Price of accommodation must be a positive number.");
-
     const DESCRIPTION_LIMIT = 250;
-    const [description, setDescription] = useState({ value: "", length: 0 });
-    const [descriptionError, setDescriptionError] = useState(null);
 
     const defaultInputValues = {
-        link,
-        price,
-        description
-    };
-
-    const [values, setValues] = useState(defaultInputValues);
-
-    const onLinkChange = (value) => {
-        const regex = /(?:https?):\/\/(\w+:?\w*)?(\S+)(:\d+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
-        setLinkError(
-            value.length === 0 ? "You have to provide a valid url." : null
-        );
-        setLinkError(
-            !regex.test(value) ? "You have to provide a valid url." : null
-        );
-        setLink({ value: value, length: value.length });
-    };
-
-    const onPriceChange = (value) => {
-        setPriceError(
-            value <= 0 ? "Price of accommodation must be a positive number." : null
-        );
-        setPrice(value);
-    };
-
-    const onDescriptionChange = (value) => {
-        setDescriptionError(
-            value.length > DESCRIPTION_LIMIT ? "You have exceeded characters limit for description" : null
-        );
-        setDescription({ value: value, length: value.length });
+        link: "",
+        price: 0,
+        description: ""
     };
 
     const validationSchema = Yup.object().shape({
         link: Yup
             .string()
-            .url()
-            .required(),
+            .url("This is not a valid url")
+            .required("You have to provide url to accommodation")
+            .max(250, "Too long url, maximum is 250 characters"),
         price: Yup
             .number()
-            .positive(),
+            .positive("Price must be a positive number")
+            .required("You have to provide price for accommodation"),
         description: Yup
             .string()
-            .max(250)
+            .max(250, "Description is too long")
     });
 
-    const handleAddAccommodation = async (link, price, description) => {
+    const handleAddAccommodation = async (values) => {
         setIsAdding(true);
-        var postBody = { 'groupId': groupId, 'creatorId': parseInt(localStorage.getItem('userId')), 'accommodationLink': link, 'description': description, 'price': parseFloat(price) };
+        var postBody = { 'groupId': groupId, 'creatorId': parseInt(localStorage.getItem('userId')), 'accommodationLink': values.link, 'description': values.description, 'price': parseFloat(values.price) };
         await doPost('/api/v1/accommodation', postBody)
             .then(response => {
                 setSuccessToastOpen(response.ok);
@@ -99,30 +63,19 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
             })
             .catch(err => {
                 setErrorToastOpen(true);
-                // setCreationError(err.message)
             });
         setIsAdding(false);
     };
 
-
-    const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    const { register, handleSubmit, reset, watch, formState: { errors } } = useForm({
         resolver: yupResolver(validationSchema),
+        defaultValues: defaultInputValues
     });
 
+    const descriptionWatch = watch("description");
 
     const close = () => {
         reset();
-        setValues(defaultInputValues);
-        setLink({ value: "", length: 0 });
-        setLinkError("You have to provide a valid url.");
-        setPrice("0");
-        setPriceError("Price of accommodation must be a positive number.");
-        setDescription({ value: "", length: 0 });
-        onClose();
-    };
-
-    const handleErrorClose = () => {
-        setErrorToastOpen(true);
         onClose();
     };
 
@@ -130,7 +83,6 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
         <div>
             <SuccessToast open={successToastOpen} onClose={() => setSuccessToastOpen(false)} message="Accommodation successfully added." />
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} />
-
             <Dialog
                 open={open}
                 onClose={onClose}
@@ -167,11 +119,14 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
                         Provide link to booking or airbnb, price and description. If you use link
                         from booking.com make sure it has the following structure:
                     </DialogContentText>
+                    <DialogContentText variant="h6">
+                        https://www.booking.com/[name of the hotel]
+                    </DialogContentText>
                     <DialogContentText variant="body1" mb="20px">
-                        "https://www.booking.com/[name of the hotel]{"delete rest"}"
+                        everything after and including first comma should be deleted
                     </DialogContentText>
                     <form
-                        onSubmit={handleSubmit(() => handleAddAccommodation(link.value, price, description.value))}
+                        onSubmit={handleSubmit(handleAddAccommodation)}
                     >
                         <TextField
                             type='string'
@@ -191,12 +146,9 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
                                 ),
                             }}
                             {...register('link')}
-                            error={Boolean(errors.link) ? (Boolean(linkError)) : false}
-                            helperText={Boolean(errors.link) && linkError}
-                            value={link.value}
-                            onChange={(event) => onLinkChange(event.target.value)}
+                            error={!!errors.link}
+                            helperText={errors.link?.message}
                         />
-
                         <TextField
                             sx={{ minWidth: "180px", width: "180px" }}
                             type="number"
@@ -221,21 +173,20 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
                                 )
                             }}
                             {...register('price')}
-                            error={Boolean(errors.price) ? (Boolean(priceError)) : false}
-                            value={price}
-                            onChange={(event) => onPriceChange(event.target.value)}
+                            error={!!errors.price}
                         />
                         <FormHelperText
-                            error={Boolean(priceError)}
+                            error={!!errors.price}
                             sx={{
                                 display: "flex",
                                 justifyContent: "space-between",
-                                padding: "0 10px",
+                                mt: "-5px",
+                                ml: 2,
+                                mb: 3
                             }}
                         >
-                            <span>{Boolean(errors.price) && priceError}</span>
+                            <span>{!!errors.price && errors.price?.message}</span>
                         </FormHelperText>
-
                         <TextField
                             type='string'
                             autoFocus
@@ -248,12 +199,10 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
                             fullWidth
                             variant="outlined"
                             {...register('description')}
-                            error={Boolean(descriptionError)}
-                            value={description.value}
-                            onChange={(event) => onDescriptionChange(event.target.value)}
+                            error={!!errors.description}
                         />
                         <FormHelperText
-                            error={Boolean(descriptionError)}
+                            error={!!errors.description}
                             sx={{
                                 display: "flex",
                                 justifyContent: "space-between",
@@ -261,10 +210,9 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
                                 pb: "30px"
                             }}
                         >
-                            <span>{descriptionError}</span>
-                            <span>{`${description.length}/${DESCRIPTION_LIMIT}`}</span>
+                            <span>{errors.description?.message}</span>
+                            <span>{`${descriptionWatch ? descriptionWatch.length : 0}/${DESCRIPTION_LIMIT}`}</span>
                         </FormHelperText>
-
                         <DialogActions>
                             {isAdding ?
                                 <Button
@@ -292,19 +240,6 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
                                     </Button>
                                 </>
                             }
-                            {/* <Button 
-                            variant="outlined"
-                            onClick={onClose}
-                            >
-                                Cancel
-                                </Button>
-                            <Button
-                                type="submit"
-                                variant="contained"
-                                color="primary"
-                            >
-                                Add
-                            </Button> */}
                         </DialogActions>
                     </form>
                 </DialogContent>

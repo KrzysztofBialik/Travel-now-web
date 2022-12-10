@@ -18,7 +18,7 @@ export const ErrorTripConfirmationDialog = ({ open, onClose, message }) => {
                 <DialogTitle>Updating trip group details failed!</DialogTitle>
                 <DialogContent>
                     <DialogContentText>
-                    {message}
+                        {message}
                     </DialogContentText>
                     <DialogActions>
                         <Button
@@ -42,4 +42,4 @@ export const ErrorTripConfirmationDialog = ({ open, onClose, message }) => {
             </Dialog>
         </div>
     );
-}
+};

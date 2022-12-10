@@ -8,7 +8,6 @@ import { DialogContentText } from '@mui/material';
 import { DialogTitle } from '@mui/material';
 import { doPut } from "../../components/utils/fetch-utils";
 import { DeletingPermissionApiErrorToast } from '../toasts/DeletingPermissionApiErrorToast';
-
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 
@@ -18,7 +17,6 @@ export const PromoteParticipantDialog = ({ open, onClose, groupId, userId, onSuc
     const [errorToastOpen, setErrorToastOpen] = useState(false);
     const [apiErrorToastOpen, setApiErrorToastOpen] = useState(false);
     const [apiErrorMessage, setApiErrorMessage] = useState("")
-
 
     const handleSuccessClose = async () => {
         await promoteUserToCoordinator();
@@ -37,7 +35,7 @@ export const PromoteParticipantDialog = ({ open, onClose, groupId, userId, onSuc
                 setApiErrorToastOpen(true)
                 setApiErrorMessage(err.message);
             });
-    }
+    };
 
     return (
         <div>
