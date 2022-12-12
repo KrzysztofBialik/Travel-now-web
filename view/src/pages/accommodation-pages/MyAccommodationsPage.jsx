@@ -60,52 +60,54 @@ export const MyAccommodationsPage = () => {
         doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId, userId: parseInt(sessionStorage.getItem('userId')) }).toString())
             .then(response => response.json())
             .then(json => { setAccommodationsRaw(json); return json })
-            .then(accommodations => setMyAccommodations(accommodations.map(accommodation => (
-                accommodation.accommodation.creator_id === parseInt(sessionStorage.getItem("userId")) ?
-                    <Grid container item xs={12} spacing={10} key={accommodation.accommodation.accommodationId}
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            alignItems: 'flex-start',
-                            mb: 8,
-                        }}
-                    >
-                        <Grid item xs={12} md={5}>
-                            <AccommodationCard
-                                accommodationData={accommodation.accommodation}
-                                canModify={accommodation.accommodation.creator_id === parseInt(sessionStorage.getItem("userId"))}
-                                isCoordinator={isCoordinator}
-                                selected={false}
-                                votes={accommodation.userVoted}
-                                onSuccess={() => getData()}
-                            />
-                        </Grid>
-                        <Grid item xs={12} md={5} >
-                            {true ?
-                                <GoogleMap
-                                    zoom={14}
-                                    center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
-                                    mapContainerClassName="map-container"
-                                >
-                                    <MarkerF position={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }} />
-                                </GoogleMap>
-                                :
-                                <Box
-                                    sx={{
-                                        display: "flex",
-                                        flexDirection: "column",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        minHeight: "400px"
-                                    }}
-                                >
-                                    <CircularProgress />
-                                </Box>}
-                        </Grid>
-                    </Grid>
-                    :
-                    <Box></Box>
-            ))))
+            .then(accommodations => setMyAccommodations(accommodations.sort((a, b) =>
+                (a.accommodation.accommodationId < b.accommodation.accommodationId) ? 1
+                    : (a.accommodation.accommodationId > b.accommodation.accommodationId) ? -1 : 0).map((accommodation) => (
+                        accommodation.accommodation.creator_id === parseInt(sessionStorage.getItem("userId")) ?
+                            <Grid container item xs={12} spacing={10} key={accommodation.accommodation.accommodationId}
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    alignItems: 'flex-start',
+                                    mb: 8,
+                                }}
+                            >
+                                <Grid item xs={12} md={5}>
+                                    <AccommodationCard
+                                        accommodationData={accommodation.accommodation}
+                                        canModify={accommodation.accommodation.creator_id === parseInt(sessionStorage.getItem("userId"))}
+                                        isCoordinator={isCoordinator}
+                                        selected={false}
+                                        votes={accommodation.userVoted}
+                                        onSuccess={() => getData()}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={5} >
+                                    {true ?
+                                        <GoogleMap
+                                            zoom={14}
+                                            center={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }}
+                                            mapContainerClassName="map-container"
+                                        >
+                                            <MarkerF position={{ lat: accommodation.accommodation.latitude, lng: accommodation.accommodation.longitude }} />
+                                        </GoogleMap>
+                                        :
+                                        <Box
+                                            sx={{
+                                                display: "flex",
+                                                flexDirection: "column",
+                                                justifyContent: "center",
+                                                alignItems: "center",
+                                                minHeight: "400px"
+                                            }}
+                                        >
+                                            <CircularProgress />
+                                        </Box>}
+                                </Grid>
+                            </Grid>
+                            :
+                            <Box></Box>
+                    ))))
             .catch(err => console.log('Request Failed', err));
         setLoading(false);
     };

@@ -101,24 +101,29 @@ export const AccommodationsPage = () => {
         setLoading(true);
         doGet('/api/v1/accommodation/votes?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
-            .then(json => { setAccommodationsRaw(json); return json })
+            .then(json => {
+                setAccommodationsRaw(json); return json
+            })
             .then(accommodations => {
-                setAllAccommodations(accommodations.map((accommodation) =>
-                (
-                    res.selectedAccommodationId !== accommodation.accommodation.accommodationId ?
-                        <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
-                            <AccommodationCard
-                                accommodationData={accommodation.accommodation}
-                                canModify={(accommodation.accommodation.creator_id === parseInt(sessionStorage.getItem("userId"))) || isCordinator}
-                                selected={false}
-                                isCoordinator={isCordinator}
-                                votes={accommodation.userVoted}
-                                onSuccess={() => updateData()}
-                            />
-                        </Grid>
-                        :
-                        <Box />
-                )));
+                console.log(accommodations)
+                setAllAccommodations(accommodations.sort((a, b) =>
+                    (a.accommodation.accommodationId < b.accommodation.accommodationId) ? 1
+                        : (a.accommodation.accommodationId > b.accommodation.accommodationId) ? -1 : 0).map((accommodation) =>
+                        (
+                            res.selectedAccommodationId !== accommodation.accommodation.accommodationId ?
+                                <Grid item xs={12} md={4} key={accommodation.accommodation.accommodationId}>
+                                    <AccommodationCard
+                                        accommodationData={accommodation.accommodation}
+                                        canModify={(accommodation.accommodation.creator_id === parseInt(sessionStorage.getItem("userId"))) || isCordinator}
+                                        selected={false}
+                                        isCoordinator={isCordinator}
+                                        votes={accommodation.userVoted}
+                                        onSuccess={() => updateData()}
+                                    />
+                                </Grid>
+                                :
+                                <Box />
+                        )));
             })
             .catch(err => console.log('Request Failed', err));
         setLoading(false);
