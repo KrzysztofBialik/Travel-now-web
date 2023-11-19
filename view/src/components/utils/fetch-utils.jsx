@@ -1,4 +1,5 @@
-export const URL_PREFIX = 'https://51.132.58.149:8443';
+// export const URL_PREFIX = 'https://51.132.58.149:8443';
+export const URL_PREFIX = process.env.NODE_ENV === 'development' ? 'http://localhost:8080' : '';
 
 export const doGet = (endpoint) => {
     const headers = addAuthorizationHeader({
@@ -82,24 +83,34 @@ const addAuthorizationHeader = (headers) => {
     return headers
 }
 
+// const checkForError = async (response) => {
+//     if (!response.ok) {
+
+//         if (response.status === 401 && response.url !== 'https://51.132.58.149:8443/api/v1/auth/login') {
+//             window.location.replace('https://travelnow.vercel.app/login');
+//         }
+
+//         if (response.status === 401 && response.url === 'https://51.132.58.149:8443/api/v1/auth/login') {
+//             throw new Error("401")
+//         }
+
+//         if (response.headers.get('content-type') === 'application/json') {
+//             const json = await response.json()
+//             throw new Error(json.message)
+//         }
+
+
+
+//         throw new Error("Something went wrong")
+//     }
+//     return response
+// }
 const checkForError = async (response) => {
     if (!response.ok) {
-
-        if (response.status === 401 && response.url !=='https://51.132.58.149:8443/api/v1/auth/login') {   
-            window.location.replace('https://travelnow.vercel.app/login');
-        }
-
-        if (response.status === 401 && response.url ==='https://51.132.58.149:8443/api/v1/auth/login') {   
-            throw new Error("401")
-        }
-
         if (response.headers.get('content-type') === 'application/json') {
             const json = await response.json()
             throw new Error(json.message)
         }
-
-        
-
         throw new Error("Something went wrong")
     }
     return response
