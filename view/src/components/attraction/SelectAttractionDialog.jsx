@@ -205,7 +205,7 @@ export const SelectAttractionDialog = ({ open, onClose, attractionData, closeWit
                                 variant="contained"
                                 sx={{ color: "#FFFFFF", borderRadius: "20px" }}
                             >
-                                Select
+                                Add
                             </Button>
                         </DialogActions>
                     </form>

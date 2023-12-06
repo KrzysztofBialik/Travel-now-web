@@ -108,7 +108,7 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, 
 
     const onHoursChange = (value) => {
         setHoursError(
-            (value < 0 || value > 23) ? "Must be a valid hour(0 - 23)" : null
+            (value < 0) ? "Must be a non negative number of hours" : null
         );
         setHours(value);
     };
@@ -147,7 +147,7 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, 
         hours: Yup
             .number()
             .min(0)
-            .max(23)
+            // .max(23)
             .required(),
         minutes: Yup
             .number()
@@ -333,6 +333,9 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, 
                                 name='hours'
                                 label='Hours'
                                 variant="outlined"
+                                InputProps={{
+                                    inputProps: { min: 0 },
+                                }}
                                 {...register('hours')}
                                 error={Boolean(errors.hours) ? (Boolean(hoursError)) : false}
                                 helperText={Boolean(errors.hours) && hoursError}
@@ -347,6 +350,9 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, 
                                 name='minutes'
                                 label='Minutes'
                                 variant="outlined"
+                                InputProps={{
+                                    inputProps: { min: 0, max: 59 },
+                                }}
                                 {...register('minutes')}
                                 error={Boolean(errors.minutes) ? (Boolean(minutesError)) : false}
                                 helperText={Boolean(errors.minutes) && minutesError}
@@ -396,6 +402,7 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, 
                                 fullWidth
                                 variant="outlined"
                                 InputProps={{
+                                    inputProps: { min: 0, step: 0.01 },
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <AttachMoneyIcon sx={{ color: "primary.main" }} />
@@ -406,11 +413,6 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, 
                                             {currency}
                                         </InputAdornment>
                                     )
-                                    // endAdornment: (
-                                    //     <InputAdornment position="end">
-                                    //         zł
-                                    //     </InputAdornment>
-                                    // )
                                 }}
                                 {...register('price')}
                                 error={Boolean(errors.price) ? (Boolean(priceError)) : false}

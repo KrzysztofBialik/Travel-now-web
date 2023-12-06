@@ -132,6 +132,15 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
             .max(DESCRIPTION_LIMIT, "You have exceeded characters limit for description")
     });
 
+    // const defaultInputValues = {
+    //     tripName: tripData.name,
+    //     startingLocation: tripData.startLocation,
+    //     currency: tripData.currency,
+    //     minDays: tripData.minimalNumberOfDays,
+    //     minParticipants: tripData.minimalNumberOfParticipants,
+    //     description: tripData.description,
+    // };
+
     const { register, handleSubmit, reset, formState: { errors }, control, watch, setValue, getValues } = useForm({
         resolver: yupResolver(validationSchema),
         defaultValues: useMemo(() => {
@@ -156,7 +165,8 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
     }
 
     const close = () => {
-        reset();
+        // reset(tripData);
+        getTripData();
         onClose();
     };
 
@@ -391,6 +401,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                         label='Min days'
                                                         variant="outlined"
                                                         InputProps={{
+                                                            inputProps: { min: 1 },
                                                             startAdornment: (
                                                                 <InputAdornment position="start">
                                                                     <AccessTimeIcon sx={{ color: "primary.main" }} />
@@ -412,6 +423,7 @@ export const TripGroupOptionsDialog = ({ open, onClose, groupId }) => {
                                                         label='Min participants'
                                                         variant="outlined"
                                                         InputProps={{
+                                                            inputProps: { min: 1 },
                                                             startAdornment: (
                                                                 <InputAdornment position="start">
                                                                     <PeopleAltOutlinedIcon sx={{ color: "primary.main" }} />

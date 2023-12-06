@@ -6,6 +6,7 @@ import { Typography } from "@mui/material";
 import { ButtonBase } from "@mui/material";
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
+import AddIcon from '@mui/icons-material/Add';
 import MapIcon from '@mui/icons-material/Map';
 import { PLACEHOLDER_IMAGE } from "../images/Images";
 
@@ -120,7 +121,26 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                             </Box>
                         </Box>
                     </ButtonBase>
-                    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: -5 }}>
+                    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: "-40px" }}>
+                        <Button
+                            variant="outlined"
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={openSelectAttractionDialog}
+                            sx={{
+                                color: "primary.main",
+                                borderColor: "primary.main",
+                                borderRadius: "20px",
+                                width: "170px",
+                                mr: 1,
+                                '&:hover': { color: "#FFFFFF", backgroundColor: "primary.main", borderColor: "primary.main" }
+                            }}
+                        >
+                            <AddIcon />
+                            <Typography>
+                                ADD
+                            </Typography>
+                        </Button>
                         <Button
                             variant="outlined"
                             target="_blank"
@@ -130,7 +150,7 @@ export const AttractionCandidateCard = ({ attractionData, openSelectAttractionDi
                                 color: "primary.main",
                                 borderColor: "primary.main",
                                 borderRadius: "20px",
-                                width: "180px",
+                                width: "170px",
                                 '&:hover': { color: "#FFFFFF", backgroundColor: "primary.main", borderColor: "primary.main" }
                             }}
                         >

@@ -351,6 +351,9 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
                                 name='hours'
                                 label='Hours'
                                 variant="outlined"
+                                InputProps={{
+                                    inputProps: { min: 0 },
+                                }}
                                 {...register('hours')}
                                 error={Boolean(errors.hours) ? (Boolean(hoursError)) : false}
                                 helperText={Boolean(errors.hours) && hoursError}
@@ -365,6 +368,9 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
                                 name='minutes'
                                 label='Minutes'
                                 variant="outlined"
+                                InputProps={{
+                                    inputProps: { min: 0, max: 59 },
+                                }}
                                 {...register('minutes')}
                                 error={Boolean(errors.minutes) ? (Boolean(minutesError)) : false}
                                 helperText={Boolean(errors.minutes) && minutesError}
@@ -417,6 +423,7 @@ export const EditTransportDialog = ({ open, onClose, transportData, onSuccess })
                                 fullWidth
                                 variant="outlined"
                                 InputProps={{
+                                    inputProps: { min: 0, step: 0.01 },
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <AttachMoneyIcon sx={{ color: "primary.main" }} />

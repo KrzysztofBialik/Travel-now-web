@@ -18,6 +18,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as Yup from 'yup';
 import InputAdornment from '@mui/material/InputAdornment';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import { SuccessToast } from '../toasts/SuccessToast';
 import { ErrorToast } from '../toasts/ErrorToast';
 import { doPatch, doGet } from "../../components/utils/fetch-utils";
@@ -156,7 +157,7 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData, curr
                         onSubmit={handleSubmit(() => handleEditAccommodation(price, description.value))}
                     >
                         <TextField
-                            sx={{ minWidth: "150px", width: "150px" }}
+                            sx={{ minWidth: "180px", width: "180px" }}
                             type="number"
                             autoFocus
                             margin="normal"
@@ -167,6 +168,12 @@ export const EditAccommodationDialog = ({ open, onClose, accommodationData, curr
                             fullWidth
                             variant="outlined"
                             InputProps={{
+                                inputProps: { min: 0, step: 0.01 },
+                                startAdornment: (
+                                    <InputAdornment position="start">
+                                        <AttachMoneyIcon sx={{ color: "primary.main" }} />
+                                    </InputAdornment>
+                                ),
                                 endAdornment: (
                                     <InputAdornment position="end">
                                         {currency}

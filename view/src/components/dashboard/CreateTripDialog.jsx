@@ -279,6 +279,7 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                                 label='Min days'
                                 variant="outlined"
                                 InputProps={{
+                                    inputProps: { min: 1 },
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <AccessTimeIcon sx={{ color: "primary.main" }} />
@@ -298,6 +299,7 @@ export const CreateTripDialog = ({ open, onClose, createTrip, onSuccess }) => {
                                 label='Min participants'
                                 variant="outlined"
                                 InputProps={{
+                                    inputProps: { min: 1 },
                                     startAdornment: (
                                         <InputAdornment position="start">
                                             <PeopleAltOutlinedIcon sx={{ color: "primary.main" }} />

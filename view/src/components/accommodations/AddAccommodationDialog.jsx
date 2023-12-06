@@ -160,6 +160,7 @@ export const AddAccommodationDialog = ({ open, onClose, groupId, onSuccess, curr
                             fullWidth
                             variant="outlined"
                             InputProps={{
+                                inputProps: { min: 0, step: 0.01 },
                                 startAdornment: (
                                     <InputAdornment position="start">
                                         <AttachMoneyIcon sx={{ color: "primary.main" }} />
