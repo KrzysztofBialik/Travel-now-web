@@ -2,10 +2,12 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Box } from "@mui/material";
+import { Divider } from "@mui/material";
 import { CircularProgress } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
+import { AccommodationsButtonGroup } from "../../components/accommodations/AccommodationsButtonGroup";
 import { AccommodationCard } from "../../components/accommodations/accommodationCard/AccommodationCard";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
@@ -32,6 +34,7 @@ export const MyAccommodationsPage = () => {
     });
 
     useEffect(() => {
+        console.log(groupId)
         getIsCoordinator()
             .then(() => getCurrency())
             .then(() => getData());
@@ -131,7 +134,8 @@ export const MyAccommodationsPage = () => {
                     groupId={groupId}
                 />
                 <Box sx={{
-                    p: 10,
+                    // p: 10,
+                    // pt: 5,
                     display: "flex",
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -140,6 +144,11 @@ export const MyAccommodationsPage = () => {
                     minHeight: '400px'
                 }}
                 >
+                    <AccommodationsButtonGroup
+                        clickedButton={"myAcc"}
+                        groupId={groupId}
+                    />
+                    <Divider sx={{ width: "100%" }} />
                     <Box
                         sx={{
                             p: 4,
@@ -176,7 +185,7 @@ export const MyAccommodationsPage = () => {
                             }}>
                                 <Button
                                     variant="contained"
-                                    sx={{ borderRadius: "20px", color: "#FFFFFF" }}
+                                    sx={{ borderRadius: "20px", color: "#FFFFFF", px: 2, py: 1, fontSize: "20px" }}
                                     onClick={() => setAddAccommodationDialogOpen(true)}
                                 >
                                     Add accommodation

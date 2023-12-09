@@ -4,7 +4,8 @@ import { LoginPage, URL as LoginURL } from '../../pages/login-page/LoginPage';
 import { RegisterPage, URL as RegisterURL } from '../../pages/register-page/RegisterPage';
 import { ErrorPage } from '../../pages/error-page/ErrorPage';
 import { DashboardPage, URL as DashboardURL } from '../../pages/dashboard-page/DashboardPage';
-import { AccommodationsPage, URL as AccommodationURL } from '../../pages/accommodation-pages/AccommodationsPage';
+import { AccommodationsPage, URL as AccommodationsURL } from '../../pages/accommodation-pages/AccommodationsPage';
+import { AccommodationsPageAll, URL as AccommodationsAllURL } from '../../pages/accommodation-pages/AccommodationsPageAll';
 import { MyAccommodationsPage, URL as MyAccommodationsURL } from '../../pages/accommodation-pages/MyAccommodationsPage';
 import { MyAccommodationVotesPage, URL as MyAccommodationVotesURL } from '../../pages/accommodation-pages/MyAccommodationVotesPage';
 import { AvailabilityPage, URL as AvailabilityURL } from '../../pages/availability-pages/AvailabilityPage';
@@ -28,7 +29,8 @@ export const PublicContentRouting = () => {
                 <Route exact path="*" element={<ErrorPage />} />
                 {/* Routing to be moved to protected */}
                 <Route exact path={DashboardURL} element={<DashboardPage />} />
-                <Route exact path={AccommodationURL} element={<AccommodationsPage />} />
+                {/* <Route exact path={AccommodationsURL} element={<AccommodationsPage />} /> */}
+                <Route exact path={AccommodationsAllURL} element={<AccommodationsPageAll />} />
                 <Route exact path={MyAccommodationsURL} element={<MyAccommodationsPage />} />
                 <Route exact path={MyAccommodationVotesURL} element={<MyAccommodationVotesPage />} />
                 <Route exact path={AvailabilityURL} element={<AvailabilityPage />} />

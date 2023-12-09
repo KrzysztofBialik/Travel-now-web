@@ -1,9 +1,10 @@
 import { Box, CircularProgress } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
-import { Card } from "@mui/material";
+import { Divider } from "@mui/material";
 import { Button } from "@mui/material";
 
+import { AccommodationsButtonGroup } from "../../components/accommodations/AccommodationsButtonGroup";
 import { AccommodationCard } from "../../components/accommodations/accommodationCard/AccommodationCard";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { futureTripButtonsData, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
@@ -153,7 +154,8 @@ export const MyAccommodationVotesPage = () => {
                 groupId={groupId}
             />
             <Box sx={{
-                p: 10,
+                // p: 10,
+                // pt: 5,
                 // margin: 10,
                 // mx: { xs: 2, lg: 3 },
                 display: "flex",
@@ -164,6 +166,11 @@ export const MyAccommodationVotesPage = () => {
             }}
             // elevation={4}
             >
+                <AccommodationsButtonGroup
+                    clickedButton={"myVotes"}
+                    groupId={groupId}
+                />
+                <Divider sx={{ width: "100%" }} />
                 <Box
                     sx={{
                         p: 4,

@@ -55,7 +55,7 @@ export const DashboardPage = () => {
                     display: "grid",
                     mt: -5,
                     placeItems: "center",
-                    minHeight: "75vh",
+                    minHeight: "90vh",
                     minWidth: "1200px",
                     width: "100%"
                 }}
@@ -65,17 +65,19 @@ export const DashboardPage = () => {
                         display: "flex",
                         justifyContent: "center",
                         alignItems: "center",
-                        flexDirection: "column"
+                        flexDirection: "column",
+                        mt: -20
                     }}
                 >
                     <Grid item xs={12} justifyContent="center" mx="auto">
                         <Typography
                             variant="h1"
-                            mt={-8}
+                            // mt={-20}
                             textAlign="center"
                             color="#FFFFFF"
                             sx={{
                                 fontSize: "40px",
+                                pb: 5
                             }}
                         >
                             Explore the world with us
@@ -94,7 +96,7 @@ export const DashboardPage = () => {
                                 onClick={() => setCreateTripDialogOpen(true)}
                                 sx={{ color: "#FFFFFF", borderRadius: "20px", mt: 2 }}
                             >
-                                Start planning
+                                Create new trip
                             </Button>
                         </Typography>
                     </Grid>
@@ -104,7 +106,7 @@ export const DashboardPage = () => {
             <Card sx={{
                 p: 2,
                 mx: { xs: 2, lg: 3 },
-                mt: -8,
+                mt: -30,
                 mb: 4,
                 backgroundColor: "#F0F2F5",
                 backdropFilter: "saturate(200%) blur(30px)",
@@ -114,10 +116,10 @@ export const DashboardPage = () => {
             >
                 <CurrentTrips trips={tripsList} isLoading={isLoading} />
 
-                <Divider variant="middle" />
+                <Divider />
                 <FutureTrips trips={tripsList} />
 
-                <Divider variant="middle" />
+                <Divider />
                 <PastTrips trips={tripsList} isLoading={isLoading} />
             </Card>
         </>

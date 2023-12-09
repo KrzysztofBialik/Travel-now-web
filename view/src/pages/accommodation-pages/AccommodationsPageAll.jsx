@@ -20,7 +20,7 @@ import { futureTripButtonsData, futureTripButtonsDataWithGroupId } from "../../c
 export const URL = '/accommodations/:groupId';
 export const NAME = "Accommodations";
 
-export const AccommodationsPage = () => {
+export const AccommodationsPageAll = () => {
 
     const { groupId } = useParams();
     const [numOfVotes, setNumOfVotes] = useState(0)
@@ -174,11 +174,6 @@ export const AccommodationsPage = () => {
                     minWidth: "1200px"
                 }}
                 >
-                    <AccommodationsButtonGroup
-                        clickedButton={"allAcc"}
-                        groupId={groupId}
-                    />
-                    <Divider sx={{ width: "100%" }} />
                     {selectedAccommodation !== null ?
                         <>
                             <Box

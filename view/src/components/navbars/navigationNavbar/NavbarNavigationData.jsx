@@ -23,7 +23,7 @@ export const futureTripButtonsData = [
         submenu: [
             {
                 id: 21,
-                name: "Accommodations",
+                name: "All Accommodations",
                 link: "/accommodations"
             },
             {
@@ -166,7 +166,7 @@ export const futureTripButtonsDataWithGroupId = (groupId) => {
         submenu: [
             {
                 id: 21,
-                name: "Accommodations",
+                name: "All Accommodations",
                 link: "/accommodations/" + groupId
             },
             {
