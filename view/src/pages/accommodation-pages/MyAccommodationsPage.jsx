@@ -7,6 +7,7 @@ import { CircularProgress } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 import { AccommodationsButtonGroup } from "../../components/accommodations/AccommodationsButtonGroup";
 import { AccommodationCard } from "../../components/accommodations/accommodationCard/AccommodationCard";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
@@ -73,6 +74,7 @@ export const MyAccommodationsPage = () => {
                                     justifyContent: "center",
                                     alignItems: 'flex-start',
                                     mb: 8,
+                                    maxWidth: "1200px"
                                 }}
                             >
                                 <Grid item xs={12} md={5}>
@@ -163,6 +165,7 @@ export const MyAccommodationsPage = () => {
                                 display: "flex",
                                 justifyContent: "center",
                                 alignItems: "center",
+                                // maxWidth: "1200px"
                             }}>
                             <Grid item xs={12}>
                                 <Typography
@@ -188,6 +191,7 @@ export const MyAccommodationsPage = () => {
                                     sx={{ borderRadius: "20px", color: "#FFFFFF", px: 2, py: 1, fontSize: "20px" }}
                                     onClick={() => setAddAccommodationDialogOpen(true)}
                                 >
+                                    <AddIcon />
                                     Add accommodation
                                 </Button>
                             </Grid>

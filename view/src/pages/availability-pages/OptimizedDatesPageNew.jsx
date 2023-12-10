@@ -1,37 +1,33 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
 import { Card } from "@mui/material";
 import { CardActions } from "@mui/material";
 import { Icon } from "@mui/material";
 import { Box } from "@mui/material";
 import { Button } from "@mui/material";
-import { Typography } from "@mui/material";
-import { CardHeader } from '@mui/material';
+import { Divider } from "@mui/material";
 import { CardContent } from '@mui/material';
-import { Collapse } from '@mui/material';
 import { styled } from '@mui/material/styles';
-import AddIcon from '@mui/icons-material/Add';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
+import { Typography } from "@mui/material";
+import TipsAndUpdatesOutlinedIcon from '@mui/icons-material/TipsAndUpdatesOutlined';
+import Collapse from '@mui/material/Collapse';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { DateRange } from 'react-date-range';
-import { eachDayOfInterval } from "date-fns";
-import { isWeekend } from "date-fns";
-import { format } from "date-fns";
+import isWeekend from "date-fns/isWeekend";
+import format from "date-fns/format";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
-import { AvailabilityTable } from "../../components/availability/AvailabilityTable";
-import { DateRangePickerDialog } from "../../components/availability/DateRangePickerDialog";
+import { OptimizedDatesTable } from "../../components/availability/OptimizedDatesTable";
+import { AvailabilitiesButtonGroup } from "../../components/availability/AvailabilitiesButtonGroup";
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
-import { ParticipantsAvailabilityTable } from "../../components/availability/ParticipantsAvailabilityTable";
 import { currentTripButtonsDataWithGroupId, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
-import { useParams } from "react-router-dom";
 import { doGet } from "../../components/utils/fetch-utils";
 import { useEffect } from 'react';
+import { useParams } from "react-router-dom";
 import { parseISO } from "date-fns/esm";
 
 
-export const URL = '/availability/:groupId';
-export const NAME = "Availability";
+export const URL = '/availability/OptimizedDates/:groupId';
+export const NAME = "OptimizedDates";
 
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
@@ -43,37 +39,46 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const AvailabilityPage = () => {
 
+export const OptimizedDatesPageNew = () => {
     const { groupId } = useParams();
-    const sharedAvailabilitiesPageLink = "/availability/optimizedDates/" + groupId;
-    const [availabilities, setAvailabilites] = useState([])
     const [expanded, setExpanded] = useState(false);
-    const [dateRangePickerDialogOpen, setDateRangePickerDialogOpen] = useState(false);
-
+    const [optimizedDates, setOptimizedDates] = useState([]);
+    const myAvailabilitiesPageLink = "/availability/" + groupId;
+    const [selectedSharedAvailability, setSelectedSharedAvailability] = useState([]);
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
 
-    const addAvailabilityAction = () => {
-        setDateRangePickerDialogOpen(true);
-    };
+    const optimizeDates = async () => {
+        await doGet('/api/v1/availability/triggerAvailabilityGeneration?' + new URLSearchParams({ groupId: groupId }).toString())
+            .catch(err => console.log('Request Failed', err));
+        console.log("Im here")
+        window.location.reload();
+    }
 
-    const getAvailabilities = async () => {
-        await doGet('/api/v1/availability/user?' + new URLSearchParams({ userId: sessionStorage.getItem("userId"), groupId: groupId }).toString())
+
+    const getOptimizedDates = async () => {
+        await doGet('/api/v1/trip-group/data?' + new URLSearchParams({ groupId: groupId }).toString())
+            .then(response => response.json())
+            .then(response => setSelectedSharedAvailability(response.selectedSharedAvailability))
+            .catch(err => console.log('Request Failed', err));
+
+        await doGet('/api/v1/shared-availability/list?' + new URLSearchParams({ groupId: groupId }).toString())
             .then(response => response.json())
             .then(response => {
-                setAvailabilites(response.map(availability => ({
-                    availabilityId: availability.availabilityId, userId: availability.userId, groupId: availability.groupId,
-                    startDate: parseISO(availability.dateFrom), endDate: parseISO(availability.dateTo), disabled: true
+                setOptimizedDates(response.map(optimizedAvailability => ({
+                    sharedGroupAvailability: optimizedAvailability.sharedGroupAvailabilityId, startDate: parseISO(optimizedAvailability.dateFrom),
+                    endDate: parseISO(optimizedAvailability.dateTo), days: optimizedAvailability.numberOfDays, participants: optimizedAvailability.usersList.length
                 })));
             })
             .catch(err => console.log('Request Failed', err));
-    };
+
+    }
 
     useEffect(() => {
-        getAvailabilities();
-    }, []);
+        getOptimizedDates();
+    }, [])
 
 
     function customDayContent(day) {
@@ -81,7 +86,7 @@ export const AvailabilityPage = () => {
         var color = "#000000";
         if (isWeekend(day)) {
             fontWeight = 700;
-            color = "#ffc928"
+            color = "#2ab7ca"
         }
         return (
             <div>
@@ -90,10 +95,6 @@ export const AvailabilityPage = () => {
             </div>
         )
     }
-
-    const restrictedDays = availabilities.flatMap(availability =>
-        eachDayOfInterval({ start: availability.startDate, end: availability.endDate })
-    );
 
     return (
         <Box sx={{
@@ -104,17 +105,7 @@ export const AvailabilityPage = () => {
                 buttonsData={futureTripButtonsDataWithGroupId(groupId)}
                 groupId={groupId}
             />
-            <DateRangePickerDialog open={dateRangePickerDialogOpen}
-                onClose={() => setDateRangePickerDialogOpen(false)}
-                initialRange={[{ startDate: null, endDate: null, key: "selection" }]}
-                restrictedDays={restrictedDays}
-                groupId={groupId}
-                rangeChange={() => { }}
-                onSuccess={() => getAvailabilities()}
-                shared={false}
-            />
             <Box sx={{
-                py: 10,
                 display: "flex",
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -122,8 +113,11 @@ export const AvailabilityPage = () => {
                 minWidth: "1000px"
             }}
             >
+                <AvailabilitiesButtonGroup groupId={groupId} clickedButton={"optimized"} />
+                <Divider sx={{ width: "100%", mb: 3 }} />
                 <Card
                     sx={{
+                        m: 4,
                         minHeight: "500px",
                         minWidth: "500px",
                         overflow: "visible",
@@ -144,52 +138,37 @@ export const AvailabilityPage = () => {
                             py: 2,
                             px: 2,
                             // background: "linear-gradient(195deg, rgb(85, 204, 217), rgb(36, 147, 158))",
-                            backgroundColor: "primary.main",
+                            backgroundColor: "secondary.main",
                             color: "#000000",
                             borderRadius: "0.5rem",
                             boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
                         }}
                     >
                         <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", columnGap: 1 }}>
-                            <EventAvailableIcon sx={{ color: "#FFFFFF", fontSize: "32px" }} />
+                            <TipsAndUpdatesOutlinedIcon sx={{ fontSize: "32px" }} />
                             <Box sx={{ minWidth: "250px" }}>
-                                <Typography sx={{ color: "#FFFFFF", fontSize: "32px" }}>
-                                    My availability
+                                <Typography sx={{ fontSize: "32px" }}>
+                                    Optimized dates
                                 </Typography>
                             </Box>
                             <Box sx={{
                                 display: "flex",
                                 flexDirection: "row",
                                 alignItems: "center",
-                                justifyContent: "flex-end",
-                                width: "100%"
+                                width: "100%",
+                                justifyContent: "flex-end"
                             }}>
                                 <Box>
-                                    <Link to={sharedAvailabilitiesPageLink}>
-                                        <Button variant="contained"
-                                            sx={{
-                                                backgroundColor: "secondary.main",
-                                                borderRadius: "20px",
-                                                mr: "20px",
-                                                "&:hover": { backgroundColor: "secondary.dark" }
-                                            }}>
-                                            See optimized dates
-                                        </Button>
-                                    </Link>
-                                </Box>
-                                <Box>
-                                    <Button
-                                        variant="contained"
+                                    <Button variant="contained"
                                         sx={{
-                                            backgroundColor: "secondary.main",
+                                            backgroundColor: "primary.main",
+                                            color: "#FFFFFF",
                                             borderRadius: "20px",
-                                            mr: "20px",
-                                            "&:hover": { backgroundColor: "secondary.dark" }
+                                            mr: "20px"
                                         }}
-                                        onClick={addAvailabilityAction}
+                                        onClick={optimizeDates}
                                     >
-                                        <AddIcon />
-                                        Add
+                                        Optimize dates
                                     </Button>
                                 </Box>
                             </Box>
@@ -204,14 +183,14 @@ export const AvailabilityPage = () => {
                             m: "20px"
                         }}>
                             <DateRange
-                                ranges={availabilities}
+                                ranges={optimizedDates}
                                 onChange={null}
                                 months={3}
                                 weekStartsOn={1}
                                 shownDate={new Date()}
                                 direction="horizontal"
-                                rangeColors={["#2ab7ca"]}
-                                color={"#2ab7ca"}
+                                rangeColors={["#ffc928"]}
+                                color={"#ffc928"}
                                 fixedHeight={true}
                                 dateDisplayFormat={"dd.MM.yyyy"}
                                 startDatePlaceholder="Start date"
@@ -234,7 +213,14 @@ export const AvailabilityPage = () => {
                         <Box sx={{ display: "flex", mb: "20px" }}>
                             <Button
                                 variant="contained"
-                                sx={{ color: "#FFFFFF", borderRadius: "20px" }}
+                                sx={{
+                                    backgroundColor: "secondary.main",
+                                    color: "#000000",
+                                    borderRadius: "20px",
+                                    "&:hover": {
+                                        backgroundColor: "secondary.dark"
+                                    }
+                                }}
                                 onClick={handleExpandClick}
                             >
                                 <ExpandMore
@@ -244,70 +230,23 @@ export const AvailabilityPage = () => {
                                     aria-label="show more"
                                     sx={{ ml: -1 }}
                                 >
-                                    <ExpandMoreIcon sx={{ color: "#FFFFFF" }} />
+                                    <ExpandMoreIcon sx={{ color: "#000000" }} />
                                 </ExpandMore>
                                 Details
                             </Button>
                         </Box>
+
                     </CardActions>
                     <Collapse in={expanded} timeout="auto" unmountOnExit>
                         <CardContent>
-                            <AvailabilityTable
-                                availabilities={availabilities}
-                                groupId={groupId}
-                                onSuccess={() => getAvailabilities()}
+                            <OptimizedDatesTable
+                                optimizedDates={optimizedDates}
+                                selectedSharedAvailability={selectedSharedAvailability}
+                                onSuccess={() => getOptimizedDates()}
                             />
                         </CardContent>
                     </Collapse>
                 </Card >
-                <Box
-                    sx={{
-                        minWidth: "1050px",
-                        borderRadius: "10px",
-                    }}
-                >
-                    <Box
-                        sx={{
-                            pt: 10,
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            minWidth: "90%",
-                        }}
-                    >
-                        <Box sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            // justifyContent: "center",
-                            alignItems: 'center',
-                            width: "100%",
-                            height: "40px",
-                            mb: "50px",
-                        }}>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "center",
-                                alignItems: 'center',
-                                width: "100%"
-                            }}>
-                                <Typography
-                                    variant="h3"
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: 'center',
-                                        width: "90%"
-                                    }}
-                                >
-                                    Other participants availability
-                                </Typography>
-                            </Box>
-                        </Box>
-                        <ParticipantsAvailabilityTable groupId={groupId} />
-                    </Box>
-                </Box>
             </Box>
         </Box>
     );

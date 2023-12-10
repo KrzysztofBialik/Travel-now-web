@@ -6,6 +6,7 @@ import { CircularProgress } from "@mui/material";
 import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 import IconButton from '@mui/material/IconButton';
 import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
 import { useParams } from "react-router-dom";
@@ -279,6 +280,7 @@ export const AccommodationsPageAll = () => {
                                     sx={{ borderRadius: "20px", color: "#FFFFFF", mb: 5, px: 2, py: 1, fontSize: "20px" }}
                                     onClick={() => setAddAccommodationDialogOpen(true)}
                                 >
+                                    <AddIcon />
                                     Add accommodation
                                 </Button>
                             </Grid>

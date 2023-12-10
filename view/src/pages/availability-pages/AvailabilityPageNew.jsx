@@ -6,7 +6,7 @@ import { Icon } from "@mui/material";
 import { Box } from "@mui/material";
 import { Button } from "@mui/material";
 import { Typography } from "@mui/material";
-import { CardHeader } from '@mui/material';
+import { Divider } from "@mui/material";
 import { CardContent } from '@mui/material';
 import { Collapse } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -21,8 +21,8 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import { AvailabilityTable } from "../../components/availability/AvailabilityTable";
 import { DateRangePickerDialog } from "../../components/availability/DateRangePickerDialog";
+import { AvailabilitiesButtonGroup } from "../../components/availability/AvailabilitiesButtonGroup";
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
-import { ParticipantsAvailabilityTable } from "../../components/availability/ParticipantsAvailabilityTable";
 import { currentTripButtonsDataWithGroupId, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { useParams } from "react-router-dom";
 import { doGet } from "../../components/utils/fetch-utils";
@@ -43,7 +43,7 @@ const ExpandMore = styled((props) => {
     }),
 }));
 
-export const AvailabilityPage = () => {
+export const AvailabilityPageNew = () => {
 
     const { groupId } = useParams();
     const sharedAvailabilitiesPageLink = "/availability/optimizedDates/" + groupId;
@@ -100,10 +100,6 @@ export const AvailabilityPage = () => {
             position: 'relative',
             minHeight: '100%'
         }}>
-            <NavigationNavbar
-                buttonsData={futureTripButtonsDataWithGroupId(groupId)}
-                groupId={groupId}
-            />
             <DateRangePickerDialog open={dateRangePickerDialogOpen}
                 onClose={() => setDateRangePickerDialogOpen(false)}
                 initialRange={[{ startDate: null, endDate: null, key: "selection" }]}
@@ -113,8 +109,11 @@ export const AvailabilityPage = () => {
                 onSuccess={() => getAvailabilities()}
                 shared={false}
             />
+            <NavigationNavbar
+                buttonsData={futureTripButtonsDataWithGroupId(groupId)}
+                groupId={groupId}
+            />
             <Box sx={{
-                py: 10,
                 display: "flex",
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -122,8 +121,11 @@ export const AvailabilityPage = () => {
                 minWidth: "1000px"
             }}
             >
+                <AvailabilitiesButtonGroup groupId={groupId} clickedButton={"myAv"} />
+                <Divider sx={{ width: "100%", mb: 3 }} />
                 <Card
                     sx={{
+                        m: 4,
                         minHeight: "500px",
                         minWidth: "500px",
                         overflow: "visible",
@@ -164,19 +166,6 @@ export const AvailabilityPage = () => {
                                 justifyContent: "flex-end",
                                 width: "100%"
                             }}>
-                                <Box>
-                                    <Link to={sharedAvailabilitiesPageLink}>
-                                        <Button variant="contained"
-                                            sx={{
-                                                backgroundColor: "secondary.main",
-                                                borderRadius: "20px",
-                                                mr: "20px",
-                                                "&:hover": { backgroundColor: "secondary.dark" }
-                                            }}>
-                                            See optimized dates
-                                        </Button>
-                                    </Link>
-                                </Box>
                                 <Box>
                                     <Button
                                         variant="contained"
@@ -260,54 +249,6 @@ export const AvailabilityPage = () => {
                         </CardContent>
                     </Collapse>
                 </Card >
-                <Box
-                    sx={{
-                        minWidth: "1050px",
-                        borderRadius: "10px",
-                    }}
-                >
-                    <Box
-                        sx={{
-                            pt: 10,
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "center",
-                            alignItems: "center",
-                            minWidth: "90%",
-                        }}
-                    >
-                        <Box sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            // justifyContent: "center",
-                            alignItems: 'center',
-                            width: "100%",
-                            height: "40px",
-                            mb: "50px",
-                        }}>
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                justifyContent: "center",
-                                alignItems: 'center',
-                                width: "100%"
-                            }}>
-                                <Typography
-                                    variant="h3"
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: 'center',
-                                        width: "90%"
-                                    }}
-                                >
-                                    Other participants availability
-                                </Typography>
-                            </Box>
-                        </Box>
-                        <ParticipantsAvailabilityTable groupId={groupId} />
-                    </Box>
-                </Box>
             </Box>
         </Box>
     );

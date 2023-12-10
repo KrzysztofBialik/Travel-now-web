@@ -39,6 +39,9 @@ const MyTheme = createTheme({
     //         },
     //     },
     // },
+    // typography: {
+    //     fontSize: 20
+    // },
     palette: {
         background: {
             default: "#F0F2F5"

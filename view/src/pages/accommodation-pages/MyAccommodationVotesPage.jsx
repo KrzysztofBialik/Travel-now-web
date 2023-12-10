@@ -103,6 +103,7 @@ export const MyAccommodationVotesPage = () => {
                                     justifyContent: "center",
                                     alignItems: 'flex-start',
                                     mb: 8,
+                                    maxWidth: "1200px"
                                 }}
                             >
                                 <Grid item xs={12} md={5}>

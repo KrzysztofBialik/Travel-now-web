@@ -4,6 +4,7 @@ import { CardActions } from "@mui/material";
 import { Icon } from "@mui/material";
 import { Box } from "@mui/material";
 import { Button } from "@mui/material";
+import { Link } from "react-router-dom";
 import { CardHeader } from '@mui/material';
 import { CardContent } from '@mui/material';
 import { styled } from '@mui/material/styles';
@@ -23,6 +24,7 @@ import { doGet } from "../../components/utils/fetch-utils";
 import { useEffect } from 'react';
 import { useParams } from "react-router-dom";
 import { parseISO } from "date-fns/esm";
+import { AvailabilitiesButtonGroup } from "../../components/availability/AvailabilitiesButtonGroup";
 
 
 export const URL = '/availability/OptimizedDates/:groupId';
@@ -42,7 +44,8 @@ const ExpandMore = styled((props) => {
 export const OptimizedDatesPage = () => {
     const { groupId } = useParams();
     const [expanded, setExpanded] = useState(false);
-    const [optimizedDates, setOptimizedDates] = useState([])
+    const [optimizedDates, setOptimizedDates] = useState([]);
+    const myAvailabilitiesPageLink = "/availability/" + groupId;
     const [selectedSharedAvailability, setSelectedSharedAvailability] = useState([]);
     const handleExpandClick = () => {
         setExpanded(!expanded);
@@ -112,49 +115,6 @@ export const OptimizedDatesPage = () => {
                 minWidth: "1000px"
             }}
             >
-                {/* <Card
-                    sx={{
-                        height: "100%", width: "80%", minWidth: "1000px", borderRadius: "10px"
-                    }}
-                    elevation={0}
-                >
-                    <CardHeader
-                        sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            backgroundColor: "secondary.main",
-                            color: "#000000",
-                            boxShadow: "rgb(0 0 0 / 14%) 0rem 0.25rem 1.25rem 0rem, rgb(0 187 212 / 40%) 0rem 0.4375rem 0.625rem -0.3125"
-                        }}
-                        avatar={
-                            <TipsAndUpdatesOutlinedIcon />
-                        }
-                        title="Optimized dates"
-                        titleTypographyProps={{ variant: 'h5' }}
-                        action={
-                            <Box sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center"
-                            }}>
-                                <Box>
-                                    <Button variant="contained"
-                                        sx={{
-                                            backgroundColor: "primary.main",
-                                            color: "#FFFFFF",
-                                            borderRadius: "20px",
-                                            mr: "20px"
-                                        }}
-                                        onClick={optimizeDates}
-                                    >
-                                        Optimize dates
-                                    </Button>
-                                </Box>
-                            </Box>
-                        }
-                    >
-                    </CardHeader> */}
                 <Card
                     sx={{
                         minHeight: "500px",
@@ -197,6 +157,20 @@ export const OptimizedDatesPage = () => {
                                 width: "100%",
                                 justifyContent: "flex-end"
                             }}>
+                                <Box>
+                                    <Link to={"/availability/" + groupId} className="nav-link">
+                                        <Button variant="contained"
+                                            sx={{
+                                                backgroundColor: "primary.main",
+                                                color: "#FFFFFF",
+                                                borderRadius: "20px",
+                                                mr: "20px"
+                                            }}
+                                        >
+                                            My Availability
+                                        </Button>
+                                    </Link>
+                                </Box>
                                 <Box>
                                     <Button variant="contained"
                                         sx={{

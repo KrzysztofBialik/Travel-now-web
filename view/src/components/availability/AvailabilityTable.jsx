@@ -75,7 +75,11 @@ export const AvailabilityTable = ({ availabilities, groupId, onSuccess }) => {
                     },
                     [`& .${gridClasses.cell}`]: {
                         py: 1,
+                        fontSize: "16px"
                     },
+                    '& .MuiDataGrid-columnHeader': {
+                        fontSize: "20px"
+                    }
                 }}
                 getRowHeight={() => 'auto'}
                 autoHeight
@@ -83,6 +87,7 @@ export const AvailabilityTable = ({ availabilities, groupId, onSuccess }) => {
                 rows={availabilities}
                 getRowId={row => row.availabilityId}
                 hideFooter
+                disableColumnMenu
             />
         </Box>
     );

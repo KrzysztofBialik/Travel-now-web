@@ -9,7 +9,9 @@ import { AccommodationsPageAll, URL as AccommodationsAllURL } from '../../pages/
 import { MyAccommodationsPage, URL as MyAccommodationsURL } from '../../pages/accommodation-pages/MyAccommodationsPage';
 import { MyAccommodationVotesPage, URL as MyAccommodationVotesURL } from '../../pages/accommodation-pages/MyAccommodationVotesPage';
 import { AvailabilityPage, URL as AvailabilityURL } from '../../pages/availability-pages/AvailabilityPage';
+import { AvailabilityPageNew, URL as AvailabilityNewURL } from '../../pages/availability-pages/AvailabilityPageNew';
 import { OptimizedDatesPage, URL as OptimizedDatesPageURL } from '../../pages/availability-pages/OptimizedDatesPage';
+import { OptimizedDatesPageNew, URL as OptimizedDatesPageNewURL } from '../../pages/availability-pages/OptimizedDatesPageNew';
 import { DayPlanPage, URL as DayPlanURL } from '../../pages/dayPlan-page/DayPlanPage';
 import { FinancesPage, URL as FinancesURL } from '../../pages/finances-page/FinancesPage';
 import { ParticipantsPage, URL as ParticipantsURL } from '../../pages/participants-page/ParticipantsPage';
@@ -29,12 +31,14 @@ export const PublicContentRouting = () => {
                 <Route exact path="*" element={<ErrorPage />} />
                 {/* Routing to be moved to protected */}
                 <Route exact path={DashboardURL} element={<DashboardPage />} />
-                {/* <Route exact path={AccommodationsURL} element={<AccommodationsPage />} /> */}
-                <Route exact path={AccommodationsAllURL} element={<AccommodationsPageAll />} />
+                <Route exact path={AccommodationsURL} element={<AccommodationsPage />} />
+                {/* <Route exact path={AccommodationsAllURL} element={<AccommodationsPageAll />} /> */}
                 <Route exact path={MyAccommodationsURL} element={<MyAccommodationsPage />} />
                 <Route exact path={MyAccommodationVotesURL} element={<MyAccommodationVotesPage />} />
-                <Route exact path={AvailabilityURL} element={<AvailabilityPage />} />
-                <Route exact path={OptimizedDatesPageURL} element={<OptimizedDatesPage />} />
+                {/* <Route exact path={AvailabilityURL} element={<AvailabilityPage />} /> */}
+                <Route exact path={AvailabilityNewURL} element={<AvailabilityPageNew />} />
+                {/* <Route exact path={OptimizedDatesPageURL} element={<OptimizedDatesPage />} /> */}
+                <Route exact path={OptimizedDatesPageNewURL} element={<OptimizedDatesPageNew />} />
                 <Route exact path={DayPlanURL} element={<DayPlanPage />} />
                 <Route exact path={FinancesURL} element={<FinancesPage />} />
                 <Route exact path={ParticipantsURL} element={<ParticipantsPage />} />

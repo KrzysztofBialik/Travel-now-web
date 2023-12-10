@@ -421,11 +421,11 @@ export const AccommodationCard = ({ accommodationData, canModify, selected, isCo
 };
 
 function formatLocation(accommodationData) {
-    if(accommodationData.streetName !== undefined){
-      return accommodationData.streetName
+    if (accommodationData.streetName !== undefined) {
+        return accommodationData.streetName
     }
-    if(accommodationData.country === "Unknown") {
-      return accommodationData.city
+    if (accommodationData.country === "Unknown") {
+        return accommodationData.city
     }
     return `${accommodationData.city}, ${accommodationData.region}, ${accommodationData.country} `
-    }
+}

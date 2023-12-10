@@ -70,7 +70,6 @@ export const ParticipantsAvailabilityDialog = ({ open, onClose, usersAvailabilit
                 PaperProps={{
                     style: {
                         borderRadius: "20px",
-                        overflowY: "scroll"
                     }
                 }}
             >
