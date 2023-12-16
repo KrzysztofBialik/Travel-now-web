@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { Card } from "@mui/material";
 import { Box } from "@mui/material";
+import { Card } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import { Typography } from "@mui/material";
 import { IconButton } from "@mui/material";
 import { CircularProgress } from "@mui/material";
@@ -14,26 +16,53 @@ import { TableContainer } from "@mui/material";
 import { TableRow } from "@mui/material";
 import { TableBody } from "@mui/material";
 import { TableCell } from "@mui/material";
+import { Menu } from "@mui/material";
+import { MenuItem } from "@mui/material";
 import { ButtonBase } from "@mui/material";
 import PaidIcon from '@mui/icons-material/Paid';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import InfoIcon from '@mui/icons-material/Info';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import CloseIcon from '@mui/icons-material/Close';
 import format from "date-fns/format";
 import { doGet } from "../utils/fetch-utils";
+import { DeleteExpenditureDialog } from "./DeleteExpenditureDialog";
+import { ExpenditureInfoDialog } from "./ExpenditureInfoDialog";
+import { EditExpenditureDialog } from "./EditExpenditureDialog";
 
-export const ExpenditureCard = ({ expenditureData }) => {
+export const ExpenditureCard = ({ expenditureData, canModify, participants, onSuccess, onDeletion }) => {
 
     const { groupId } = useParams();
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [deleteExpenditureDialogOpen, setDeleteExpenditureDialogOpen] = useState(false);
+    const [expenditureInfoDialogOpen, setExpendItureInfoDalogOpen] = useState(false);
+    const [editExpenditureDialogOpen, setEditExpenditureDialogOpen] = useState(false);
     const [currencyLoading, setCurrencyLoading] = useState(false);
     const [currency, setCurrency] = useState("");
-    const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+    const open = Boolean(anchorEl);
 
-    const allContributors = expenditureData.contributors.map(ed => (
-        <TableRow key={ed.name}>
-            <TableCell align="left" sx={{ fontSize: "18px" }}>{ed.name}</TableCell>
-        </TableRow>
-    )
-    );
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+
+    const handleClose = () => {
+        setAnchorEl(null);
+    };
+
+    const infoAction = () => {
+        setAnchorEl(null);
+        setExpendItureInfoDalogOpen(true);
+    };
+
+    const editAction = () => {
+        setAnchorEl(null);
+        setEditExpenditureDialogOpen(true);
+    };
+
+    const deleteAction = () => {
+        setAnchorEl(null);
+        setDeleteExpenditureDialogOpen(true);
+    };
 
     const getCurrency = async () => {
         setCurrencyLoading(true);
@@ -49,100 +78,38 @@ export const ExpenditureCard = ({ expenditureData }) => {
 
     useEffect(() => {
         getCurrency();
+        // console.log(expenditureData);
     }, []);
 
     return (
         <>
-            <Dialog
-                PaperProps={{
-                    style: {
-                        borderRadius: "20px",
-                        minHeight: "300px",
-                        maxHeight: "500px",
-                        minWidth: "500px",
-                        maxWidth: "600px",
-                        overflow: "hidden"
-                    }
-                }}
-                open={detailsDialogOpen}
-                onClose={() => setDetailsDialogOpen(false)}
-            >
-                <DialogTitle
-                    sx={{
-                        color: "primary.main",
-                        display: "flex",
-                        flexDirection: "column",
-                        backgroundColor: "primary.main",
-                        py: 1
-                    }}
-                >
-                    <Box sx={{
-                        width: "100%",
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "space-between"
-                    }}>
-                        <Typography sx={{ fontSize: "24px", color: "#FFFFFF" }}>
-                            Expenditure details
-                        </Typography>
-                        <Box>
-                            <IconButton sx={{ mr: -1 }} onClick={() => setDetailsDialogOpen(false)}>
-                                <CloseIcon sx={{ color: "secondary.main" }} />
-                            </IconButton>
-                        </Box>
-                    </Box>
-                </DialogTitle>
-                <Box sx={{
-                    width: "100%",
-                    color: "primary.main",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    ml: 3,
-                    mt: 2
-                }}>
-                    <Typography sx={{ fontSize: "32px" }}>
-                        {expenditureData.title}
-                    </Typography>
-                </Box>
-                <Box sx={{
-                    width: "100%",
-                    color: "primary.main",
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "flex-start",
-                    ml: 2
-                }}>
-                    <AttachMoneyIcon sx={{ color: "primary.main", fontSize: "20px" }} />
-                    <Typography sx={{ fontSize: "20px", color: "text.primary", mr: "3px" }}>
-                        {expenditureData.cost}
-                    </Typography>
-                    <Typography sx={{ fontSize: "20px", color: "text.primary" }}>
-                        {currency}
-                    </Typography>
-                </Box>
-                <Box sx={{ width: "100%", backgroundColor: "#dee2e6", mt: 2 }}>
-                    <Typography sx={{ fontSize: "24px", mx: 1, color: "#000000" }}>
-                        Contributors
-                    </Typography>
-                </Box>
-                <Box sx={{ overflow: "auto" }}>
-                    <TableContainer component={Paper} >
-                        <Table size="small" >
-                            <TableBody>
-                                {allContributors}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
-                </Box>
-            </Dialog>
+            <ExpenditureInfoDialog
+                open={expenditureInfoDialogOpen}
+                onClose={() => setExpendItureInfoDalogOpen(false)}
+                expenditureData={expenditureData}
+                currency={currency}
+            />
+            <EditExpenditureDialog
+                open={editExpenditureDialogOpen}
+                onClose={() => setEditExpenditureDialogOpen(false)}
+                expenditureData={expenditureData}
+                participants={participants}
+                currency={currency}
+                groupId={groupId}
+                onSuccess={() => onSuccess()}
+            />
+            <DeleteExpenditureDialog
+                open={deleteExpenditureDialogOpen}
+                onClose={() => setDeleteExpenditureDialogOpen(false)}
+                expenditureId={expenditureData.id}
+                groupId={groupId}
+                onSuccess={() => onSuccess()}
+            />
             <Card
                 sx={{
                     width: "100%",
                     borderRadius: "10px",
+                    px: "20px",
                     display: "flex",
                     flexDirection: "row",
                     justifyContent: "space-between",
@@ -155,46 +122,84 @@ export const ExpenditureCard = ({ expenditureData }) => {
                     }
                 }}
             >
-                <ButtonBase
-                    sx={{
-                        width: "100%",
-                        display: "flex",
-                        flexDirection: "row",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        minHeight: "100px",
-                        maxHeight: "100px",
-                        px: "20px"
-                    }}
-                    onClick={() => setDetailsDialogOpen(true)}
-                >
-                    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
-                        <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                            <Typography sx={{ fontSize: "22px", color: "text.primary", mr: 2 }}>
-                                {expenditureData.title}
-                            </Typography>
-                            {expenditureData.debtors && <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                                <Typography sx={{ color: "secondary.main", fontSize: "28px" }}>-</Typography>
-                                <Box sx={{ display: "flex", flexDirection: "row" }}>
-                                    <PaidIcon sx={{ color: "secondary.main", fontSize: "28px" }} />
-                                </Box>
-                            </Box>}
+                <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-start" }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                        <Typography sx={{ fontSize: "22px", color: "text.primary", mr: 2 }}>
+                            {expenditureData.title}
+                        </Typography>
+                        {expenditureData.debtors && <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                            <Typography sx={{ color: "secondary.main", fontSize: "28px" }}>-</Typography>
+                            <Box sx={{ display: "flex", flexDirection: "row" }}>
+                                <PaidIcon sx={{ color: "secondary.main", fontSize: "28px" }} />
+                            </Box>
+                        </Box>}
+                    </Box>
+                    <Typography sx={{ fontSize: "16px", color: "text.secondary" }}>
+                        {expenditureData.person}
+                    </Typography>
+                </Box>
+                <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                    <Box sx={{ height: "100px", my: 1, display: "flex", flexDirection: "column", alignItems: "flex-end", justifyContent: "flex-end" }}>
+                        <Box>
+                            <Box sx={{ mr: -1 }}>
+                                <IconButton
+                                    aria-label="more"
+                                    id="long-button"
+                                    aria-controls={open ? 'long-menu' : undefined}
+                                    aria-expanded={open ? 'true' : undefined}
+                                    aria-haspopup="true"
+                                    onClick={handleClick}
+                                    sx={{
+                                        color: "secondary.main",
+                                        padding: 0,
+                                    }}
+                                >
+                                    <MoreVertIcon sx={{ fontSize: "30px" }} />
+                                </IconButton>
+                                <Menu
+                                    id="basic-menu"
+                                    anchorEl={anchorEl}
+                                    open={open}
+                                    onClose={handleClose}
+                                    MenuListProps={{
+                                        'aria-labelledby': 'basic-button',
+                                    }}
+                                >
+                                    <MenuItem onClick={infoAction}>
+                                        <InfoIcon sx={{ mr: "20px", color: "primary.main" }} />
+                                        <Typography sx={{ color: "primary.main" }}>
+                                            Info
+                                        </Typography>
+                                    </MenuItem>
+                                    {canModify ?
+                                        <Box>
+                                            <MenuItem onClick={editAction}>
+                                                <EditIcon sx={{ mr: "20px", color: "primary.main" }} />
+                                                <Typography sx={{ color: "primary.main" }}>
+                                                    Edit
+                                                </Typography>
+                                            </MenuItem>
+                                            <MenuItem onClick={deleteAction}>
+                                                <DeleteIcon sx={{ mr: "20px", color: "error.main" }} />
+                                                <Typography sx={{ color: "error.main" }}>
+                                                    Delete
+                                                </Typography>
+                                            </MenuItem>
+                                        </Box>
+                                        :
+                                        <Box></Box>
+                                    }
+                                </Menu>
+                            </Box>
                         </Box>
-                        <Typography sx={{ fontSize: "16px", color: "text.secondary" }}>
-                            {expenditureData.person}
+                        <Typography sx={{ fontSize: "24px", color: "primary.main" }}>
+                            {currencyLoading ? <CircularProgress size="24px" sx={{ ml: 2, mt: 1 }} /> : `${expenditureData.cost} ${currency}`}
+                        </Typography>
+                        <Typography sx={{ fontSize: "18px", color: "text.secondary" }}>
+                            {format(expenditureData.date, "dd.MM.yyyy")}
                         </Typography>
                     </Box>
-                    <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
-                        <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end", ml: 2 }}>
-                            <Typography sx={{ fontSize: "24px", color: "primary.main" }}>
-                                {currencyLoading ? <CircularProgress size="24px" sx={{ ml: 2, mt: 1 }} /> : `${expenditureData.cost} ${currency}`}
-                            </Typography>
-                            <Typography sx={{ fontSize: "18px", color: "text.secondary" }}>
-                                {format(expenditureData.date, "dd.MM.yyyy")}
-                            </Typography>
-                        </Box>
-                    </Box>
-                </ButtonBase>
+                </Box>
             </Card>
         </>
     );

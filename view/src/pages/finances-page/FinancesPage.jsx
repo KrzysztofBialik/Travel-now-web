@@ -22,6 +22,7 @@ import { SettlementCard } from "../../components/finances/SettlementCard";
 import { BalanceChart } from "../../components/finances/BalanceChart";
 import { doGet } from "../../components/utils/fetch-utils";
 import { parseISO } from "date-fns/esm";
+import { SuccessToast } from "../../components/toasts/SuccessToast";
 
 
 export const URL = '/finances/:groupId';
@@ -36,12 +37,18 @@ export const FinancesPage = () => {
     const [expendituresData, setExpendituresData] = useState([]);
     const [allExpenditureCreators, setAllExpenditureCreators] = useState([]);
     const [allUsers, setAllUsers] = useState([]);
-    const [currentUser, setCurrentUser] = useState([])
-    const [allExpenditures, setAllExpenditures] = useState([])
-    const [settlementsData, setSettlementsData] = useState([])
-    const [balanceData, setBalanceData] = useState([])
-    const [fullBalanceData, setFullBalanceData] = useState([])
+    const [currentUser, setCurrentUser] = useState([]);
+    const [allExpenditures, setAllExpenditures] = useState([]);
+    const [settlementsData, setSettlementsData] = useState([]);
+    const [balanceData, setBalanceData] = useState([]);
+    const [fullBalanceData, setFullBalanceData] = useState([]);
+    const [deleteSuccessToastOpen, setDeleteSuccesToastOpen] = useState(false);
 
+
+    const getDataAfterExpenditureDeletion = () => {
+        setDeleteSuccesToastOpen(true);
+        getAllUsersInGroup();
+    };
 
     const getBalanceData = async (userList) => {
         await doGet('/api/v1/finance-optimizer/balance?' + new URLSearchParams({ groupId: groupId }).toString())
@@ -116,7 +123,6 @@ export const FinancesPage = () => {
                                     groupId={groupId}
                                     requestId={settlement.id}
                                     onSuccess={() => getAllUsersInGroup()}
-
                                 />
                             </ListItem>
 
@@ -148,7 +154,7 @@ export const FinancesPage = () => {
                     const person = userList.find(user => user.id === expenditure.creatorId).fullName;
                     const isDebtor = expenditure.expenseDebtors.some(debtor => debtor === parseInt(sessionStorage.getItem("userId")))
                     const contributors = expenditure.expenseDebtors.map(ed => {
-                        return ({id: userList.find(user => user.id === ed).id ,name: userList.find(user => user.id === ed).fullName })
+                        return ({ id: userList.find(user => user.id === ed).id, name: userList.find(user => user.id === ed).fullName })
                     })
                     return ({
                         id: expenditure.expenditureId, personId: expenditure.creatorId, person: person,
@@ -167,7 +173,13 @@ export const FinancesPage = () => {
     useEffect(() => {
         setAllExpenditures(expendituresData.map(expenditure => (
             <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
-                <ExpenditureCard expenditureData={expenditure} />
+                <ExpenditureCard
+                    expenditureData={expenditure}
+                    canModify={expenditure.personId === currentUser.userId}
+                    participants={allUsers}
+                    onSuccess={() => getAllUsersInGroup()}
+                    onDeletion={() => getDataAfterExpenditureDeletion()}
+                />
             </ListItem>
         )));
     }, [expendituresData])
@@ -182,7 +194,13 @@ export const FinancesPage = () => {
     const test = () => {
         setAllExpenditures(expendituresData.map(expenditure => (
             <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
-                <ExpenditureCard expenditureData={expenditure} />
+                <ExpenditureCard
+                    expenditureData={expenditure}
+                    canModify={expenditure.personId === currentUser.userId}
+                    participants={allUsers}
+                    onSuccess={() => getAllUsersInGroup()}
+                    onDeletion={() => getDataAfterExpenditureDeletion()}
+                />
             </ListItem>
         )));
     };
@@ -195,14 +213,26 @@ export const FinancesPage = () => {
         if (myExpendituresButtonOn) {
             setAllExpenditures(expendituresData.map(expenditure => (
                 <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
-                    <ExpenditureCard expenditureData={expenditure} />
+                    <ExpenditureCard
+                        expenditureData={expenditure}
+                        canModify={expenditure.personId === currentUser.userId}
+                        participants={allUsers}
+                        onSuccess={() => getAllUsersInGroup()}
+                        onDeletion={() => getDataAfterExpenditureDeletion()}
+                    />
                 </ListItem>
             )));
         }
         else {
             setAllExpenditures(expendituresData.filter(expenditure => expenditure.personId === currentUser.userId).map(expenditure => (
                 <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
-                    <ExpenditureCard expenditureData={expenditure} />
+                    <ExpenditureCard
+                        expenditureData={expenditure}
+                        canModify={expenditure.personId === currentUser.userId}
+                        participants={allUsers}
+                        onSuccess={() => getAllUsersInGroup()}
+                        onDeletion={() => getDataAfterExpenditureDeletion()}
+                    />
                 </ListItem>
             )));
         }
@@ -218,14 +248,26 @@ export const FinancesPage = () => {
         if (myContributionsButtonOn) {
             setAllExpenditures(expendituresData.map(expenditure => (
                 <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
-                    <ExpenditureCard expenditureData={expenditure} />
+                    <ExpenditureCard
+                        expenditureData={expenditure}
+                        canModify={expenditure.personId === currentUser.userId}
+                        participants={allUsers}
+                        onSuccess={() => getAllUsersInGroup()}
+                        onDeletion={() => getDataAfterExpenditureDeletion()}
+                    />
                 </ListItem>
             )));
         }
         else {
             setAllExpenditures(expendituresData.filter(expenditure => expenditure.contributors.some(debtor => debtor.id === currentUser.userId)).map(expenditure => (
                 <ListItem sx={{ p: 0, my: "10px" }} key={expenditure.id}>
-                    <ExpenditureCard expenditureData={expenditure} />
+                    <ExpenditureCard
+                        expenditureData={expenditure}
+                        canModify={expenditure.personId === currentUser.userId}
+                        participants={allUsers}
+                        onSuccess={() => getAllUsersInGroup()}
+                        onDeletion={() => getDataAfterExpenditureDeletion()}
+                    />
                 </ListItem>
             )));
         }
@@ -234,6 +276,11 @@ export const FinancesPage = () => {
 
     return (
         <>
+            <SuccessToast
+                open={deleteSuccessToastOpen}
+                onClose={() => setDeleteSuccesToastOpen(false)}
+                message={"Expenditure deleted successfully"}
+            />
             <AddExpenditureDialog
                 open={addExpenditureDialogOpen}
                 onClose={() => setAddExpenditureDialogOpen(false)}
