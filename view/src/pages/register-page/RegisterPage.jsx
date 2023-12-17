@@ -1,4 +1,5 @@
 import * as React from 'react';
+import InputMask from 'react-input-mask';
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import * as Yup from 'yup';
@@ -83,9 +84,12 @@ export const RegisterPage = () => {
         phone: Yup
             .string()
             .required("You have to provide phone number")
-            .min(5, "Phone number too short")
-            .max(13, "Phone number too long")
-            .matches(/^[0-9]{5,13}$/, "Phone number is not valid"),
+            .test(
+                'len',
+                'Phone number is not valid',
+                val => val && val.replace(/\s+/g, '').length >= 9 && val.replace(/\s+/g, '').length <= 13
+            )
+            .matches(/^[0-9\s]{9,13}$/, "Phone number is not valid"),
         birthDate: Yup
             .date()
             .max(today)
@@ -111,7 +115,7 @@ export const RegisterPage = () => {
         setRegisterProcess(true);
         var postBody = {
             'email': values.email,
-            'phoneNumber': '+' + values.code + ' ' + values.phone,
+            'phoneNumber': '+' + values.code + ' ' + values.phone.replace(/\s+/g, ''),
             'password': values.confirmPassword,
             'firstName': values.firstName,
             'surname': values.surname,
@@ -320,24 +324,39 @@ export const RegisterPage = () => {
                                                 <span>{!!errors.code && errors.code?.message}</span>
                                             </FormHelperText>
                                         </Box>
-                                        <TextField
-                                            sx={{ minWidth: "150px", maxWidth: "300px" }}
-                                            type='string'
-                                            margin="normal"
-                                            placeholder='Phone'
-                                            name='phone'
-                                            label='Phone'
-                                            variant="outlined"
-                                            InputProps={{
-                                                startAdornment: (
-                                                    <InputAdornment position="start">
-                                                        <PhoneIcon sx={{ color: "primary.main" }} />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                            {...register('phone')}
-                                            error={!!errors.phone}
-                                            helperText={errors.phone?.message}
+                                        <Controller
+                                            name="phone"
+                                            control={control}
+                                            render={({ field: { ref, ...field } }) => (
+                                                <InputMask
+                                                    mask="999 999 999"
+                                                    value={field.value}
+                                                    onChange={field.onChange}
+                                                    onBlur={field.onBlur}
+                                                >
+                                                    {() => (
+                                                        <TextField
+                                                            sx={{ minWidth: "150px", maxWidth: "300px" }}
+                                                            type='string'
+                                                            margin="normal"
+                                                            placeholder='Phone'
+                                                            name='phone'
+                                                            label='Phone'
+                                                            variant="outlined"
+                                                            InputProps={{
+                                                                startAdornment: (
+                                                                    <InputAdornment position="start">
+                                                                        <PhoneIcon sx={{ color: "primary.main" }} />
+                                                                    </InputAdornment>
+                                                                ),
+                                                            }}
+                                                            error={!!errors.phone}
+                                                            helperText={errors.phone?.message}
+                                                            {...field}
+                                                        />
+                                                    )}
+                                                </InputMask>
+                                            )}
                                         />
                                     </Box>
                                     <LocalizationProvider dateAdapter={AdapterDateFns}>

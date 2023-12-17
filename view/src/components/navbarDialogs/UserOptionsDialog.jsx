@@ -1,4 +1,5 @@
 import * as React from 'react';
+import InputMask from 'react-input-mask';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import Button from '@mui/material/Button';
@@ -33,13 +34,57 @@ import { ErrorToast } from '../toasts/ErrorToast';
 
 
 export const UserOptionsDialog = ({ open, onClose, userData }) => {
-
     const today = new Date();
     // const [userData, setUserData] = useState([])
     const [confirmUpdatedDialogOpen, setConfirmUpdateDialogOpen] = useState(false);
     const [confirmErrorToastOpen, setConfirmErrorToastOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
+
+    const validationSchema = Yup.object().shape({
+        firstName: Yup
+            .string()
+            .required("You have to provide first name")
+            .max(50, "Too long first name, max. 50 characters"),
+        surname: Yup
+            .string()
+            .required("You have to provide surname")
+            .max(50, "Too long surname, max. 50 characters"),
+        code: Yup
+            .string()
+            .required("You have to provide country code")
+            .min(1, "Country code too short")
+            .max(4, "Country code too long")
+            .matches(/^[0-9]{1,4}$/, "Country code is not valid"),
+        phone: Yup
+            .string()
+            .required("You have to provide phone number")
+            .test(
+                'len',
+                'Phone number is not valid',
+                val => val && val.replace(/\s+/g, '').length >= 9 && val.replace(/\s+/g, '').length <= 13
+            )
+            .matches(/^[0-9\s]{9,13}$/, "Phone number is not valid"),
+        birthDate: Yup
+            .date()
+            .max(today)
+            .required("You have to provide your birth date"),
+    });
+
+    const defaultInputValues = {
+        email: userData.email,
+        firstName: userData.firstName,
+        surname: userData.surname,
+        code: userData.code,
+        phone: userData.phone,
+        birthDate: userData.birthDate,
+    };
+
+    const { register, handleSubmit, reset, formState: { errors }, control, setValue, getValues } = useForm({
+        resolver: yupResolver(validationSchema),
+        defaultValues: defaultInputValues
+    });
+    
 
     // useEffect(() => {
     //     getUserData();
@@ -70,47 +115,7 @@ export const UserOptionsDialog = ({ open, onClose, userData }) => {
     //     console.log(response.birthday);
     // };
 
-    const validationSchema = Yup.object().shape({
-        firstName: Yup
-            .string()
-            .required("You have to provide first name")
-            .max(50, "Too long first name, max. 50 characters"),
-        surname: Yup
-            .string()
-            .required("You have to provide surname")
-            .max(50, "Too long surname, max. 50 characters"),
-        code: Yup
-            .string()
-            .required("You have to provide country code")
-            .min(1, "Country code too short")
-            .max(4, "Country code too long")
-            .matches(/^[0-9]{1,4}$/, "Country code is not valid"),
-        phone: Yup
-            .string()
-            .required("You have to provide phone number")
-            .min(5, "Phone number too short")
-            .max(13, "Phone number too long")
-            .matches(/^[0-9]{5,13}$/, "Phone number is not valid"),
-        birthDate: Yup
-            .date()
-            .max(today)
-            .required("You have to provide your birth date"),
-    });
 
-    const defaultInputValues = {
-        email: userData.email,
-        firstName: userData.firstName,
-        surname: userData.surname,
-        code: userData.code,
-        phone: userData.phone,
-        birthDate: userData.birthDate,
-    };
-
-
-    const { register, handleSubmit, reset, formState: { errors }, control, setValue, getValues } = useForm({
-        resolver: yupResolver(validationSchema),
-        defaultValues: defaultInputValues
-    });
 
     const handleChangeData = (values) => {
         editUserAccount(getValues());
@@ -127,7 +132,7 @@ export const UserOptionsDialog = ({ open, onClose, userData }) => {
         console.log(values.birthDate)
         var postBody = {
             'userId': sessionStorage.getItem('userId'),
-            'phoneNumber': '+' + values.code + ' ' + values.phone,
+            'phoneNumber': '+' + values.code + ' ' + values.phone.replace(/\s+/g, ''),
             'firstName': values.firstName,
             'surname': values.surname,
             'birthday': values.birthDate
@@ -354,24 +359,38 @@ export const UserOptionsDialog = ({ open, onClose, userData }) => {
                                                         <span>{!!errors.code && errors.code?.message}</span>
                                                     </FormHelperText>
                                                 </Box>
-                                                <TextField
-                                                    sx={{ minWidth: "150px", maxWidth: "300px" }}
-                                                    type='string'
-                                                    margin="normal"
-                                                    placeholder='Phone'
-                                                    name='phone'
-                                                    label='Phone'
-                                                    variant="outlined"
-                                                    InputProps={{
-                                                        startAdornment: (
-                                                            <InputAdornment position="start">
-                                                                <PhoneIcon sx={{ color: "primary.main" }} />
-                                                            </InputAdornment>
-                                                        ),
-                                                    }}
-                                                    {...register('phone')}
-                                                    error={!!errors.phone}
-                                                    helperText={errors.phone?.message}
+                                                <Controller
+                                                    name="phone"
+                                                    control={control}
+                                                    render={({ field: { ref, ...field } }) => (
+                                                        <InputMask
+                                                            mask="999 999 999"
+                                                            value={field.value}
+                                                            onChange={field.onChange}
+                                                            onBlur={field.onBlur}
+                                                        >
+                                                            {() => (
+                                                                <TextField
+                                                                    sx={{ minWidth: "150px", maxWidth: "300px" }}
+                                                                    type='string'
+                                                                    margin="normal"
+                                                                    placeholder='Phone'
+                                                                    name='phone'
+                                                                    label='Phone'
+                                                                    variant="outlined"
+                                                                    InputProps={{
+                                                                        startAdornment: (
+                                                                            <InputAdornment position="start">
+                                                                                <PhoneIcon sx={{ color: "primary.main" }} />
+                                                                            </InputAdornment>
+                                                                        ),
+                                                                    }}
+                                                                    error={!!errors.phone}
+                                                                    helperText={errors.phone?.message}
+                                                                />
+                                                            )}
+                                                        </InputMask>
+                                                    )}
                                                 />
                                             </Box>
                                             <LocalizationProvider dateAdapter={AdapterDateFns}>

@@ -162,7 +162,11 @@ export const NavigationNavbar = ({ buttonsData, groupId }) => {
             />
             {userOptionsDialogOpen && <UserOptionsDialog
                 open
-                onClose={() => setUserOptionsDialogOpen(false)}
+                onClose={() => {
+                    setUserOptionsDialogOpen(false);
+                    getUserData();
+                }
+                }
                 userData={userData}
             />
             }
