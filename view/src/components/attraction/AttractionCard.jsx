@@ -17,12 +17,15 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MapIcon from '@mui/icons-material/Map';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CheckIcon from '@mui/icons-material/Check';
 import { SelectStartingPointDialog } from "./SelectStartingPointDialog";
 import { EditAttractionDialog } from "./EditAttractionDialog";
 import { DeleteAttractionDialog } from "./DeleteAttractionDialog";
 import { PLACEHOLDER_IMAGE } from "../images/Images";
 import { doGet } from "../utils/fetch-utils";
+import { VisitedDialogOpen } from "./VisitedDialogOpen";
 
 
 const ExpandMore = styled((props) => {
@@ -40,11 +43,15 @@ export const AttractionCard = ({ attractionData, groupId, id, onDeletion }) => {
     const [anchorEl, setAnchorEl] = useState(null);
     const [expanded, setExpanded] = useState(false);
     const [selectStartingPointDialogOpen, setSelectStartingPointDialogOpen] = useState(false);
+    const [visitedDialogOpen, setVisitedDialogOpen] = useState(false);
     const [editAttractionDialogOpen, setEditAttractionDialogOpen] = useState(false);
     const [deleteAttractionDialogOpen, setDeleteAttractionDialogOpen] = useState(false);
     const [mapsLink, setMapsLink] = useState(attractionData.attractionLink);
     const open = Boolean(anchorEl);
-    const [isCoordinator, setIsCoordinator] = useState(false)
+    const [isCoordinator, setIsCoordinator] = useState(false);
+    const [isVisited, setIsVisited] = useState(attractionData.visited);
+
+    console.log(isVisited);
 
     useEffect(() => {
         isCorinator();
@@ -64,6 +71,10 @@ export const AttractionCard = ({ attractionData, groupId, id, onDeletion }) => {
 
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
+    };
+
+    const handleSetVisited = () => {
+        setVisitedDialogOpen(true);
     };
 
     const handleClose = () => {
@@ -103,6 +114,13 @@ export const AttractionCard = ({ attractionData, groupId, id, onDeletion }) => {
                 dayPlanId={id}
                 attractionId={attractionData.attractionId}
             />
+            <VisitedDialogOpen
+                open={visitedDialogOpen}
+                onClose={() => setVisitedDialogOpen(false)}
+                attractionId={attractionData.attractionId}
+                visited={isVisited}
+                toggleIsVisited={() => setIsVisited(prev => !prev)}
+            />
             <EditAttractionDialog
                 open={editAttractionDialogOpen}
                 onClose={() => setEditAttractionDialogOpen(false)}
@@ -116,11 +134,14 @@ export const AttractionCard = ({ attractionData, groupId, id, onDeletion }) => {
                 onSuccess={(id) => onDeletion(id)}
             />
             <Card
-                sx={{ height: "100%", width: "100%", maxWidth: "100%", borderRadius: "20px" }}
+                sx={{
+                    height: "100%", width: "100%", maxWidth: "100%", borderRadius: "20px", backgroundColor: isVisited ?
+                        'silver ' : 'initial'
+                }}
                 elevation={5}
             >
                 <CardContent >
-                    <Box sx={{ display: "flex", flexDirection: "row", justifyCOntent: "space-between", width: "100%", columnGap: "20px" }}>
+                    <Box sx={{ display: "flex", flexDirection: "row", justifyCOntent: "space-between", width: "100%", columnGap: "20px", }}>
                         <Box sx={{ width: "40%" }}>
                             <Box
                                 sx={{
@@ -220,6 +241,12 @@ export const AttractionCard = ({ attractionData, groupId, id, onDeletion }) => {
                                                         Starting point
                                                     </Typography>
                                                 </MenuItem>
+                                                <MenuItem onClick={handleSetVisited}>
+                                                    {isVisited ? <CheckCircleIcon sx={{ mr: "20px", color: "primary.main" }} /> : <CheckCircleOutlineIcon sx={{ mr: "20px", color: "primary.main" }} />}
+                                                    <Typography sx={{ color: "primary.main" }}>
+                                                        Set as {isVisited ? "not" : ''} visited
+                                                    </Typography>
+                                                </MenuItem>
                                                 <MenuItem onClick={editAction}>
                                                     <EditIcon sx={{ mr: "20px", color: "primary.main" }} />
                                                     <Typography sx={{ color: "primary.main" }}>
@@ -250,6 +277,16 @@ export const AttractionCard = ({ attractionData, groupId, id, onDeletion }) => {
                                             {attractionData.address}
                                         </Typography>
                                     </Box>
+                                    {isVisited && <Box sx={{ display: 'flex' }}>
+                                        <CheckIcon sx={{ height: '1rem' }} />
+                                        <Typography
+                                            variant="body2"
+                                            color="text.secondary"
+                                            align="left"
+                                        >
+                                            visited
+                                        </Typography>
+                                    </Box>}
                                 </Box>
                                 <Box
                                     sx={{
