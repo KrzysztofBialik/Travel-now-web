@@ -11,6 +11,7 @@ import Slide from '@mui/material/Slide';
 import { DialogContent, DialogTitle, StepLabel, Stepper, Step, CircularProgress } from '@mui/material';
 import { Grid } from '@mui/material';
 import { Card } from '@mui/material';
+import { ButtonGroup } from '@mui/material';
 import { useState } from 'react';
 import format from 'date-fns/format';
 import { GoogleMap, useLoadScript, MarkerF, DirectionsRenderer } from '@react-google-maps/api';
@@ -74,6 +75,7 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
     const [destination, setDestination] = useState([]);
     const originRef = useRef();
     const destinationRef = useRef();
+    const [isReturnTransport, setIsReturnTransport] = useState(false);
 
     const { isLoaded } = useLoadScript({
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
@@ -90,11 +92,21 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
         calculateRoute();
     }, [carTransportData]);
 
+    useEffect(() => {
+        getData();
+        calculateRoute();
+        console.log("zmiana kierunku");
+        // console.log(transportDataRaw);
+        console.log(isReturnTransport);
+    }, [isReturnTransport]);
+
     const getData = async () => {
         setLoading(true);
-        await doPost('/api/v1/transport?' + new URLSearchParams({ accommodationId: accommodationId }).toString())
+        await doPost('/api/v1/transport?' + new URLSearchParams({ accommodationId: accommodationId, return: isReturnTransport }).toString())
             .then(response => response.json())
             .then(json => {
+                console.log("pobrane dane");
+                console.log(json);
                 if (json.length !== 0) {
                     setTransportDataRaw(json);
                     setSource(json[0].source);
@@ -106,7 +118,7 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                 if (json.length !== 0) {
                     var car = json.filter(transport => transport.transportTypeJson === 2);
                     setCarTransportData(car.length !== 0 ? car : [])
-                    if(car.length !== 0){
+                    if (car.length !== 0) {
                         setMapsLink(`https://www.google.com/maps/dir/?api=1&origin=${car[0].source}&destination=${car[0].destination}`)
                     }
 
@@ -244,6 +256,7 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                 accommodationId={accommodationId}
                 onSuccess={() => getData()}
                 currency={currency}
+                isReturnTransport={isReturnTransport}
             />
             <Dialog
                 fullScreen
@@ -285,6 +298,51 @@ export const TransportDialog = ({ open, onClose, accommodationId, currency }) =>
                         flexDirection: "column",
                         minWidth: "1200px"
                     }}>
+                        <>
+                            <ButtonGroup
+                                sx={{ display: "flex", alignItems: "center", mt: 4, alignSelf: "center" }}
+                            // ref={ref}
+                            >
+                                <Button
+                                    sx={!isReturnTransport ?
+                                        {
+                                            color: "#000000",
+                                            backgroundColor: "secondary.main",
+                                            '&:hover': { backgroundColor: "secondary.light" }
+                                        }
+                                        :
+                                        {
+                                            color: "#FFFFFF",
+                                            backgroundColor: "primary.main",
+                                            '&:hover': { backgroundColor: "primary.light" }
+                                        }
+                                    }
+                                    disabled={!isReturnTransport}
+                                    onClick={() => setIsReturnTransport(false)}
+                                >
+                                    Transport to
+                                </Button>
+                                <Button
+                                    sx={isReturnTransport ?
+                                        {
+                                            color: "#000000",
+                                            backgroundColor: "secondary.main",
+                                            '&:hover': { backgroundColor: "secondary.light" }
+                                        }
+                                        :
+                                        {
+                                            color: "#FFFFFF",
+                                            backgroundColor: "primary.main",
+                                            '&:hover': { backgroundColor: "primary.light" }
+                                        }
+                                    }
+                                    disabled={isReturnTransport}
+                                    onClick={() => setIsReturnTransport(true)}
+                                >
+                                    Transport from
+                                </Button>
+                            </ButtonGroup>
+                        </>
                         <Box sx={{ mt: "50px", mb: "80px", width: "75%" }} elevation={10}>
                             {loading ?
                                 <Box

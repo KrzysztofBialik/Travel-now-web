@@ -31,7 +31,7 @@ import { doPost } from '../utils/fetch-utils';
 import * as durationn from 'duration-fns'
 
 
-export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, currency }) => {
+export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, currency, isReturnTransport }) => {
 
     const [isCreating, setIsCreating] = useState(false);
     const [successToastOpen, setSuccessToastOpen] = useState(false);
@@ -178,7 +178,8 @@ export const AddTransportDialog = ({ open, onClose, accommodationId, onSuccess, 
             'meanOfTransport': tripName,
             'description': description,
             'meetingTime': meetingTime,
-            'link': null
+            'link': null,
+            'returnTransport': isReturnTransport
         };
         await doPost('/api/v1/transport/user-transport?' + new URLSearchParams({ accommodationId: accommodationId }).toString(), postBody)
             .then(response => {

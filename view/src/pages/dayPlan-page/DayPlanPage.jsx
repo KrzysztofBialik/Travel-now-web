@@ -590,7 +590,7 @@ export const DayPlanPage = (props) => {
                                                     <Typography variant="h4" sx={{ mb: 1 }}>
                                                         Map of attractions
                                                     </Typography>
-                                                    {isLoaded ?
+                                                    {(!loadingOptimized && isLoaded) ?
                                                         <Box sx={{ minWidth: "700px", maxWidth: "700px" }}>
                                                             <GoogleMap
                                                                 zoom={12}
