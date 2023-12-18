@@ -37,6 +37,8 @@ import FmdGoodRoundedIcon from '@mui/icons-material/FmdGoodRounded';
 import { secondsToMilliseconds, set } from "date-fns/esm";
 import { display } from "@mui/system";
 import { SuccessToast } from "../../components/toasts/SuccessToast";
+import { GoogleMap, useLoadScript, MarkerF, InfoWindow, Marker } from '@react-google-maps/api';
+
 
 export const URL = '/dayPlan/:groupId';
 export const NAME = "DayPlan";
@@ -62,6 +64,23 @@ export const DayPlanPage = (props) => {
     const [tripGroup, setTripGroup] = useState([])
     const [isCoordinator, setIsCoordinator] = useState(false);
     const [currentLocation, setCurrentLocation] = useState({});
+    const [centerLocation, setCenterLocation] = useState({});
+    const [allMarkers, setAllMarkers] = useState([]);
+    const [activeMarker, setActiveMarker] = useState(null);
+
+
+    const { isLoaded } = useLoadScript({
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+    });
+
+
+    const handleActiveMarker = (marker) => {
+        if (marker === activeMarker) {
+            return;
+        }
+        setActiveMarker(marker);
+        console.log(activeMarker);
+    };
 
 
     var isCordinator = false;
@@ -139,6 +158,7 @@ export const DayPlanPage = (props) => {
     };
 
     const showDetailedPlan = (name, date, attractions, dayPlanId) => {
+        getTripData();
         setAllAttractions([]);
         setSelectedDayPlanId(dayPlanId)
         setDayPlanName(name);
@@ -154,6 +174,19 @@ export const DayPlanPage = (props) => {
                 />
             </ListItem>
         )));
+        setAllMarkers(attractions.map((attraction) => {
+            return (
+                <MarkerF
+                    key={attraction.attractionId}
+                    position={{ lat: attraction.latitude, lng: attraction.longitude }}
+                    onClick={() => handleActiveMarker(attraction)}
+                >
+                </MarkerF>
+            )
+        }));
+        console.log(attractions);
+        console.log(allMarkers);
+        setCenterLocation({ lat: attractions[0].latitude, lng: attractions[0].longitude });
     };
 
     const updateDayplanAttractions = async () => {
@@ -547,13 +580,57 @@ export const DayPlanPage = (props) => {
                                                 //         <CircularProgress />
                                                 //     </Box>
                                                 //     :
-                                                <Box sx={{ height: "100%", width: "100%", display: "flex", justifyContent: "center" }}>
+                                                <Box sx={{ height: "100%", width: "100%", display: "flex", flexWrap: "wrap", justifyContent: "center", alignContent: "center", flexDirection: "column" }}>
                                                     <List sx={{
                                                         // height: "100%", 
                                                         px: 0, minWidth: "700px", maxWidth: "700px"
                                                     }}>
                                                         {isOptimizedDayPlan ? optimizedAttractions : allAttractions}
                                                     </List>
+                                                    <Typography variant="h4" sx={{ mb: 1 }}>
+                                                        Map of attractions
+                                                    </Typography>
+                                                    {isLoaded ?
+                                                        <Box sx={{ minWidth: "700px", maxWidth: "700px" }}>
+                                                            <GoogleMap
+                                                                zoom={12}
+                                                                onClick={() => setActiveMarker(null)}
+                                                                center={{ lat: activeMarker ? activeMarker.latitude : allMarkers.length > 0 ? centerLocation.lat : 0, lng: activeMarker ? activeMarker.longitude : allMarkers.length > 0 ? centerLocation.lng : 0 }}
+                                                                mapContainerClassName="map-container"
+                                                            >
+                                                                {allMarkers}
+                                                                {activeMarker &&
+                                                                    <InfoWindow
+                                                                        pixelOffset={100}
+                                                                        position={{ lat: activeMarker.latitude, lng: activeMarker.longitude }}
+                                                                        onCloseClick={() => setActiveMarker(null)}
+                                                                    >
+                                                                        <Box>
+                                                                            <Typography>
+                                                                                {activeMarker.name}
+                                                                            </Typography>
+                                                                        </Box>
+                                                                    </InfoWindow>
+                                                                }
+                                                            </GoogleMap>
+                                                        </Box>
+                                                        :
+                                                        <Typography variant="h1">Loading...</Typography>
+                                                    }
+
+                                                    {/* :
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            justifyContent: "center",
+                                                            alignItems: "center",
+                                                            minHeight: "400px"
+                                                        }}
+                                                    >
+                                                        <CircularProgress />
+                                                    </Box> */}
+
                                                 </Box>
                                                 :
                                                 dayPlanName === "" ?
