@@ -4,6 +4,7 @@ import { Typography } from "@mui/material";
 import { Divider } from "@mui/material";
 import { Button } from "@mui/material";
 
+import { FAQSection } from "../../components/faq/FAQSection";
 import { AccommodationsButtonGroup } from "../../components/accommodations/AccommodationsButtonGroup";
 import { AccommodationCard } from "../../components/accommodations/accommodationCard/AccommodationCard";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
@@ -142,13 +143,14 @@ export const MyAccommodationVotesPage = () => {
     useEffect(() => {
         getIsCoordinator();
         getData();
+        window.scrollTo(0, 0);
     }, [])
 
     return (
         <Box
             sx={{
                 position: 'relative',
-                minHeight: '100%'
+                minHeight: '100vh'
             }}>
             <NavigationNavbar
                 buttonsData={futureTripButtonsDataWithGroupId(groupId)}
@@ -159,6 +161,7 @@ export const MyAccommodationVotesPage = () => {
                 // pt: 5,
                 // margin: 10,
                 // mx: { xs: 2, lg: 3 },
+                pb: "25vh",
                 display: "flex",
                 justifyContent: 'center',
                 alignItems: 'center',
@@ -220,6 +223,7 @@ export const MyAccommodationVotesPage = () => {
                     myVotes
                 }
             </Box >
+            <FAQSection />
         </Box >
     );
 };

@@ -19,6 +19,7 @@ import { isWeekend } from "date-fns";
 import { format } from "date-fns";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
+import { FAQSection } from "../../components/faq/FAQSection";
 import { AvailabilityTable } from "../../components/availability/AvailabilityTable";
 import { DateRangePickerDialog } from "../../components/availability/DateRangePickerDialog";
 import { AvailabilitiesButtonGroup } from "../../components/availability/AvailabilitiesButtonGroup";
@@ -73,6 +74,7 @@ export const AvailabilityPageNew = () => {
 
     useEffect(() => {
         getAvailabilities();
+        window.scrollTo(0, 0);
     }, []);
 
 
@@ -98,7 +100,7 @@ export const AvailabilityPageNew = () => {
     return (
         <Box sx={{
             position: 'relative',
-            minHeight: '100%'
+            minHeight: '100vh'
         }}>
             <DateRangePickerDialog open={dateRangePickerDialogOpen}
                 onClose={() => setDateRangePickerDialogOpen(false)}
@@ -118,7 +120,8 @@ export const AvailabilityPageNew = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: "column",
-                minWidth: "1000px"
+                minWidth: "1000px",
+                pb: "30vh"
             }}
             >
                 <AvailabilitiesButtonGroup groupId={groupId} clickedButton={"myAv"} />
@@ -250,6 +253,7 @@ export const AvailabilityPageNew = () => {
                     </Collapse>
                 </Card >
             </Box>
+            <FAQSection />
         </Box>
     );
 };

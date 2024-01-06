@@ -16,6 +16,7 @@ import isWeekend from "date-fns/isWeekend";
 import format from "date-fns/format";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
+import { FAQSection } from "../../components/faq/FAQSection";
 import { OptimizedDatesTable } from "../../components/availability/OptimizedDatesTable";
 import { AvailabilitiesButtonGroup } from "../../components/availability/AvailabilitiesButtonGroup";
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
@@ -110,7 +111,8 @@ export const OptimizedDatesPageNew = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: "column",
-                minWidth: "1000px"
+                minWidth: "1000px",
+                pb: "30vh"
             }}
             >
                 <AvailabilitiesButtonGroup groupId={groupId} clickedButton={"optimized"} />
@@ -248,6 +250,7 @@ export const OptimizedDatesPageNew = () => {
                     </Collapse>
                 </Card >
             </Box>
+            <FAQSection />
         </Box>
     );
 };

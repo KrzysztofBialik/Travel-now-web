@@ -26,7 +26,7 @@ import { pastTripButtonsDataWithGroupId } from '../../components/navbars/navigat
 import { currentTripButtonsDataWithGroupId } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { BeginTripDialog } from '../../components/tripSummary/BeginTripDialog';
 import { EndTripDialog } from '../../components/tripSummary/EndTripDialog';
-
+import { FAQSection } from '../../components/faq/FAQSection';
 import { futureTripButtonsData2 } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { currentTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
 import { pastTripButtonsData } from '../../components/navbars/navigationNavbar/NavbarNavigationData';
@@ -100,8 +100,8 @@ export const TripSummaryPage = () => {
 
     const confirmStartingTripAction = (isPlanningStage) => {
 
-     setStartTripDialogOpen(true)
-  
+        setStartTripDialogOpen(true)
+
     }
 
     const selectNavbar = () => {
@@ -193,11 +193,10 @@ export const TripSummaryPage = () => {
                 setIsPlanningStage(response.groupStage === 'PLANNING_STAGE');
                 setIsTripStage(response.groupStage === 'TRIP_STAGE');
             })
-            .catch(err => 
-                {
+            .catch(err => {
                 setSharedAvailability(null)
                 console.log('Request Failed', err)
-    });
+            });
     };
 
 
@@ -238,6 +237,7 @@ export const TripSummaryPage = () => {
         getUsersData();
         getChosenAccommodation();
         getTripData();
+        window.scrollTo(0, 0);
     }, [])
 
     const updateData = () => {
@@ -255,6 +255,7 @@ export const TripSummaryPage = () => {
             <NavigationNavbar buttonsData={selectNavbar()} groupId={groupId} />
             <Box sx={{
                 p: 10,
+                pb: "30vh",
                 mx: { xs: 2, lg: 3 },
                 margin: 4,
                 display: "flex",
@@ -703,7 +704,7 @@ export const TripSummaryPage = () => {
                                 </Box>
                             </Card>
                         </Grid>
-                        <BeginTripDialog open={startTripDialogOpen} onClose={() => setStartTripDialogOpen(false)} groupId={groupId} onSuccess={() => updateData()} usersData={usersData} tripGroup={tripGroup} isPlanning={isPlanningStage}/>
+                        <BeginTripDialog open={startTripDialogOpen} onClose={() => setStartTripDialogOpen(false)} groupId={groupId} onSuccess={() => updateData()} usersData={usersData} tripGroup={tripGroup} isPlanning={isPlanningStage} />
                         <Grid item xs={12}>
                             <Box sx={{
                                 width: "100%",
@@ -734,6 +735,7 @@ export const TripSummaryPage = () => {
                     </Grid>
                 </Box>
             </Box >
+            <FAQSection />
         </Box >
     );
 };

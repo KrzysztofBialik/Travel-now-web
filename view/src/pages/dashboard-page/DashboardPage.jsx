@@ -14,6 +14,7 @@ import { CurrentTrips } from '../../components/dashboard/tripsList/currentTrips/
 import { PastTrips } from '../../components/dashboard/tripsList/pastTrips/PastTrips.jsx';
 import { BACKGROUND_DASHBOARD } from '../../components/images/Images.jsx';
 import { doGet } from "../../components/utils/fetch-utils";
+import { FAQSection } from '../../components/faq/FAQSection.jsx';
 
 
 export const URL = '/dashboard';
@@ -39,89 +40,96 @@ export const DashboardPage = () => {
     }, [])
 
     return (
-        <>
-            <CreateTripDialog
-                open={createTripDialogOpen}
-                onClose={() => setCreateTripDialogOpen(false)}
-                onSuccess={() => getTrips()}
-            />
-            {/* <SimpleNavbar /> */}
-            <NavigationNavbar buttonsData={[]} />
-            <Box
-                sx={{
-                    backgroundImage: `url(${BACKGROUND_DASHBOARD})`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "top",
-                    display: "grid",
-                    mt: -5,
-                    placeItems: "center",
-                    minHeight: "90vh",
-                    minWidth: "1200px",
-                    width: "100%"
-                }}
-            >
-                <Grid container
+        <Box
+            sx={{
+                position: 'relative',
+                minHeight: '100vh'
+            }}>
+            <Box sx={{ pb: "25vh" }}>
+                <CreateTripDialog
+                    open={createTripDialogOpen}
+                    onClose={() => setCreateTripDialogOpen(false)}
+                    onSuccess={() => getTrips()}
+                />
+                {/* <SimpleNavbar /> */}
+                <NavigationNavbar buttonsData={[]} />
+                <Box
                     sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        flexDirection: "column",
-                        mt: -20
+                        backgroundImage: `url(${BACKGROUND_DASHBOARD})`,
+                        backgroundSize: "cover",
+                        backgroundPosition: "top",
+                        display: "grid",
+                        mt: -5,
+                        placeItems: "center",
+                        minHeight: "90vh",
+                        minWidth: "1200px",
+                        width: "100%"
                     }}
                 >
-                    <Grid item xs={12} justifyContent="center" mx="auto">
-                        <Typography
-                            variant="h1"
-                            // mt={-20}
-                            textAlign="center"
-                            color="#FFFFFF"
-                            sx={{
-                                fontSize: "40px",
-                                pb: 5
-                            }}
-                        >
-                            Explore the world with us
-                        </Typography>
-                    </Grid>
-                    <Grid item xs={12} justifyContent="center" mx="auto">
-                        <Typography
-                            variant="body1"
-                            color="white"
-                            textAlign="center"
-                            px={{ xs: 6, lg: 12 }}
-                            mt={1}
-                        >
-                            <Button
-                                variant="contained"
-                                onClick={() => setCreateTripDialogOpen(true)}
-                                sx={{ color: "#FFFFFF", borderRadius: "20px", mt: 2 }}
+                    <Grid container
+                        sx={{
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            flexDirection: "column",
+                            mt: -20
+                        }}
+                    >
+                        <Grid item xs={12} justifyContent="center" mx="auto">
+                            <Typography
+                                variant="h1"
+                                // mt={-20}
+                                textAlign="center"
+                                color="#FFFFFF"
+                                sx={{
+                                    fontSize: "40px",
+                                    pb: 5
+                                }}
                             >
-                                Create new trip
-                            </Button>
-                        </Typography>
+                                Explore the world with us
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={12} justifyContent="center" mx="auto">
+                            <Typography
+                                variant="body1"
+                                color="white"
+                                textAlign="center"
+                                px={{ xs: 6, lg: 12 }}
+                                mt={1}
+                            >
+                                <Button
+                                    variant="contained"
+                                    onClick={() => setCreateTripDialogOpen(true)}
+                                    sx={{ color: "#FFFFFF", borderRadius: "20px", mt: 2 }}
+                                >
+                                    Create new trip
+                                </Button>
+                            </Typography>
+                        </Grid>
                     </Grid>
-                </Grid>
+                </Box>
+
+                <Card sx={{
+                    p: 2,
+                    mx: { xs: 2, lg: 3 },
+                    mt: -30,
+                    mb: 4,
+                    backgroundColor: "#F0F2F5",
+                    backdropFilter: "saturate(200%) blur(30px)",
+                    minWidth: "950px",
+                    borderRadius: "20px"
+                }}
+                >
+                    <CurrentTrips trips={tripsList} isLoading={isLoading} />
+
+                    <Divider />
+                    <FutureTrips trips={tripsList} />
+
+                    <Divider />
+                    <PastTrips trips={tripsList} isLoading={isLoading} />
+                </Card>
             </Box>
-
-            <Card sx={{
-                p: 2,
-                mx: { xs: 2, lg: 3 },
-                mt: -30,
-                mb: 4,
-                backgroundColor: "#F0F2F5",
-                backdropFilter: "saturate(200%) blur(30px)",
-                minWidth: "950px",
-                borderRadius: "20px"
-            }}
-            >
-                <CurrentTrips trips={tripsList} isLoading={isLoading} />
-
-                <Divider />
-                <FutureTrips trips={tripsList} />
-
-                <Divider />
-                <PastTrips trips={tripsList} isLoading={isLoading} />
-            </Card>
-        </>
+            <FAQSection />
+        </Box>
     );
 };

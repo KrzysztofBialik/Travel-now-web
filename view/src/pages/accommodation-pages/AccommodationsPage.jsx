@@ -12,6 +12,7 @@ import { GoogleMap, useLoadScript, MarkerF } from '@react-google-maps/api';
 import { useParams } from "react-router-dom";
 import { doGet } from "../../components/utils/fetch-utils";
 import { useEffect } from "react";
+import { FAQSection } from "../../components/faq/FAQSection";
 import { AddAccommodationDialog } from "../../components/accommodations/AddAccommodationDialog";
 import { AccommodationCard } from "../../components/accommodations/accommodationCard/AccommodationCard";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
@@ -46,6 +47,7 @@ export const AccommodationsPage = () => {
 
     useEffect(() => {
         console.log(groupId);
+        window.scrollTo(0, 0);
         isCoordinator()
             .then(() => getCurrency())
             .then(() => getData());;
@@ -147,7 +149,11 @@ export const AccommodationsPage = () => {
     };
 
     return (
-        <>
+        <Box
+            sx={{
+                position: 'relative',
+                minHeight: '100%'
+            }}>
             <AddAccommodationDialog
                 open={addAccommodationDialogOpen}
                 onClose={() => setAddAccommodationDialogOpen(false)}
@@ -156,10 +162,7 @@ export const AccommodationsPage = () => {
                 currency={currency}
             />
             <Box
-                sx={{
-                    position: 'relative',
-                    minHeight: '100%'
-                }}>
+                sx={{ pb: "25vh" }}>
                 <NavigationNavbar
                     buttonsData={futureTripButtonsDataWithGroupId(groupId)}
                     groupId={groupId}
@@ -346,7 +349,8 @@ export const AccommodationsPage = () => {
 
                 </Box >
             </Box >
-        </>
+            <FAQSection />
+        </Box>
 
     );
 };

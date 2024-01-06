@@ -8,6 +8,7 @@ import { Grid } from "@mui/material";
 import { Typography } from "@mui/material";
 import { Button } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+import { FAQSection } from "../../components/faq/FAQSection";
 import { AccommodationsButtonGroup } from "../../components/accommodations/AccommodationsButtonGroup";
 import { AccommodationCard } from "../../components/accommodations/accommodationCard/AccommodationCard";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
@@ -35,7 +36,8 @@ export const MyAccommodationsPage = () => {
     });
 
     useEffect(() => {
-        console.log(groupId)
+        console.log(groupId);
+        window.scrollTo(0, 0);
         getIsCoordinator()
             .then(() => getCurrency())
             .then(() => getData());
@@ -118,7 +120,12 @@ export const MyAccommodationsPage = () => {
     };
 
     return (
-        <>
+        <Box
+            sx={{
+                position: 'relative',
+                minHeight: '100vh'
+            }}
+        >
             <AddAccommodationDialog
                 open={addAccommodationDialogOpen}
                 onClose={() => setAddAccommodationDialogOpen(false)}
@@ -129,7 +136,8 @@ export const MyAccommodationsPage = () => {
             <Box
                 sx={{
                     position: 'relative',
-                    minHeight: '100%',
+                    minHeight: '100vh',
+                    pb: "25vh"
                 }}>
                 <NavigationNavbar
                     buttonsData={futureTripButtonsDataWithGroupId(groupId)}
@@ -219,6 +227,7 @@ export const MyAccommodationsPage = () => {
                     }
                 </Box >
             </Box >
-        </>
+            <FAQSection />
+        </Box>
     );
 };

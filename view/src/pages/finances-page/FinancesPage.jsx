@@ -13,6 +13,7 @@ import ReceiptIcon from '@mui/icons-material/Receipt';
 import SyncAltIcon from '@mui/icons-material/SyncAlt';
 import HandshakeIcon from '@mui/icons-material/Handshake';
 import { useParams } from "react-router-dom";
+import { FAQSection } from "../../components/faq/FAQSection";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { currentTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { pastTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
@@ -79,6 +80,10 @@ export const FinancesPage = () => {
             })
             .catch(err => console.log('Request Failed', err));
     }
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    })
 
     useEffect(() => {
 
@@ -291,7 +296,7 @@ export const FinancesPage = () => {
             <Box
                 sx={{
                     position: 'relative',
-                    minHeight: '100%'
+                    minHeight: '100vh'
                 }}>
                 <NavigationNavbar
                     buttonsData={groupStage === 2 ? currentTripButtonsDataWithGroupId(groupId) : pastTripButtonsData}
@@ -299,6 +304,7 @@ export const FinancesPage = () => {
                 />
                 <Box sx={{
                     pt: 10,
+                    pb: "25vh",
                     display: "flex",
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -685,6 +691,7 @@ export const FinancesPage = () => {
                         </Grid>
                     </Box>
                 </Box >
+                <FAQSection />
             </Box >
         </>
     );

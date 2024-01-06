@@ -17,6 +17,7 @@ import isWeekend from "date-fns/isWeekend";
 import format from "date-fns/format";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
+import { FAQSection } from "../../components/faq/FAQSection";
 import { OptimizedDatesTable } from "../../components/availability/OptimizedDatesTable";
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
 import { currentTripButtonsDataWithGroupId, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
@@ -112,7 +113,8 @@ export const OptimizedDatesPage = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: "column",
-                minWidth: "1000px"
+                minWidth: "1000px",
+                pb: "30vh"
             }}
             >
                 <Card
@@ -261,6 +263,7 @@ export const OptimizedDatesPage = () => {
                     </Collapse>
                 </Card >
             </Box>
+            <FAQSection />
         </Box>
     );
 };

@@ -19,6 +19,7 @@ import { isWeekend } from "date-fns";
 import { format } from "date-fns";
 import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
+import { FAQSection } from "../../components/faq/FAQSection";
 import { AvailabilityTable } from "../../components/availability/AvailabilityTable";
 import { DateRangePickerDialog } from "../../components/availability/DateRangePickerDialog";
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
@@ -73,6 +74,7 @@ export const AvailabilityPage = () => {
 
     useEffect(() => {
         getAvailabilities();
+        window.scrollTo(0, 0);
     }, []);
 
 
@@ -119,7 +121,8 @@ export const AvailabilityPage = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 flexDirection: "column",
-                minWidth: "1000px"
+                minWidth: "1000px",
+                pb: "30vh"
             }}
             >
                 <Card
@@ -309,6 +312,7 @@ export const AvailabilityPage = () => {
                     </Box>
                 </Box>
             </Box>
+            <FAQSection />
         </Box>
     );
 };

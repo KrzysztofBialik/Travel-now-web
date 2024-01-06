@@ -6,6 +6,7 @@ import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import { useParams } from "react-router-dom";
 import { useEffect } from 'react';
 
+import { FAQSection } from "../../components/faq/FAQSection";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { currentTripButtonsDataWithGroupId, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 
@@ -44,6 +45,7 @@ export const ParticipantsPage = () => {
 
     useEffect(() => {
         getGroupData();
+        window.scrollTo(0, 0);
     }, [])
 
 
@@ -52,25 +54,25 @@ export const ParticipantsPage = () => {
     const inviteAction = async () => {
         await doGet('/api/v1/invitation?' + new URLSearchParams({ group: groupId }).toString())
             .then(response => {
-                if(response.ok) {
+                if (response.ok) {
                     setInviteLink(response.headers.get('Location'))
                     setCopiedtext(response.headers.get('Location'))
                     setInviteDialogOpen(true);
                 }
-               
+
             })
             .catch(err => {
                 setErrorToastOpen(true)
                 setCreationError(err.message)
             });
-        
+
     }
 
     return (
         <Box
             sx={{
                 position: 'relative',
-                height: '100%'
+                minHeight: '100vh'
             }}>
             <ErrorToast open={errorToastOpen} onClose={() => setErrorToastOpen(false)} message={creationError} />
             <NavigationNavbar
@@ -151,6 +153,7 @@ export const ParticipantsPage = () => {
                     <ParticipantsTable groupStage={groupStage} isCoordinator={isCoordinator} groupId={groupId} />
                 </Box>
             </Box >
+            <FAQSection />
         </Box >
     );
 }

@@ -21,6 +21,7 @@ import { Tooltip } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import SearchIcon from '@mui/icons-material/Search';
+import { FAQSection } from "../../components/faq/FAQSection";
 import { NavigationNavbar } from "../../components/navbars/navigationNavbar/NavigationNavbar";
 import { currentTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { pastTripButtonsData } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
@@ -90,6 +91,7 @@ export const DayPlanPage = (props) => {
         getData();
         getTripData();
         getLocation();
+        window.scrollTo(0, 0);
     }, []);
 
     const getLocation = () => {
@@ -311,7 +313,7 @@ export const DayPlanPage = (props) => {
             <Box
                 sx={{
                     position: 'relative',
-                    minHeight: '100%'
+                    minHeight: '100vh'
                 }}>
                 <NavigationNavbar
                     buttonsData={currentTripButtonsDataWithGroupId(groupId)}
@@ -319,6 +321,7 @@ export const DayPlanPage = (props) => {
                 />
                 <Box sx={{
                     pt: 10,
+                    pb: "25vh",
                     display: "flex",
                     justifyContent: 'center',
                     alignItems: 'center',
@@ -653,6 +656,7 @@ export const DayPlanPage = (props) => {
                         </Grid>
                     </Box>
                 </Box >
+                <FAQSection />
             </Box >
         </>
     );
