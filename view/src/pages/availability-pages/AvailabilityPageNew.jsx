@@ -24,6 +24,7 @@ import { AvailabilityTable } from "../../components/availability/AvailabilityTab
 import { DateRangePickerDialog } from "../../components/availability/DateRangePickerDialog";
 import { AvailabilitiesButtonGroup } from "../../components/availability/AvailabilitiesButtonGroup";
 import { NavigationNavbar } from '../../components/navbars/navigationNavbar/NavigationNavbar';
+import { ParticipantsAvailabilityTable } from "../../components/availability/ParticipantsAvailabilityTable";
 import { currentTripButtonsDataWithGroupId, futureTripButtonsDataWithGroupId } from "../../components/navbars/navigationNavbar/NavbarNavigationData";
 import { useParams } from "react-router-dom";
 import { doGet } from "../../components/utils/fetch-utils";
@@ -252,6 +253,54 @@ export const AvailabilityPageNew = () => {
                         </CardContent>
                     </Collapse>
                 </Card >
+                <Box
+                    sx={{
+                        minWidth: "1050px",
+                        borderRadius: "10px",
+                    }}
+                >
+                    <Box
+                        sx={{
+                            pt: 10,
+                            display: "flex",
+                            flexDirection: "column",
+                            justifyContent: "center",
+                            alignItems: "center",
+                            minWidth: "90%",
+                        }}
+                    >
+                        <Box sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            // justifyContent: "center",
+                            alignItems: 'center',
+                            width: "100%",
+                            height: "40px",
+                            mb: "50px",
+                        }}>
+                            <Box sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "center",
+                                alignItems: 'center',
+                                width: "100%"
+                            }}>
+                                <Typography
+                                    variant="h3"
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: 'center',
+                                        width: "90%"
+                                    }}
+                                >
+                                    Other participants availability
+                                </Typography>
+                            </Box>
+                        </Box>
+                        <ParticipantsAvailabilityTable groupId={groupId} />
+                    </Box>
+                </Box>
             </Box>
             <FAQSection />
         </Box>
